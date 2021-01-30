@@ -1,4 +1,4 @@
-# Fantasia archive (fantasiavault)
+# Fantasia archive (fantasiaarchive)
 
 A database manager for world building
 
