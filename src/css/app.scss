@@ -1,0 +1,11 @@
+// app global css in SCSS form
+
+@import './app/customColors.scss';
+
+body {
+  background-color: #fff;
+}
+
+.q-drawer-container * {
+  user-select: none !important;
+}

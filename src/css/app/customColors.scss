@@ -1,0 +1,11 @@
+@import '../quasar.variables.scss';
+
+@each $name, $color in $customColors {
+  .text-#{$name} {
+    color: $color;
+  }
+
+  .bg-#{$name} {
+    background-color: $color;
+  }
+}
