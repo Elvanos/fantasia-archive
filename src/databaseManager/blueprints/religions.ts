@@ -1,10 +1,10 @@
 import { I_Blueprint } from "../../interfaces/I_Blueprint"
 export const blueprint: I_Blueprint = {
-  _id: "locations",
-  order: 17,
-  namePlural: "Locations",
-  nameSingular: "Location",
-  icon: "mdi-map-marker-radius",
+  _id: "religions",
+  order: 14,
+  namePlural: "Religions/Teachings",
+  nameSingular: "Religion/Teaching",
+  icon: "fas fa-ankh",
   extraFields: [
     {
       id: "name",
@@ -19,7 +19,7 @@ export const blueprint: I_Blueprint = {
       type: "singleToNoneRelationship",
       sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "locations"
+        connectedObjectType: "religions"
       }
     },
     {

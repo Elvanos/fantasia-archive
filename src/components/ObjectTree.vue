@@ -22,8 +22,17 @@
       >
       <template v-slot:default-header="prop">
         <div class="row items-center col-grow">
-          <q-icon :name="prop.node.icon" class="q-mr-sm" />
-          <div>{{ prop.node.label }}
+          <q-icon
+            :size="(prop.node.icon.includes('fas')? '16px': '21px')"
+            :name="prop.node.icon"
+            class="q-mr-sm" />
+          <div>
+            {{ prop.node.label }}
+            <span
+              class="text-primary text-weight-medium"
+              v-if="prop.node.isRoot">
+                ({{prop.node.documentCount}})
+              </span>
             <q-badge
             class="q-ml-xs"
             style="font-size: 12px;"
@@ -211,14 +220,19 @@ export default class ObjectTree extends BaseClass {
           } as I_ShortenedDocument
         })
 
+      const documentCount = allDocumentsRows.length
+
       const hierarchicalTreeContent = this.buildTreeHierarchy(allDocumentsRows)
 
       const treeRow = {
         label: blueprint.namePlural,
         icon: blueprint.icon,
+        order: blueprint.order,
         _id: blueprint._id,
         handler: this.addNewObjectType,
         specialLabel: blueprint.nameSingular.toLowerCase(),
+        isRoot: true,
+        documentCount: documentCount,
         children: [
           ...hierarchicalTreeContent,
           {
@@ -233,12 +247,23 @@ export default class ObjectTree extends BaseClass {
       treeObject.push(treeRow)
     }
 
+    treeObject.sort((a, b) => {
+      if (a.order < b.order) {
+        return 1
+      }
+
+      if (a.order > b.order) {
+        return -1
+      }
+      return 0
+    })
+
     this.treeList = treeObject
 
     if (this.firstTimeExpand) {
       this.firstTimeExpand = false
-      await this.$nextTick()
-      this.$refs.tree.expandAll()
+      // await this.$nextTick()
+      // this.$refs.tree.expandAll()
     }
   }
 

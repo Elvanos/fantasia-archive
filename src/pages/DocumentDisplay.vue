@@ -214,15 +214,13 @@ export default class PageDocumentDisplay extends BaseClass {
   reactToFieldUpdate (inputData: string, field: I_ExtraFields) {
     // FIELD - Text
     if (field.type === "text") {
-      if (inputData !== `New ${this.bluePrintData.nameSingular.toLowerCase()}`) {
-        this.currentData.hasEdits = true
-        const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
-        this.currentData.extraFields[indexToUpdate].value = inputData
+      this.currentData.hasEdits = true
+      const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
+      this.currentData.extraFields[indexToUpdate].value = inputData
 
-        const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
+      const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
 
-        this.SSET_updateOpenedDocument(dataCopy)
-      }
+      this.SSET_updateOpenedDocument(dataCopy)
     }
 
     // FIELD - Text

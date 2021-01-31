@@ -1,6 +1,7 @@
-import { locationBlueprint } from "./blueprints/locations"
+import fs from "fs"
+
 import { I_Blueprint } from "./../interfaces/I_Blueprint"
-import { characterBlueprint } from "./blueprints/characters"
+
 import PouchDB from "pouchdb"
 import _ from "lodash"
 
@@ -13,10 +14,14 @@ export const engageBlueprints = async () => {
   /**
    * List of all blueprintes needed to get processed
    */
-  const allBluePrints: I_Blueprint[] = [
-    characterBlueprint,
-    locationBlueprint
-  ]
+  const allBluePrints: I_Blueprint[] = []
+
+  const allBluePrintFilesNames = fs.readdirSync("src/databaseManager/blueprints")
+
+  for (const blueprintName of allBluePrintFilesNames) {
+    const currentBluePrint: I_Blueprint = (await import(`src/databaseManager/blueprints/${blueprintName}`)).default
+    allBluePrints.push(currentBluePrint)
+  }
 
   /**
    * Processes all blueprints

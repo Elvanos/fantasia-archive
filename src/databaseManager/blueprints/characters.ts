@@ -1,6 +1,7 @@
 import { I_Blueprint } from "./../../interfaces/I_Blueprint"
-export const characterBlueprint: I_Blueprint = {
+export const blueprint: I_Blueprint = {
   _id: "characters",
+  order: 18,
   namePlural: "Characters",
   nameSingular: "Character",
   icon: "mdi-account",
@@ -29,19 +30,19 @@ export const characterBlueprint: I_Blueprint = {
       sizing: 2
     },
     {
+      id: "otherNames",
+      name: "Other names",
+      type: "list",
+      icon: "mdi-account-plus",
+      sizing: 6
+    },
+    {
       id: "sex",
       name: "Sex",
       type: "singleSelect",
       icon: "mdi-gender-male-female",
       sizing: 3,
       predefinedSelectValues: ["Male", "Female", "Other"]
-    },
-    {
-      id: "otherNames",
-      name: "Other names",
-      type: "list",
-      icon: "mdi-account-plus",
-      sizing: 6
     },
     {
       id: "skills",
@@ -134,3 +135,4 @@ export const characterBlueprint: I_Blueprint = {
 
   ]
 }
+export default blueprint

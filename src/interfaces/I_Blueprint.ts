@@ -30,6 +30,7 @@ export interface I_ExtraFields {
 export interface I_Blueprint{
   _id: string
   _rev?: string
+  order: number | false,
   namePlural: string
   nameSingular: string,
   icon: string
