@@ -15,7 +15,8 @@ export interface I_ExtraFields {
   "singleToSingleRelationship" |
   "singleToManyRelationship" |
   "manyToSingleRelationship" |
-  "manyToManyRelationship"
+  "manyToManyRelationship" |
+  "break"
 
   predefinedListExtras?: {
     affix?: string

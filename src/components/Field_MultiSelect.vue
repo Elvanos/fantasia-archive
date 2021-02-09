@@ -1,7 +1,7 @@
 <template>
   <div>
   <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
-    <q-icon v-if="inputIcon" :name="inputIcon" size="20px" class="q-mr-md"/>
+    <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
     {{inputDataBluePrint.name}}
   </div>
 
@@ -26,6 +26,7 @@
       use-input
       outlined
       use-chips
+      @filter="filterFn"
       input-debounce="0"
       new-value-mode="add"
       multiple
@@ -33,12 +34,11 @@
       @input="signalInput"
       @keydown="signalInput"
     >
-    <template v-slot:prepend v-if="inputIcon">
-      <q-icon :name="inputIcon" />
-    </template>
     </q-select>
 
-    <q-separator color="grey q-mt-lg" />
+    <div class="separatorWrapper">
+      <q-separator color="grey q-mt-lg" />
+    </div>
 
   </div>
 
@@ -75,14 +75,35 @@ export default class Field_MultiSelect extends BaseClass {
     return this.inputDataBluePrint?.icon
   }
 
-  get extraInput () {
-    // @ts-ignore
-    return this.inputDataBluePrint?.predefinedSelectValues
+  extraInput: string[] = []
+
+  @Watch("inputDataBluePrint", { deep: true, immediate: true })
+  populateExtraInput () {
+    if (this.inputDataBluePrint?.predefinedSelectValues) {
+      this.extraInput = this.inputDataBluePrint?.predefinedSelectValues
+    }
+  }
+
+  filterFn (val: string, update: (fn: any) => void) {
+    if (val === "") {
+      update(() => {
+        if (this.inputDataBluePrint?.predefinedSelectValues) {
+          this.extraInput = this.inputDataBluePrint.predefinedSelectValues
+        }
+      })
+      return
+    }
+
+    update(() => {
+      if (this.inputDataBluePrint?.predefinedSelectValues) {
+        const needle = val.toLowerCase()
+        this.extraInput = this.inputDataBluePrint.predefinedSelectValues.filter(v => v.toLowerCase().indexOf(needle) > -1)
+      }
+    })
   }
 
   @Emit()
   signalInput () {
-    console.log("emit")
     this.changedInput = true
     return this.localInput
   }

@@ -11,7 +11,7 @@
     </q-input>
 
     <q-tree
-      class="q-pa-sm"
+      class="objectTree q-pa-sm"
       :nodes="treeList"
       node-key="label"
       no-connectors
@@ -26,7 +26,7 @@
             :size="(prop.node.icon.includes('fas')? '16px': '21px')"
             :name="prop.node.icon"
             class="q-mr-sm" />
-          <div>
+          <div class="documentLabel">
             {{ prop.node.label }}
             <span
               class="text-primary text-weight-medium"
@@ -87,7 +87,7 @@ import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { I_NewObjectTrigger } from "src/interfaces/I_NewObjectTrigger"
 import PouchDB from "pouchdb"
 import { engageBlueprints, retrieveAllBlueprints } from "src/databaseManager/blueprintManager"
-import { cleanDatabases } from "src/databaseManager/cleaner"
+// import { cleanDatabases } from "src/databaseManager/cleaner"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
 
 const menuAddNewItem = {
@@ -201,7 +201,7 @@ export default class ObjectTree extends BaseClass {
         .map((singleDocument) => {
           const doc = singleDocument.doc as unknown as I_ShortenedDocument
 
-          const parentDocID = doc.extraFields.find(e => e.id === "parentDoc")?.value as unknown as {_id: string}
+          const parentDocID = doc.extraFields.find(e => e.id === "parentDoc")?.value.value as unknown as {_id: string}
 
           return {
             label: doc.extraFields.find(e => e.id === "name")?.value,
@@ -268,7 +268,7 @@ export default class ObjectTree extends BaseClass {
   }
 
   async created () {
-    await cleanDatabases()
+    // await cleanDatabases()
     await this.processBluePrints()
 
     setTimeout(() => {
@@ -290,3 +290,18 @@ export default class ObjectTree extends BaseClass {
   }
 }
 </script>
+
+<style lang="scss">
+.objectTree {
+  .q-tree__arrow {
+    width: 28px;
+    height: 28px;
+    margin: 0;
+  }
+
+  .documentLabel {
+    max-width: calc(100% - 30px);
+  }
+}
+
+</style>

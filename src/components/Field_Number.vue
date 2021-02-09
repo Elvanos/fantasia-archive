@@ -1,7 +1,7 @@
 <template>
 <div>
   <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
-    <q-icon v-if="inputIcon" :name="inputIcon" size="20px" class="q-mr-md" min="1"/>
+    <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md" min="1"/>
     {{inputDataBluePrint.name}}
   </div>
 
@@ -24,8 +24,9 @@
     dense
   />
 
-    <q-separator color="grey q-mt-lg" />
-
+    <div class="separatorWrapper">
+      <q-separator color="grey q-mt-lg" />
+    </div>
 </div>
 
 </template>

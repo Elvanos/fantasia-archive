@@ -35,6 +35,7 @@
     <q-tabs
         align="left"
         inline-label
+        class="tabsWrapper"
         no-caps>
           <transition-group
             name="list"
@@ -96,6 +97,7 @@ export default class TppTabs extends BaseClass {
 
   closeDocument (input: I_OpenedDocument) {
     this.SSET_removeOpenedDocument(input)
+    this.documentCloseDialogConfirm = false
     setTimeout(() => {
       this.refreshRoute()
     }, 100)
@@ -118,4 +120,13 @@ export default class TppTabs extends BaseClass {
   display: flex;
 }
 
+.tabsWrapper .fas {
+  font-size: 18px;
+}
+</style>
+
+<style lang="scss">
+.tabsWrapper .fas {
+  font-size: 18px;
+}
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
-      <q-icon v-if="inputIcon" :name="inputIcon" size="20px" class="q-mr-md"/>
+      <q-icon v-if="inputIcon" :name="inputIcon" :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
       {{inputDataBluePrint.name}}
       <q-icon v-if="isOneWayRelationship" name="mdi-arrow-right-bold" size="16px" class="q-ml-md">
          <q-tooltip>
@@ -18,6 +18,7 @@
 
     <q-list
       v-if="!editMode && localInput"
+      class="connectionList"
       dense>
       <q-item
       v-for="single in localInput"
@@ -27,6 +28,9 @@
       @click="openExistingDocument(single)">
         <q-item-section>
            {{single.label}}
+           <span class="inline-block q-ml-xs text-italic text-lowercase connectionNote">
+            {{retrieveNoteText(single._id)}}
+           </span>
         </q-item-section>
       </q-item>
     </q-list>
@@ -45,27 +49,47 @@
       @filter="filterSelect"
       @input="signalInput"
     >
-      <template v-slot:prepend v-if="inputIcon">
-        <q-icon :name="inputIcon" />
-      </template>
       <template v-slot:option="{ itemProps, itemEvents, opt }">
-          <q-item
-            v-bind="itemProps"
-            v-on="itemEvents"
-          >
-            <q-item-section>
-              <q-item-label v-html="opt.label" ></q-item-label>
-            </q-item-section>
-            <q-tooltip v-if='opt.disable'>
-              This option is unavailable for selection as it is already paired to another.
-            </q-tooltip>
-          </q-item>
-        </template>
+        <q-item
+          v-bind="itemProps"
+          v-on="itemEvents"
+        >
+          <q-item-section>
+            <q-item-label v-html="opt.label" ></q-item-label>
+          </q-item-section>
+          <q-tooltip v-if='opt.disable'>
+            This option is unavailable for selection as it is already paired to another.
+          </q-tooltip>
+        </q-item>
+      </template>
     </q-select>
 
+    <table class="q-mt-sm">
+      <tr
+        v-for="(singleNote,index) in inputNotes"
+        :key="index"
+      >
+        <td>
+          {{localInput[index].label}}
+        </td>
+        <td>
+          <q-input
+            label="Note"
+            v-model="singleNote.value"
+            dense
+            @keyup="signalInput"
+            outlined
+            >
+          </q-input>
+        </td>
+
+      </tr>
+    </table>
   </div>
 
-  <q-separator color="grey q-mt-lg" />
+    <div class="separatorWrapper">
+      <q-separator color="grey q-mt-lg" />
+    </div>
 
   </div>
 
@@ -79,7 +103,7 @@ import PouchDB from "pouchdb"
 
 import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { I_ExtraFields } from "src/interfaces/I_Blueprint"
-import { I_FieldRelationship } from "src/interfaces/I_FieldRelationship"
+import { I_FieldRelationship, I_RelationshipPair } from "src/interfaces/I_FieldRelationship"
 
 @Component({
   components: { }
@@ -87,7 +111,7 @@ import { I_FieldRelationship } from "src/interfaces/I_FieldRelationship"
 export default class Field_SingleRelationship extends BaseClass {
   @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
 
-  @Prop({ default: [] }) readonly inputDataValue!: I_FieldRelationship[]
+  @Prop({ default: () => { return [] } }) readonly inputDataValue!: I_RelationshipPair
 
   @Prop({ default: "" }) readonly currentId!: ""
 
@@ -100,8 +124,12 @@ export default class Field_SingleRelationship extends BaseClass {
 
   @Watch("inputDataValue", { deep: true, immediate: true })
   reactToInputChanges () {
-    // @ts-ignore
-    this.localInput = (this.inputDataValue) ? this.inputDataValue : []
+    this.localInput = (this.inputDataValue?.value) ? this.inputDataValue.value : []
+
+    const notes = (!this.inputDataValue?.addedValues) ? [] : this.inputDataValue.addedValues
+    this.inputNotes = notes.filter(single => this.localInput.find(e => single.pairedId === e._id))
+
+    this.checkNotes()
 
     this.reloadObjectListAndCheckIfValueExists().catch(e => console.log(e))
   }
@@ -112,6 +140,8 @@ export default class Field_SingleRelationship extends BaseClass {
 
   extraInput: I_FieldRelationship[] = []
   filteredInput: I_FieldRelationship[] = []
+
+  inputNotes: { pairedId: string; value: string; }[] = []
 
   filterSelect (val: string, update: (e: () => void) => void) {
     if (val === "") {
@@ -125,6 +155,11 @@ export default class Field_SingleRelationship extends BaseClass {
       const needle = val.toLowerCase()
       this.filteredInput = this.extraInput.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
     })
+  }
+
+  retrieveNoteText (id: string) {
+    const pairedNote = this.inputNotes.find(e => e.pairedId === id)
+    return (pairedNote && pairedNote.value.length > 0) ? `(${pairedNote.value})` : ""
   }
 
   @Watch("inputDataBluePrint", { deep: true, immediate: true })
@@ -153,6 +188,7 @@ export default class Field_SingleRelationship extends BaseClass {
 
         if (pairedField.length > 0) {
           const pairedFieldObject = objectDoc.extraFields.find(f => f.id === pairedField)
+
           const pairingType = this.inputDataBluePrint.type
           if (typeof pairedFieldObject?.value !== "string" && pairedFieldObject?.value !== null && pairingType === "manyToSingleRelationship") {
             isDisabled = true
@@ -187,10 +223,47 @@ export default class Field_SingleRelationship extends BaseClass {
     }
   }
 
+  checkNotes () {
+    this.localInput.forEach(single => {
+      if (!this.inputNotes.find(e => single._id === e.pairedId)) {
+        this.inputNotes.push({ pairedId: single._id, value: "" })
+      }
+    })
+  }
+
   @Emit()
   signalInput () {
     this.changedInput = true
-    return this.localInput
+
+    this.checkNotes()
+
+    this.inputNotes = this.inputNotes.filter(single => this.localInput.find(e => single.pairedId === e._id))
+
+    return {
+      value: this.localInput,
+      addedValues: this.inputNotes
+    }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+</style>
+
+<style lang="scss">
+.connectionList .q-item__section {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.connectionList .connectionNote {
+  color: #000;
+  opacity: 0.8;
+}
+</style>

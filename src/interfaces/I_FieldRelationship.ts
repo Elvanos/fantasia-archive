@@ -6,3 +6,21 @@ export interface I_FieldRelationship{
   _id: string
   pairedField: string
 }
+
+export interface I_RelationshipPair {
+  addedValues: {
+    pairedId: string,
+    value: string
+  }[]
+  value: I_FieldRelationship[],
+
+}
+
+export interface I_RelationshipPairSingle {
+  addedValues: {
+    pairedId: string,
+    value: string
+  }
+  value: I_FieldRelationship,
+
+}

@@ -27,6 +27,13 @@
       v-for="field in bluePrintData.extraFields"
       :key="field.id">
 
+        <Field_Break
+        class="inputWrapper break"
+        v-if="field.type === 'break'"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(currentData, field.id)"
+        />
+
         <Field_Text
         class="inputWrapper"
         v-if="field.type === 'text' && retrieveFieldValue(currentData,field.id) || field.type === 'text' && retrieveFieldLength(currentData,field.id) === 0 "
@@ -147,11 +154,12 @@ import BaseClass from "src/BaseClass"
 import { I_Blueprint, I_ExtraFields } from "src/interfaces/I_Blueprint"
 import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
 import PouchDB from "pouchdb"
-import { cleanDatabases } from "src/databaseManager/cleaner"
+// import { cleanDatabases } from "src/databaseManager/cleaner"
 import { single_changeRelationshipToAnotherObject, many_changeRelationshipToAnotherObject } from "src/databaseManager/relationshipManager"
 
 import { extend } from "quasar"
 
+import Field_Break from "src/components/Field_Break.vue"
 import Field_Text from "src/components/Field_Text.vue"
 import Field_Number from "src/components/Field_Number.vue"
 import Field_List from "src/components/Field_List.vue"
@@ -163,6 +171,7 @@ import Field_Wysiwyg from "src/components/Field_Wysiwyg.vue"
 
 @Component({
   components: {
+    Field_Break,
     Field_Text,
     Field_Number,
     Field_List,
@@ -412,7 +421,7 @@ export default class PageDocumentDisplay extends BaseClass {
     documentCopy._rev = currentDocument?._rev
     // @ts-ignore
     await CurrentObjectDB.remove(documentCopy)
-    await cleanDatabases()
+    // await cleanDatabases()
 
     const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
 
@@ -488,6 +497,21 @@ export default class PageDocumentDisplay extends BaseClass {
   min-height: 105px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  height: 100%;
+
+  &.break {
+    min-height: inherit;
+  }
+}
+</style>
+
+<style lang="scss">
+.separatorWrapper {
+  margin-top: auto;
+}
+
+.q-field {
+  max-width: 100%;
 }
 </style>

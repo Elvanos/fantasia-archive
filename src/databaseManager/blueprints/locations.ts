@@ -1,5 +1,5 @@
 import { I_Blueprint } from "../../interfaces/I_Blueprint"
-export const blueprint: I_Blueprint = {
+export const locationsBlueprint: I_Blueprint = {
   _id: "locations",
   order: 17,
   namePlural: "Locations",
@@ -7,15 +7,21 @@ export const blueprint: I_Blueprint = {
   icon: "mdi-map-marker-radius",
   extraFields: [
     {
+      id: "breakBasic",
+      name: "Basic information",
+      type: "break",
+      sizing: 12
+    },
+    {
       id: "name",
       name: "Name",
       type: "text",
-      icon: "mdi-account",
+      icon: "mdi-map-marker-radius",
       sizing: 6
     },
     {
       id: "parentDoc",
-      name: "Parent document",
+      name: "Belongs under",
       type: "singleToNoneRelationship",
       sizing: 4,
       relationshipSettings: {
@@ -33,9 +39,277 @@ export const blueprint: I_Blueprint = {
       id: "otherNames",
       name: "Other names",
       type: "list",
-      icon: "mdi-account-plus",
-      sizing: 6
+      icon: "mdi-book-plus",
+      sizing: 3
+    },
+    {
+      id: "connectedLocations",
+      name: "Connected locations",
+      type: "manyToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 3,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "connectedLocations"
+      }
+    },
+    {
+      id: "locationType",
+      name: "Location type",
+      type: "singleSelect",
+      icon: "fas fa-monument",
+      sizing: 2,
+      predefinedSelectValues: ["City", "Town", "Village", "Building", "Area", "Landmark", "Mountain", "Forest", "Body of water", "Terrain formation", "Unique"]
+    },
+    {
+      id: "population",
+      name: "Population",
+      type: "text",
+      icon: "mdi-account-group",
+      sizing: 2
+    },
+    {
+      id: "size",
+      name: "Size",
+      type: "text",
+      icon: "mdi-map",
+      sizing: 2
+    },
+    {
+      id: "pairedLanguages",
+      name: "Local languages",
+      type: "manyToManyRelationship",
+      icon: "mdi-book-alphabet",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "languages",
+        connectedField: "pairedLocations"
+      }
+    },
+    {
+      id: "pairedCurrencies",
+      name: "Local currencies",
+      type: "manyToManyRelationship",
+      icon: "fas fa-coins",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "currencies",
+        connectedField: "pairedLocations"
+      }
+    },
+    {
+      id: "traits",
+      name: "Unusual features/traits",
+      type: "list",
+      icon: "mdi-guy-fawkes-mask",
+      sizing: 4
+    },
+    {
+      id: "description",
+      name: "Description & History",
+      type: "wysiwyg",
+      sizing: 12
+    },
+    {
+      id: "traditions",
+      name: "Traditions & Customs",
+      type: "wysiwyg",
+      sizing: 12
+    },
+    {
+      id: "breakResident",
+      name: "Resident information",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedOriginCharacters",
+      name: "Characters originated from location",
+      type: "manyToSingleRelationship",
+      icon: "mdi-account",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "pairedOriginLocation"
+      }
+    },
+    {
+      id: "pairedCurrentCharacters",
+      name: "Characters currently living in location",
+      type: "manyToSingleRelationship",
+      icon: "mdi-account",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "pairedCurrentLocation"
+      }
+    },
+    {
+      id: "pairedDemiseCharacters",
+      name: "Characters deceased at the location",
+      type: "manyToSingleRelationship",
+      icon: "mdi-account",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "pairedDemiseLocation"
+      }
+    },
+    {
+      id: "pairedConnectedCharacter",
+      name: "Other connected characters",
+      type: "manyToManyRelationship",
+      icon: "mdi-account",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "pairedConnectedPlaces"
+      }
+    },
+    {
+      id: "pairedConnectedRaces",
+      name: "Local races and species",
+      type: "manyToManyRelationship",
+      icon: "fas fa-dragon",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "races",
+        connectedField: "pairedConnectedPlaces"
+      }
+    },
+    {
+      id: "breakGroups",
+      name: "Involved groups",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "governPolitical",
+      name: "Govening political groups/ideologies",
+      type: "manyToManyRelationship",
+      icon: "mdi-bank-outline",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "politicalGroups",
+        connectedField: "governLocations"
+      }
+    },
+    {
+      id: "connectedPolitical",
+      name: "Connected political groups/ideologies",
+      type: "manyToManyRelationship",
+      icon: "mdi-bank-outline",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "politicalGroups",
+        connectedField: "connectedLocations"
+      }
+    },
+    {
+      id: "governReligious",
+      name: "Govening religious groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-ankh",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "religions",
+        connectedField: "governLocations"
+      }
+    },
+    {
+      id: "connectedReligious",
+      name: "Connected religious groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-ankh",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "religions",
+        connectedField: "connectedLocations"
+      }
+    },
+    {
+      id: "governMagical",
+      name: "Govening magical groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-hat-wizard",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "magic",
+        connectedField: "governLocations"
+      }
+    },
+    {
+      id: "connectedMagical",
+      name: "Connected magical groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-hat-wizard",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "magic",
+        connectedField: "connectedLocations"
+      }
+    },
+    {
+      id: "governTech",
+      name: "Govening tech/scientifical groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-wrench",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "tech",
+        connectedField: "governLocations"
+      }
+    },
+    {
+      id: "connectedTech",
+      name: "Connected tech/scientifical groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-wrench",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "tech",
+        connectedField: "connectedLocations"
+      }
+    },
+    {
+      id: "breakOther",
+      name: "Other details",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedEvent",
+      name: "Connected to events",
+      type: "manyToManyRelationship",
+      icon: "mdi-calendar-text",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "events",
+        connectedField: "pairedLocations"
+      }
+    },
+    {
+      id: "pairedConnectedMyths",
+      name: "Connected to myths and legends",
+      type: "manyToManyRelationship",
+      icon: "fas fa-journal-whills",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "myths",
+        connectedField: "pairedConnectedLocations"
+      }
+    },
+    {
+      id: "pairedConnectedItems",
+      name: "Connected to legendary items/artifacts",
+      type: "manyToManyRelationship",
+      icon: "mdi-sword-cross",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "items",
+        connectedField: "pairedConnectedLocations"
+      }
     }
+
   ]
 }
-export default blueprint

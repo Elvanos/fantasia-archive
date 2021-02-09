@@ -1,10 +1,10 @@
 import { I_Blueprint } from "../../interfaces/I_Blueprint"
-export const languagesBlueprint: I_Blueprint = {
-  _id: "languages",
-  order: 9,
-  namePlural: "Languages",
-  nameSingular: "Language",
-  icon: "mdi-book-alphabet",
+export const mythsBlueprint: I_Blueprint = {
+  _id: "myths",
+  order: 7,
+  namePlural: "Myths/Legends",
+  nameSingular: "Myth/Legend",
+  icon: "fas fa-journal-whills",
   extraFields: [
     {
       id: "breakBasic",
@@ -16,7 +16,7 @@ export const languagesBlueprint: I_Blueprint = {
       id: "name",
       name: "Name",
       type: "text",
-      icon: "mdi-account",
+      icon: "fas fa-journal-whills",
       sizing: 6
     },
     {
@@ -25,7 +25,7 @@ export const languagesBlueprint: I_Blueprint = {
       type: "singleToNoneRelationship",
       sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "languages"
+        connectedObjectType: "myths"
       }
     },
     {
@@ -43,139 +43,133 @@ export const languagesBlueprint: I_Blueprint = {
       sizing: 6
     },
     {
-      id: "languageFamily",
-      name: "Language family",
+      id: "pairedOtherMyths",
+      name: "Connected to other myths/legends",
       type: "manyToManyRelationship",
-      icon: "mdi-book-alphabet",
-      sizing: 4,
+      icon: "fas fa-journal-whills",
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "languages",
-        connectedField: "languageFamily"
+        connectedObjectType: "myths",
+        connectedField: "pairedOtherMyths"
       }
     },
     {
-      id: "speakerCount",
-      name: "Estimated speaker count",
-      type: "text",
-      icon: "mdi-account-group",
-      sizing: 2
-    },
-    {
-      id: "predecessorLanguages",
-      name: "Predecessor languages",
+      id: "pairedEvents",
+      name: "Connected to events",
       type: "manyToManyRelationship",
-      icon: "mdi-book-alphabet",
+      icon: "mdi-calendar-text",
       sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "languages",
-        connectedField: "predecessorLanguages"
+        connectedObjectType: "events",
+        connectedField: "pairedMyths"
       }
     },
     {
-      id: "followingLanguages",
-      name: "Evolved into languages",
+      id: "pairedItems",
+      name: "Connected to items",
       type: "manyToManyRelationship",
-      icon: "mdi-book-alphabet",
+      icon: "mdi-sword-cross",
       sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "languages",
-        connectedField: "followingLanguages"
+        connectedObjectType: "items",
+        connectedField: "pairedMyths"
       }
     },
     {
       id: "description",
-      name: "History & Conteporary situation",
+      name: "Description & History",
       type: "wysiwyg",
       sizing: 12
     },
     {
       id: "traditions",
-      name: "Traditions & Customs connected to the language",
+      name: "Connected traditions & customs to the myth/legend",
       type: "wysiwyg",
       sizing: 12
     },
     {
-      id: "breakSpeakers",
-      name: "Spoken in groups, areas and by characters",
+      id: "breakRelasionships",
+      name: "Characters, locations and groups/institutions details",
       type: "break",
       sizing: 12
     },
     {
-      id: "pairedCharacter",
-      name: "Prominent speakers",
+      id: "pairedConnectedCharacter",
+      name: "Connected characters",
       type: "manyToManyRelationship",
       icon: "mdi-account",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "characters",
-        connectedField: "pairedLanguage"
+        connectedField: "pairedConnectedMyths"
       }
     },
     {
-      id: "usedByRaces",
-      name: "Spoken by species/races",
-      type: "manyToManyRelationship",
-      icon: "fas fa-dragon",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "races",
-        connectedField: "localLanguages"
-      }
-    },
-    {
-      id: "pairedLocations",
-      name: "Spoken in locations",
+      id: "pairedConnectedLocations",
+      name: "Connected locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "locations",
-        connectedField: "pairedLanguages"
+        connectedField: "pairedConnectedMyths"
       }
     },
     {
-      id: "usedInPoliticalGroups",
-      name: "Spoken in political groups/ideologies",
+      id: "pairedConnectedRaces",
+      name: "Connected to species/races",
+      type: "manyToManyRelationship",
+      icon: "fas fa-dragon",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "races",
+        connectedField: "pairedConnectedMyths"
+      }
+    },
+    {
+      id: "pairedConnectedPolGroups",
+      name: "Connected to political groups/ideologies",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
-        connectedField: "localLanguages"
+        connectedField: "pairedConnectedMyths"
       }
     },
     {
-      id: "usedInReligiousGroups",
-      name: "Spoken in religious groups/teachings",
+      id: "pairedConnectedRelGroups",
+      name: "Connected to religious groups/teachings",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "religions",
-        connectedField: "localLanguages"
+        connectedField: "pairedConnectedMyths"
       }
     },
     {
-      id: "usedInMagicalGroups",
-      name: "Spoken in magical groups/institutions",
+      id: "pairedConnectedMagicGroups",
+      name: "Connected to magic/spells",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "magic",
-        connectedField: "localLanguages"
+        connectedField: "pairedConnectedMyths"
       }
     },
     {
-      id: "usedInTechGroups",
-      name: "Spoken in science/technology groups/institutions",
+      id: "pairedConnectedTechGroups",
+      name: "Connected to technology/science",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "tech",
-        connectedField: "localLanguages"
+        connectedField: "pairedConnectedMyths"
       }
     }
+
   ]
 }

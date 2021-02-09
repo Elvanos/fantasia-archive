@@ -1,10 +1,10 @@
 import { I_Blueprint } from "../../interfaces/I_Blueprint"
-export const politicalGroupsBlueprint: I_Blueprint = {
-  _id: "politicalGroups",
-  order: 15,
-  namePlural: "Political groups/Ideologies",
-  nameSingular: "Political group/Ideology",
-  icon: "mdi-bank-outline",
+export const magicBlueprint: I_Blueprint = {
+  _id: "magic",
+  order: 13,
+  namePlural: "Magic/Spells",
+  nameSingular: "Magic/Spell",
+  icon: "fas fa-hat-wizard",
   extraFields: [
     {
       id: "breakBasic",
@@ -16,7 +16,7 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       id: "name",
       name: "Name",
       type: "text",
-      icon: "mdi-bank-outline",
+      icon: "fas fa-hat-wizard",
       sizing: 6
     },
     {
@@ -25,7 +25,7 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       type: "singleToNoneRelationship",
       sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "politicalGroups"
+        connectedObjectType: "magic"
       }
     },
     {
@@ -53,8 +53,8 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "population",
-      name: "Population",
+      id: "users",
+      name: "Magic users amount",
       type: "text",
       icon: "mdi-account-group",
       sizing: 2
@@ -70,67 +70,92 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "formGovernment",
-      name: "Form of government",
+      id: "typeMagic",
+      name: "Type",
       type: "multiSelect",
-      icon: "fas fa-person-booth",
-      sizing: 6,
+      icon: "fas fa-monument",
+      sizing: 3,
       predefinedSelectValues: [
-        "Anarchism",
-        "Anarcho-capitalism",
-        "Anarchy",
-        "Aristocracy",
-        "Autocracy",
-        "Communism",
-        "Corporatocracy",
-        "Democracy",
-        "Despotism",
-        "Dictatorship",
-        "Fascism",
-        "Feudalism",
-        "Geniocracy",
-        "Matriarchy",
-        "Monarchy",
-        "Oligarchy",
-        "Patriarchy",
-        "Republic",
-        "Technocracy",
-        "Theocracy",
-        "Theodemocracy",
-        "Tyranny"
+        "Spell",
+        "Ritual",
+        "Magical teaching",
+        "School of magic",
+        "Magical institution",
+        "Other"
       ]
     },
     {
-      id: "localCurrencies",
-      name: "Used currencies",
+      id: "formMagic",
+      name: "General schools of magic",
+      type: "multiSelect",
+      icon: "fas fa-hand-sparkles",
+      sizing: 3,
+      predefinedSelectValues: [
+        "Conjuration",
+        "Necromancy",
+        "Evocation",
+        "Abjuration ",
+        "Transmutation",
+        "Divination",
+        "Enchantment",
+        "Illusion",
+        "World alteration",
+        "Other"
+      ]
+    },
+    {
+      id: "pairedCharacter",
+      name: "Magic/Spell users",
       type: "manyToManyRelationship",
-      icon: "fas fa-coins",
+      icon: "mdi-account",
       sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "currencies",
-        connectedField: "usedInPoliticalGroups"
+        connectedObjectType: "characters",
+        connectedField: "pairedMagic"
       }
     },
     {
-      id: "localLanguages",
-      name: "Used languages",
+      id: "pairedSpells",
+      name: "Connected Spells/Rituals/Institutions",
       type: "manyToManyRelationship",
-      icon: "mdi-book-alphabet",
+      icon: "fas fa-hat-wizard",
       sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "languages",
-        connectedField: "usedInPoliticalGroups"
+        connectedObjectType: "magic",
+        connectedField: "pairedSpells"
+      }
+    },
+    {
+      id: "pairedItems",
+      name: "Useable through the use of items/artifacts",
+      type: "manyToManyRelationship",
+      icon: "mdi-sword-cross",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "items",
+        connectedField: "pairedMagic"
       }
     },
     {
       id: "connectedRaces",
-      name: "Common species/races",
+      name: "Common species/races among the practicioners",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "races",
-        connectedField: "commonInPoliticalGroups"
+        connectedField: "commonInMagicGroups"
+      }
+    },
+    {
+      id: "localLanguages",
+      name: "Common languages",
+      type: "manyToManyRelationship",
+      icon: "mdi-book-alphabet",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "languages",
+        connectedField: "usedInMagicalGroups"
       }
     },
     {
@@ -159,18 +184,18 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "locations",
-        connectedField: "governPolitical"
+        connectedField: "governMagical"
       }
     },
     {
       id: "connectedLocations",
-      name: "Connected locations",
+      name: "Conected locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "locations",
-        connectedField: "connectedPolitical"
+        connectedField: "connectedMagical"
       }
     },
     {
@@ -181,7 +206,7 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "characters",
-        connectedField: "pairedBelongingPolGroup"
+        connectedField: "pairedBelongingMagicGroup"
       }
     },
     {
@@ -192,7 +217,7 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "characters",
-        connectedField: "pairedAllyPolGroup"
+        connectedField: "pairedAllyMagicGroup"
       }
     },
     {
@@ -203,40 +228,40 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "characters",
-        connectedField: "pairedEnemyPolGroup"
+        connectedField: "pairedEnemyMagicGroup"
       }
     },
     {
       id: "pairedConnectedPolGroups",
-      name: "Connected political groups/ideologies",
+      name: "Connected political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
-        connectedField: "pairedConnectedPolGroups"
+        connectedField: "pairedConnectedMagicalGroups"
       }
     },
     {
       id: "pairedAllyPolGroups",
-      name: "Allied political groups/ideologies",
+      name: "Allied political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
-        connectedField: "pairedAllyPolGroups"
+        connectedField: "pairedAllyMagicalGroups"
       }
     },
     {
       id: "pairedEnemyPolGroups",
-      name: "Enemy political groups/ideologies",
+      name: "Enemy political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
-        connectedField: "pairedEnemyPolGroups"
+        connectedField: "pairedEnemyMagicalGroups"
       }
     },
     {
@@ -247,7 +272,7 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "religions",
-        connectedField: "pairedConnectedPolGroups"
+        connectedField: "pairedConnectedMagicGroups"
       }
     },
     {
@@ -258,55 +283,20 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "religions",
-        connectedField: "pairedAllyPolGroups"
+        connectedField: "pairedAllyMagicGroups"
       }
     },
     {
       id: "pairedEnemyReligiousGroups",
-      name: "Enemy religious groups/teaching",
+      name: "Enemy religious groups/teachings",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "religions",
-        connectedField: "pairedEnemyPolGroups"
+        connectedField: "pairedEnemyMagicGroups"
       }
     },
-
-    {
-      id: "pairedConnectedMagicalGroups",
-      name: "Connected magical groups/teachings",
-      type: "manyToManyRelationship",
-      icon: "fas fa-hat-wizard",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "magic",
-        connectedField: "pairedConnectedPolGroups"
-      }
-    },
-    {
-      id: "pairedAllyMagicalGroups",
-      name: "Allied magical groups/teachings",
-      type: "manyToManyRelationship",
-      icon: "fas fa-hat-wizard",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "magic",
-        connectedField: "pairedAllyPolGroups"
-      }
-    },
-    {
-      id: "pairedEnemyMagicalGroups",
-      name: "Enemy magical groups/teachings",
-      type: "manyToManyRelationship",
-      icon: "fas fa-hat-wizard",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "magic",
-        connectedField: "pairedEnemyPolGroups"
-      }
-    },
-
     {
       id: "pairedConnectedTechGroups",
       name: "Connected scientifical/technological groups/teachings",
@@ -315,7 +305,7 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "tech",
-        connectedField: "pairedConnectedPolGroups"
+        connectedField: "pairedConnectedMagicalGroups"
       }
     },
     {
@@ -326,7 +316,7 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "tech",
-        connectedField: "pairedAllyPolGroups"
+        connectedField: "pairedAllyMagicalGroups"
       }
     },
     {
@@ -337,7 +327,7 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "tech",
-        connectedField: "pairedEnemyPolGroups"
+        connectedField: "pairedEnemyMagicalGroups"
       }
     },
     {
@@ -354,7 +344,7 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "events",
-        connectedField: "connectedPolitical"
+        connectedField: "connectedMagical"
       }
     },
     {
@@ -365,18 +355,18 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "myths",
-        connectedField: "pairedConnectedPolGroups"
+        connectedField: "pairedConnectedMagicGroups"
       }
     },
     {
       id: "pairedConnectedItems",
-      name: "Connected legendary items/artifacts",
+      name: "Connected to legendary items/artifacts",
       type: "manyToManyRelationship",
       icon: "mdi-sword-cross",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "items",
-        connectedField: "pairedConnectedPolGroups"
+        connectedField: "pairedConnectedMagicGroups"
       }
     }
   ]

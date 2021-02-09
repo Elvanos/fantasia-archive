@@ -72,7 +72,7 @@
        </q-btn>
       </div>
 
-      <div class="col-12">
+      <div class="col-12 q-mb-lg">
        <q-btn
           color="primary"
           size="md"
@@ -93,11 +93,24 @@
        </q-btn>
       </div>
 
+        <div class="col-12">
+       <q-btn
+          color="primary"
+          size="md"
+          class="q-px-xl q-py-xs"
+          @click="toggleDevTools"
+        >
+         <div>Toggle dev tools</div>
+
+       </q-btn>
+      </div>
+
   </q-page>
 </template>
 
 <script lang="ts">
 import { Component } from "vue-property-decorator"
+import { remote } from "electron"
 
 import BaseClass from "src/BaseClass"
 
@@ -108,6 +121,21 @@ export default class WelcomeScreen extends BaseClass {
   projectExists: undefined | string | boolean = false
   newProjectName = ""
   newProjectDialog = false
+
+  toggleDevTools () {
+    /*eslint-disable */
+    // @ts-ignore
+    const devToolsOpened: boolean = remote.getCurrentWindow().isDevToolsOpened()
+
+    if (devToolsOpened) {
+      // @ts-ignore
+      remote.getCurrentWindow().closeDevTools()
+    } else {
+      // @ts-ignore
+      remote.getCurrentWindow().openDevTools()
+    }
+    /* eslint-enable */
+  }
 
   async created () {
     this.projectExists = await this.retrieveCurrentProjectName()

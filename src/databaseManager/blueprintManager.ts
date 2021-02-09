@@ -1,9 +1,22 @@
-import fs from "fs"
-
 import { I_Blueprint } from "./../interfaces/I_Blueprint"
 
 import PouchDB from "pouchdb"
 import _ from "lodash"
+
+import { charactersBlueprint } from "src/databaseManager/blueprints/characters"
+import { chaptersBlueprint } from "src/databaseManager/blueprints/chapters"
+import { currenciesBlueprint } from "src/databaseManager/blueprints/currencies"
+import { eventsBlueprint } from "src/databaseManager/blueprints/events"
+import { languagesBlueprint } from "src/databaseManager/blueprints/languages"
+import { locationsBlueprint } from "src/databaseManager/blueprints/locations"
+import { loreNotesBlueprint } from "src/databaseManager/blueprints/loreNotes"
+import { politicalGroupsBlueprint } from "src/databaseManager/blueprints/politicalGroups"
+import { racesBlueprint } from "src/databaseManager/blueprints/races"
+import { religionsBlueprint } from "src/databaseManager/blueprints/religions"
+import { mythsBlueprint } from "src/databaseManager/blueprints/myths"
+import { magicBlueprint } from "src/databaseManager/blueprints/magic"
+import { techBlueprint } from "src/databaseManager/blueprints/scienceTechnology"
+import { itemsBlueprint } from "src/databaseManager/blueprints/items"
 
 /**
  * Loads all the blueprints and processes them apropriatelly
@@ -14,14 +27,22 @@ export const engageBlueprints = async () => {
   /**
    * List of all blueprintes needed to get processed
    */
-  const allBluePrints: I_Blueprint[] = []
-
-  const allBluePrintFilesNames = fs.readdirSync("src/databaseManager/blueprints")
-
-  for (const blueprintName of allBluePrintFilesNames) {
-    const currentBluePrint: I_Blueprint = (await import(`src/databaseManager/blueprints/${blueprintName}`)).default
-    allBluePrints.push(currentBluePrint)
-  }
+  const allBluePrints: I_Blueprint[] = [
+    charactersBlueprint,
+    chaptersBlueprint,
+    currenciesBlueprint,
+    eventsBlueprint,
+    languagesBlueprint,
+    locationsBlueprint,
+    loreNotesBlueprint,
+    politicalGroupsBlueprint,
+    racesBlueprint,
+    religionsBlueprint,
+    mythsBlueprint,
+    magicBlueprint,
+    techBlueprint,
+    itemsBlueprint
+  ]
 
   /**
    * Processes all blueprints

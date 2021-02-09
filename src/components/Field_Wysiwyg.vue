@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
-      <q-icon v-if="inputIcon" :name="inputIcon" size="20px" class="q-mr-md"/>
+      <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
       {{inputDataBluePrint.name}}
     </div>
 
@@ -14,9 +14,13 @@
       :fonts="wysiwygFonts"
       @input="signalInput"
       v-if="editMode"
+      :definitions="definitions"
+      min-height="250px"
       />
 
-    <q-separator color="grey q-mt-lg" />
+    <div class="separatorWrapper">
+      <q-separator color="grey q-mt-lg" />
+    </div>
 
   </div>
 
@@ -54,6 +58,10 @@ export default class Field_Wysiwyg extends BaseClass {
   @Watch("inputDataValue", { deep: true, immediate: true })
   reactToInputChanges () {
     this.localInput = this.inputDataValue
+  }
+
+  definitions = {
+    fullscreen: { label: "Fullscreen" }
   }
 
   wysiwygFonts = {

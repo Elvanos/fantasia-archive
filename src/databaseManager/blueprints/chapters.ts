@@ -1,5 +1,5 @@
 import { I_Blueprint } from "../../interfaces/I_Blueprint"
-export const blueprint: I_Blueprint = {
+export const chaptersBlueprint: I_Blueprint = {
   _id: "chapters",
   order: 20,
   namePlural: "Chapters",
@@ -10,12 +10,12 @@ export const blueprint: I_Blueprint = {
       id: "name",
       name: "Name",
       type: "text",
-      icon: "mdi-account",
+      icon: "mdi-file-outline",
       sizing: 6
     },
     {
       id: "parentDoc",
-      name: "Parent document",
+      name: "Belongs under",
       type: "singleToNoneRelationship",
       sizing: 4,
       relationshipSettings: {
@@ -30,12 +30,11 @@ export const blueprint: I_Blueprint = {
       sizing: 2
     },
     {
-      id: "otherNames",
-      name: "Other names",
-      type: "list",
-      icon: "mdi-account-plus",
-      sizing: 6
+      id: "content",
+      name: "Chapter content",
+      type: "wysiwyg",
+      icon: "mdi-book-open-page-variant-outline",
+      sizing: 12
     }
   ]
 }
-export default blueprint

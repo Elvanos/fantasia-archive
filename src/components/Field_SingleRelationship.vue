@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
-      <q-icon v-if="inputIcon" :name="inputIcon" size="20px" class="q-mr-md"/>
+      <q-icon v-if="inputIcon" :name="inputIcon" :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
       {{inputDataBluePrint.name}}
       <q-icon v-if="isOneWayRelationship" name="mdi-arrow-right-bold" size="16px" class="q-ml-md">
          <q-tooltip>
@@ -18,6 +18,7 @@
 
     <q-list
       v-if="!editMode && localInput"
+      class="connectionList"
       dense>
       <q-item
       clickable
@@ -25,6 +26,9 @@
       @click="openExistingDocument(localInput)">
         <q-item-section>
            {{localInput.label}}
+            <span class="inline-block q-ml-xs text-italic text-lowercase connectionNote">
+               {{retrieveNoteText(localInput._id)}}
+           </span>
         </q-item-section>
       </q-item>
     </q-list>
@@ -41,9 +45,6 @@
       @filter="filterSelect"
       @input="signalInput"
     >
-      <template v-slot:prepend v-if="inputIcon">
-        <q-icon :name="inputIcon" />
-      </template>
       <template v-slot:option="{ itemProps, itemEvents, opt }">
           <q-item
             v-bind="itemProps"
@@ -59,9 +60,30 @@
         </template>
     </q-select>
 
+     <table class="q-mt-sm" v-if="localInput && inputFieldID !== 'parentDoc'">
+      <tr>
+        <td>
+          {{localInput.label}}
+        </td>
+        <td>
+          <q-input
+            label="Note"
+            v-model="inputNote.value"
+            dense
+            @keyup="signalInput"
+            outlined
+            >
+          </q-input>
+        </td>
+
+      </tr>
+    </table>
+
   </div>
 
-  <q-separator color="grey q-mt-lg" />
+    <div class="separatorWrapper">
+      <q-separator color="grey q-mt-lg" />
+    </div>
 
   </div>
 
@@ -75,7 +97,7 @@ import PouchDB from "pouchdb"
 
 import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { I_ExtraFields } from "src/interfaces/I_Blueprint"
-import { I_FieldRelationship } from "src/interfaces/I_FieldRelationship"
+import { I_FieldRelationship, I_RelationshipPairSingle } from "src/interfaces/I_FieldRelationship"
 
 @Component({
   components: { }
@@ -83,7 +105,7 @@ import { I_FieldRelationship } from "src/interfaces/I_FieldRelationship"
 export default class Field_SingleRelationship extends BaseClass {
   @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
 
-  @Prop({ default: "" }) readonly inputDataValue!: I_FieldRelationship
+  @Prop({ default: "" }) readonly inputDataValue!: I_RelationshipPairSingle
 
   @Prop({ default: "" }) readonly currentId!: ""
 
@@ -94,16 +116,27 @@ export default class Field_SingleRelationship extends BaseClass {
   changedInput = false
   localInput = "" as unknown as I_FieldRelationship
 
+  inputNote: { pairedId: string; value: string; } = {
+    pairedId: "",
+    value: ""
+  }
+
   @Watch("inputDataValue", { deep: true, immediate: true })
   reactToInputChanges () {
     // @ts-ignore
-    this.localInput = (this.inputDataValue) ? this.inputDataValue : ""
+    this.localInput = (this.inputDataValue?.value) ? this.inputDataValue.value : ""
+
+    this.inputNote = (!this.inputDataValue?.addedValues) ? this.inputNote : this.inputDataValue.addedValues
 
     this.reloadObjectListAndCheckIfValueExists().catch(e => console.log(e))
   }
 
   get inputIcon () {
     return this.inputDataBluePrint?.icon
+  }
+
+  get inputFieldID () {
+    return this.inputDataBluePrint?.id
   }
 
   extraInput: I_FieldRelationship[] = []
@@ -121,6 +154,11 @@ export default class Field_SingleRelationship extends BaseClass {
       const needle = val.toLowerCase()
       this.filteredInput = this.extraInput.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
     })
+  }
+
+  retrieveNoteText () {
+    const pairedNote = this.inputNote
+    return (pairedNote && pairedNote.value.length > 0) ? `(${pairedNote.value})` : ""
   }
 
   @Watch("inputDataBluePrint", { deep: true, immediate: true })
@@ -184,7 +222,32 @@ export default class Field_SingleRelationship extends BaseClass {
   @Emit()
   signalInput () {
     this.changedInput = true
-    return this.localInput
+    this.inputNote = (this.localInput !== null) ? this.inputNote : { pairedId: "", value: "" }
+    return {
+      value: this.localInput,
+      addedValues: this.inputNote
+    }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+</style>
+
+<style lang="scss">
+.connectionList .q-item__section {
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.connectionList .connectionNote {
+  color: #000;
+  opacity: 0.8;
+}
+</style>

@@ -1,5 +1,5 @@
 import { I_Blueprint } from "../../interfaces/I_Blueprint"
-export const blueprint: I_Blueprint = {
+export const loreNotesBlueprint: I_Blueprint = {
   _id: "loreNotes",
   order: 19,
   namePlural: "Lore notes",
@@ -10,12 +10,12 @@ export const blueprint: I_Blueprint = {
       id: "name",
       name: "Name",
       type: "text",
-      icon: "mdi-account",
+      icon: "mdi-script-text-outline",
       sizing: 6
     },
     {
       id: "parentDoc",
-      name: "Parent document",
+      name: "Belongs under",
       type: "singleToNoneRelationship",
       sizing: 4,
       relationshipSettings: {
@@ -30,12 +30,18 @@ export const blueprint: I_Blueprint = {
       sizing: 2
     },
     {
-      id: "otherNames",
-      name: "Other names",
+      id: "notes",
+      name: "Note list",
       type: "list",
-      icon: "mdi-account-plus",
-      sizing: 6
+      icon: "mdi-notebook-edit-outline",
+      sizing: 12
+    },
+    {
+      id: "textNote",
+      name: "Free-form notes",
+      type: "wysiwyg",
+      icon: "mdi-book-open-variant",
+      sizing: 12
     }
   ]
 }
-export default blueprint

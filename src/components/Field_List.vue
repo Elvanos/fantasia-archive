@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
-      <q-icon v-if="inputIcon" :name="inputIcon" size="20px" class="q-mr-md"/>
+      <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
       {{inputDataBluePrint.name}}
     </div>
 
@@ -14,7 +14,7 @@
         </q-item-section>
         <q-item-section>
           <span>
-            {{input.value}} {{(inputAffix) ? inputAffix : ''}}
+            {{input.value}}
             <span v-if="localInput[index].affix" class="inline-block q-ml-xs text-italic text-lowercase">
             ({{localInput[index].affix}})
             </span>
@@ -34,7 +34,6 @@
           dense
           @keyup="signalInput"
           outlined
-          :suffix="(inputAffix) ? inputAffix : ''"
           >
         </q-input>
       </div>
@@ -54,11 +53,12 @@
           :readonly="!editMode"
           input-debounce="0"
           new-value-mode="add"
+          :label="(inputAffix) ? inputAffix : ''"
           v-model="localInput[index].affix"
         />
       </div>
 
-      <div class="col-2 justify-end flex">
+      <div style="width: 115px;" class="justify-end flex">
         <q-btn
           v-if="editMode"
           color="red"
@@ -67,14 +67,16 @@
       </div>
     </div>
 
-    <div class="row q-mt-lg" v-if="editMode">
+    <div class="row q-mt-xs" v-if="editMode">
       <div class="col justify-start flex">
         <q-btn color="primary" :label="`Add new`" @click="addNewInput" />
       </div>
     </div>
   </div>
 
-    <q-separator color="grey q-mt-lg" />
+    <div class="separatorWrapper">
+      <q-separator color="grey q-mt-lg" />
+    </div>
 
   </div>
 

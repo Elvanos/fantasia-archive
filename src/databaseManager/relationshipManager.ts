@@ -8,8 +8,8 @@ export const single_changeRelationshipToAnotherObject = async (
   field: I_ExtraDocumentFields,
   currentDocument:I_OpenedDocument,
   previouDocument: I_OpenedDocument) => {
-  const currentValue = field.value
-  const previousValue = (previouDocument?.extraFields?.find(e => e.id === field.id))?.value || ""
+  const currentValue = field.value.value
+  const previousValue = (previouDocument?.extraFields?.find(e => e.id === field.id))?.value.value || ""
 
   const BlueprintsDB = new PouchDB("blueprints")
   const currentBlueprint = await BlueprintsDB.get(currentDocument.type) as I_Blueprint
@@ -67,7 +67,11 @@ export const single_addRelationShipToAnotherObject = async (
   const pairedField = currentValue.pairedField
   const pairedFieldIndex = pairedDocument.extraFields.findIndex(e => e.id === pairedField)
 
-  pairedDocument.extraFields[pairedFieldIndex].value = {
+  if (!pairedDocument.extraFields[pairedFieldIndex].value) {
+    pairedDocument.extraFields[pairedFieldIndex].value = { value: "", addedValues: "" }
+  }
+
+  pairedDocument.extraFields[pairedFieldIndex].value.value = {
     _id: currentDocument._id,
     value: currentDocument._id,
     type: currentDocument.type,
@@ -92,7 +96,7 @@ export const single_removeRelationShipFromAnotherObject = async (
   const pairedField = previousValue.pairedField
   const pairedFieldIndex = pairedDocument.extraFields.findIndex(e => e.id === pairedField)
 
-  pairedDocument.extraFields[pairedFieldIndex].value = ""
+  pairedDocument.extraFields[pairedFieldIndex].value = { value: "", addedValues: "" }
 
   await PairedObjectDB.put(pairedDocument)
 
@@ -103,8 +107,8 @@ export const many_changeRelationshipToAnotherObject = async (
   field: I_ExtraDocumentFields,
   currentDocument:I_OpenedDocument,
   previouDocument: I_OpenedDocument) => {
-  const currentValue: I_FieldRelationship[] = (field.value && typeof field.value !== "string") ? field.value : []
-  const previousValue: I_FieldRelationship[] = (previouDocument?.extraFields?.find(e => e.id === field.id))?.value || []
+  const currentValue: I_FieldRelationship[] = (field.value?.value && typeof field.value?.value !== "string") ? field.value.value : []
+  const previousValue: I_FieldRelationship[] = (previouDocument?.extraFields?.find(e => e.id === field.id))?.value?.value || []
 
   const BlueprintsDB = new PouchDB("blueprints")
   const currentBlueprint = await BlueprintsDB.get(currentDocument.type) as I_Blueprint
@@ -157,7 +161,7 @@ export const many_addRelationShipToAnotherObject = async (
   const pairedField = currentValue.pairedField
   const pairedFieldIndex = pairedDocument.extraFields.findIndex(e => e.id === pairedField)
 
-  let prairedFieldValue: I_FieldRelationship[] = pairedDocument.extraFields[pairedFieldIndex].value
+  let pairedFieldValue: I_FieldRelationship[] = pairedDocument.extraFields[pairedFieldIndex].value.value
 
   const newValue = {
     _id: currentDocument._id,
@@ -168,15 +172,19 @@ export const many_addRelationShipToAnotherObject = async (
     pairedField: field.id
   }
 
-  prairedFieldValue = (Array.isArray(prairedFieldValue)) ? prairedFieldValue : []
+  pairedFieldValue = (Array.isArray(pairedFieldValue)) ? pairedFieldValue : []
 
-  const valueExistsAlready = (prairedFieldValue.find(e => e._id === newValue._id))
+  const valueExistsAlready = (pairedFieldValue.find(e => e._id === newValue._id))
 
   if (!valueExistsAlready) {
-    prairedFieldValue.push(newValue)
+    pairedFieldValue.push(newValue)
   }
 
-  pairedDocument.extraFields[pairedFieldIndex].value = prairedFieldValue
+  if (!pairedDocument.extraFields[pairedFieldIndex].value) {
+    pairedDocument.extraFields[pairedFieldIndex].value = { value: [], addedValues: [] }
+  }
+
+  pairedDocument.extraFields[pairedFieldIndex].value.value = pairedFieldValue
 
   await PairedObjectDB.put(pairedDocument)
 
@@ -197,12 +205,12 @@ export const many_removeRelationShipFromAnotherObject = async (
   const pairedField = previousValue.pairedField
   const pairedFieldIndex = pairedDocument.extraFields.findIndex(e => e.id === pairedField)
 
-  const currentValues: I_FieldRelationship[] = pairedDocument.extraFields[pairedFieldIndex].value
+  const currentValues: I_FieldRelationship[] = pairedDocument.extraFields[pairedFieldIndex].value.value
 
   const indexToRemove = currentValues.findIndex(e => e._id === currentDocument._id)
 
   currentValues.splice(indexToRemove, 1)
-  pairedDocument.extraFields[pairedFieldIndex].value = currentValues
+  pairedDocument.extraFields[pairedFieldIndex].value.value = currentValues
 
   await PairedObjectDB.put(pairedDocument)
 

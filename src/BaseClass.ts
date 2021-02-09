@@ -208,7 +208,7 @@ export default class BaseClass extends Vue {
       }
     } else {
       this.$router.push({ path: "/project" }).catch((e: {name: string}) => {
-        if (e.name !== "NavigationDuplicated") { console.log(e) }
+        if (e && e.name !== "NavigationDuplicated") { console.log(e) }
       }
       )
     }

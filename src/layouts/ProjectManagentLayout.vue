@@ -17,7 +17,6 @@
 
 import { Component } from "vue-property-decorator"
 import BaseClass from "src/BaseClass"
-import PouchDB from "pouchdb"
 
 @Component({
   components: { }

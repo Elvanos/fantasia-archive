@@ -57,7 +57,7 @@ module.exports = {
   ],
 
   globals: {
-    ga: true, // Google Analytics
+    ga: false, // Google Analytics
     cordova: true,
     __statics: true,
     process: true,

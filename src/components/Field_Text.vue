@@ -1,7 +1,7 @@
 <template>
 <div>
   <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
-    <q-icon v-if="inputIcon" :name="inputIcon" size="20px" class="q-mr-md"/>
+    <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
     {{inputDataBluePrint.name}}
   </div>
 
@@ -22,12 +22,14 @@
       outlined
       dense
      >
-        <template v-slot:append v-if="isNew && !changedInput">
+        <template v-slot:append v-if="isNew && !changedInput && localInput.length > 0">
           <q-icon name="close" @click="deletePlaceholder()" class="cursor-pointer" />
         </template>
     </q-input>
 
-    <q-separator color="grey q-mt-lg" />
+    <div class="separatorWrapper">
+      <q-separator color="grey q-mt-lg" />
+    </div>
 
 </div>
 
