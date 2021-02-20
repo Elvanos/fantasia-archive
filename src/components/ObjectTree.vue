@@ -13,7 +13,7 @@
     <q-tree
       class="objectTree q-pa-sm"
       :nodes="treeList"
-      node-key="label"
+      node-key="key"
       no-connectors
       ref="tree"
       dark
@@ -238,7 +238,8 @@ export default class ObjectTree extends BaseClass {
             isNew: false,
             url: doc.url,
             extraFields: (doc?.extraFields) || [],
-            _id: singleDocument.id
+            _id: singleDocument.id,
+            key: singleDocument.id
           } as I_ShortenedDocument
         })
 
@@ -251,6 +252,7 @@ export default class ObjectTree extends BaseClass {
         icon: blueprint.icon,
         order: blueprint.order,
         _id: blueprint._id,
+        key: blueprint._id,
         handler: this.addNewObjectType,
         specialLabel: blueprint.nameSingular.toLowerCase(),
         isRoot: true,
@@ -287,6 +289,7 @@ export default class ObjectTree extends BaseClass {
       // await this.$nextTick()
       // this.$refs.tree.expandAll()
     }
+    console.log(treeObject)
   }
 
   async created () {

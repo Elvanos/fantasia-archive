@@ -234,7 +234,7 @@
               @click="keyBindsDialog = true"
             >
               <q-tooltip>
-                Show keybind cheetsheet.
+                Show keybind cheatsheet.
               </q-tooltip>
             </q-btn>
         </q-page-sticky>
