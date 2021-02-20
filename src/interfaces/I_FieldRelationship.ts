@@ -5,6 +5,7 @@ export interface I_FieldRelationship{
   url: string
   _id: string
   pairedField: string
+  isCategory: boolean
 }
 
 export interface I_RelationshipPair {

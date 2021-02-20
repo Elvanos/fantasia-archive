@@ -2,10 +2,61 @@
 
 @import './app/customColors.scss';
 
+* {
+
+  /* width */
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: lighten($dark, 60);
+  }
+
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: lighten($dark, 25);
+  }
+
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: lighten($dark, 15);
+  }
+}
+
 body {
   background-color: #fff;
+
+  /* WebKit/Blink Browsers */
+  ::selection {
+    background: lighten($dark, 30);
+    color: white;
+  }
+
+  /* Gecko Browsers */
+  ::-moz-selection {
+    background: lighten($dark, 30);
+    color: white;
+  }
 }
 
 .q-drawer-container * {
   user-select: none !important;
+}
+
+.q-tooltip {
+  font-size: 11px;
+}
+
+.q-toggle__inner {
+  width: 100%;
+}
+
+.q-toggle__thumb {
+  transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.q-toggle__inner--truthy .q-toggle__thumb {
+  left: calc(100% - 30px);
 }

@@ -23,10 +23,11 @@
       <template v-slot:default-header="prop">
         <div class="row items-center col-grow">
           <q-icon
+            :style="`color: ${prop.node.color}; width: 22px !important;`"
             :size="(prop.node.icon.includes('fas')? '16px': '21px')"
             :name="prop.node.icon"
             class="q-mr-sm" />
-          <div class="documentLabel">
+          <div class="documentLabel" :style="`color: ${prop.node.color}`">
             {{ prop.node.label }}
             <span
               class="text-primary text-weight-medium"
@@ -80,12 +81,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch } from "vue-property-decorator"
+import { Component, Watch, Prop } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
 import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { I_NewObjectTrigger } from "src/interfaces/I_NewObjectTrigger"
 import PouchDB from "pouchdb"
+import { I_KeyPressObject } from "src/interfaces/I_KeypressObject"
 import { engageBlueprints, retrieveAllBlueprints } from "src/databaseManager/blueprintManager"
 // import { cleanDatabases } from "src/databaseManager/cleaner"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
@@ -99,6 +101,23 @@ const menuAddNewItem = {
   components: { }
 })
 export default class ObjectTree extends BaseClass {
+  @Prop() readonly pushedKey!: I_KeyPressObject
+
+  @Watch("pushedKey", { deep: true })
+  processKeyPress (keypress: I_KeyPressObject) {
+    // Focus left tree search - CTRL + SHIFT + Q
+    if (keypress.shiftKey && keypress.ctrlKey && !keypress.altKey && keypress.keyCode === 81) {
+      // @ts-ignore
+      const treeFilterDOM = this.$refs.treeFilter as unknown as HTMLInputElement
+      treeFilterDOM.focus()
+    }
+
+    // Clear input in the left tree search - CTRL + SHIFT + W
+    if (keypress.shiftKey && keypress.ctrlKey && !keypress.altKey && keypress.keyCode === 87) {
+      this.resetTreeFilter()
+    }
+  }
+
   menuAddNewItem = menuAddNewItem
 
   treeList: {children: I_ShortenedDocument[], icon: string, label: string}[] = []
@@ -202,14 +221,17 @@ export default class ObjectTree extends BaseClass {
           const doc = singleDocument.doc as unknown as I_ShortenedDocument
 
           const parentDocID = doc.extraFields.find(e => e.id === "parentDoc")?.value.value as unknown as {_id: string}
+          const color = doc.extraFields.find(e => e.id === "documentColor")?.value as unknown as string
+          const isCategory = doc.extraFields.find(e => e.id === "categorySwitch")?.value as unknown as string
 
           return {
             label: doc.extraFields.find(e => e.id === "name")?.value,
-            icon: doc.icon,
+            icon: (isCategory) ? "fas fa-folder-open" : doc.icon,
             sticker: doc.extraFields.find(e => e.id === "order")?.value,
             parentDoc: (parentDocID) ? parentDocID._id : false,
             handler: this.openExistingDocument,
             expandable: true,
+            color: color,
             type: doc.type,
             children: [],
             hasEdits: false,

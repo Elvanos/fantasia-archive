@@ -1,10 +1,12 @@
 <template>
-  <q-page class="q-pa-xl"  v-if="bluePrintData">
+  <q-page class="q-pa-xl"
+  v-if="bluePrintData"
+  >
     <div class="row justify-start q-col-gutter-x-xl">
 
     <q-dialog
       v-model="deleteConfirmationDialog"
-      persistent>
+      >
       <q-card>
         <q-card-section class="row items-center">
           <span class="q-ml-sm">Are you sure want to delete <b>{{retrieveFieldValue(currentData,'name')}}</b>? <br> This action can not be reverted and the data will be lost <b>forever</b>.</span>
@@ -22,104 +24,7 @@
       </q-card>
     </q-dialog>
 
-    <div
-      :class="`col-${field.sizing} q-mb-md`"
-      v-for="field in bluePrintData.extraFields"
-      :key="field.id">
-
-        <Field_Break
-        class="inputWrapper break"
-        v-if="field.type === 'break'"
-        :inputDataBluePrint="field"
-        :inputDataValue="retrieveFieldValue(currentData, field.id)"
-        />
-
-        <Field_Text
-        class="inputWrapper"
-        v-if="field.type === 'text' && retrieveFieldValue(currentData,field.id) || field.type === 'text' && retrieveFieldLength(currentData,field.id) === 0 "
-        :inputDataBluePrint="field"
-        :inputDataValue="retrieveFieldValue(currentData, field.id)"
-        :isNew="currentData.isNew"
-        :editMode="editMode"
-        @signal-input="reactToFieldUpdate($event, field)"
-        />
-
-        <Field_Number
-        class="inputWrapper"
-        v-if="field.type === 'number'"
-        :inputDataBluePrint="field"
-        :inputDataValue="retrieveFieldValue(currentData, field.id)"
-        :isNew="currentData.isNew"
-        :editMode="editMode"
-        @signal-input="reactToFieldUpdate($event, field)"
-        />
-
-        <Field_List
-        class="inputWrapper"
-        v-if="field.type === 'list'"
-        :inputDataBluePrint="field"
-        :inputDataValue="retrieveFieldValue(currentData, field.id)"
-        :isNew="currentData.isNew"
-        :editMode="editMode"
-        @signal-input="reactToFieldUpdate($event, field)"
-        />
-
-        <Field_SingleSelect
-        class="inputWrapper"
-        v-if="field.type === 'singleSelect'"
-        :inputDataBluePrint="field"
-        :inputDataValue="retrieveFieldValue(currentData, field.id)"
-        :isNew="currentData.isNew"
-        :editMode="editMode"
-        @signal-input="reactToFieldUpdate($event, field)"
-        />
-
-        <Field_MultiSelect
-        class="inputWrapper"
-        v-if="field.type === 'multiSelect'"
-        :inputDataBluePrint="field"
-        :inputDataValue="retrieveFieldValue(currentData, field.id)"
-        :isNew="currentData.isNew"
-        :editMode="editMode"
-        @signal-input="reactToFieldUpdate($event, field)"
-        />
-
-        <Field_SingleRelationship
-        class="inputWrapper"
-        v-if="field.type === 'singleToNoneRelationship' || field.type === 'singleToSingleRelationship' || field.type === 'singleToManyRelationship'"
-        :inputDataBluePrint="field"
-        :inputDataValue="retrieveFieldValue(currentData, field.id)"
-        :isNew="currentData.isNew"
-        :editMode="editMode"
-        :current-id="currentData._id"
-        @signal-input="reactToFieldUpdate($event, field)"
-        />
-
-         <Field_MultiRelationship
-        class="inputWrapper"
-        v-if="field.type === 'manyToNoneRelationship' || field.type ===
-         'manyToSingleRelationship' || field.type === 'manyToManyRelationship'"
-        :inputDataBluePrint="field"
-        :inputDataValue="retrieveFieldValue(currentData, field.id)"
-        :isNew="currentData.isNew"
-        :editMode="editMode"
-        :current-id="currentData._id"
-        @signal-input="reactToFieldUpdate($event, field)"
-        />
-
-         <Field_Wysiwyg
-        class="inputWrapper"
-        v-if="field.type === 'wysiwyg'"
-        :inputDataBluePrint="field"
-        :inputDataValue="(retrieveFieldValue(currentData, field.id)) ? retrieveFieldValue(currentData, field.id) : ''"
-        :isNew="currentData.isNew"
-        :editMode="editMode"
-        :current-id="currentData._id"
-        @signal-input="reactToFieldUpdate($event, field)"
-        />
-
-    </div>
-    <div class="col-12">
+    <div class="col-12 flex justify-end q-mb-xl q-mt-md">
       <q-btn
       color="primary"
       :label="`Save ${bluePrintData.nameSingular}`"
@@ -141,13 +46,133 @@
       @click="openDeleteDialog"
       />
     </div>
+
+    <div
+      :class="`col-${field.sizing} q-mb-md`"
+      v-for="field in bluePrintData.extraFields"
+      :key="field.id"
+      >
+
+        <Field_Break
+        class="inputWrapper break"
+        v-if="field.type === 'break' && fieldLimiter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(currentData, field.id)"
+        />
+
+        <Field_Text
+        class="inputWrapper"
+        v-if="(field.type === 'text' && retrieveFieldValue(currentData,field.id) || field.type === 'text' && retrieveFieldLength(currentData,field.id) === 0) && fieldLimiter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(currentData, field.id)"
+        :isNew="currentData.isNew"
+        :editMode="editMode"
+        @signal-input="reactToFieldUpdate($event, field)"
+        />
+
+        <Field_Number
+        class="inputWrapper"
+        v-if="field.type === 'number' && fieldLimiter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(currentData, field.id)"
+        :isNew="currentData.isNew"
+        :editMode="editMode"
+        @signal-input="reactToFieldUpdate($event, field)"
+        />
+
+        <Field_Switch
+        class="inputWrapper"
+        v-if="field.type === 'switch' && fieldLimiter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(currentData, field.id)"
+        :isNew="currentData.isNew"
+        :editMode="editMode"
+        @signal-input="reactToFieldUpdate($event, field)"
+        />
+
+        <Field_ColorPicker
+        class="inputWrapper"
+        v-if="field.type === 'colorPicker' && fieldLimiter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(currentData, field.id)"
+        :isNew="currentData.isNew"
+        :editMode="editMode"
+        @signal-input="reactToFieldUpdate($event, field)"
+        />
+
+        <Field_List
+        class="inputWrapper"
+        v-if="field.type === 'list' && fieldLimiter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(currentData, field.id)"
+        :isNew="currentData.isNew"
+        :editMode="editMode"
+        @signal-input="reactToFieldUpdate($event, field)"
+        />
+
+        <Field_SingleSelect
+        class="inputWrapper"
+        v-if="field.type === 'singleSelect' && fieldLimiter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(currentData, field.id)"
+        :isNew="currentData.isNew"
+        :editMode="editMode"
+        @signal-input="reactToFieldUpdate($event, field)"
+        />
+
+        <Field_MultiSelect
+        class="inputWrapper"
+        v-if="field.type === 'multiSelect' && fieldLimiter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(currentData, field.id)"
+        :isNew="currentData.isNew"
+        :editMode="editMode"
+        @signal-input="reactToFieldUpdate($event, field)"
+        />
+
+        <Field_SingleRelationship
+        class="inputWrapper"
+        v-if="(field.type === 'singleToNoneRelationship' || field.type === 'singleToSingleRelationship' || field.type === 'singleToManyRelationship') && fieldLimiter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(currentData, field.id)"
+        :isNew="currentData.isNew"
+        :editMode="editMode"
+        :current-id="currentData._id"
+        @signal-input="reactToFieldUpdate($event, field)"
+        />
+
+         <Field_MultiRelationship
+        class="inputWrapper"
+        v-if="(field.type === 'manyToNoneRelationship' || field.type ===
+         'manyToSingleRelationship' || field.type === 'manyToManyRelationship') && fieldLimiter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(currentData, field.id)"
+        :isNew="currentData.isNew"
+        :editMode="editMode"
+        :current-id="currentData._id"
+        @signal-input="reactToFieldUpdate($event, field)"
+        />
+
+         <Field_Wysiwyg
+        class="inputWrapper"
+        v-if="field.type === 'wysiwyg' && fieldLimiter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="(retrieveFieldValue(currentData, field.id)) ? retrieveFieldValue(currentData, field.id) : ''"
+        :isNew="currentData.isNew"
+        :editMode="editMode"
+        :current-id="currentData._id"
+        @signal-input="reactToFieldUpdate($event, field)"
+        />
+
+    </div>
+
     </div>
 
   </q-page>
 </template>
 
 <script lang="ts">
-import { Component, Watch } from "vue-property-decorator"
+import { Component, Watch, Prop } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
 
@@ -156,24 +181,30 @@ import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
 import PouchDB from "pouchdb"
 // import { cleanDatabases } from "src/databaseManager/cleaner"
 import { single_changeRelationshipToAnotherObject, many_changeRelationshipToAnotherObject } from "src/databaseManager/relationshipManager"
+import { I_KeyPressObject } from "src/interfaces/I_KeypressObject"
 
 import { extend } from "quasar"
 
 import Field_Break from "src/components/Field_Break.vue"
 import Field_Text from "src/components/Field_Text.vue"
 import Field_Number from "src/components/Field_Number.vue"
+import Field_Switch from "src/components/Field_Switch.vue"
+import Field_ColorPicker from "src/components/Field_ColorPicker.vue"
 import Field_List from "src/components/Field_List.vue"
 import Field_SingleSelect from "src/components/Field_SingleSelect.vue"
 import Field_MultiSelect from "src/components/Field_MultiSelect.vue"
 import Field_SingleRelationship from "src/components/Field_SingleRelationship.vue"
 import Field_MultiRelationship from "src/components/Field_MultiRelationship.vue"
 import Field_Wysiwyg from "src/components/Field_Wysiwyg.vue"
+import console from "console"
 
 @Component({
   components: {
     Field_Break,
     Field_Text,
     Field_Number,
+    Field_Switch,
+    Field_ColorPicker,
     Field_List,
     Field_SingleSelect,
     Field_MultiSelect,
@@ -232,8 +263,42 @@ export default class PageDocumentDisplay extends BaseClass {
       this.SSET_updateOpenedDocument(dataCopy)
     }
 
-    // FIELD - Text
+    // FIELD - Number
     if (field.type === "number") {
+      this.currentData.hasEdits = true
+      const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
+      this.currentData.extraFields[indexToUpdate].value = inputData
+
+      const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
+
+      this.SSET_updateOpenedDocument(dataCopy)
+    }
+
+    // FIELD - Switch
+    if (field.type === "switch") {
+      this.currentData.hasEdits = true
+      const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
+      this.currentData.extraFields[indexToUpdate].value = inputData
+
+      const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
+
+      this.SSET_updateOpenedDocument(dataCopy)
+
+      if (field.id === "categorySwitch") {
+        const localCopy: I_Blueprint = (extend(true, {}, this.bluePrintData))
+        const blueprintUpdateCopy: I_Blueprint = (extend(true, {}, this.bluePrintData))
+        blueprintUpdateCopy.extraFields = []
+
+        // Reset fields so they re-render
+        this.SSET_blueprint(blueprintUpdateCopy)
+        this.retrieveDocumentBlueprint()
+        this.SSET_blueprint(localCopy)
+        this.retrieveDocumentBlueprint()
+      }
+    }
+
+    // FIELD - Color Picker
+    if (field.type === "colorPicker") {
       this.currentData.hasEdits = true
       const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
       this.currentData.extraFields[indexToUpdate].value = inputData
@@ -405,6 +470,26 @@ export default class PageDocumentDisplay extends BaseClass {
 
   editMode = false
 
+  @Prop() readonly pushedKey!: I_KeyPressObject
+
+  @Watch("pushedKey", { deep: true })
+  processKeyPress (keypress: I_KeyPressObject) {
+    // Save document - CTRL + S
+    if (this.editMode && !keypress.shiftKey && keypress.ctrlKey && !keypress.altKey && keypress.keyCode === 83) {
+      this.saveDocument().catch(e => { console.log(e) })
+    }
+
+    // Edit document - CTRL + E
+    if (!this.editMode && !keypress.shiftKey && keypress.ctrlKey && !keypress.altKey && keypress.keyCode === 69) {
+      this.toggleEditMode()
+    }
+
+    // Delete dialog - CTRL + D
+    if (keypress.ctrlKey && !keypress.shiftKey && keypress.ctrlKey && !keypress.altKey && keypress.keyCode === 68) {
+      this.openDeleteDialog()
+    }
+  }
+
   openDeleteDialog () {
     this.deleteConfirmationDialog = true
   }
@@ -488,6 +573,13 @@ export default class PageDocumentDisplay extends BaseClass {
       url: `/project/display-content/${this.bluePrintData._id}/${uniqueID}`,
       extraFields: []
     }
+  }
+
+  fieldLimiter (currentFieldID: string) {
+    const isCategory = this.retrieveFieldValue(this.currentData, "categorySwitch")
+
+    const ignoredList = ["breakBasic", "name", "documentColor", "parentDoc", "order", "categorySwitch"]
+    return (!isCategory || ignoredList.includes(currentFieldID))
   }
 }
 </script>

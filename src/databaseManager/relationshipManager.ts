@@ -169,7 +169,8 @@ export const many_addRelationShipToAnotherObject = async (
     type: currentDocument.type,
     url: `/project/display-content/${currentDocument.type}/${currentDocument._id}`,
     label: currentDocument.extraFields.find(e => e.id === "name")?.value,
-    pairedField: field.id
+    pairedField: field.id,
+    isCategory: currentDocument.extraFields.find(e => e.id === "categorySwitch")?.value
   }
 
   pairedFieldValue = (Array.isArray(pairedFieldValue)) ? pairedFieldValue : []

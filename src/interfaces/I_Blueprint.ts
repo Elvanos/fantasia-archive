@@ -3,9 +3,12 @@ export interface I_ExtraFields {
   name: string,
   icon?: string,
   sizing: number
+  tooltip?: string
   type:
   "text" |
   "number" |
+  "colorPicker" |
+  "switch" |
   "list" |
   "wysiwyg" |
   "singleSelect" |

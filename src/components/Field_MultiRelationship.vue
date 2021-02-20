@@ -3,6 +3,11 @@
     <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
       <q-icon v-if="inputIcon" :name="inputIcon" :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
       {{inputDataBluePrint.name}}
+       <q-icon v-if="toolTip" name="mdi-help-circle" size="16px" class="q-ml-md">
+         <q-tooltip>
+           <span v-html="toolTip"/>
+        </q-tooltip>
+      </q-icon>
       <q-icon v-if="isOneWayRelationship" name="mdi-arrow-right-bold" size="16px" class="q-ml-md">
          <q-tooltip>
           This is a one-way relationship. <br> Editing this value <b>will not</b> have effect on the connected document/s.
@@ -28,7 +33,7 @@
       @click="openExistingDocument(single)">
         <q-item-section>
            {{single.label}}
-           <span class="inline-block q-ml-xs text-italic text-lowercase connectionNote">
+           <span class="inline-block q-ml-xs text-italic connectionNote">
             {{retrieveNoteText(single._id)}}
            </span>
         </q-item-section>
@@ -138,6 +143,10 @@ export default class Field_SingleRelationship extends BaseClass {
     return this.inputDataBluePrint?.icon
   }
 
+  get toolTip () {
+    return this.inputDataBluePrint?.tooltip
+  }
+
   extraInput: I_FieldRelationship[] = []
   filteredInput: I_FieldRelationship[] = []
 
@@ -202,6 +211,7 @@ export default class Field_SingleRelationship extends BaseClass {
           disable: isDisabled,
           url: `/project/display-content/${objectDoc.type}/${objectDoc._id}`,
           label: objectDoc.extraFields.find(e => e.id === "name")?.value,
+          isCategory: objectDoc.extraFields.find(e => e.id === "categorySwitch")?.value,
           pairedField: pairedField
         }
       }) as unknown as I_FieldRelationship[]
@@ -215,11 +225,19 @@ export default class Field_SingleRelationship extends BaseClass {
           if (!allObjectsWithoutCurrent.find(e => e._id === s._id)) {
           // @ts-ignore
             this.localInput.splice(index, 1)
+          } else {
+            const matchedFieldContent = allObjectsWithoutCurrent.find(e => e._id === s._id)
+
+            if (matchedFieldContent) {
+              this.localInput[index].label = matchedFieldContent.label
+            }
           }
         }
       })
 
-      this.extraInput = allObjectsWithoutCurrent
+      const allObjectsWithoutCategories: I_FieldRelationship[] = allObjectsWithoutCurrent.filter((obj) => !obj.isCategory)
+
+      this.extraInput = allObjectsWithoutCategories
     }
   }
 

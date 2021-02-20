@@ -11,7 +11,7 @@
         elevated
         class="bg-dark text-cultured"
       >
-<q-dialog
+    <q-dialog
       v-if="currentlyCheckedDocument"
       v-model="documentCloseDialogConfirm"
       persistent>
@@ -50,20 +50,22 @@
               v-for="document in localDocuments"
               :to="`/project/display-content/${document.type}/${document._id}`"
               :key="document.type+document._id"
-              :icon="document.icon"
+              :icon="(retrieveFieldValue(document,'categorySwitch') ? 'fas fa-folder-open' : document.icon)"
               :label="retrieveFieldValue(document,'name')"
+              :style="`color: ${retrieveFieldValue(document,'documentColor')}`"
               :alert="document.hasEdits"
               alert-icon="mdi-feather"
               >
                 <q-btn
-                    round
-                    dense
-                    class="z-max q-ml-sm"
-                    :class="{'q-mr-sm': document.hasEdits}"
-                    size="xs"
-                    icon="close"
-                    @click.stop.prevent="checkForCloseOpenedDocument(document)"
-                  />
+                  round
+                  dense
+                  class="z-max q-ml-sm"
+                  :class="{'q-mr-sm': document.hasEdits}"
+                  size="xs"
+                  icon="close"
+                  style="color: #fff;"
+                  @click.stop.prevent="checkForCloseOpenedDocument(document)"
+                />
             </q-route-tab>
           </transition-group>
         </q-tabs>
@@ -74,7 +76,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch } from "vue-property-decorator"
+
+import { I_KeyPressObject } from "src/interfaces/I_KeypressObject"
+
+import { Component, Watch, Prop } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
 import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
@@ -112,6 +117,61 @@ export default class TppTabs extends BaseClass {
   }
 
   localDocuments: I_OpenedDocument[] = []
+
+  @Prop() readonly pushedKey!: I_KeyPressObject
+
+  @Watch("pushedKey", { deep: true })
+  processKeyPress (keypress: I_KeyPressObject) {
+    // Delete dialog - CTRL + W
+    if (!keypress.shiftKey && keypress.ctrlKey && !keypress.altKey && keypress.keyCode === 87 && this.localDocuments.length > 0) {
+      const matchingDocument = this.localDocuments.find(e => e.url === this.$route.path)
+
+      if (matchingDocument) {
+        this.checkForCloseOpenedDocument(matchingDocument)
+      }
+    }
+
+    // Next tab - ALT + RIGHT ARROW
+    if (!keypress.shiftKey && !keypress.ctrlKey && keypress.altKey && keypress.keyCode === 39 && this.localDocuments.length > 0) {
+      let index = -1
+      const matchingDocument = this.localDocuments.find((e, i) => {
+        index = i
+        return e.url === this.$route.path
+      })
+
+      if (matchingDocument && index !== this.localDocuments.length - 1) {
+        this.$router.push({ path: this.localDocuments[index + 1].url }).catch((e: {name: string}) => {
+          if (e && e.name !== "NavigationDuplicated") { console.log(e) }
+        })
+      }
+      if (matchingDocument && index === this.localDocuments.length - 1) {
+        this.$router.push({ path: this.localDocuments[0].url }).catch((e: {name: string}) => {
+          if (e && e.name !== "NavigationDuplicated") { console.log(e) }
+        })
+      }
+    }
+
+    // Previous tab - ALT + LEFT ARROW
+    if (!keypress.shiftKey && !keypress.ctrlKey && keypress.altKey && keypress.keyCode === 37 && this.localDocuments.length > 0) {
+      let index = -1
+      const matchingDocument = this.localDocuments.find((e, i) => {
+        index = i
+        return e.url === this.$route.path
+      })
+
+      if (matchingDocument && index !== 0) {
+        this.$router.push({ path: this.localDocuments[index - 1].url }).catch((e: {name: string}) => {
+          if (e && e.name !== "NavigationDuplicated") { console.log(e) }
+        })
+      }
+
+      if (matchingDocument && index === 0) {
+        this.$router.push({ path: this.localDocuments[this.localDocuments.length - 1].url }).catch((e: {name: string}) => {
+          if (e && e.name !== "NavigationDuplicated") { console.log(e) }
+        })
+      }
+    }
+  }
 }
 </script>
 

@@ -10,23 +10,10 @@
       </q-icon>
   </div>
 
-  <q-list
-    v-if="!editMode"
-    dense>
-    <q-item>
-      <q-item-section>
-          {{localInput}}
-      </q-item-section>
-    </q-item>
-  </q-list>
-
-  <q-input
-    v-if="editMode"
-    v-model.number="localInput"
-    type="number"
-    @keyup="signalInput"
-    outlined
-    dense
+  <q-toggle
+    :disable="!editMode"
+    v-model="localInput"
+    @input="signalInput"
   />
 
     <div class="separatorWrapper">
@@ -46,14 +33,14 @@ import { I_ExtraFields } from "src/interfaces/I_Blueprint"
 @Component({
   components: { }
 })
-export default class Field_Number extends BaseClass {
+export default class Field_Switch extends BaseClass {
   @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
-  @Prop({ default: null }) readonly inputDataValue!: null|number
+  @Prop({ default: false }) readonly inputDataValue!: boolean
   @Prop() readonly editMode!: boolean
   @Prop() readonly isNew!: boolean
 
   changedInput = false
-  localInput: null|number = null
+  localInput: null|boolean = null
 
   @Emit()
   signalInput () {
@@ -69,9 +56,9 @@ export default class Field_Number extends BaseClass {
     return this.inputDataBluePrint?.tooltip
   }
 
-  @Watch("inputDataValue", { deep: true, immediate: true })
+  @Watch("inputDataValue", { immediate: true })
   reactToInputChanges () {
-    this.localInput = this.inputDataValue
+    this.localInput = (typeof this.inputDataValue === "boolean") ? this.inputDataValue : false
   }
 }
 </script>

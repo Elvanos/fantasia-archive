@@ -17,13 +17,29 @@ export const racesBlueprint: I_Blueprint = {
       name: "Name",
       type: "text",
       icon: "fas fa-dragon",
-      sizing: 6
+      sizing: 3
+    },
+    {
+      id: "documentColor",
+      name: "Color",
+      type: "colorPicker",
+      icon: "mdi-eyedropper",
+      tooltip:
+        `This field allows for custom-coloring your document to any available HEX or RBG color.
+        <br>The selected color will show on the icon and name of the document both in the hierarchical tree on the left and in the top tabs.
+        `,
+      sizing: 2
     },
     {
       id: "parentDoc",
       name: "Belongs under",
       type: "singleToNoneRelationship",
-      sizing: 4,
+      tooltip:
+        `This field is used to build up custom hierarchical tree structure in the main list of items in the left side of the app.
+        <br> You can use this for an infinite amount of sub-levels to the hierarchical structure.
+        <br> An example would be multiple sub-groups (provinces) of Roman Empire belonging under the main political group called "Roman Empire".
+        `,
+      sizing: 3,
       relationshipSettings: {
         connectedObjectType: "races"
       }
@@ -33,11 +49,28 @@ export const racesBlueprint: I_Blueprint = {
       name: "Order number",
       type: "number",
       icon: "mdi-file-tree",
+      tooltip:
+        `In case the default sorting via alphabet in the hierarchical tree on the left is inadequite for your needs, this field allows you to fill custom numbers to order by that get placed before the default alphabetical order.
+        <br>It is heavily suggested to "pad-out" the custom order numbers by writing for example 100 (or least 10) instead of 1.
+        <br>This allows for extra "padding" between the items in case a new one needs to be added in the middle without needing to redo the custom order on all documents.
+        `,
+      sizing: 2
+    },
+    {
+      id: "categorySwitch",
+      name: "Is a category",
+      type: "switch",
+      icon: "fas fa-folder-open",
+      tooltip:
+        `This setting allows for setting the current document to category mode.
+        <br>
+        A document with category mode toggled on will have most of its fields hidden and will not show in any other relationship searches except for "Belongs under".
+        `,
       sizing: 2
     },
     {
       id: "otherNames",
-      name: "Other names",
+      name: "Other names & Epithets",
       type: "list",
       icon: "mdi-book-plus",
       sizing: 6
@@ -64,7 +97,21 @@ export const racesBlueprint: I_Blueprint = {
       id: "age",
       name: "Average lifespan",
       type: "text",
+      icon: "mdi-timer-sand-empty",
+      sizing: 2
+    },
+    {
+      id: "ageAdult",
+      name: "Average adulthood",
+      type: "text",
       icon: "mdi-timer-sand",
+      sizing: 2
+    },
+    {
+      id: "ageOldest",
+      name: "Oldest known",
+      type: "text",
+      icon: "mdi-timer-sand-full",
       sizing: 2
     },
     {
@@ -72,52 +119,54 @@ export const racesBlueprint: I_Blueprint = {
       name: "Average height",
       type: "text",
       icon: "mdi-human-male-height-variant",
-      sizing: 2
+      sizing: 3
     },
     {
       id: "weight",
       name: "Average weight",
       type: "text",
       icon: "mdi-weight",
-      sizing: 2
+      sizing: 3
     },
     {
       id: "beingType",
       name: "Type of being",
       type: "multiSelect",
       icon: "fas fa-paw",
-      sizing: 3,
+      sizing: 6,
       predefinedSelectValues: [
-        "Animal",
-        "Mammal",
-        "Bird",
-        "Reptile",
         "Amphibian",
-        "Fish",
-        "Insect",
-        "Plant",
-        "Mushroom",
-        "Lichen",
-        "Bacteria",
-        "Virus",
-        "Elemental",
-        "Sprititual",
+        "Animal",
         "Atrificial",
+        "Bacteria",
+        "Bird",
+        "Draconoid",
+        "Elemental",
+        "Fish",
+        "Humanoid",
+        "Insect",
+        "Lichen",
+        "Mammal",
+        "Mushroom",
+        "Plant",
+        "Reptile",
+        "Sprititual",
+        "Virus",
         "Other"
       ]
     },
     {
       id: "sentience",
-      name: "Level of sentience",
+      name: "Level of sapience",
       type: "multiSelect",
       icon: "fas fa-brain",
-      sizing: 3,
+      sizing: 6,
       predefinedSelectValues: [
         "Ascended",
-        "Sentient",
         "Half-sentient",
-        "Non-sentient",
         "Hivemind",
+        "Non-sentient",
+        "Sentient",
         "Other"
       ]
     },
@@ -201,31 +250,31 @@ export const racesBlueprint: I_Blueprint = {
           "Minor",
           "Medium",
           "Severe",
-          "Impacitating",
+          "Imcapacitating",
           "Deadly"
         ]
       }
     },
     {
       id: "commonNames",
-      name: "Common names",
+      name: "Common names among the race/species",
       type: "list",
       icon: "fas fa-signature",
       sizing: 6,
       predefinedListExtras: {
         affix: "Normally used for",
         extraSelectValueList: [
-          "Male",
-          "Female",
           "Child",
+          "Female",
           "Honorary",
+          "Male",
           "Other"
         ]
       }
     },
     {
       id: "commonFamilyNames",
-      name: "Common family/clan names",
+      name: "Common family/clan names among the race/species",
       type: "list",
       icon: "mdi-family-tree",
       sizing: 6,

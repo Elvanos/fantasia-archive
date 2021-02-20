@@ -3,6 +3,11 @@
     <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
       <q-icon v-if="inputIcon" :name="inputIcon" :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
       {{inputDataBluePrint.name}}
+       <q-icon v-if="toolTip" name="mdi-help-circle" size="16px" class="q-ml-md">
+         <q-tooltip>
+           <span v-html="toolTip"/>
+        </q-tooltip>
+      </q-icon>
       <q-icon v-if="isOneWayRelationship" name="mdi-arrow-right-bold" size="16px" class="q-ml-md">
          <q-tooltip>
           This is a one-way relationship. <br> Editing this value <b>will not</b> have effect on the connected document/s.
@@ -13,7 +18,6 @@
           This is a two-way relationship. <br> Editing this value <b>will</b> also effect the connected document/s.
         </q-tooltip>
       </q-icon>
-
     </div>
 
     <q-list
@@ -26,8 +30,8 @@
       @click="openExistingDocument(localInput)">
         <q-item-section>
            {{localInput.label}}
-            <span class="inline-block q-ml-xs text-italic text-lowercase connectionNote">
-               {{retrieveNoteText(localInput._id)}}
+            <span class="inline-block q-ml-xs text-italic connectionNote">
+               {{retrieveNoteText()}}
            </span>
         </q-item-section>
       </q-item>
@@ -135,6 +139,10 @@ export default class Field_SingleRelationship extends BaseClass {
     return this.inputDataBluePrint?.icon
   }
 
+  get toolTip () {
+    return this.inputDataBluePrint?.tooltip
+  }
+
   get inputFieldID () {
     return this.inputDataBluePrint?.id
   }
@@ -202,20 +210,32 @@ export default class Field_SingleRelationship extends BaseClass {
           disable: isDisabled,
           url: `/project/display-content/${objectDoc.type}/${objectDoc._id}`,
           label: objectDoc.extraFields.find(e => e.id === "name")?.value,
+          isCategory: objectDoc.extraFields.find(e => e.id === "categorySwitch")?.value,
           pairedField: pairedField
         }
       }) as unknown as I_FieldRelationship[]
 
-      const allObjectsWithoutCurrent: I_FieldRelationship[] = allObjects.filter((obj) => obj._id !== this.currentId)
+      const isBelongsUnder = (this.inputDataBluePrint.id === "parentDoc")
+
+      const allObjectsWithoutCategories: I_FieldRelationship[] = allObjects.filter((obj) => !obj.isCategory)
+
+      const objectsWithoutCurrent: I_FieldRelationship[] = (isBelongsUnder)
+        ? allObjects.filter((obj) => obj._id !== this.currentId)
+        : allObjectsWithoutCategories.filter((obj) => obj._id !== this.currentId)
 
       if (this.localInput._id) {
-        if (!allObjectsWithoutCurrent.find(e => e._id === this.localInput._id)) {
+        if (!objectsWithoutCurrent.find(e => e._id === this.localInput._id)) {
           // @ts-ignore
           this.localInput = ""
+        } else {
+          const matchedFieldContent = objectsWithoutCurrent.find(e => e._id === this.localInput._id)
+          if (matchedFieldContent) {
+            this.localInput.label = matchedFieldContent.label
+          }
         }
       }
 
-      this.extraInput = allObjectsWithoutCurrent
+      this.extraInput = objectsWithoutCurrent
     }
   }
 

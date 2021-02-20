@@ -14,8 +14,13 @@
     v-if="!editMode"
     dense>
     <q-item>
-      <q-item-section>
-          {{localInput}}
+       <q-item-section>
+      <div class="colorIndicatorWrapper">
+        <div class="colorIndicator" :style="`background-color: ${localInput}`">
+        </div>
+        {{localInput}}
+      </div>
+
       </q-item-section>
     </q-item>
   </q-list>
@@ -23,15 +28,30 @@
   <q-input
     v-if="editMode"
     v-model.number="localInput"
-    type="number"
+    type="text"
     @keyup="signalInput"
     outlined
     dense
-  />
+  >
+    <template v-slot:prepend>
+     <div class="colorIndicator" :style="`background-color: ${localInput}`">
+     </div>
+    </template>
+    <template v-slot:append>
+      <q-icon name="colorize" class="cursor-pointer">
+        <q-popup-proxy transition-show="scale" transition-hide="scale">
+          <q-color
+            @input="signalInput"
+            v-model="localInput"
+           />
+        </q-popup-proxy>
+      </q-icon>
+    </template>
+  </q-input>
 
-    <div class="separatorWrapper">
-      <q-separator color="grey q-mt-lg" />
-    </div>
+  <div class="separatorWrapper">
+    <q-separator color="grey q-mt-lg" />
+  </div>
 </div>
 
 </template>
@@ -46,7 +66,7 @@ import { I_ExtraFields } from "src/interfaces/I_Blueprint"
 @Component({
   components: { }
 })
-export default class Field_Number extends BaseClass {
+export default class Field_ColorPicker extends BaseClass {
   @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
   @Prop({ default: null }) readonly inputDataValue!: null|number
   @Prop() readonly editMode!: boolean
@@ -75,3 +95,20 @@ export default class Field_Number extends BaseClass {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.colorIndicator {
+  width: 20px;
+  height: 20px;
+  background-color: transparent;
+}
+
+.colorIndicatorWrapper {
+  display: flex;
+  margin-left: -15px;
+
+  .colorIndicator {
+    margin-right: 15px;
+  }
+}
+</style>

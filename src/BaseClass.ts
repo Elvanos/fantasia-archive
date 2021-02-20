@@ -138,6 +138,7 @@ export default class BaseClass extends Vue {
   @Blueprints.Getter("getBlueprint") SGET_blueprint!: (type: string) => I_Blueprint
 
   @Blueprints.Mutation("setAllBlueprints") SSET_allBlueprints!: (input: I_Blueprint[]) => void
+  @Blueprints.Mutation("setBlueprint") SSET_blueprint!: (input: I_Blueprint) => void
 
   addNewObjectType (e: I_NewObjectTrigger) {
     // console.log(e.id)

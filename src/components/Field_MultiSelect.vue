@@ -3,6 +3,11 @@
   <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
     <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
     {{inputDataBluePrint.name}}
+     <q-icon v-if="toolTip" name="mdi-help-circle" size="16px" class="q-ml-md">
+         <q-tooltip>
+           <span v-html="toolTip"/>
+        </q-tooltip>
+      </q-icon>
   </div>
 
     <q-list
@@ -73,6 +78,10 @@ export default class Field_MultiSelect extends BaseClass {
 
   get inputIcon () {
     return this.inputDataBluePrint?.icon
+  }
+
+  get toolTip () {
+    return this.inputDataBluePrint?.tooltip
   }
 
   extraInput: string[] = []
