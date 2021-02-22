@@ -12,7 +12,7 @@
           <h6 class="text-center q-my-sm">Keybind list</h6>
         </q-card-section>
 
-        <q-card-section>
+         <q-card-section>
           <q-markup-table>
             <thead>
               <tr>
@@ -21,69 +21,9 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td class="text-left">Focuses next input field/input element/hierarchical tree node</td>
-                <td class="text-left">TAB <br> <div class="text-italic keybindNote">(functionality is the same as when using a web-browser)</div></td>
-              </tr>
-              <tr>
-                <td class="text-left">Focuses previous input field/input element/hierarchical tree node</td>
-                <td class="text-left">SHFIT + TAB <br> <div class="text-italic keybindNote">(functionality is the same as when using a web-browser)</div></td>
-              </tr>
-              <tr>
-                <td class="text-left">Open the focused document in the left hierarchical tree</td>
-                <td class="text-left">SHIFT + TAB <br> <div class="text-italic keybindNote">(while the hierarchical tree item is focused)</div></td>
-              </tr>
-              <tr>
-                <td class="text-left">Open keybind cheatsheet</td>
-                <td class="text-left">CTRL + ALT + K</td>
-              </tr>
-              <tr>
-                <td class="text-left">Focus search field in the left hierarchical tree</td>
-                <td class="text-left">CTRL + SHIFT + Q</td>
-              </tr>
-              <tr>
-                <td class="text-left">Clears any inpuit in the search field in the left hierarchical tree</td>
-                <td class="text-left">CTRL + SHIFT + W</td>
-              </tr>
-              <tr>
-                <td class="text-left">Open the focused document in the left hierarchical tree</td>
-                <td class="text-left">ENTER <br> <div class="text-italic keybindNote">(while the hierarchical tree item is focused)</div></td>
-              </tr>
-              <tr>
-                <td class="text-left">Collapse or open the focused category in the left hierarchical tree</td>
-                <td class="text-left">SPACE <br> <div class="text-italic keybindNote">(while the hierarchical tree item is focused)</div></td>
-              </tr>
-              <tr>
-                <td class="text-left">Quick-search existing document</td>
-                <td class="text-left">CTRL + Q</td>
-              </tr>
-              <tr>
-                <td class="text-left">Quick-add new document</td>
-                <td class="text-left">CTRL + N</td>
-              </tr>
-              <tr>
-                <td class="text-left">Next tab</td>
-                <td class="text-left">ALT + RIGHT ARROW</td>
-              </tr>
-              <tr>
-                <td class="text-left">Previous tab</td>
-                <td class="text-left">ALT + LEFT ARROW</td>
-              </tr>
-              <tr>
-                <td class="text-left">Close active document</td>
-                <td class="text-left">CTRL + W</td>
-              </tr>
-              <tr>
-                <td class="text-left">Delete active document</td>
-                <td class="text-left">CTRL + D</td>
-              </tr>
-              <tr>
-                <td class="text-left">Edit active document</td>
-                <td class="text-left">CTRL + E</td>
-              </tr>
-              <tr>
-                <td class="text-left">Save active document</td>
-                <td class="text-left">CTRL + S</td>
+              <tr v-for="keybind in SGET_getCurrentKeyBindData.defaults" :key="keybind.id">
+                <td class="text-left" v-html="keybind.tooltip"/>
+                <td class="text-left" v-html="retrieveKeybindString(keybind)"/>
               </tr>
             </tbody>
           </q-markup-table>
@@ -199,12 +139,11 @@
       content-class="bg-dark text-cultured sideWrapper"
       v-model="leftDrawerOpen"
       side="left"
+      :width=375
       show-if-above
       >
 
-      <objectTree
-        :pushed-key="pushedKey"
-      />
+      <objectTree/>
 
        <q-page-sticky position="bottom-right" class="controlButtons">
 
@@ -242,9 +181,7 @@
     </q-drawer>
 
     <!-- Header -->
-    <topTabs
-    :pushed-key="pushedKey"
-    />
+    <topTabs/>
 
     <!-- Right drawer -->
     <q-drawer
@@ -261,7 +198,7 @@
         appear
         :duration="300"
       >
-      <router-view :key="$route.path" :pushed-key="pushedKey" />
+      <router-view :key="$route.path" />
       </transition>
     </q-page-container>
 
@@ -270,13 +207,12 @@
 
 <script lang="ts">
 
-import { Component } from "vue-property-decorator"
+import { Component, Watch } from "vue-property-decorator"
 import BaseClass from "src/BaseClass"
 import PouchDB from "pouchdb"
 
 import objectTree from "src/components/ObjectTree.vue"
 import topTabs from "src/components/TopTabs.vue"
-import { I_KeyPressObject } from "src/interfaces/I_KeypressObject"
 import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 
 interface NewObjectDocument {
@@ -294,7 +230,23 @@ export default class MainLayout extends BaseClass {
   leftDrawerOpen = true
   rightDrawerOpen = false
 
-  pushedKey = {} as I_KeyPressObject
+  @Watch("SGET_getCurrentKeyBindData", { deep: true })
+  processKeyPush () {
+    // Keybind cheatsheet
+    if (this.determineKeyBind("openKeybindsCheatsheet")) {
+      this.keyBindsDialog = true
+    }
+
+    // Quick new document
+    if (this.determineKeyBind("quickNewDocument")) {
+      this.populateNewObjectDialog()
+    }
+
+    // Quick open existing document
+    if (this.determineKeyBind("quickExistingDocument")) {
+      this.populateExistingObjectDialog().catch(e => console.log(e))
+    }
+  }
 
   created () {
     window.addEventListener("keyup", this.triggerKeyPush)
@@ -306,7 +258,9 @@ export default class MainLayout extends BaseClass {
 
   // @ts-ignore
   triggerKeyPush (e) {
-    if (this.newDocumentDialog || this.existingDocumentDialog || this.keyBindsDialog) { return false }
+    if (this.newDocumentDialog || this.existingDocumentDialog || this.keyBindsDialog) {
+      return false
+    }
     if (e?.altKey === true || e?.ctrlKey || e?.shiftKey) {
       const ouputKeycombo = {
         altKey: e.altKey,
@@ -314,32 +268,12 @@ export default class MainLayout extends BaseClass {
         shiftKey: e.shiftKey,
         keyCode: e.keyCode
       }
-      this.pushedKey = ouputKeycombo
 
-      this.processKeyPush()
+      this.SSET_updatePressedKey(ouputKeycombo)
     }
   }
 
   newDocumentDialog = false
-
-  processKeyPush () {
-    const currentKey = this.pushedKey
-
-    // New document - CTRL + ALT + K
-    if (!currentKey.shiftKey && currentKey.ctrlKey && currentKey.altKey && currentKey.keyCode === 75) {
-      this.keyBindsDialog = true
-    }
-
-    // New document - CTRL + N
-    if (!currentKey.shiftKey && currentKey.ctrlKey && !currentKey.altKey && currentKey.keyCode === 78) {
-      this.populateNewObjectDialog()
-    }
-
-    // Open existing document - CTRL + Q
-    if (!currentKey.shiftKey && currentKey.ctrlKey && !currentKey.altKey && currentKey.keyCode === 81) {
-      this.populateExistingObjectDialog().catch(e => console.log(e))
-    }
-  }
 
   newObjectList = [] as NewObjectDocument[]
 
@@ -406,7 +340,7 @@ export default class MainLayout extends BaseClass {
 
   triggerNewInput (e: NewObjectDocument) {
     this.newDocumentDialog = false
-    this.addNewObjectType(e)
+    this.addNewObjectRoute(e)
     this.newDocumentModel = null
   }
 
@@ -490,7 +424,7 @@ export default class MainLayout extends BaseClass {
   openExistingInput (e: I_ShortenedDocument) {
     this.existingDocumentDialog = false
     // @ts-ignore
-    this.openExistingDocument(e)
+    this.openExistingDocumentRoute(e)
     this.existingDocumentModel = null
   }
 

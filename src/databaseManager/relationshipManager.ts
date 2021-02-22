@@ -201,7 +201,12 @@ export const many_removeRelationShipFromAnotherObject = async (
 
   const PairedObjectDB = new PouchDB(typeToFind)
   let pairedDocument = false as unknown as I_OpenedDocument
-  try { pairedDocument = await PairedObjectDB.get(idToFind) } catch (e) { return pairedDocument }
+  try {
+    pairedDocument = await PairedObjectDB.get(idToFind)
+  }
+  catch (e) {
+    return pairedDocument
+  }
 
   const pairedField = previousValue.pairedField
   const pairedFieldIndex = pairedDocument.extraFields.findIndex(e => e.id === pairedField)

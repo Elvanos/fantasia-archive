@@ -11,28 +11,28 @@
         elevated
         class="bg-dark text-cultured"
       >
-    <q-dialog
-      v-if="currentlyCheckedDocument"
-      v-model="documentCloseDialogConfirm"
-      persistent>
-      <q-card>
-        <q-card-section class="row items-center">
-          <span class="q-ml-sm">Discard changes to {{retrieveFieldValue(currentlyCheckedDocument,'name')}}?</span>
-        </q-card-section>
+        <q-dialog
+          v-if="currentlyCheckedDocument"
+          v-model="documentCloseDialogConfirm"
+          persistent>
+          <q-card>
+            <q-card-section class="row items-center">
+              <span class="q-ml-sm">Discard changes to {{retrieveFieldValue(currentlyCheckedDocument,'name')}}?</span>
+            </q-card-section>
 
-        <q-card-actions align="right">
-          <q-btn flat label="Cancel" color="primary" v-close-popup />
-          <q-btn
-            flat
-            label="Discard changes"
-            color="primary"
-            v-close-popup
-            @click="closeDocument(currentlyCheckedDocument)" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+            <q-card-actions align="right">
+              <q-btn flat label="Cancel" color="primary" v-close-popup />
+              <q-btn
+                flat
+                label="Discard changes"
+                color="primary"
+                v-close-popup
+                @click="closeDocument(currentlyCheckedDocument)" />
+            </q-card-actions>
+          </q-card>
+        </q-dialog>
 
-    <q-tabs
+        <q-tabs
         align="left"
         inline-label
         class="tabsWrapper"
@@ -45,7 +45,8 @@
             leave-active-class="animated fadeOut"
             appear
             :duration="300">
-          <q-route-tab
+
+            <q-route-tab
               :ripple="false"
               v-for="document in localDocuments"
               :to="`/project/display-content/${document.type}/${document._id}`"
@@ -55,6 +56,7 @@
               :style="`color: ${retrieveFieldValue(document,'documentColor')}`"
               :alert="document.hasEdits"
               alert-icon="mdi-feather"
+              @click.prevent.middle="checkForCloseOpenedDocument(document)"
               >
                 <q-btn
                   round
@@ -67,6 +69,7 @@
                   @click.stop.prevent="checkForCloseOpenedDocument(document)"
                 />
             </q-route-tab>
+
           </transition-group>
         </q-tabs>
 
@@ -95,7 +98,8 @@ export default class TppTabs extends BaseClass {
     this.currentlyCheckedDocument = input
     if (input.hasEdits) {
       this.documentCloseDialogConfirm = true
-    } else {
+    }
+    else {
       this.closeDocument(input)
     }
   }
@@ -120,56 +124,83 @@ export default class TppTabs extends BaseClass {
 
   @Prop() readonly pushedKey!: I_KeyPressObject
 
-  @Watch("pushedKey", { deep: true })
-  processKeyPress (keypress: I_KeyPressObject) {
-    // Delete dialog - CTRL + W
-    if (!keypress.shiftKey && keypress.ctrlKey && !keypress.altKey && keypress.keyCode === 87 && this.localDocuments.length > 0) {
-      const matchingDocument = this.localDocuments.find(e => e.url === this.$route.path)
+  /****************************************************************/
+  // Keybind handling
+  /****************************************************************/
 
-      if (matchingDocument) {
-        this.checkForCloseOpenedDocument(matchingDocument)
-      }
+  /**
+   * React to keypresses passed from the parent document
+   */
+  @Watch("SGET_getCurrentKeyBindData", { deep: true })
+  processKeyPush () {
+    // Delete dialog
+    if (this.determineKeyBind("closeTab") && this.localDocuments.length > 0) {
+      this.closeTab()
     }
 
-    // Next tab - ALT + RIGHT ARROW
-    if (!keypress.shiftKey && !keypress.ctrlKey && keypress.altKey && keypress.keyCode === 39 && this.localDocuments.length > 0) {
-      let index = -1
-      const matchingDocument = this.localDocuments.find((e, i) => {
-        index = i
-        return e.url === this.$route.path
-      })
-
-      if (matchingDocument && index !== this.localDocuments.length - 1) {
-        this.$router.push({ path: this.localDocuments[index + 1].url }).catch((e: {name: string}) => {
-          if (e && e.name !== "NavigationDuplicated") { console.log(e) }
-        })
-      }
-      if (matchingDocument && index === this.localDocuments.length - 1) {
-        this.$router.push({ path: this.localDocuments[0].url }).catch((e: {name: string}) => {
-          if (e && e.name !== "NavigationDuplicated") { console.log(e) }
-        })
-      }
+    // Next tab
+    if (this.determineKeyBind("nextTab") && this.localDocuments.length > 0) {
+      this.goToNextTab()
     }
 
-    // Previous tab - ALT + LEFT ARROW
-    if (!keypress.shiftKey && !keypress.ctrlKey && keypress.altKey && keypress.keyCode === 37 && this.localDocuments.length > 0) {
-      let index = -1
-      const matchingDocument = this.localDocuments.find((e, i) => {
-        index = i
-        return e.url === this.$route.path
+    // Previous tab
+    if (this.determineKeyBind("previousTab") && this.localDocuments.length > 0) {
+      this.goToPreviousTab()
+    }
+  }
+
+  closeTab () {
+    const matchingDocument = this.localDocuments.find(e => e.url === this.$route.path)
+
+    if (matchingDocument) {
+      this.checkForCloseOpenedDocument(matchingDocument)
+    }
+  }
+
+  goToNextTab () {
+    let index = -1
+    const matchingDocument = this.localDocuments.find((e, i) => {
+      index = i
+      return e.url === this.$route.path
+    })
+
+    if (matchingDocument && index !== this.localDocuments.length - 1) {
+      this.$router.push({ path: this.localDocuments[index + 1].url }).catch((e: {name: string}) => {
+        if (e && e.name !== "NavigationDuplicated") {
+          console.log(e)
+        }
       })
+    }
+    if (matchingDocument && index === this.localDocuments.length - 1) {
+      this.$router.push({ path: this.localDocuments[0].url }).catch((e: {name: string}) => {
+        if (e && e.name !== "NavigationDuplicated") {
+          console.log(e)
+        }
+      })
+    }
+  }
 
-      if (matchingDocument && index !== 0) {
-        this.$router.push({ path: this.localDocuments[index - 1].url }).catch((e: {name: string}) => {
-          if (e && e.name !== "NavigationDuplicated") { console.log(e) }
-        })
-      }
+  goToPreviousTab () {
+    let index = -1
+    const matchingDocument = this.localDocuments.find((e, i) => {
+      index = i
+      return e.url === this.$route.path
+    })
 
-      if (matchingDocument && index === 0) {
-        this.$router.push({ path: this.localDocuments[this.localDocuments.length - 1].url }).catch((e: {name: string}) => {
-          if (e && e.name !== "NavigationDuplicated") { console.log(e) }
-        })
-      }
+    if (matchingDocument && index !== 0) {
+      this.$router.push({ path: this.localDocuments[index - 1].url }).catch((e: {name: string}) => {
+        if (e && e.name !== "NavigationDuplicated") {
+          console.log(e)
+        }
+      })
+    }
+
+    if (matchingDocument && index === 0) {
+      this.$router.push({ path: this.localDocuments[this.localDocuments.length - 1].url }).catch((e: {name: string}) => {
+        if (e && e.name !== "NavigationDuplicated") {
+          console.log(e)
+        }
+      })
     }
   }
 }

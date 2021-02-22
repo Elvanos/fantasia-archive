@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.1.2
+
+### Bugfixes
+
+### New features
+
+- Reworked hierarchical left tree
+- Added "Add under parent" button the hiearachical tree
+- Added mouse button and improved keyboard support to the hierarchical tree
+
+### QoL adjustments
+
+- Added middle-click closing for the tabs
+- Reversed default custom sorting for "Order" field in the left side tree
+
 ## 0.1.1
 
 ### Bugfixes
@@ -7,6 +22,7 @@
 - Fixed a bunch of typos
 - Fixed names not changing with single/multi relatinships if one gets name updated showing on the others properly
 - Fixed forced lower-case for notes in lists and relashionship fields
+- Fixed a bug that prevented documents with the same names properly working in the hierarchical tree
 
 ### New features
 

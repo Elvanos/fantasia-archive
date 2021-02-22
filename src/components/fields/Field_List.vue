@@ -100,7 +100,11 @@ import { I_ExtraFields } from "src/interfaces/I_Blueprint"
 export default class Field_List extends BaseClass {
   @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
 
-  @Prop({ default: () => { return [] } }) readonly inputDataValue!: {
+  @Prop({
+    default: () => {
+      return []
+    }
+  }) readonly inputDataValue!: {
     value: string
     affix?: string
   }[]

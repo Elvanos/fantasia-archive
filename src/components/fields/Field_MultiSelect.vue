@@ -62,7 +62,11 @@ import { I_ExtraFields } from "src/interfaces/I_Blueprint"
 export default class Field_MultiSelect extends BaseClass {
   @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
 
-  @Prop({ default: [] }) readonly inputDataValue!: []
+  @Prop({
+    default: () => {
+      return []
+    }
+  }) readonly inputDataValue!: []
 
   @Prop() readonly isNew!: boolean
 

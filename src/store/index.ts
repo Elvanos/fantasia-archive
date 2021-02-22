@@ -7,6 +7,7 @@ import Vuex from "vuex"
 
 import blueprintsModule from "./module-blueprints"
 import openedDocumentsModule from "./module-openedDocuments"
+import keybindsModule from "./module-keybinds"
 
 /*
  * If not building with SSR mode, you can
@@ -26,7 +27,8 @@ export default store(function ({ Vue }) {
   const Store = new Vuex.Store<StateInterface>({
     modules: {
       blueprintsModule,
-      openedDocumentsModule
+      openedDocumentsModule,
+      keybindsModule
       // example
     },
 

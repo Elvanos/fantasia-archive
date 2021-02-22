@@ -51,7 +51,8 @@ export const engageBlueprints = async () => {
     try {
     // Try adding a brand new data blueprint
       await BlueprintsDB.put(newBlueprint)
-    } catch (e) {
+    }
+    catch (e) {
       // Proceed with checking of the contents of the blueprint if it already exists
       const currentBlueprint = await BlueprintsDB.get(newBlueprint._id) as I_Blueprint
       const hasChanges = checkBlueprintUpdate(newBlueprint, currentBlueprint)
@@ -79,7 +80,9 @@ export const checkBlueprintUpdate = (newBlueprint: I_Blueprint, currentBlueprint
     newBlueprint?.nameSingular !== currentBlueprint?.nameSingular ||
     newBlueprint?.icon !== currentBlueprint?.icon ||
     _.isEqual(newBlueprint.extraFields, currentBlueprint.extraFields) === false
-  ) { hasChanges = true }
+  ) {
+    hasChanges = true
+  }
 
   return hasChanges
 }

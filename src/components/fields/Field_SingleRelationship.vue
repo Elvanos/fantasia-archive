@@ -27,7 +27,7 @@
       <q-item
       clickable
       class="text-primary"
-      @click="openExistingDocument(localInput)">
+      @click="openExistingDocumentRoute(localInput)">
         <q-item-section>
            {{localInput.label}}
             <span class="inline-block q-ml-xs text-italic connectionNote">
@@ -227,7 +227,8 @@ export default class Field_SingleRelationship extends BaseClass {
         if (!objectsWithoutCurrent.find(e => e._id === this.localInput._id)) {
           // @ts-ignore
           this.localInput = ""
-        } else {
+        }
+        else {
           const matchedFieldContent = objectsWithoutCurrent.find(e => e._id === this.localInput._id)
           if (matchedFieldContent) {
             this.localInput.label = matchedFieldContent.label

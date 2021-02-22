@@ -11,7 +11,8 @@ const mutation: MutationTree<BlueprintStateInterface> = {
     const index = state.blueprints.findIndex((single: I_Blueprint) => blueprint._id === single._id)
     if (index !== -1) {
       state.blueprints[index] = blueprint
-    } else {
+    }
+    else {
       state.blueprints.push(blueprint)
     }
   }

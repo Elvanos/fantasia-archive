@@ -59,7 +59,7 @@ module.exports = {
   globals: {
     ga: false, // Google Analytics
     cordova: true,
-    __statics: true,
+    
     process: true,
     Capacitor: true,
     chrome: true
@@ -72,7 +72,7 @@ module.exports = {
     // allow paren-less arrow functions
     'arrow-parens': 'off',
     'one-var': 'off',   
-
+    'brace-style': ["error", "stroustrup"],
     'import/first': 'off',
     'import/named': 'error',
     'import/namespace': 'error',

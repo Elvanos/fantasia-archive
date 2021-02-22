@@ -30,7 +30,7 @@
       :key="single._id"
       clickable
       class="text-primary"
-      @click="openExistingDocument(single)">
+      @click="openExistingDocumentRoute(single)">
         <q-item-section>
            {{single.label}}
            <span class="inline-block q-ml-xs text-italic connectionNote">
@@ -116,7 +116,11 @@ import { I_FieldRelationship, I_RelationshipPair } from "src/interfaces/I_FieldR
 export default class Field_SingleRelationship extends BaseClass {
   @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
 
-  @Prop({ default: () => { return [] } }) readonly inputDataValue!: I_RelationshipPair
+  @Prop({
+    default: () => {
+      return []
+    }
+  }) readonly inputDataValue!: I_RelationshipPair
 
   @Prop({ default: "" }) readonly currentId!: ""
 
@@ -225,7 +229,8 @@ export default class Field_SingleRelationship extends BaseClass {
           if (!allObjectsWithoutCurrent.find(e => e._id === s._id)) {
           // @ts-ignore
             this.localInput.splice(index, 1)
-          } else {
+          }
+          else {
             const matchedFieldContent = allObjectsWithoutCurrent.find(e => e._id === s._id)
 
             if (matchedFieldContent) {

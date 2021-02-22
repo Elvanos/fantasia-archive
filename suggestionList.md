@@ -3,9 +3,9 @@
 - Add on-the-fly generation of non-existent 2-way relationships
 
 - Add subtabs (character stats, general info, etc)
+- Add colored backgrounds to documents (along with already existingt colored texts)
 
 - Custom icons/images to documents
-- Middle mouse button close tab
 - Add option to make the command buttons for document sticky (save/delete/edit)
 - Allow/Disallow default document types
 - Dark mode

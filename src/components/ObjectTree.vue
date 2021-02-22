@@ -12,7 +12,7 @@
 
     <q-tree
       class="objectTree q-pa-sm"
-      :nodes="treeList"
+      :nodes="hierarchicalTree"
       node-key="key"
       no-connectors
       ref="tree"
@@ -21,16 +21,19 @@
       :selected.sync="selectedTreeNode"
       >
       <template v-slot:default-header="prop">
-        <div class="row items-center col-grow">
+        <div class="row items-center col-grow" @click.stop.prevent="processNodeClick(prop.node)">
           <q-icon
             :style="`color: ${prop.node.color}; width: 22px !important;`"
             :size="(prop.node.icon.includes('fas')? '16px': '21px')"
             :name="prop.node.icon"
             class="q-mr-sm" />
-          <div class="documentLabel" :style="`color: ${prop.node.color}`">
+          <div class="documentLabel"
+            :style="`color: ${prop.node.color}`"
+            @click.stop.prevent.middle="processNodeLabelMiddleClick(prop.node)"
+           >
             {{ prop.node.label }}
             <span
-              class="text-primary text-weight-medium"
+              class="text-primary text-weight-medium q-ml-xs"
               v-if="prop.node.isRoot">
                 ({{prop.node.documentCount}})
               </span>
@@ -45,11 +48,41 @@
                 Order priority of the document
               </q-tooltip>
             </q-badge>
-          </div>
-          <q-tooltip v-if="prop.node.specialLabel">
-            Add new {{ prop.node.specialLabel }}
-          </q-tooltip>
+            <div class="treeButtonGroup">
+              <q-btn
+                tabindex="-1"
+                v-if="!prop.node.specialLabel || prop.node.isRoot"
+                round
+                dense
+                color="primary"
+                class="z-1 q-ml-sm treeButton treeButton--add"
+                icon="mdi-plus"
+                size="8px"
+                @click.stop.prevent="processNodeNewDocumentButton(prop.node)"
+                >
+                <q-tooltip>
+                  Add a new document belonging under {{ prop.node.label }}
+                </q-tooltip>
+              </q-btn>
+              <q-btn
+                tabindex="-1"
+                v-if="prop.node.children && prop.node.children.length > 0 && !prop.node.isRoot"
+                round
+                dense
+                color="primary"
+                class="z-1 q-ml-sm treeButton treeButton--edit"
+                icon="mdi-pencil"
+                size="8px"
+                @click.stop.prevent="openExistingDocumentRoute(prop.node)"
+              >
+                <q-tooltip>
+                Open/Edit {{ prop.node.label }}
+                </q-tooltip>
+              </q-btn>
+            </div>
         </div>
+        </div>
+
       </template>
     </q-tree>
 
@@ -81,67 +114,86 @@
 </template>
 
 <script lang="ts">
-import { Component, Watch, Prop } from "vue-property-decorator"
+import { Component, Watch } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
 import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { I_NewObjectTrigger } from "src/interfaces/I_NewObjectTrigger"
 import PouchDB from "pouchdb"
-import { I_KeyPressObject } from "src/interfaces/I_KeypressObject"
 import { engageBlueprints, retrieveAllBlueprints } from "src/databaseManager/blueprintManager"
 // import { cleanDatabases } from "src/databaseManager/cleaner"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
-
-const menuAddNewItem = {
-  icon: "mdi-plus",
-  label: "Add new object type"
-}
 
 @Component({
   components: { }
 })
 export default class ObjectTree extends BaseClass {
-  @Prop() readonly pushedKey!: I_KeyPressObject
-
-  @Watch("pushedKey", { deep: true })
-  processKeyPress (keypress: I_KeyPressObject) {
-    // Focus left tree search - CTRL + SHIFT + Q
-    if (keypress.shiftKey && keypress.ctrlKey && !keypress.altKey && keypress.keyCode === 81) {
-      // @ts-ignore
+  /****************************************************************/
+  // KEYBINDS MANAGEMENT
+  /****************************************************************/
+  @Watch("SGET_getCurrentKeyBindData", { deep: true })
+  processKeyPush () {
+    // Focus left tree search
+    if (this.determineKeyBind("focusHierarchicalTree")) {
       const treeFilterDOM = this.$refs.treeFilter as unknown as HTMLInputElement
       treeFilterDOM.focus()
     }
 
-    // Clear input in the left tree search - CTRL + SHIFT + W
-    if (keypress.shiftKey && keypress.ctrlKey && !keypress.altKey && keypress.keyCode === 87) {
+    // Clear input in the left tree search
+    if (this.determineKeyBind("clearInputHierarchicalTree")) {
       this.resetTreeFilter()
     }
   }
 
-  menuAddNewItem = menuAddNewItem
-
-  treeList: {children: I_ShortenedDocument[], icon: string, label: string}[] = []
-
-  firstTimeExpand = true
+  /****************************************************************/
+  // GENERIC FUNCTIONALITY
+  /****************************************************************/
 
   /**
-   * A resetter for the currently selected node
+   * Load all blueprints and build the tree out of them
    */
-  selectedTreeNode = null
+  async created () {
+    // await cleanDatabases()
+    await this.processBluePrints()
 
-  treeFilter = ""
+    // Unfuck the rendering by giving the app some time to load first
+    setTimeout(() => {
+      this.buildCurrentObjectTree().catch((e) => {
+        console.log(e)
+      })
+    }, 500)
+  }
 
+  /****************************************************************/
+  // BLUEPRINT MANAGEMENT
+  /****************************************************************/
+
+  /**
+   * In case any of the blueprints change, reload the whole tree
+   */
   @Watch("SGET_allBlueprints", { deep: true })
   reactToBluePrintRefresh () {
-    this.buildCurrentObjectTree().catch((e) => { console.log(e) })
+    this.buildCurrentObjectTree().catch((e) => {
+      console.log(e)
+    })
   }
 
-  resetTreeFilter () {
-    this.treeFilter = ""
-    // @ts-ignore
-    const treeFilterDOM = this.$refs.treeFilter as unknown as HTMLInputElement
-    treeFilterDOM.focus()
+  /**
+   * Processes all blueprints and redies the store for population of the app
+   */
+  async processBluePrints (): Promise<void> {
+    await engageBlueprints()
+
+    const allObjectBlueprints = (await retrieveAllBlueprints()).rows.map((blueprint) => {
+      return blueprint.doc
+    }) as I_Blueprint[]
+
+    this.SSET_allBlueprints(allObjectBlueprints)
   }
+
+  /****************************************************************/
+  // HIERARCHICAL TREE - HELPERS AND MODELS
+  /****************************************************************/
 
   /**
    * Since we are using the object tree as URLs intead of selecting, this resets the select every time a node is clicked
@@ -153,31 +205,94 @@ export default class ObjectTree extends BaseClass {
     }
   }
 
+  /**
+   *
+   */
   @Watch("SGET_allOpenedDocuments", { deep: true })
   async reactToDocumentListChange () {
     await this.buildCurrentObjectTree()
   }
 
+  /**
+   * Generic wrapper for adding of new object types to the tree
+   */
+  menuAddNewItem = {
+    icon: "mdi-plus",
+    label: "Add new object type"
+  }
+
+  /**
+   * Contains all the data for the render in tree
+   */
+  hierarchicalTree: {children: I_ShortenedDocument[], icon: string, label: string}[] = []
+
+  /**
+   * Determines if the tree should expand fully at first or not
+   */
+  firstTimeExpand = true
+
+  /**
+   * A resetter for the currently selected node
+   */
+  selectedTreeNode = null
+
+  /**
+   * Filter model for the tree
+   */
+  treeFilter = ""
+
+  /**
+   * Resets the tree filter and refocuses the search box
+   */
+  resetTreeFilter () {
+    this.treeFilter = ""
+    const treeFilterDOM = this.$refs.treeFilter as unknown as HTMLInputElement
+    treeFilterDOM.focus()
+  }
+
+  /****************************************************************/
+  // HIERARCHICAL TREE - CONTENT CONSTRUCTION
+  /****************************************************************/
+
+  /**
+   * Sort the whole tree via alphabetical and custom numeric order
+   * @param input Hierartchical tree object to sort
+   */
   sortDocuments (input: I_ShortenedDocument[]) {
     input
+
+      // Sort by name
       .sort((a, b) => a.label.localeCompare(b.label))
+
+      // Sort by custom order
       .sort((a, b) => {
         const order1 = a.extraFields.find(e => e.id === "order")?.value
         const order2 = b.extraFields.find(e => e.id === "order")?.value
 
-        if (order1 < order2) { return 1 }
-        if (order1 > order2) { return -1 }
+        if (order1 > order2) {
+          return 1
+        }
+        if (order1 < order2) {
+          return -1
+        }
 
         return 0
       })
 
     input.forEach((e, i) => {
-      if (e.children.length > 0) { input[i].children = this.sortDocuments(input[i].children) }
+      // Run recursive if the node has any children
+      if (e.children.length > 0) {
+        input[i].children = this.sortDocuments(input[i].children)
+      }
     })
 
     return input
   }
 
+  /**
+   * Builds proper hiearachy for flat array of documents
+   * @param input Non-hierarchical tree to build the hiearachy out of
+   */
   buildTreeHierarchy (input: I_ShortenedDocument[]) {
     const map: number[] = []
     let node
@@ -185,19 +300,22 @@ export default class ObjectTree extends BaseClass {
     let i
 
     for (i = 0; i < input.length; i += 1) {
-      map[input[i]._id] = i // initialize the map
+      // Initialize the map
+      map[input[i]._id] = i
     }
 
     for (i = 0; i < input.length; i += 1) {
       node = input[i]
       if (node.parentDoc !== false) {
-      // if you have dangling branches check that map[node.parentId] exists
+      // If there are any dangling branches check that map[node.parentDoc] exists
         if (input[map[node.parentDoc]]) {
           input[map[node.parentDoc]].children.push(node)
-        } else {
+        }
+        else {
           roots.push(node)
         }
-      } else {
+      }
+      else {
         roots.push(node)
       }
     }
@@ -207,10 +325,14 @@ export default class ObjectTree extends BaseClass {
     return sortedRoots
   }
 
+  /**
+   * Builds a brand new sparkling hearchy tree out of available data
+   */
   async buildCurrentObjectTree () {
     const allBlueprings = this.SGET_allBlueprints
     const treeObject: any[] = []
 
+    // Process all documents, build hieararchy out of the and sort them via name and custom order
     for (const blueprint of allBlueprings) {
       const CurrentObjectDB = new PouchDB(blueprint._id)
 
@@ -229,7 +351,7 @@ export default class ObjectTree extends BaseClass {
             icon: (isCategory) ? "fas fa-folder-open" : doc.icon,
             sticker: doc.extraFields.find(e => e.id === "order")?.value,
             parentDoc: (parentDocID) ? parentDocID._id : false,
-            handler: this.openExistingDocument,
+            handler: this.openExistingDocumentRoute,
             expandable: true,
             color: color,
             type: doc.type,
@@ -253,7 +375,7 @@ export default class ObjectTree extends BaseClass {
         order: blueprint.order,
         _id: blueprint._id,
         key: blueprint._id,
-        handler: this.addNewObjectType,
+        handler: this.addNewObjectRoute,
         specialLabel: blueprint.nameSingular.toLowerCase(),
         isRoot: true,
         documentCount: documentCount,
@@ -262,8 +384,12 @@ export default class ObjectTree extends BaseClass {
           {
             label: `Add new ${blueprint.nameSingular.toLowerCase()}`,
             icon: "mdi-plus",
-            handler: this.addNewObjectType,
-            _id: blueprint._id
+            handler: this.addNewObjectRoute,
+            children: false,
+            key: `${blueprint._id}_add`,
+            _id: blueprint._id,
+            specialLabel: blueprint.nameSingular.toLowerCase()
+
           }
         ]
       }
@@ -271,6 +397,7 @@ export default class ObjectTree extends BaseClass {
       treeObject.push(treeRow)
     }
 
+    // Sort the top level of the blueprints
     treeObject.sort((a, b) => {
       if (a.order < b.order) {
         return 1
@@ -282,36 +409,89 @@ export default class ObjectTree extends BaseClass {
       return 0
     })
 
-    this.treeList = treeObject
+    // Assign the finished object to the render model
+    this.hierarchicalTree = treeObject
 
+    // Expand all on first load
     if (this.firstTimeExpand) {
       this.firstTimeExpand = false
       // await this.$nextTick()
       // this.$refs.tree.expandAll()
     }
-    console.log(treeObject)
   }
 
-  async created () {
-    // await cleanDatabases()
-    await this.processBluePrints()
-
-    setTimeout(() => {
-      this.buildCurrentObjectTree().catch((e) => { console.log(e) })
-    }, 1000)
+  processNodeNewDocumentButton (node: {
+    key: string
+    _id: string
+    children: []
+    type: string
+    isRoot: boolean
+    specialLabel: string|boolean
+  }) {
+    // If this is top level blueprint
+    if (node.isRoot) {
+      // @ts-ignore
+      this.addNewObjectRoute(node)
+    }
+    // If this is a custom document
+    else {
+      const routeObject = {
+        _id: node.type,
+        parent: node._id
+      }
+      // @ts-ignore
+      this.addNewObjectRoute(routeObject)
+    }
   }
 
-  /**
-   * Processes all blueprints and redies the store for population of the app
-   */
-  async processBluePrints (): Promise<void> {
-    await engageBlueprints()
+  processNodeLabelMiddleClick (node: {
+    key: string
+    _id: string
+    children: []
+    type: string
+    isRoot: boolean
+    specialLabel: string|boolean
+  }) {
+    this.selectedTreeNode = null
 
-    const allObjectBlueprints = (await retrieveAllBlueprints()).rows.map((blueprint) => {
-      return blueprint.doc
-    }) as I_Blueprint[]
+    if (!node.specialLabel && !node.isRoot) {
+      // @ts-ignore
+      this.openExistingDocumentRoute(node)
+    }
+    else {
+      this.addNewObjectRoute(node)
+    }
+  }
 
-    this.SSET_allBlueprints(allObjectBlueprints)
+  processNodeClick (node: {
+    key: string
+    children: []
+    specialLabel: string|boolean
+  }) {
+    // If this is a category or has children
+    if (node.children.length > 0) {
+      this.expandeCollapseNode(node)
+    }
+    // If this lacks a "special label" - AKA anything that isn't the "Add new XY" node
+    else if (!node.specialLabel) {
+      // @ts-ignore
+      this.openExistingDocumentRoute(node)
+    }
+    // If this lacks a "special label" - AKA if this is the "Add new XY" node
+    else {
+      // @ts-ignore
+      this.addNewObjectRoute(node)
+    }
+  }
+
+  expandeCollapseNode (node: {key: string}) {
+    const treeDOM = this.$refs.tree as unknown as {
+      setExpanded: (key:string, state: boolean)=> void,
+      isExpanded: (key:string)=> boolean
+    }
+
+    const isExpanded = treeDOM.isExpanded(node.key)
+    treeDOM.setExpanded(node.key, !isExpanded)
   }
 }
 </script>
@@ -319,14 +499,53 @@ export default class ObjectTree extends BaseClass {
 <style lang="scss">
 .objectTree {
   .q-tree__arrow {
-    width: 28px;
-    height: 28px;
-    margin: 0;
+    margin-right: 0;
+    padding: 4px;
+  }
+
+  .q-tree__node-header {
+    padding: 0;
   }
 
   .documentLabel {
     max-width: calc(100% - 30px);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 4px 4px 0;
+  }
+
+  .treeButtonGroup {
+    flex-grow: 0;
+    flex-shrink: 0;
+    display: flex;
+    height: fit-content;
+    margin-left: auto;
+    align-self: center;
   }
 }
 
+.treeButton {
+  opacity: 0.8;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &--add {
+    .q-icon {
+      font-size: 20px;
+    }
+  }
+
+  &--edit {
+    .q-icon {
+      font-size: 14px;
+    }
+  }
+
+  .q-icon {
+    color: $dark;
+  }
+}
 </style>

@@ -3,4 +3,8 @@ export interface I_KeyPressObject {
   ctrlKey: boolean
   shiftKey: boolean
   keyCode: number
+  editable?: boolean
+  id?: string
+  tooltip?: string
+  note? :string
 }
