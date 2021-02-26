@@ -4,16 +4,25 @@
 
 ### Bugfixes
 
+- Fixed a safeguard for opening multiple overlapping dialogs unintentionally
+
 ### New features
 
 - Reworked hierarchical left tree
-- Added "Add under parent" button the hiearachical tree
-- Added mouse button and improved keyboard support to the hierarchical tree
+- Added "Add under parent" button to the hierarchical tree, document page view, and quick search existing documents
+- Added mouse button support and improved keyboard support to the hierarchical tree
+- Reworked the top bar of the app to include tabs, window control elements, and basic menus of the app
+- Added a check upon closing the app to avoid unintentional loss of data due to unsaved documents
 
 ### QoL adjustments
 
 - Added middle-click closing for the tabs
-- Reversed default custom sorting for "Order" field in the left side tree
+- Added automatical opening of the project page after opening an existing project from a folder
+- Reversed default custom sorting for the "Order" field in the left side tree
+- Modified auto-closing behavior of hierarchical left tree nodes when moving/adding/removing documents
+- Added a delay for tooltip popups on fields of documents
+- Remove persistence from the document with an active edits confirmation dialog
+- Unified graphical interface coloring of Quick-add and Quick-search dialogs to work consistently with the coloring of individual documents/document types same as the left hierarchical tre
 
 ## 0.1.1
 

@@ -25,6 +25,11 @@ const mutation: MutationTree<OpenDocumentsStateInterface> = {
     const toRemoveIndex = state.documents.docs.findIndex(doc => doc.type === input.type && doc._id === input._id)
     state.documents.docs.splice(toRemoveIndex, 1)
     state.documents.timestamp = uid()
+  },
+
+  resetDocuments (state: OpenDocumentsStateInterface) {
+    state.documents.docs = []
+    state.documents.timestamp = uid()
   }
 }
 

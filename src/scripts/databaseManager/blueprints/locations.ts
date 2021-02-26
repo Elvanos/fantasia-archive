@@ -1,4 +1,4 @@
-import { I_Blueprint } from "../../interfaces/I_Blueprint"
+import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const locationsBlueprint: I_Blueprint = {
   _id: "locations",
   order: 17,

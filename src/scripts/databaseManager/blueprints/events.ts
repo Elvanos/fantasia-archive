@@ -1,10 +1,10 @@
-import { I_Blueprint } from "../../interfaces/I_Blueprint"
-export const mythsBlueprint: I_Blueprint = {
-  _id: "myths",
-  order: 7,
-  namePlural: "Myths/Legends",
-  nameSingular: "Myth/Legend",
-  icon: "fas fa-journal-whills",
+import { I_Blueprint } from "../../../interfaces/I_Blueprint"
+export const eventsBlueprint: I_Blueprint = {
+  _id: "events",
+  order: 16,
+  namePlural: "Events",
+  nameSingular: "Event",
+  icon: "mdi-calendar-text",
   extraFields: [
     {
       id: "breakBasic",
@@ -16,7 +16,7 @@ export const mythsBlueprint: I_Blueprint = {
       id: "name",
       name: "Name",
       type: "text",
-      icon: "fas fa-journal-whills",
+      icon: "mdi-account",
       sizing: 3
     },
     {
@@ -41,7 +41,7 @@ export const mythsBlueprint: I_Blueprint = {
         `,
       sizing: 3,
       relationshipSettings: {
-        connectedObjectType: "myths"
+        connectedObjectType: "events"
       }
     },
     {
@@ -73,28 +73,97 @@ export const mythsBlueprint: I_Blueprint = {
       name: "Other names & Epithets",
       type: "list",
       icon: "mdi-book-plus",
-      sizing: 6
+      sizing: 4
     },
     {
-      id: "pairedOtherMyths",
-      name: "Connected to other myths/legends",
+      id: "eventType",
+      name: "Event type",
+      type: "multiSelect",
+      icon: "fas fa-meteor",
+      sizing: 2,
+      predefinedSelectValues: [
+        "Annual",
+        "Battle/Skirmish",
+        "Celebration",
+        "Construction",
+        "Daily",
+        "Festival",
+        "Infrequent",
+        "Invention",
+        "Monthly",
+        "Natural occurance",
+        "One-time",
+        "Seasonal",
+        "Tragedy",
+        "Unique",
+        "Unnatural occurance",
+        "War",
+        "Other"
+      ]
+    },
+    {
+      id: "startDate",
+      name: "Start date",
+      type: "text",
+      icon: "fas fa-hourglass-start",
+      sizing: 2
+    },
+    {
+      id: "endDate",
+      name: "End date",
+      type: "text",
+      icon: "fas fa-hourglass-end",
+      sizing: 2
+    },
+    {
+      id: "participants",
+      name: "Amount of participants",
+      type: "number",
+      icon: "mdi-account-group",
+      sizing: 2
+    },
+    {
+      id: "pairedCharacter",
+      name: "Prominent actors",
       type: "manyToManyRelationship",
-      icon: "fas fa-journal-whills",
+      icon: "mdi-account",
       sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "myths",
-        connectedField: "pairedOtherMyths"
+        connectedObjectType: "characters",
+        connectedField: "pairedEvent"
+      }
+    },
+    {
+      id: "pairedRaces",
+      name: "Affected or involved species/races",
+      type: "manyToManyRelationship",
+      icon: "fas fa-dragon",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "races",
+        connectedField: "connectedEvents"
+      }
+    },
+    {
+      id: "pairedLocations",
+      name: "Connected to locations",
+      type: "manyToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "pairedEvent"
       }
     },
     {
       id: "pairedEvents",
-      name: "Connected to events",
+      name: "Connected to other events",
       type: "manyToManyRelationship",
       icon: "mdi-calendar-text",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "events",
-        connectedField: "pairedMyths"
+        connectedField: "pairedEvents"
       }
     },
     {
@@ -105,7 +174,18 @@ export const mythsBlueprint: I_Blueprint = {
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "items",
-        connectedField: "pairedMyths"
+        connectedField: "pairedEvents"
+      }
+    },
+    {
+      id: "pairedMyths",
+      name: "Connected to myths/legends",
+      type: "manyToManyRelationship",
+      icon: "fas fa-journal-whills",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "myths",
+        connectedField: "pairedEvents"
       }
     },
     {
@@ -115,94 +195,54 @@ export const mythsBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "traditions",
-      name: "Connected traditions & customs to the myth/legend",
-      type: "wysiwyg",
-      sizing: 12
-    },
-    {
-      id: "breakRelasionships",
-      name: "Characters, locations and groups/institutions details",
+      id: "breakGroups",
+      name: "Involved groups",
       type: "break",
       sizing: 12
     },
     {
-      id: "pairedConnectedCharacter",
-      name: "Connected characters",
-      type: "manyToManyRelationship",
-      icon: "mdi-account",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "characters",
-        connectedField: "pairedConnectedMyths"
-      }
-    },
-    {
-      id: "pairedConnectedLocations",
-      name: "Connected locations",
-      type: "manyToManyRelationship",
-      icon: "mdi-map-marker-radius",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "locations",
-        connectedField: "pairedConnectedMyths"
-      }
-    },
-    {
-      id: "pairedConnectedRaces",
-      name: "Connected to species/races",
-      type: "manyToManyRelationship",
-      icon: "fas fa-dragon",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "races",
-        connectedField: "pairedConnectedMyths"
-      }
-    },
-    {
-      id: "pairedConnectedPolGroups",
-      name: "Connected to political groups/ideologies",
+      id: "connectedPolitical",
+      name: "Connected political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
-        connectedField: "pairedConnectedMyths"
+        connectedField: "connectedEvents"
       }
     },
     {
-      id: "pairedConnectedRelGroups",
-      name: "Connected to religious groups/teachings",
+      id: "connectedReligious",
+      name: "Connected religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "religions",
-        connectedField: "pairedConnectedMyths"
+        connectedField: "connectedEvents"
       }
     },
     {
-      id: "pairedConnectedMagicGroups",
-      name: "Connected to magic/spells",
+      id: "connectedMagical",
+      name: "Connected magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "magic",
-        connectedField: "pairedConnectedMyths"
+        connectedField: "connectedEvents"
       }
     },
     {
-      id: "pairedConnectedTechGroups",
-      name: "Connected to technology/science",
+      id: "connectedTech",
+      name: "Connected tech/scientifical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "tech",
-        connectedField: "pairedConnectedMyths"
+        connectedField: "connectedEvents"
       }
     }
-
   ]
 }

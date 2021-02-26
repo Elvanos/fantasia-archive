@@ -1,10 +1,10 @@
-import { I_Blueprint } from "../../interfaces/I_Blueprint"
-export const magicBlueprint: I_Blueprint = {
-  _id: "magic",
-  order: 13,
-  namePlural: "Magic/Spells",
-  nameSingular: "Magic/Spell",
-  icon: "fas fa-hat-wizard",
+import { I_Blueprint } from "../../../interfaces/I_Blueprint"
+export const religionsBlueprint: I_Blueprint = {
+  _id: "religions",
+  order: 14,
+  namePlural: "Religions/Teachings",
+  nameSingular: "Religion/Teaching",
+  icon: "fas fa-ankh",
   extraFields: [
     {
       id: "breakBasic",
@@ -16,7 +16,7 @@ export const magicBlueprint: I_Blueprint = {
       id: "name",
       name: "Name",
       type: "text",
-      icon: "fas fa-hat-wizard",
+      icon: "fas fa-ankh",
       sizing: 3
     },
     {
@@ -41,7 +41,7 @@ export const magicBlueprint: I_Blueprint = {
         `,
       sizing: 3,
       relationshipSettings: {
-        connectedObjectType: "magic"
+        connectedObjectType: "religions"
       }
     },
     {
@@ -86,8 +86,8 @@ export const magicBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "users",
-      name: "Magic users amount",
+      id: "followers",
+      name: "Follower amount",
       type: "text",
       icon: "mdi-account-group",
       sizing: 2
@@ -103,92 +103,60 @@ export const magicBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "typeMagic",
-      name: "Type",
+      id: "formReligion",
+      name: "Form of religion",
       type: "multiSelect",
-      icon: "fas fa-monument",
+      icon: "fas fa-yin-yang",
       sizing: 3,
       predefinedSelectValues: [
-        "Magical institution",
-        "Magical teaching",
-        "Ritual",
-        "School of magic",
-        "Spell",
+        "Cult",
+        "Free-form faith",
+        "Individual teaching",
+        "Official teaching",
+        "Organized faith",
+        "Sect",
         "Other"
       ]
     },
     {
-      id: "formMagic",
-      name: "General schools of magic",
+      id: "typeReligion",
+      name: "Type of religion",
       type: "multiSelect",
-      icon: "fas fa-hand-sparkles",
+      icon: "fas fa-sun",
       sizing: 3,
       predefinedSelectValues: [
-        "Abjuration ",
-        "Conjuration",
-        "Divination",
-        "Enchantment",
-        "Evocation",
-        "Illusion",
-        "Necromancy",
-        "Transmutation",
-        "World alteration",
+        "Ancestor worship",
+        "Animism",
+        "Atheism",
+        "Monotheism",
+        "Naturalism",
+        "Polytheism",
+        "Spritism",
+        "Totemism",
+        "Virtue teaching",
         "Other"
       ]
-    },
-    {
-      id: "pairedCharacter",
-      name: "Magic/Spell users",
-      type: "manyToManyRelationship",
-      icon: "mdi-account",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "characters",
-        connectedField: "pairedMagic"
-      }
-    },
-    {
-      id: "pairedSpells",
-      name: "Connected Spells/Rituals/Institutions",
-      type: "manyToManyRelationship",
-      icon: "fas fa-hat-wizard",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "magic",
-        connectedField: "pairedSpells"
-      }
-    },
-    {
-      id: "pairedItems",
-      name: "Useable through the use of items/artifacts",
-      type: "manyToManyRelationship",
-      icon: "mdi-sword-cross",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "items",
-        connectedField: "pairedMagic"
-      }
-    },
-    {
-      id: "connectedRaces",
-      name: "Common species/races among the practitioners",
-      type: "manyToManyRelationship",
-      icon: "fas fa-dragon",
-      sizing: 6,
-      relationshipSettings: {
-        connectedObjectType: "races",
-        connectedField: "commonInMagicGroups"
-      }
     },
     {
       id: "localLanguages",
-      name: "Common languages",
+      name: "Used languages",
       type: "manyToManyRelationship",
       icon: "mdi-book-alphabet",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "languages",
-        connectedField: "usedInMagicalGroups"
+        connectedField: "usedInReligiousGroups"
+      }
+    },
+    {
+      id: "connectedRaces",
+      name: "Common species/races",
+      type: "manyToManyRelationship",
+      icon: "fas fa-dragon",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "races",
+        connectedField: "commonInReligiousGroups"
       }
     },
     {
@@ -211,24 +179,24 @@ export const magicBlueprint: I_Blueprint = {
     },
     {
       id: "governLocations",
-      name: "Ruled locations",
+      name: "Ruled/Influenced locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "locations",
-        connectedField: "governMagical"
+        connectedField: "governReligious"
       }
     },
     {
-      id: "connectedLocations",
-      name: "Conected locations",
+      id: "collectedLocations",
+      name: "Connected locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "locations",
-        connectedField: "connectedMagical"
+        connectedField: "connectedReligious"
       }
     },
     {
@@ -239,7 +207,7 @@ export const magicBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "characters",
-        connectedField: "pairedBelongingMagicGroup"
+        connectedField: "pairedBelongingRelGroup"
       }
     },
     {
@@ -250,7 +218,7 @@ export const magicBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "characters",
-        connectedField: "pairedAllyMagicGroup"
+        connectedField: "pairedAllyRelGroup"
       }
     },
     {
@@ -261,73 +229,74 @@ export const magicBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "characters",
-        connectedField: "pairedEnemyMagicGroup"
+        connectedField: "pairedEnemyRelGroup"
       }
     },
     {
       id: "pairedConnectedPolGroups",
-      name: "Connected political groups",
+      name: "Connected political groups/ideologies",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
-        connectedField: "pairedConnectedMagicalGroups"
+        connectedField: "pairedConnectedReligiousGroups"
       }
     },
     {
       id: "pairedAllyPolGroups",
-      name: "Allied political groups",
+      name: "Allied political groups/ideologies",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
-        connectedField: "pairedAllyMagicalGroups"
+        connectedField: "pairedAllyReligiousGroups"
       }
     },
     {
       id: "pairedEnemyPolGroups",
-      name: "Enemy political groups",
+      name: "Enemy political groups/ideologies",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
-        connectedField: "pairedEnemyMagicalGroups"
+        connectedField: "pairedEnemyReligiousGroups"
+      }
+    },
+
+    {
+      id: "pairedConnectedMagicGroups",
+      name: "Connected magical groups/ideologies",
+      type: "manyToManyRelationship",
+      icon: "fas fa-hat-wizard",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "magic",
+        connectedField: "pairedConnectedReligiousGroups"
       }
     },
     {
-      id: "pairedConnectedReligiousGroups",
-      name: "Connected religious groups/teachings",
+      id: "pairedAllyMagicGroups",
+      name: "Allied magical groups/ideologies",
       type: "manyToManyRelationship",
-      icon: "fas fa-ankh",
+      icon: "fas fa-hat-wizard",
       sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "religions",
-        connectedField: "pairedConnectedMagicGroups"
+        connectedObjectType: "magic",
+        connectedField: "pairedAllyReligiousGroups"
       }
     },
     {
-      id: "pairedAllyReligiousGroups",
-      name: "Allied religious groups/teachings",
+      id: "pairedEnemyMagicGroups",
+      name: "Enemy magical groups/ideologies",
       type: "manyToManyRelationship",
-      icon: "fas fa-ankh",
+      icon: "fas fa-hat-wizard",
       sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "religions",
-        connectedField: "pairedAllyMagicGroups"
-      }
-    },
-    {
-      id: "pairedEnemyReligiousGroups",
-      name: "Enemy religious groups/teachings",
-      type: "manyToManyRelationship",
-      icon: "fas fa-ankh",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "religions",
-        connectedField: "pairedEnemyMagicGroups"
+        connectedObjectType: "magic",
+        connectedField: "pairedEnemyReligiousGroups"
       }
     },
     {
@@ -338,7 +307,7 @@ export const magicBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "tech",
-        connectedField: "pairedConnectedMagicalGroups"
+        connectedField: "pairedConnectedReligiousGroups"
       }
     },
     {
@@ -349,7 +318,7 @@ export const magicBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "tech",
-        connectedField: "pairedAllyMagicalGroups"
+        connectedField: "pairedAllyReligiousGroups"
       }
     },
     {
@@ -360,7 +329,7 @@ export const magicBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "tech",
-        connectedField: "pairedEnemyMagicalGroups"
+        connectedField: "pairedEnemyReligiousGroups"
       }
     },
     {
@@ -377,7 +346,7 @@ export const magicBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "events",
-        connectedField: "connectedMagical"
+        connectedField: "connectedReligious"
       }
     },
     {
@@ -388,7 +357,7 @@ export const magicBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "myths",
-        connectedField: "pairedConnectedMagicGroups"
+        connectedField: "pairedConnectedRelGroups"
       }
     },
     {
@@ -399,7 +368,7 @@ export const magicBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "items",
-        connectedField: "pairedConnectedMagicGroups"
+        connectedField: "pairedConnectedRelGroups"
       }
     }
   ]

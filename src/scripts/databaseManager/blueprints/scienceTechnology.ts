@@ -1,10 +1,10 @@
-import { I_Blueprint } from "../../interfaces/I_Blueprint"
-export const religionsBlueprint: I_Blueprint = {
-  _id: "religions",
-  order: 14,
-  namePlural: "Religions/Teachings",
-  nameSingular: "Religion/Teaching",
-  icon: "fas fa-ankh",
+import { I_Blueprint } from "../../../interfaces/I_Blueprint"
+export const techBlueprint: I_Blueprint = {
+  _id: "tech",
+  order: 12,
+  namePlural: "Science/Technology",
+  nameSingular: "Science/Technology",
+  icon: "fas fa-wrench",
   extraFields: [
     {
       id: "breakBasic",
@@ -16,7 +16,7 @@ export const religionsBlueprint: I_Blueprint = {
       id: "name",
       name: "Name",
       type: "text",
-      icon: "fas fa-ankh",
+      icon: "fas fa-wrench",
       sizing: 3
     },
     {
@@ -41,7 +41,7 @@ export const religionsBlueprint: I_Blueprint = {
         `,
       sizing: 3,
       relationshipSettings: {
-        connectedObjectType: "religions"
+        connectedObjectType: "tech"
       }
     },
     {
@@ -86,8 +86,8 @@ export const religionsBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "followers",
-      name: "Follower amount",
+      id: "users",
+      name: "Practitioners/Engineers",
       type: "text",
       icon: "mdi-account-group",
       sizing: 2
@@ -103,60 +103,94 @@ export const religionsBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "formReligion",
-      name: "Form of religion",
+      id: "typeTech",
+      name: "Type",
       type: "multiSelect",
-      icon: "fas fa-yin-yang",
+      icon: "fas fa-cogs",
       sizing: 3,
       predefinedSelectValues: [
-        "Cult",
-        "Free-form faith",
-        "Individual teaching",
-        "Official teaching",
-        "Organized faith",
-        "Sect",
+        "Factory/Manufacture",
+        "Invention",
+        "Machinery",
+        "Magi-tech creation",
+        "School of technology",
+        "Scientifical/Technological institution",
+        "Technique",
         "Other"
       ]
     },
     {
-      id: "typeReligion",
-      name: "Type of religion",
+      id: "formTech",
+      name: "Branch of sciences",
       type: "multiSelect",
-      icon: "fas fa-sun",
+      icon: "fas fa-vial",
       sizing: 3,
       predefinedSelectValues: [
-        "Ancestor worship",
-        "Animism",
-        "Atheism",
-        "Monotheism",
-        "Naturalism",
-        "Polytheism",
-        "Spritism",
-        "Totemism",
-        "Virtue teaching",
+        "Agricultural science",
+        "Astrology",
+        "Automation & Applied logic",
+        "Biology",
+        "Chemistry",
+        "Economics",
+        "Engineering",
+        "Geology",
+        "History",
+        "Linguistics",
+        "Logic",
+        "Magicology",
+        "Mathematics",
+        "Medicine",
+        "Pedagogy",
+        "Physics",
+        "Politology",
+        "Psychology",
+        "Sociology",
+        "Statistics",
         "Other"
       ]
     },
     {
-      id: "localLanguages",
-      name: "Used languages",
+      id: "pairedCharacter",
+      name: "Noteable practitioners/scientists",
       type: "manyToManyRelationship",
-      icon: "mdi-book-alphabet",
+      icon: "mdi-account",
       sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "languages",
-        connectedField: "usedInReligiousGroups"
+        connectedObjectType: "characters",
+        connectedField: "pairedTech"
+      }
+    },
+    {
+      id: "pairedTech",
+      name: "Related technologies/sciences",
+      type: "manyToManyRelationship",
+      icon: "fas fa-wrench",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "tech",
+        connectedField: "pairedTech"
       }
     },
     {
       id: "connectedRaces",
-      name: "Common species/races",
+      name: "Common species/races among the practitioners",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "races",
-        connectedField: "commonInReligiousGroups"
+        connectedField: "commonInTechGroups"
+      }
+    },
+    {
+      id: "localLanguages",
+      name: "Common languages",
+      type: "manyToManyRelationship",
+      icon: "mdi-book-alphabet",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "languages",
+        connectedField: "usedInTechGroups"
       }
     },
     {
@@ -177,26 +211,27 @@ export const religionsBlueprint: I_Blueprint = {
       type: "break",
       sizing: 12
     },
+
     {
       id: "governLocations",
-      name: "Ruled/Influenced locations",
+      name: "Ruled locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "locations",
-        connectedField: "governReligious"
+        connectedField: "governTech"
       }
     },
     {
-      id: "collectedLocations",
+      id: "connectedLocations",
       name: "Connected locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "locations",
-        connectedField: "connectedReligious"
+        connectedField: "connectedTech"
       }
     },
     {
@@ -207,7 +242,7 @@ export const religionsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "characters",
-        connectedField: "pairedBelongingRelGroup"
+        connectedField: "pairedBelongingTechGroup"
       }
     },
     {
@@ -218,7 +253,7 @@ export const religionsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "characters",
-        connectedField: "pairedAllyRelGroup"
+        connectedField: "pairedAllyTechGroup"
       }
     },
     {
@@ -229,9 +264,10 @@ export const religionsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "characters",
-        connectedField: "pairedEnemyRelGroup"
+        connectedField: "pairedEnemyTechGroup"
       }
     },
+
     {
       id: "pairedConnectedPolGroups",
       name: "Connected political groups/ideologies",
@@ -240,7 +276,7 @@ export const religionsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
-        connectedField: "pairedConnectedReligiousGroups"
+        connectedField: "pairedConnectedTechGroups"
       }
     },
     {
@@ -251,7 +287,7 @@ export const religionsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
-        connectedField: "pairedAllyReligiousGroups"
+        connectedField: "pairedAllyTechGroups"
       }
     },
     {
@@ -262,74 +298,73 @@ export const religionsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
-        connectedField: "pairedEnemyReligiousGroups"
+        connectedField: "pairedEnemyTechGroups"
       }
     },
-
     {
-      id: "pairedConnectedMagicGroups",
-      name: "Connected magical groups/ideologies",
+      id: "pairedConnectedReligiousGroups",
+      name: "Connected religious groups/teachings",
+      type: "manyToManyRelationship",
+      icon: "fas fa-ankh",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "religions",
+        connectedField: "pairedConnectedTechGroups"
+      }
+    },
+    {
+      id: "pairedAllyReligiousGroups",
+      name: "Allied religious groups/teachings",
+      type: "manyToManyRelationship",
+      icon: "fas fa-ankh",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "religions",
+        connectedField: "pairedAllyTechGroups"
+      }
+    },
+    {
+      id: "pairedEnemyReligiousGroups",
+      name: "Enemy religious groups/teachings",
+      type: "manyToManyRelationship",
+      icon: "fas fa-ankh",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "religions",
+        connectedField: "pairedEnemyTechGroups"
+      }
+    },
+    {
+      id: "pairedConnectedMagicalGroups",
+      name: "Connected magical groups/teachings",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "magic",
-        connectedField: "pairedConnectedReligiousGroups"
+        connectedField: "pairedConnectedTechGroups"
       }
     },
     {
-      id: "pairedAllyMagicGroups",
-      name: "Allied magical groups/ideologies",
+      id: "pairedAllyMagicalGroups",
+      name: "Allied magical groups/teachings",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "magic",
-        connectedField: "pairedAllyReligiousGroups"
+        connectedField: "pairedAllyTechGroups"
       }
     },
     {
-      id: "pairedEnemyMagicGroups",
-      name: "Enemy magical groups/ideologies",
+      id: "pairedEnemyMagicalGroups",
+      name: "Enemy magical groups/teachings",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "magic",
-        connectedField: "pairedEnemyReligiousGroups"
-      }
-    },
-    {
-      id: "pairedConnectedTechGroups",
-      name: "Connected scientifical/technological groups/teachings",
-      type: "manyToManyRelationship",
-      icon: "fas fa-wrench",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "tech",
-        connectedField: "pairedConnectedReligiousGroups"
-      }
-    },
-    {
-      id: "pairedAllyTechGroups",
-      name: "Allied scientifical/technological groups/teachings",
-      type: "manyToManyRelationship",
-      icon: "fas fa-wrench",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "tech",
-        connectedField: "pairedAllyReligiousGroups"
-      }
-    },
-    {
-      id: "pairedEnemyTechGroups",
-      name: "Enemy scientifical/technological groups/teachings",
-      type: "manyToManyRelationship",
-      icon: "fas fa-wrench",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "tech",
-        connectedField: "pairedEnemyReligiousGroups"
+        connectedField: "pairedEnemyTechGroups"
       }
     },
     {
@@ -346,7 +381,7 @@ export const religionsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "events",
-        connectedField: "connectedReligious"
+        connectedField: "connectedTech"
       }
     },
     {
@@ -357,7 +392,7 @@ export const religionsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "myths",
-        connectedField: "pairedConnectedRelGroups"
+        connectedField: "pairedConnectedTechGroups"
       }
     },
     {
@@ -368,8 +403,9 @@ export const religionsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "items",
-        connectedField: "pairedConnectedRelGroups"
+        connectedField: "pairedConnectedTechGroups"
       }
     }
+
   ]
 }

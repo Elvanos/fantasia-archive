@@ -1,80 +1,80 @@
 <template>
 
-  <transition
-      enter-active-class="animated slideInDown"
-      leave-active-class="animated slideOutUp"
-      appear
-      :duration="600"
+<span>
+
+    <q-dialog
+      v-if="currentlyCheckedDocument"
+      v-model="documentCloseDialogConfirm"
       >
-      <q-header
-        v-if="localDocuments.length > 0"
-        elevated
-        class="bg-dark text-cultured"
-      >
-        <q-dialog
-          v-if="currentlyCheckedDocument"
-          v-model="documentCloseDialogConfirm"
-          persistent>
-          <q-card>
-            <q-card-section class="row items-center">
-              <span class="q-ml-sm">Discard changes to {{retrieveFieldValue(currentlyCheckedDocument,'name')}}?</span>
-            </q-card-section>
+      <q-card>
+        <q-card-section class="row items-center">
+          <span class="q-ml-sm">Discard changes to {{retrieveFieldValue(currentlyCheckedDocument,'name')}}?</span>
+        </q-card-section>
 
-            <q-card-actions align="right">
-              <q-btn flat label="Cancel" color="primary" v-close-popup />
-              <q-btn
-                flat
-                label="Discard changes"
-                color="primary"
-                v-close-popup
-                @click="closeDocument(currentlyCheckedDocument)" />
-            </q-card-actions>
-          </q-card>
-        </q-dialog>
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="primary" v-close-popup />
+          <q-btn
+            flat
+            label="Discard changes"
+            color="red"
+            v-close-popup
+            @click="closeDocument(currentlyCheckedDocument)" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
 
-        <q-tabs
-        align="left"
-        inline-label
-        class="tabsWrapper"
-        no-caps>
-          <transition-group
-            name="list"
-            tag="div"
-            class="headerTransitionWrapper"
-            enter-active-class="animated fadeIn"
-            leave-active-class="animated fadeOut"
-            appear
-            :duration="300">
+    <q-tabs
+      v-if="localDocuments.length > 0"
+      align="left"
+      inline-label
+      outside-arrows
+       mobile-arrows
+      class="tabsWrapper"
+      dense
+      no-caps>
+      <transition-group
+        name="list"
+        tag="div"
+        class="headerTransitionWrapper"
+        enter-active-class="animated fadeIn"
+        leave-active-class="animated fadeOut"
+        appear
+        :duration="150">
 
-            <q-route-tab
-              :ripple="false"
-              v-for="document in localDocuments"
-              :to="`/project/display-content/${document.type}/${document._id}`"
-              :key="document.type+document._id"
-              :icon="(retrieveFieldValue(document,'categorySwitch') ? 'fas fa-folder-open' : document.icon)"
-              :label="retrieveFieldValue(document,'name')"
-              :style="`color: ${retrieveFieldValue(document,'documentColor')}`"
-              :alert="document.hasEdits"
-              alert-icon="mdi-feather"
-              @click.prevent.middle="checkForCloseOpenedDocument(document)"
-              >
-                <q-btn
-                  round
-                  dense
-                  class="z-max q-ml-sm"
-                  :class="{'q-mr-sm': document.hasEdits}"
-                  size="xs"
-                  icon="close"
-                  style="color: #fff;"
-                  @click.stop.prevent="checkForCloseOpenedDocument(document)"
-                />
-            </q-route-tab>
+        <q-route-tab
+          :ripple="false"
+          v-for="document in localDocuments"
+          :to="`/project/display-content/${document.type}/${document._id}`"
+          :key="document.type+document._id"
+          :icon="(retrieveFieldValue(document,'categorySwitch') ? 'fas fa-folder-open' : document.icon)"
+          :label="retrieveFieldValue(document,'name')"
+          :style="`color: ${retrieveFieldValue(document,'documentColor')};`"
+          :class="[{'isBold': (retrieveFieldValue(document,'documentColor') !== '#ffffff' && retrieveFieldValue(document,'documentColor') !== '#fff') && retrieveFieldValue(document,'documentColor') !== ''}]"
+          :alert="document.hasEdits"
+          alert-icon="mdi-feather"
+          @click.prevent.middle="checkForCloseOpenedDocument(document)"
+          >
+            <q-tooltip
+              :delay="700"
+            >
+              {{retrieveFieldValue(document,'name')}}
+            </q-tooltip>
+            <q-btn
+              round
+              dense
+              class="z-max q-ml-auto"
+              :class="{'q-mr-sm': document.hasEdits}"
+              size="xs"
+              icon="close"
+              style="color: #fff;"
+              @click.stop.prevent="checkForCloseOpenedDocument(document)"
+            />
+        </q-route-tab>
 
-          </transition-group>
-        </q-tabs>
+      </transition-group>
+    </q-tabs>
 
-      </q-header>
-    </transition>
+  </span>
 
 </template>
 
@@ -90,7 +90,7 @@ import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
 @Component({
   components: { }
 })
-export default class TppTabs extends BaseClass {
+export default class TopTabs extends BaseClass {
   documentCloseDialogConfirm = false
   currentlyCheckedDocument = null as unknown as I_OpenedDocument
 
@@ -212,12 +212,60 @@ export default class TppTabs extends BaseClass {
 }
 
 .tabsWrapper .fas {
+  font-size: 16px;
+}
+
+.tabsWrapper .mdi {
   font-size: 18px;
 }
 </style>
 
 <style lang="scss">
-.tabsWrapper .fas {
-  font-size: 18px;
+.tabsWrapper {
+  .q-tabs__arrow {
+    text-shadow: none !important;
+  }
+
+  .isBold .q-tab__label {
+    font-weight: 500 !important;
+  }
+
+  .q-tab {
+    padding: 0 10px;
+
+    &__content {
+      min-width: 170px;
+      width: 170px;
+      justify-content: flex-start;
+      text-align: left;
+    }
+
+    &__label {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      padding-top: 2px;
+      font-weight: 400;
+      font-size: 13px;
+    }
+  }
+
+  .fas {
+    font-size: 16px;
+  }
+
+  .mdi {
+    font-size: 18px;
+  }
+
+  &.q-tabs--dense .q-tab {
+    min-height: 40px;
+  }
+
+  .q-tab__alert-icon {
+    font-size: 16px;
+    top: 4px;
+    right: -10px;
+    color: $primary;
+  }
 }
 </style>

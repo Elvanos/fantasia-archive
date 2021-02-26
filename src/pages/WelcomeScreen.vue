@@ -29,7 +29,7 @@
             color="primary"
             v-close-popup
             :disable="newProjectName.length === 0"
-            @click="createNewProject(newProjectName)" />
+            @click="createNewProject(newProjectName, $router)" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -56,7 +56,7 @@
           color="primary"
           size="md"
           class="q-px-xl q-py-xs"
-          @click="openExistingProject"
+          @click="openExistingProject($router)"
         >
         <div>Open existing project</div>
           <q-icon
@@ -93,26 +93,15 @@
        </q-btn>
       </div>
 
-        <div class="col-12">
-       <q-btn
-          color="primary"
-          size="md"
-          class="q-px-xl q-py-xs"
-          @click="toggleDevTools"
-        >
-         <div>Toggle dev tools</div>
-
-       </q-btn>
-      </div>
-
   </q-page>
 </template>
 
 <script lang="ts">
 import { Component } from "vue-property-decorator"
-import { remote } from "electron"
 
 import BaseClass from "src/BaseClass"
+
+import { openExistingProject, createNewProject, retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
 
 @Component({
   components: { }
@@ -122,23 +111,11 @@ export default class WelcomeScreen extends BaseClass {
   newProjectName = ""
   newProjectDialog = false
 
-  toggleDevTools () {
-    /*eslint-disable */
-    // @ts-ignore
-    const devToolsOpened: boolean = remote.getCurrentWindow().isDevToolsOpened()
-
-    if (devToolsOpened) {
-      // @ts-ignore
-      remote.getCurrentWindow().closeDevTools()
-    } else {
-      // @ts-ignore
-      remote.getCurrentWindow().openDevTools()
-    }
-    /* eslint-enable */
-  }
+  openExistingProject = openExistingProject
+  createNewProject = createNewProject
 
   async created () {
-    this.projectExists = await this.retrieveCurrentProjectName()
+    this.projectExists = await retrieveCurrentProjectName()
   }
 }
 </script>

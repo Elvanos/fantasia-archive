@@ -2,7 +2,7 @@ import PouchDB from "pouchdb"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
 import { I_FieldRelationship } from "src/interfaces/I_FieldRelationship"
 
-import { I_ExtraDocumentFields, I_OpenedDocument } from "./../interfaces/I_OpenedDocument"
+import { I_ExtraDocumentFields, I_OpenedDocument } from "../../interfaces/I_OpenedDocument"
 
 export const single_changeRelationshipToAnotherObject = async (
   field: I_ExtraDocumentFields,

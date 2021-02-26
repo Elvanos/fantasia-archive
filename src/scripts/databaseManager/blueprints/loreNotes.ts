@@ -1,16 +1,16 @@
-import { I_Blueprint } from "../../interfaces/I_Blueprint"
-export const chaptersBlueprint: I_Blueprint = {
-  _id: "chapters",
-  order: 20,
-  namePlural: "Chapters",
-  nameSingular: "Chapter",
-  icon: "mdi-file-outline",
+import { I_Blueprint } from "../../../interfaces/I_Blueprint"
+export const loreNotesBlueprint: I_Blueprint = {
+  _id: "loreNotes",
+  order: 19,
+  namePlural: "Other/Notes",
+  nameSingular: "Other/Note",
+  icon: "mdi-script-text-outline",
   extraFields: [
     {
       id: "name",
       name: "Name",
       type: "text",
-      icon: "mdi-file-outline",
+      icon: "mdi-script-text-outline",
       sizing: 3
     },
     {
@@ -35,7 +35,7 @@ export const chaptersBlueprint: I_Blueprint = {
         `,
       sizing: 3,
       relationshipSettings: {
-        connectedObjectType: "chapters"
+        connectedObjectType: "loreNotes"
       }
     },
     {
@@ -63,10 +63,17 @@ export const chaptersBlueprint: I_Blueprint = {
       sizing: 2
     },
     {
-      id: "content",
-      name: "Chapter content",
+      id: "notes",
+      name: "Note list",
+      type: "list",
+      icon: "mdi-notebook-edit-outline",
+      sizing: 12
+    },
+    {
+      id: "textNote",
+      name: "Free-form notes",
       type: "wysiwyg",
-      icon: "mdi-book-open-page-variant-outline",
+      icon: "mdi-book-open-variant",
       sizing: 12
     }
   ]

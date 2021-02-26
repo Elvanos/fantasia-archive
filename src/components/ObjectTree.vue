@@ -19,18 +19,19 @@
       dark
       :filter="treeFilter"
       :selected.sync="selectedTreeNode"
+      :expanded.sync="expandedTreeNodes"
       >
       <template v-slot:default-header="prop">
         <div class="row items-center col-grow" @click.stop.prevent="processNodeClick(prop.node)">
-          <q-icon
-            :style="`color: ${prop.node.color}; width: 22px !important;`"
-            :size="(prop.node.icon.includes('fas')? '16px': '21px')"
-            :name="prop.node.icon"
-            class="q-mr-sm" />
           <div class="documentLabel"
             :style="`color: ${prop.node.color}`"
             @click.stop.prevent.middle="processNodeLabelMiddleClick(prop.node)"
            >
+          <q-icon
+            :style="`color: ${prop.node.color}; width: 22px !important;`"
+            :size="(prop.node.icon.includes('fas')? '16px': '21px')"
+            :name="prop.node.icon"
+            class="q-mr-sm self-center" />
             {{ prop.node.label }}
             <span
               class="text-primary text-weight-medium q-ml-xs"
@@ -38,45 +39,54 @@
                 ({{prop.node.documentCount}})
               </span>
             <q-badge
-            class="q-ml-xs"
-            style="font-size: 12px;"
-            v-if="prop.node.sticker"
-            color="primary"
-            outline
-            align="top">{{prop.node.sticker}}
-              <q-tooltip>
+              class="treeBadge"
+              v-if="prop.node.sticker"
+              color="primary"
+              outline
+              floating
+            >
+              {{prop.node.sticker}}
+              <q-tooltip
+                :delay="500"
+              >
                 Order priority of the document
               </q-tooltip>
             </q-badge>
             <div class="treeButtonGroup">
               <q-btn
                 tabindex="-1"
-                v-if="!prop.node.specialLabel || prop.node.isRoot"
-                round
-                dense
-                color="primary"
-                class="z-1 q-ml-sm treeButton treeButton--add"
-                icon="mdi-plus"
-                size="8px"
-                @click.stop.prevent="processNodeNewDocumentButton(prop.node)"
-                >
-                <q-tooltip>
-                  Add a new document belonging under {{ prop.node.label }}
-                </q-tooltip>
-              </q-btn>
-              <q-btn
-                tabindex="-1"
                 v-if="prop.node.children && prop.node.children.length > 0 && !prop.node.isRoot"
                 round
+                flat
                 dense
-                color="primary"
+                color="dark"
                 class="z-1 q-ml-sm treeButton treeButton--edit"
                 icon="mdi-pencil"
                 size="8px"
                 @click.stop.prevent="openExistingDocumentRoute(prop.node)"
               >
-                <q-tooltip>
+                <q-tooltip
+                  :delay="300"
+                >
                 Open/Edit {{ prop.node.label }}
+                </q-tooltip>
+              </q-btn>
+              <q-btn
+                tabindex="-1"
+                v-if="!prop.node.specialLabel || prop.node.isRoot"
+                round
+                flat
+                dense
+                color="dark"
+                class="z-1 q-ml-sm treeButton treeButton--add"
+                icon="mdi-plus"
+                size="8px"
+                @click.stop.prevent="processNodeNewDocumentButton(prop.node)"
+                >
+                <q-tooltip
+                  :delay="300"
+                >
+                  Add a new document belonging under {{ prop.node.label }}
                 </q-tooltip>
               </q-btn>
             </div>
@@ -120,8 +130,8 @@ import BaseClass from "src/BaseClass"
 import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { I_NewObjectTrigger } from "src/interfaces/I_NewObjectTrigger"
 import PouchDB from "pouchdb"
-import { engageBlueprints, retrieveAllBlueprints } from "src/databaseManager/blueprintManager"
-// import { cleanDatabases } from "src/databaseManager/cleaner"
+import { engageBlueprints, retrieveAllBlueprints } from "src/scripts/databaseManager/blueprintManager"
+// import { cleanDatabases } from "src/scripts/databaseManager/cleaner"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
 
 @Component({
@@ -235,6 +245,11 @@ export default class ObjectTree extends BaseClass {
    * A resetter for the currently selected node
    */
   selectedTreeNode = null
+
+  /**
+   * Holds all currently expanded notes
+   */
+  expandedTreeNodes = []
 
   /**
    * Filter model for the tree
@@ -500,7 +515,7 @@ export default class ObjectTree extends BaseClass {
 .objectTree {
   .q-tree__arrow {
     margin-right: 0;
-    padding: 4px;
+    padding: 4px 4px 4px 0;
   }
 
   .q-tree__node-header {
@@ -508,11 +523,10 @@ export default class ObjectTree extends BaseClass {
   }
 
   .documentLabel {
-    max-width: calc(100% - 30px);
     width: 100%;
     display: flex;
     justify-content: space-between;
-    padding: 4px 4px 4px 0;
+    padding: 4px 4px 4px 4px;
   }
 
   .treeButtonGroup {
@@ -525,27 +539,33 @@ export default class ObjectTree extends BaseClass {
   }
 }
 
-.treeButton {
-  opacity: 0.8;
+.treeBadge {
+  left: inherit;
+  right: calc(100% + 3px);
+  padding: 3px 2px;
+  border: none;
+  background: rgba($primary, 0.15);
+  top: 50%;
+  transform: translateY(-50%);
+  min-width: 24px;
+  justify-content: center;
+}
 
-  &:hover {
-    opacity: 1;
-  }
+.treeButton {
+  .q-focus-helper{}
 
   &--add {
     .q-icon {
       font-size: 20px;
+      color: $primary;
     }
   }
 
   &--edit {
     .q-icon {
       font-size: 14px;
+      color: #fff;
     }
-  }
-
-  .q-icon {
-    color: $dark;
   }
 }
 </style>

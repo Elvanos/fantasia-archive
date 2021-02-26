@@ -9,16 +9,6 @@
        <q-btn
           color="primary"
           size="md"
-          label="Go to title screen"
-          class="q-px-xl q-py-xs"
-          to="/"
-        />
-      </div>
-
-       <div class="col-12 q-mb-lg">
-       <q-btn
-          color="primary"
-          size="md"
           label="Export project"
           class="q-px-xl q-py-xs"
           @click="exportProject(projectName)"
@@ -32,14 +22,18 @@ import { Component } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
 
+import { retrieveCurrentProjectName, exportProject } from "src/scripts/projectManagement/projectManagent"
+
 @Component({
   components: { }
 })
 export default class ProjectScreen extends BaseClass {
   projectName = ""
 
+  exportProject = exportProject
+
   async created () {
-    this.projectName = await this.retrieveCurrentProjectName()
+    this.projectName = await retrieveCurrentProjectName()
   }
 }
 </script>

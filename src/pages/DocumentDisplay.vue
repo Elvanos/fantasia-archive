@@ -26,24 +26,31 @@
 
       <div class="col-12 flex justify-end q-mb-lg q-mt-md">
         <q-btn
-        color="primary"
-        :label="`Save ${bluePrintData.nameSingular}`"
-        @click="saveDocument"
-        class="q-mr-xl"
-        v-if="editMode"
+          color="primary"
+          :label="`Add a new ${bluePrintData.nameSingular} belonging under ${retrieveFieldValue(currentData, 'name')}`"
+          @click="addNewUnderParent"
+          class="q-mr-xl"
+          v-if="!currentData.isNew"
         />
         <q-btn
-        color="primary"
-        :label="`Edit ${bluePrintData.nameSingular}`"
-        @click="toggleEditMode"
-        class="q-mr-xl"
-        v-if="!editMode"
+          color="primary"
+          :label="`Save ${bluePrintData.nameSingular}`"
+          @click="saveDocument"
+          class="q-mr-xl"
+          v-if="editMode"
         />
         <q-btn
-        v-if="!currentData.isNew"
-        color="red"
-        :label="`Delete ${bluePrintData.nameSingular}`"
-        @click="openDeleteDialog"
+          color="primary"
+          :label="`Edit ${bluePrintData.nameSingular}`"
+          @click="toggleEditMode"
+          class="q-mr-xl"
+          v-if="!editMode"
+        />
+        <q-btn
+          v-if="!currentData.isNew"
+          color="red"
+          :label="`Delete ${bluePrintData.nameSingular}`"
+          @click="openDeleteDialog"
         />
       </div>
 
@@ -179,8 +186,8 @@ import BaseClass from "src/BaseClass"
 import { I_Blueprint, I_ExtraFields } from "src/interfaces/I_Blueprint"
 import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
 import PouchDB from "pouchdb"
-// import { cleanDatabases } from "src/databaseManager/cleaner"
-import { single_changeRelationshipToAnotherObject, many_changeRelationshipToAnotherObject } from "src/databaseManager/relationshipManager"
+// import { cleanDatabases } from "src/scripts/databaseManager/cleaner"
+import { single_changeRelationshipToAnotherObject, many_changeRelationshipToAnotherObject } from "src/scripts/databaseManager/relationshipManager"
 
 import { extend } from "quasar"
 
@@ -579,8 +586,6 @@ export default class PageDocumentDisplay extends BaseClass {
             }
             catch (error) {}
 
-            console.log(retrievedObject)
-
             currentExtraFields.push(
               {
                 id: "parentDoc",
@@ -640,6 +645,15 @@ export default class PageDocumentDisplay extends BaseClass {
 
     const ignoredList = ["breakBasic", "name", "documentColor", "parentDoc", "order", "categorySwitch"]
     return (!isCategory || ignoredList.includes(currentFieldID))
+  }
+
+  addNewUnderParent () {
+    const routeObject = {
+      _id: this.currentData.type,
+      parent: this.currentData._id
+    }
+    // @ts-ignore
+    this.addNewObjectRoute(routeObject)
   }
 }
 </script>
