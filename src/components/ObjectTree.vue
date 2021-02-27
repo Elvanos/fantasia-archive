@@ -127,12 +127,13 @@
 import { Component, Watch } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
-import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
+import { I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { I_NewObjectTrigger } from "src/interfaces/I_NewObjectTrigger"
 import PouchDB from "pouchdb"
 import { engageBlueprints, retrieveAllBlueprints } from "src/scripts/databaseManager/blueprintManager"
 // import { cleanDatabases } from "src/scripts/databaseManager/cleaner"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
+import { extend } from "quasar"
 
 @Component({
   components: { }
@@ -219,9 +220,18 @@ export default class ObjectTree extends BaseClass {
    *
    */
   @Watch("SGET_allOpenedDocuments", { deep: true })
-  async reactToDocumentListChange () {
-    await this.buildCurrentObjectTree()
+  async reactToDocumentListChange (val: { treeAction: boolean, docs: I_OpenedDocument[]}) {
+    if (val.treeAction) {
+      await this.buildCurrentObjectTree()
+      this.buildTreeExpands(val?.docs)
+      this.lastDocsSnapShot = extend(true, [], val.docs)
+    }
+    else if (val.docs.length !== this.lastDocsSnapShot.length) {
+      this.lastDocsSnapShot = extend(true, [], val.docs)
+    }
   }
+
+  lastDocsSnapShot:I_OpenedDocument[] = []
 
   /**
    * Generic wrapper for adding of new object types to the tree
@@ -235,11 +245,6 @@ export default class ObjectTree extends BaseClass {
    * Contains all the data for the render in tree
    */
   hierarchicalTree: {children: I_ShortenedDocument[], icon: string, label: string}[] = []
-
-  /**
-   * Determines if the tree should expand fully at first or not
-   */
-  firstTimeExpand = true
 
   /**
    * A resetter for the currently selected node
@@ -293,6 +298,12 @@ export default class ObjectTree extends BaseClass {
 
         return 0
       })
+
+    // Put the number value on top of the list and alphabetical below them
+    input = [
+      ...input.filter(e => e.extraFields.find(e => e.id === "order")?.value),
+      ...input.filter(e => !e.extraFields.find(e => e.id === "order")?.value)
+    ]
 
     input.forEach((e, i) => {
       // Run recursive if the node has any children
@@ -426,13 +437,6 @@ export default class ObjectTree extends BaseClass {
 
     // Assign the finished object to the render model
     this.hierarchicalTree = treeObject
-
-    // Expand all on first load
-    if (this.firstTimeExpand) {
-      this.firstTimeExpand = false
-      // await this.$nextTick()
-      // this.$refs.tree.expandAll()
-    }
   }
 
   processNodeNewDocumentButton (node: {
@@ -456,6 +460,81 @@ export default class ObjectTree extends BaseClass {
       }
       // @ts-ignore
       this.addNewObjectRoute(routeObject)
+    }
+  }
+
+  buildTreeExpands (newDocs: I_OpenedDocument[]) {
+    const expandIDs: string[] = []
+
+    // Check for parent changes
+    newDocs.forEach(s => {
+      const oldParentDoc = this.lastDocsSnapShot.find(doc => doc._id === s._id)
+      // Fizzle if the parent doesn't exist in the old version
+      if (!oldParentDoc) {
+        return false
+      }
+
+      const oldParentDocField = this.retrieveFieldValue(oldParentDoc, "parentDoc")
+      // @ts-ignore
+      const oldParentDocID = (oldParentDocField?.value) ? oldParentDocField.value.value : ""
+
+      const newParentDocField = this.retrieveFieldValue(s, "parentDoc")
+
+      // @ts-ignore
+      const newParentDocID = (newParentDocField?.value) ? newParentDocField.value.value : ""
+      if ((newParentDocID !== oldParentDocID) || (newParentDocID && oldParentDoc.isNew)) {
+        expandIDs.push(newParentDocID)
+      }
+    })
+
+    // Process top level documents
+    newDocs.forEach(s => {
+      const newParentDocField = this.retrieveFieldValue(s, "parentDoc")
+
+      // @ts-ignore
+      const newParentDocID = (newParentDocField?.value) ? newParentDocField.value.value : false
+
+      if (!newParentDocID) {
+        expandIDs.push(s.type)
+      }
+    })
+
+    // @ts-ignore
+    const nodesToExpand = [...new Set([
+      ...this.expandedTreeNodes,
+      ...expandIDs
+    ])] as unknown as string[]
+
+    nodesToExpand.forEach(s => {
+      this.recursivelyExpandNode(s)
+    })
+  }
+
+  recursivelyExpandNode (nodeID: string) {
+    const treeDOM = this.$refs.tree as unknown as {
+      setExpanded: (key:string, state: boolean)=> void
+      getNodeByKey: (key:string)=> void
+    }
+
+    // @ts-ignore
+    this.expandedTreeNodes = [...new Set([
+      ...this.expandedTreeNodes,
+      nodeID
+    ])]
+
+    const currentTreeNode = (treeDOM.getNodeByKey(nodeID)) as unknown as {parentDoc: string, type: string}
+
+    // Dig into the upper hierarchy
+    if (currentTreeNode?.parentDoc) {
+      this.recursivelyExpandNode(currentTreeNode.parentDoc)
+    }
+    // If we are at the top of the tree, expand the top category
+    else if (currentTreeNode?.type) {
+      // @ts-ignore
+      this.expandedTreeNodes = [...new Set([
+        ...this.expandedTreeNodes,
+        currentTreeNode.type
+      ])]
     }
   }
 
@@ -552,8 +631,6 @@ export default class ObjectTree extends BaseClass {
 }
 
 .treeButton {
-  .q-focus-helper{}
-
   &--add {
     .q-icon {
       font-size: 20px;

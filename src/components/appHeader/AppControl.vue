@@ -172,6 +172,7 @@ export default class AppControl extends BaseClass {
 
   &__buttons {
     height: 40px;
+    -webkit-app-region: no-drag;
   }
 }
 </style>

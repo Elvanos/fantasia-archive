@@ -69,7 +69,7 @@
 
           <Field_Text
           class="inputWrapper"
-          v-if="(field.type === 'text' && retrieveFieldValue(currentData,field.id) || field.type === 'text' && retrieveFieldLength(currentData,field.id) === 0) && fieldLimiter(field.id)"
+          v-if="field.type === 'text' && fieldLimiter(field.id)"
           :inputDataBluePrint="field"
           :inputDataValue="retrieveFieldValue(currentData, field.id)"
           :isNew="currentData.isNew"
@@ -262,7 +262,8 @@ export default class PageDocumentDisplay extends BaseClass {
     const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
 
     // Attempts to add current document to list
-    this.SSET_addOpenedDocument(dataCopy)
+    const dataPass = { doc: dataCopy, treeAction: false }
+    this.SSET_addOpenedDocument(dataPass)
   }
 
   reactToFieldUpdate (inputData: string, field: I_ExtraFields) {
@@ -274,7 +275,8 @@ export default class PageDocumentDisplay extends BaseClass {
 
       const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
 
-      this.SSET_updateOpenedDocument(dataCopy)
+      const dataPass = { doc: dataCopy, treeAction: false }
+      this.SSET_updateOpenedDocument(dataPass)
     }
 
     // FIELD - Number
@@ -285,7 +287,8 @@ export default class PageDocumentDisplay extends BaseClass {
 
       const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
 
-      this.SSET_updateOpenedDocument(dataCopy)
+      const dataPass = { doc: dataCopy, treeAction: false }
+      this.SSET_updateOpenedDocument(dataPass)
     }
 
     // FIELD - Switch
@@ -296,7 +299,8 @@ export default class PageDocumentDisplay extends BaseClass {
 
       const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
 
-      this.SSET_updateOpenedDocument(dataCopy)
+      const dataPass = { doc: dataCopy, treeAction: false }
+      this.SSET_updateOpenedDocument(dataPass)
 
       if (field.id === "categorySwitch") {
         const localCopy: I_Blueprint = (extend(true, {}, this.bluePrintData))
@@ -319,7 +323,8 @@ export default class PageDocumentDisplay extends BaseClass {
 
       const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
 
-      this.SSET_updateOpenedDocument(dataCopy)
+      const dataPass = { doc: dataCopy, treeAction: false }
+      this.SSET_updateOpenedDocument(dataPass)
     }
 
     // FIELD - List
@@ -329,7 +334,8 @@ export default class PageDocumentDisplay extends BaseClass {
       this.currentData.extraFields[indexToUpdate].value = inputData
       const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
 
-      this.SSET_updateOpenedDocument(dataCopy)
+      const dataPass = { doc: dataCopy, treeAction: false }
+      this.SSET_updateOpenedDocument(dataPass)
     }
 
     // FIELD - Simple select
@@ -340,7 +346,8 @@ export default class PageDocumentDisplay extends BaseClass {
 
       const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
 
-      this.SSET_updateOpenedDocument(dataCopy)
+      const dataPass = { doc: dataCopy, treeAction: false }
+      this.SSET_updateOpenedDocument(dataPass)
     }
 
     // FIELD - Multi select
@@ -351,7 +358,8 @@ export default class PageDocumentDisplay extends BaseClass {
 
       const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
 
-      this.SSET_updateOpenedDocument(dataCopy)
+      const dataPass = { doc: dataCopy, treeAction: false }
+      this.SSET_updateOpenedDocument(dataPass)
     }
 
     // FIELD - Single relationship
@@ -362,7 +370,8 @@ export default class PageDocumentDisplay extends BaseClass {
 
       const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
 
-      this.SSET_updateOpenedDocument(dataCopy)
+      const dataPass = { doc: dataCopy, treeAction: false }
+      this.SSET_updateOpenedDocument(dataPass)
     }
 
     // FIELD - Multi relationship
@@ -373,7 +382,8 @@ export default class PageDocumentDisplay extends BaseClass {
 
       const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
 
-      this.SSET_updateOpenedDocument(dataCopy)
+      const dataPass = { doc: dataCopy, treeAction: false }
+      this.SSET_updateOpenedDocument(dataPass)
     }
 
     // FIELD - Wysiwyg
@@ -384,7 +394,8 @@ export default class PageDocumentDisplay extends BaseClass {
 
       const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
 
-      this.SSET_updateOpenedDocument(dataCopy)
+      const dataPass = { doc: dataCopy, treeAction: false }
+      this.SSET_updateOpenedDocument(dataPass)
     }
   }
 
@@ -392,7 +403,8 @@ export default class PageDocumentDisplay extends BaseClass {
     this.editMode = true
     this.currentData.editMode = true
     const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
-    this.SSET_updateOpenedDocument(dataCopy)
+    const dataPass = { doc: dataCopy, treeAction: false }
+    this.SSET_updateOpenedDocument(dataPass)
   }
 
   async saveDocument () {
@@ -449,7 +461,10 @@ export default class PageDocumentDisplay extends BaseClass {
         if (toUpdateIndex) {
           const docCopy: I_OpenedDocument = extend(true, {}, this.SGET_openedDocument(doc._id))
           docCopy.extraFields[toUpdateIndex] = doc.extraFields[toUpdateIndex]
-          this.SSET_updateOpenedDocument(docCopy)
+
+          // Tree action here due to how parentDoc field works
+          const dataPass = { doc: docCopy, treeAction: true }
+          this.SSET_updateOpenedDocument(dataPass)
         }
       })
     }
@@ -473,7 +488,9 @@ export default class PageDocumentDisplay extends BaseClass {
         if (toUpdateIndex) {
           const docCopy: I_OpenedDocument = extend(true, {}, this.SGET_openedDocument(doc._id))
           docCopy.extraFields[toUpdateIndex] = doc.extraFields[toUpdateIndex]
-          this.SSET_updateOpenedDocument(docCopy)
+
+          const dataPass = { doc: docCopy, treeAction: false }
+          this.SSET_updateOpenedDocument(dataPass)
         }
       })
     }
@@ -481,7 +498,8 @@ export default class PageDocumentDisplay extends BaseClass {
     await CurrentObjectDB.put(documentCopy)
 
     // Update the opened document
-    this.SSET_updateOpenedDocument(documentCopy)
+    const dataPass = { doc: documentCopy, treeAction: true }
+    this.SSET_updateOpenedDocument(dataPass)
   }
 
   deleteConfirmationDialog = false
@@ -534,7 +552,8 @@ export default class PageDocumentDisplay extends BaseClass {
 
     const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
 
-    this.SSET_removeOpenedDocument(dataCopy)
+    const dataPass = { doc: dataCopy, treeAction: true }
+    this.SSET_removeOpenedDocument(dataPass)
   }
 
   currentData = false as unknown as I_OpenedDocument

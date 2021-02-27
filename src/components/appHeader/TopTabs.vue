@@ -105,7 +105,8 @@ export default class TopTabs extends BaseClass {
   }
 
   closeDocument (input: I_OpenedDocument) {
-    this.SSET_removeOpenedDocument(input)
+    const dataPass = { doc: input, treeAction: false }
+    this.SSET_removeOpenedDocument(dataPass)
     this.documentCloseDialogConfirm = false
     setTimeout(() => {
       this.refreshRoute()
@@ -222,6 +223,8 @@ export default class TopTabs extends BaseClass {
 
 <style lang="scss">
 .tabsWrapper {
+  -webkit-app-region: no-drag;
+
   .q-tabs__arrow {
     text-shadow: none !important;
   }

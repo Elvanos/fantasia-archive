@@ -42,6 +42,10 @@
 
   <div class="flex" v-if="editMode">
     <q-select
+      menu-anchor="bottom middle"
+      menu-self="top middle"
+      class="multiRelashionshipSelect"
+      dark
       style="flex-grow: 1;"
       dense
       :options="filteredInput"
@@ -60,7 +64,10 @@
           v-on="itemEvents"
         >
           <q-item-section>
-            <q-item-label v-html="opt.label" ></q-item-label>
+            <q-item-label
+            :style="`color: ${opt.color}`"
+             v-html="opt.label" ></q-item-label>
+            <q-item-label caption class="text-cultured">{{opt.hierarchicalPath}}</q-item-label>
           </q-item-section>
           <q-tooltip v-if='opt.disable'>
             This option is unavailable for selection as it is already paired to another.
@@ -193,7 +200,9 @@ export default class Field_SingleRelationship extends BaseClass {
     if (this.inputDataBluePrint?.relationshipSettings && this.currentId.length > 0) {
       const CurrentObjectDB = new PouchDB(this.inputDataBluePrint.relationshipSettings.connectedObjectType)
 
-      const allObjects = (await CurrentObjectDB.allDocs({ include_docs: true })).rows.map((doc) => {
+      const allDbObjects = (await CurrentObjectDB.allDocs({ include_docs: true })).rows
+
+      const allObjects = allDbObjects.map((doc) => {
         const objectDoc = doc.doc as unknown as I_ShortenedDocument
 
         const pairedField = (this.inputDataBluePrint?.relationshipSettings?.connectedField) || ""
@@ -216,7 +225,11 @@ export default class Field_SingleRelationship extends BaseClass {
           url: `/project/display-content/${objectDoc.type}/${objectDoc._id}`,
           label: objectDoc.extraFields.find(e => e.id === "name")?.value,
           isCategory: objectDoc.extraFields.find(e => e.id === "categorySwitch")?.value,
-          pairedField: pairedField
+          color: objectDoc.extraFields.find(e => e.id === "documentColor")?.value,
+          pairedField: pairedField,
+          // @ts-ignore
+          hierarchicalPath: this.getDocumentHieararchicalPath(objectDoc, allDbObjects)
+
         }
       }) as unknown as I_FieldRelationship[]
 
@@ -289,4 +302,5 @@ table {
   color: #000;
   opacity: 0.8;
 }
+
 </style>

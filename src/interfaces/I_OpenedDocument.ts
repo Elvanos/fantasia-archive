@@ -23,6 +23,7 @@ export interface I_ShortenedDocument{
   url: string
   expandable?: boolean
   _id: string
+  isCategory?: boolean
   parentDoc: string | false
   children: I_ShortenedDocument[]
   extraFields: I_ExtraDocumentFields[]

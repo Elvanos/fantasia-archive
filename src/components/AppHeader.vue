@@ -2,7 +2,7 @@
 
   <q-header
     elevated
-    class="bg-dark text-cultured"
+    class="bg-dark text-cultured appHeader"
   >
 
     <div class="appHeaderInner">
@@ -39,10 +39,15 @@ export default class AppHeader extends BaseClass {
 </script>
 
 <style lang="scss" scoped>
+.appHeader {
+
+}
+
 .appHeaderInner {
   display: flex;
-  width: 100%;
   min-height: 40px;
+  -webkit-app-region: drag;
+  width: calc(100% - 147px);
 
   .appControl {
     width: 375px;

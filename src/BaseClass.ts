@@ -163,13 +163,26 @@ export default class BaseClass extends Vue {
   // Open documents management
   /****************************************************************/
 
-  @OpenedDocuments.Getter("getAllDocuments") SGET_allOpenedDocuments !: {timestamp: string, docs: I_OpenedDocument[]}
+  @OpenedDocuments.Getter("getAllDocuments") SGET_allOpenedDocuments !: {treeAction: boolean, timestamp: string, docs: I_OpenedDocument[]}
   @OpenedDocuments.Getter("getDocument") SGET_openedDocument!: (id: string) => I_OpenedDocument
 
-  @OpenedDocuments.Mutation("addDocument") SSET_addOpenedDocument!: (input: I_OpenedDocument) => void
-  @OpenedDocuments.Mutation("updateDocument") SSET_updateOpenedDocument!: (input: I_OpenedDocument) => void
-  @OpenedDocuments.Mutation("removeDocument") SSET_removeOpenedDocument!: (input: I_OpenedDocument) => void
-  @OpenedDocuments.Mutation("resetDocuments") SSET_resetDocuments!: () => void
+  @OpenedDocuments.Action("addDocument") SSET_addOpenedDocument!: (input: {
+    doc: I_OpenedDocument,
+    treeAction: boolean
+  }) => void
+
+  @OpenedDocuments.Action("updateDocument") SSET_updateOpenedDocument!: (input: {
+    doc: I_OpenedDocument,
+    treeAction: boolean
+  }) => void
+
+  @OpenedDocuments.Action("removeDocument") SSET_removeOpenedDocument!: (input: {
+    doc: I_OpenedDocument,
+    treeAction: boolean
+  }) => void
+
+  @OpenedDocuments.Action("triggerTreeAction") SSET_triggerTreeAction!: () => void
+  @OpenedDocuments.Action("resetDocuments") SSET_resetDocuments!: () => void
 
   /**
    * Retrieves value of requested field. If the field doesn't exist, returns false instead
@@ -242,5 +255,35 @@ export default class BaseClass extends Vue {
       }
       )
     }
+  }
+
+  /****************************************************************/
+  // Document list management
+  /****************************************************************/
+  getDocumentHieararchicalPath (document: I_OpenedDocument, list: I_OpenedDocument[]): string {
+    let hierarchiString = ""
+
+    // @ts-ignore
+    const parentDoc = (this.retrieveFieldValue(document, "parentDoc"))?.value
+    if (!parentDoc) {
+      const singleBlueprintName = this.SGET_allBlueprints.find(e => e._id === document.type)?.nameSingular
+      hierarchiString += singleBlueprintName
+      return hierarchiString
+    }
+    const matchingDoc = list.find((doc:I_OpenedDocument) => {
+      // @ts-ignore
+      return doc.id === parentDoc._id
+    }) as I_OpenedDocument
+
+    // @ts-ignore
+    hierarchiString += this.retrieveFieldValue(matchingDoc.doc, "name")
+
+    // @ts-ignore
+    const connectedReturn = this.getDocumentHieararchicalPath(matchingDoc.doc, list)
+    if (connectedReturn) {
+      hierarchiString = `${connectedReturn} > ${hierarchiString}`
+    }
+
+    return hierarchiString
   }
 }

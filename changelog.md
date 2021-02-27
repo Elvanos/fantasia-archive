@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.1.3
+
+### Bugfixes
+
+- Fixed the "Name" field disappearing upon full deletion of text
+
+### New features
+
+### QoL adjustments
+
+- Added a hierarchical path to Quick opening existing document and single/multi relationship fields
+- Added color support to single/multi relationship fields
+- Added filtering to include or exclude documents that are considered categories in the  Quick opening existing document dialog
+- Improved performance by reducing the amount of time the side-tree re-renders
+- Added automatic opening of hierarchical tree branches upon adding/moving documents under/among them
+
 ## 0.1.2
 
 ### Bugfixes

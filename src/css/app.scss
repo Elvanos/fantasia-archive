@@ -60,3 +60,19 @@ body {
 .q-toggle__inner--truthy .q-toggle__thumb {
   left: calc(100% - 30px);
 }
+
+.singleRelashionshipSelect,
+.multiRelashionshipSelect {
+  &.q-field--dark .q-field__control::before {
+    border: 1px solid rgba(0, 0, 0, 0.24);
+  }
+
+  .q-field__input,
+  .q-field__native span {
+    color: #000 !important;
+  }
+}
+
+.q-menu .q-item {
+  transition: none !important;
+}

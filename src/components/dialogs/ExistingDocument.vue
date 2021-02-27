@@ -12,12 +12,17 @@
           <h6 class="text-center q-my-sm">Open existing document</h6>
         </q-card-section>
 
-        <q-card-section class="row items-center">
+        <q-card-section class="column items-center">
+          <div class="q-mb-lg">
+            <q-checkbox dark v-model="includeCategories" label="Include categories in the list?" />
+          </div>
            <q-select
+              style="width: 400px;"
               ref="ref_existingDocument"
-              style="flex-grow: 1;"
               dense
               dark
+              menu-anchor="bottom middle"
+              menu-self="top middle"
               :options="filteredExistingInput"
               use-input
               outlined
@@ -40,6 +45,7 @@
                   </q-item-section>
                     <q-item-section>
                       <q-item-label v-html="opt.label" ></q-item-label>
+                        <q-item-label caption class="text-cultured">{{opt.hierarchicalPath}}</q-item-label>
                     </q-item-section>
                     <q-btn
                       tabindex="-1"
@@ -99,6 +105,7 @@ export default class ExistingDocumentDialog extends DialogBase {
     }
   }
 
+  existingObjectsBackupList = [] as I_ShortenedDocument[]
   existingObjectList = [] as I_ShortenedDocument[]
 
   async populateExistingObjectDialog () {
@@ -115,15 +122,19 @@ export default class ExistingDocumentDialog extends DialogBase {
           id: doc._id,
           url: doc.url,
           type: doc.type,
+          // @ts-ignore
+          hierarchicalPath: this.getDocumentHieararchicalPath(doc, dbDocuments.rows),
           color: doc.extraFields.find(e => e.id === "documentColor")?.value,
           isCategory: doc.extraFields.find(e => e.id === "categorySwitch")?.value
         } as unknown as I_ShortenedDocument
-      }).sort((a, b) => a.label.localeCompare(b.label))
+      })
+        .sort((a, b) => a.label.localeCompare(b.label))
       // @ts-ignore
       allDocs = [...allDocs, ...formattedDocuments]
     }
 
-    this.existingObjectList = allDocs
+    this.existingObjectsBackupList = allDocs
+    this.filterDocuments()
 
     this.$nextTick(function () {
     /*eslint-disable */
@@ -189,6 +200,17 @@ export default class ExistingDocumentDialog extends DialogBase {
     }
     // @ts-ignore
     this.addNewObjectRoute(routeObject)
+  }
+
+  includeCategories = true
+
+  @Watch("includeCategories")
+  reactToCheckboxChange () {
+    this.filterDocuments()
+  }
+
+  filterDocuments () {
+    this.existingObjectList = this.existingObjectsBackupList.filter(e => !((!this.includeCategories && e.isCategory)))
   }
 }
 </script>
