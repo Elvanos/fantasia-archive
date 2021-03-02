@@ -8,6 +8,9 @@
 
 ### New features
 
+- A new logo added to the app (better visibility of the logo in small scales and icons)
+- Massive overhaul of the search engine used by the Quick opening existing document and single/multi relationship fields (now supports tags, categories, document types, inteligent filtering and inteligent sorting via importance of the found values)
+
 ### QoL adjustments
 
 - Added a hierarchical path to Quick opening existing document and single/multi relationship fields
@@ -15,6 +18,9 @@
 - Added filtering to include or exclude documents that are considered categories in the  Quick opening existing document dialog
 - Improved performance by reducing the amount of time the side-tree re-renders
 - Added automatic opening of hierarchical tree branches upon adding/moving documents under/among them
+- Alligned custom order sorting for both nodes with and without children
+- All popup dialogs have been unified to dark-color mode
+- Added a small filter over the big white areas to ease-up on the user's eyes before darkmode is added
 
 ## 0.1.2
 

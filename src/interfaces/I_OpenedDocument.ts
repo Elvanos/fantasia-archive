@@ -23,8 +23,16 @@ export interface I_ShortenedDocument{
   url: string
   expandable?: boolean
   _id: string
+  hierarchicalPath?: string
   isCategory?: boolean
   parentDoc: string | false
   children: I_ShortenedDocument[]
   extraFields: I_ExtraDocumentFields[]
+  color?: string
+
+  activeTypeSearch?: boolean
+  filteredOut?: boolean
+  exactMatch?: boolean
+  fullWordMatch?: number
+  partialWordMatch?: number
 }

@@ -51,10 +51,6 @@ const mutation: MutationTree<OpenDocumentsStateInterface> = {
     state.documents.docs = []
     state.documents.treeAction = true
     state.documents.timestamp = uid()
-
-    setTimeout(() => {
-      state.documents.treeAction = false
-    }, 200)
   }
 }
 

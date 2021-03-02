@@ -18,6 +18,7 @@
               ref="ref_newDocument"
               style="flex-grow: 1;"
               dense
+              class="newDocumentSelect"
               :options="filteredNewInput"
               use-input
               outlined

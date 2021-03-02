@@ -20,6 +20,7 @@
               style="width: 400px;"
               ref="ref_existingDocument"
               dense
+              class="existingDocumentSelect"
               dark
               menu-anchor="bottom middle"
               menu-self="top middle"
@@ -39,13 +40,13 @@
                   >
                   <q-item-section avatar>
                     <q-icon
-                      :style="`color: ${opt.color}`"
+                      :style="`color: ${retrieveIconColor(opt)}`"
                       :name="(opt.isCategory) ? 'fas fa-folder-open' : opt.icon"
                       />
                   </q-item-section>
                     <q-item-section>
                       <q-item-label v-html="opt.label" ></q-item-label>
-                        <q-item-label caption class="text-cultured">{{opt.hierarchicalPath}}</q-item-label>
+                      <q-item-label caption class="text-cultured" v-html="opt.hierarchicalPath"></q-item-label>
                     </q-item-section>
                     <q-btn
                       tabindex="-1"
@@ -85,6 +86,8 @@
 import { Component, Watch } from "vue-property-decorator"
 import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import PouchDB from "pouchdb"
+import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
+import { extend } from "quasar"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
 
@@ -172,7 +175,11 @@ export default class ExistingDocumentDialog extends DialogBase {
 
     update(() => {
       const needle = val.toLowerCase()
-      this.filteredExistingInput = this.existingObjectList.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+      const listCopy : I_ShortenedDocument[] = extend(true, [], this.existingObjectList)
+      setTimeout(() => {
+        this.filteredExistingInput = advancedDocumentFilter(needle, listCopy)
+      }, 100)
+
       /*eslint-disable */
         if(this.$refs.ref_existingDocument && this.filteredExistingInput.length > 0){
           setTimeout(() => {
@@ -180,7 +187,7 @@ export default class ExistingDocumentDialog extends DialogBase {
           this.$refs.ref_existingDocument.setOptionIndex(-1)
           // @ts-ignore 
           this.$refs.ref_existingDocument.moveOptionSelection(1, true) 
-        }, 300)      
+        }, 100)      
         /* eslint-enable */
       }
     })

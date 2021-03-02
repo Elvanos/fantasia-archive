@@ -32,7 +32,7 @@ const actions: ActionTree<OpenDocumentsStateInterface, StateInterface> = {
     state.commit("resetDocuments")
 
     setTimeout(() => {
-      state.commit("resetTreeAction")
+      // state.commit("resetTreeAction")
     }, 200)
   },
 

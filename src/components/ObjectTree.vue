@@ -40,6 +40,7 @@
               </span>
             <q-badge
               class="treeBadge"
+              :class="{'noChilden': prop.node.children.length === 0}"
               v-if="prop.node.sticker"
               color="primary"
               outline
@@ -499,13 +500,7 @@ export default class ObjectTree extends BaseClass {
       }
     })
 
-    // @ts-ignore
-    const nodesToExpand = [...new Set([
-      ...this.expandedTreeNodes,
-      ...expandIDs
-    ])] as unknown as string[]
-
-    nodesToExpand.forEach(s => {
+    expandIDs.forEach(s => {
       this.recursivelyExpandNode(s)
     })
   }
@@ -628,6 +623,10 @@ export default class ObjectTree extends BaseClass {
   transform: translateY(-50%);
   min-width: 24px;
   justify-content: center;
+
+  &.noChilden {
+    right: calc(100% + 23px);
+  }
 }
 
 .treeButton {

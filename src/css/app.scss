@@ -11,22 +11,27 @@
 
   /* Track */
   ::-webkit-scrollbar-track {
-    background: lighten($dark, 60);
+    background: $dark;
   }
 
   /* Handle */
   ::-webkit-scrollbar-thumb {
-    background: lighten($dark, 25);
+    background: lighten($dark, 40);
+    border-radius: 5px;
   }
 
   /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
-    background: lighten($dark, 15);
+    background: lighten($dark, 60);
   }
 }
 
-body {
+html {
   background-color: #fff;
+}
+
+body {
+  background-color: rgba($primary, 0.025);
 
   /* WebKit/Blink Browsers */
   ::selection {
@@ -62,7 +67,9 @@ body {
 }
 
 .singleRelashionshipSelect,
-.multiRelashionshipSelect {
+.multiRelashionshipSelect,
+.existingDocumentSelect,
+.newDocumentSelect {
   &.q-field--dark .q-field__control::before {
     border: 1px solid rgba(0, 0, 0, 0.24);
   }
@@ -75,4 +82,16 @@ body {
 
 .q-menu .q-item {
   transition: none !important;
+}
+
+.q-field__control {
+  background-color: #fff;
+}
+
+.q-position-engine {
+  overflow-y: scroll !important;
+}
+
+.text-underline {
+  text-decoration: underline;
 }

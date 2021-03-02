@@ -14,7 +14,6 @@ import appWindowButtons from "src/components/appHeader/AppWindowButtons.vue"
 @Component({
   components: {
     appWindowButtons: appWindowButtons
-
   }
 })
 export default class App extends BaseClass {

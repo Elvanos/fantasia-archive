@@ -119,8 +119,4 @@ export default class AppWindowButtons extends BaseClass {
 
 <style lang="scss" >
 
-  .appWindowButtons__closeDialogList {
-    width: 100%;
-  }
-
 </style>

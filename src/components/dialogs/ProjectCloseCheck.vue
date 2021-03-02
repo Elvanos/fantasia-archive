@@ -3,7 +3,7 @@
       v-model="dialogModel"
       @hide="triggerDialogClose"
       >
-      <q-card>
+      <q-card dark>
         <q-card-section class="row justify-center">
           <h6 class="text-center q-my-sm">You have unsaved documents opened!</h6>
         </q-card-section>
@@ -13,7 +13,7 @@
 
         <q-card-section class="row q-mx-lg">
           <div class="q-mb-md text-bold">Affected documents:</div>
-          <q-list class="appWindowButtons__closeDialogList">
+          <q-list class="projectCloseDalogList">
             <q-item
             v-for=" doc in openedDocs"
             :key="doc._id"
@@ -24,7 +24,7 @@
             v-close-popup
             :to="doc.url">
               <q-item-section avatar>
-                <q-icon color="black" :name="doc.icon" />
+                <q-icon color="white" :name="doc.icon" />
               </q-item-section>
 
               <q-item-section class="text-primary">{{retrieveFieldValue(doc,'name')}}</q-item-section>
@@ -114,5 +114,9 @@ export default class ProjectCloseCheck extends DialogBase {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+
+  .projectCloseDalogList {
+    width: 100%;
+  }
 </style>

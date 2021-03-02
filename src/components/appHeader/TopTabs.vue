@@ -2,26 +2,11 @@
 
 <span>
 
-    <q-dialog
-      v-if="currentlyCheckedDocument"
-      v-model="documentCloseDialogConfirm"
-      >
-      <q-card>
-        <q-card-section class="row items-center">
-          <span class="q-ml-sm">Discard changes to {{retrieveFieldValue(currentlyCheckedDocument,'name')}}?</span>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat label="Cancel" color="primary" v-close-popup />
-          <q-btn
-            flat
-            label="Discard changes"
-            color="red"
-            v-close-popup
-            @click="closeDocument(currentlyCheckedDocument)" />
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+   <closeDocumentCheckDialog
+     :dialog-trigger="closeDocumentCheckDialogTrigger"
+     :dialog-document="dialogDoc"
+      @trigger-dialog-close="closeDocumentCheckDialogClose"
+    />
 
     <q-tabs
       v-if="localDocuments.length > 0"
@@ -52,7 +37,7 @@
           :class="[{'isBold': (retrieveFieldValue(document,'documentColor') !== '#ffffff' && retrieveFieldValue(document,'documentColor') !== '#fff') && retrieveFieldValue(document,'documentColor') !== ''}]"
           :alert="document.hasEdits"
           alert-icon="mdi-feather"
-          @click.prevent.middle="checkForCloseOpenedDocument(document)"
+          @click.prevent.middle="tryCloseTab(document)"
           >
             <q-tooltip
               :delay="700"
@@ -67,7 +52,7 @@
               size="xs"
               icon="close"
               style="color: #fff;"
-              @click.stop.prevent="checkForCloseOpenedDocument(document)"
+              @click.stop.prevent="tryCloseTab(document)"
             />
         </q-route-tab>
 
@@ -86,33 +71,12 @@ import { Component, Watch, Prop } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
 import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
+import closeDocumentCheckDialog from "src/components/dialogs/CloseDocumentCheck.vue"
 
 @Component({
-  components: { }
+  components: { closeDocumentCheckDialog }
 })
 export default class TopTabs extends BaseClass {
-  documentCloseDialogConfirm = false
-  currentlyCheckedDocument = null as unknown as I_OpenedDocument
-
-  checkForCloseOpenedDocument (input: I_OpenedDocument) {
-    this.currentlyCheckedDocument = input
-    if (input.hasEdits) {
-      this.documentCloseDialogConfirm = true
-    }
-    else {
-      this.closeDocument(input)
-    }
-  }
-
-  closeDocument (input: I_OpenedDocument) {
-    const dataPass = { doc: input, treeAction: false }
-    this.SSET_removeOpenedDocument(dataPass)
-    this.documentCloseDialogConfirm = false
-    setTimeout(() => {
-      this.refreshRoute()
-    }, 100)
-  }
-
   @Watch("SGET_allOpenedDocuments", { deep: true })
   reactToDocumentListChange (val: {docs: I_OpenedDocument[]}) {
     this.localDocuments = []
@@ -125,6 +89,15 @@ export default class TopTabs extends BaseClass {
 
   @Prop() readonly pushedKey!: I_KeyPressObject
 
+  closeDocumentCheckDialogTrigger: string | false = false
+  closeDocumentCheckDialogClose () {
+    this.closeDocumentCheckDialogTrigger = false
+  }
+
+  closeDocumentCheckDialogAssignUID () {
+    this.closeDocumentCheckDialogTrigger = this.generateUID()
+  }
+
   /****************************************************************/
   // Keybind handling
   /****************************************************************/
@@ -136,7 +109,7 @@ export default class TopTabs extends BaseClass {
   processKeyPush () {
     // Delete dialog
     if (this.determineKeyBind("closeTab") && this.localDocuments.length > 0) {
-      this.closeTab()
+      this.tryCloseTab()
     }
 
     // Next tab
@@ -150,11 +123,14 @@ export default class TopTabs extends BaseClass {
     }
   }
 
-  closeTab () {
-    const matchingDocument = this.localDocuments.find(e => e.url === this.$route.path)
+  dialogDoc = null as unknown as I_OpenedDocument
+
+  tryCloseTab (doc?: I_OpenedDocument) {
+    const matchingDocument = (doc) || this.localDocuments.find(e => e.url === this.$route.path)
 
     if (matchingDocument) {
-      this.checkForCloseOpenedDocument(matchingDocument)
+      this.dialogDoc = matchingDocument
+      this.closeDocumentCheckDialogAssignUID()
     }
   }
 

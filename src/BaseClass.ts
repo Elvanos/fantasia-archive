@@ -1,10 +1,10 @@
 import { KeyManagementInterface } from "./store/module-keybinds/state"
-import { I_OpenedDocument } from "./interfaces/I_OpenedDocument"
+import { I_OpenedDocument, I_ShortenedDocument } from "./interfaces/I_OpenedDocument"
 import { Component, Vue } from "vue-property-decorator"
 import { namespace } from "vuex-class"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
 import { I_NewObjectTrigger } from "src/interfaces/I_NewObjectTrigger"
-import { uid } from "quasar"
+import { uid, colors } from "quasar"
 import { I_FieldRelationship } from "src/interfaces/I_FieldRelationship"
 import { I_KeyPressObject } from "src/interfaces/I_KeypressObject"
 
@@ -285,5 +285,10 @@ export default class BaseClass extends Vue {
     }
 
     return hierarchiString
+  }
+
+  retrieveIconColor (document: I_ShortenedDocument): string {
+    // @ts-ignore
+    return (document.activeTypeSearch) ? colors.getBrand("primary") : document.color
   }
 }
