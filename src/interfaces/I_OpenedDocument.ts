@@ -29,6 +29,7 @@ export interface I_ShortenedDocument{
   children: I_ShortenedDocument[]
   extraFields: I_ExtraDocumentFields[]
   color?: string
+  tags?: string[]
 
   activeTypeSearch?: boolean
   filteredOut?: boolean

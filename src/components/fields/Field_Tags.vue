@@ -1,39 +1,41 @@
 <template>
   <div>
-    <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
-      <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
-      {{inputDataBluePrint.name}}
-       <q-icon v-if="toolTip" name="mdi-help-circle" size="16px" class="q-ml-md">
+  <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
+    <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
+    {{inputDataBluePrint.name}}
+     <q-icon v-if="toolTip" name="mdi-help-circle" size="16px" class="q-ml-md">
          <q-tooltip :delay="500">
            <span v-html="toolTip"/>
         </q-tooltip>
       </q-icon>
-    </div>
+  </div>
 
-    <q-list
+    <div
       v-if="!editMode"
-      dense>
-      <q-item>
-        <q-item-section>
-           {{localInput}}
-        </q-item-section>
-      </q-item>
-    </q-list>
+    >
+     <q-chip
+      v-for="(input,index) in localInput" :key="index"
+      color="primary" text-color="white" class="text-bold">
+        {{input}}
+      </q-chip>
+    </div>
 
     <q-select
       v-if="editMode"
       style="width: 100%;"
       dense
       dark
-        menu-anchor="bottom middle"
+      menu-anchor="bottom middle"
       menu-self="top middle"
-      class="singleSelect"
-      :options="extraInput"
+      class="tagSelect"
+      :options="allTags"
       use-input
       outlined
+      use-chips
       @filter="filterFn"
       input-debounce="0"
       new-value-mode="add"
+      multiple
       v-model="localInput"
       @input="signalInput"
       @keydown="signalInput"
@@ -52,27 +54,36 @@
 import { Component, Emit, Prop, Watch } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
-
+import { tagListBuildFromBlueprints } from "src/scripts/utilities/tagListBuilder"
 import { I_ExtraFields } from "src/interfaces/I_Blueprint"
 
 @Component({
   components: { }
 })
-export default class Field_SingleSelect extends BaseClass {
+export default class Field_Tags extends BaseClass {
   @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
 
-  @Prop({ default: "" }) readonly inputDataValue!: ""
+  @Prop({
+    default: () => {
+      return []
+    }
+  }) readonly inputDataValue!: []
 
   @Prop() readonly isNew!: boolean
 
   @Prop() readonly editMode!: boolean
 
   changedInput = false
-  localInput = ""
+  localInput = []
 
   @Watch("inputDataValue", { deep: true, immediate: true })
   reactToInputChanges () {
-    this.localInput = (this.inputDataValue) ? this.inputDataValue : ""
+    this.localInput = (this.inputDataValue) ? this.inputDataValue : []
+  }
+
+  @Watch("inputDataBluePrint", { deep: true, immediate: true })
+  reactToBlueprintChanges () {
+    this.buildTagList().catch(e => console.log(e))
   }
 
   get inputIcon () {
@@ -83,20 +94,13 @@ export default class Field_SingleSelect extends BaseClass {
     return this.inputDataBluePrint?.tooltip
   }
 
-  extraInput: string[] = []
-
-  @Watch("inputDataBluePrint", { deep: true, immediate: true })
-  populateExtraInput () {
-    if (this.inputDataBluePrint?.predefinedSelectValues) {
-      this.extraInput = this.inputDataBluePrint?.predefinedSelectValues
-    }
-  }
+  allTags: string[] = []
 
   filterFn (val: string, update: (fn: any) => void) {
     if (val === "") {
       update(() => {
         if (this.inputDataBluePrint?.predefinedSelectValues) {
-          this.extraInput = this.inputDataBluePrint.predefinedSelectValues
+          this.allTags = this.inputDataBluePrint.predefinedSelectValues
         }
       })
       return
@@ -105,9 +109,13 @@ export default class Field_SingleSelect extends BaseClass {
     update(() => {
       if (this.inputDataBluePrint?.predefinedSelectValues) {
         const needle = val.toLowerCase()
-        this.extraInput = this.inputDataBluePrint.predefinedSelectValues.filter(v => v.toLowerCase().indexOf(needle) > -1)
+        this.allTags = this.inputDataBluePrint.predefinedSelectValues.filter(v => v.toLowerCase().indexOf(needle) > -1)
       }
     })
+  }
+
+  async buildTagList () {
+    this.allTags = await tagListBuildFromBlueprints(this.SGET_allBlueprints)
   }
 
   @Emit()

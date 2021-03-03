@@ -19,7 +19,8 @@ export interface I_ExtraFields {
   "singleToManyRelationship" |
   "manyToSingleRelationship" |
   "manyToManyRelationship" |
-  "break"
+  "break" |
+  "tags"
 
   predefinedListExtras?: {
     affix?: string

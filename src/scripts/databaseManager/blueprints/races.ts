@@ -69,6 +69,16 @@ export const racesBlueprint: I_Blueprint = {
       sizing: 2
     },
     {
+      id: "tags",
+      name: "Tags",
+      type: "tags",
+      icon: "mdi-tag",
+      tooltip:
+        `tags
+        `,
+      sizing: 12
+    },
+    {
       id: "otherNames",
       name: "Other names & Epithets",
       type: "list",

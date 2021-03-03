@@ -18,6 +18,8 @@
               ref="ref_newDocument"
               style="flex-grow: 1;"
               dense
+              menu-anchor="bottom middle"
+              menu-self="top middle"
               class="newDocumentSelect"
               :options="filteredNewInput"
               use-input
@@ -101,7 +103,7 @@ export default class NewDocumentDialog extends DialogBase {
       setTimeout( () =>{
         // @ts-ignore 
         this.$refs.ref_newDocument.focus()
-      }, 100)
+      }, 300)
       /* eslint-enable */
     })
   }

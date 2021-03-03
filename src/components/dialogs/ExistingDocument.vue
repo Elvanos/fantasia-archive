@@ -47,6 +47,17 @@
                     <q-item-section>
                       <q-item-label v-html="opt.label" ></q-item-label>
                       <q-item-label caption class="text-cultured" v-html="opt.hierarchicalPath"></q-item-label>
+                      <q-item-label caption class="text-cultured" v-if="opt.tags">
+                        <q-chip
+                        v-for="(input,index) in opt.tags" :key="index"
+                        outline
+                        style="opacity: 0.8;"
+                        size="12px"
+                        class="bg-dark text-cultured"
+                        v-html="`${input}`"
+                        >
+                        </q-chip>
+                      </q-item-label>
                     </q-item-section>
                     <q-btn
                       tabindex="-1"
@@ -127,6 +138,7 @@ export default class ExistingDocumentDialog extends DialogBase {
           type: doc.type,
           // @ts-ignore
           hierarchicalPath: this.getDocumentHieararchicalPath(doc, dbDocuments.rows),
+          tags: doc.extraFields.find(e => e.id === "tags")?.value,
           color: doc.extraFields.find(e => e.id === "documentColor")?.value,
           isCategory: doc.extraFields.find(e => e.id === "categorySwitch")?.value
         } as unknown as I_ShortenedDocument

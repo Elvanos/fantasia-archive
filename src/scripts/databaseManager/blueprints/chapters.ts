@@ -63,6 +63,16 @@ export const chaptersBlueprint: I_Blueprint = {
       sizing: 2
     },
     {
+      id: "tags",
+      name: "Tags",
+      type: "tags",
+      icon: "mdi-tag",
+      tooltip:
+        `tags
+        `,
+      sizing: 12
+    },
+    {
       id: "content",
       name: "Chapter content",
       type: "wysiwyg",

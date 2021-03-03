@@ -28,7 +28,7 @@
             @click.stop.prevent.middle="processNodeLabelMiddleClick(prop.node)"
            >
           <q-icon
-            :style="`color: ${prop.node.color}; width: 22px !important;`"
+            :style="`color: ${determineNodeColor(prop.node)}; width: 22px !important;`"
             :size="(prop.node.icon.includes('fas')? '16px': '21px')"
             :name="prop.node.icon"
             class="q-mr-sm self-center" />
@@ -56,7 +56,7 @@
             <div class="treeButtonGroup">
               <q-btn
                 tabindex="-1"
-                v-if="prop.node.children && prop.node.children.length > 0 && !prop.node.isRoot"
+                v-if="prop.node.children && prop.node.children.length > 0 && !prop.node.isRoot && !prop.node.isTag"
                 round
                 flat
                 dense
@@ -74,7 +74,7 @@
               </q-btn>
               <q-btn
                 tabindex="-1"
-                v-if="!prop.node.specialLabel || prop.node.isRoot"
+                v-if="(!prop.node.specialLabel && !prop.node.isRoot) || (prop.node.isRoot && !prop.node.isTag)"
                 round
                 flat
                 dense
@@ -134,7 +134,8 @@ import PouchDB from "pouchdb"
 import { engageBlueprints, retrieveAllBlueprints } from "src/scripts/databaseManager/blueprintManager"
 // import { cleanDatabases } from "src/scripts/databaseManager/cleaner"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
-import { extend } from "quasar"
+import { extend, colors } from "quasar"
+import { tagListBuildFromBlueprints } from "src/scripts/utilities/tagListBuilder"
 
 @Component({
   components: { }
@@ -268,6 +269,8 @@ export default class ObjectTree extends BaseClass {
   resetTreeFilter () {
     this.treeFilter = ""
     const treeFilterDOM = this.$refs.treeFilter as unknown as HTMLInputElement
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     treeFilterDOM.focus()
   }
 
@@ -358,6 +361,7 @@ export default class ObjectTree extends BaseClass {
   async buildCurrentObjectTree () {
     const allBlueprings = this.SGET_allBlueprints
     const treeObject: any[] = []
+    let allTreeDocuments: I_ShortenedDocument[] = []
 
     // Process all documents, build hieararchy out of the and sort them via name and custom order
     for (const blueprint of allBlueprings) {
@@ -393,6 +397,8 @@ export default class ObjectTree extends BaseClass {
         })
 
       const documentCount = allDocumentsRows.length
+      const listCopy: I_ShortenedDocument[] = extend(true, [], allDocumentsRows)
+      allTreeDocuments = [...allTreeDocuments, ...listCopy]
 
       const hierarchicalTreeContent = this.buildTreeHierarchy(allDocumentsRows)
 
@@ -434,6 +440,36 @@ export default class ObjectTree extends BaseClass {
         return -1
       }
       return 0
+    })
+
+    const tagList = await tagListBuildFromBlueprints(this.SGET_allBlueprints)
+
+    tagList.forEach((tag: string) => {
+      const tagDocs = allTreeDocuments
+        .filter(doc => {
+          const docTags = doc.extraFields.find(e => e.id === "tags")?.value as unknown as string[]
+          return (docTags && docTags.includes(tag))
+        })
+        .map((doc:I_ShortenedDocument) => {
+          // @ts-ignore
+          doc.key = `${tag}${doc._id}`
+          // @ts-ignore
+          doc.isTag = true
+          return doc
+        })
+        .sort((a, b) => a.label.localeCompare(b.label))
+
+      const tagObject = {
+        label: `${tag}`,
+        icon: "mdi-tag",
+        _id: `tag-${tag}`,
+        key: `tag-${tag}`,
+        documentCount: tagDocs.length,
+        isRoot: true,
+        isTag: true,
+        children: tagDocs
+      }
+      treeObject.push(tagObject)
     })
 
     // Assign the finished object to the render model
@@ -539,9 +575,14 @@ export default class ObjectTree extends BaseClass {
     children: []
     type: string
     isRoot: boolean
+    isTag: boolean
     specialLabel: string|boolean
   }) {
     this.selectedTreeNode = null
+
+    if (node.isRoot && node.isTag) {
+      return
+    }
 
     if (!node.specialLabel && !node.isRoot) {
       // @ts-ignore
@@ -581,6 +622,11 @@ export default class ObjectTree extends BaseClass {
 
     const isExpanded = treeDOM.isExpanded(node.key)
     treeDOM.setExpanded(node.key, !isExpanded)
+  }
+
+  determineNodeColor (node: {color: string, isTag: boolean, isRoot: boolean}) {
+    // @ts-ignore
+    return (node?.isTag && node?.isRoot) ? colors.getBrand("primary") : node.color
   }
 }
 </script>

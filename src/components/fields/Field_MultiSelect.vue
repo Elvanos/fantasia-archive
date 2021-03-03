@@ -27,6 +27,10 @@
       v-if="editMode"
       style="width: 100%;"
       dense
+      dark
+        menu-anchor="bottom middle"
+      menu-self="top middle"
+      class="multiSelect"
       :options="extraInput"
       use-input
       outlined

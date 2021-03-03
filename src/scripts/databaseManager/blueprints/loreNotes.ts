@@ -63,6 +63,16 @@ export const loreNotesBlueprint: I_Blueprint = {
       sizing: 2
     },
     {
+      id: "tags",
+      name: "Tags",
+      type: "tags",
+      icon: "mdi-tag",
+      tooltip:
+        `tags
+        `,
+      sizing: 12
+    },
+    {
       id: "notes",
       name: "Note list",
       type: "list",

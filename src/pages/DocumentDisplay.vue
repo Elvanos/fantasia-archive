@@ -171,6 +171,16 @@
           @signal-input="reactToFieldUpdate($event, field)"
           />
 
+          <Field_Tags
+          class="inputWrapper"
+          v-if="field.type === 'tags' && fieldLimiter(field.id)"
+          :inputDataBluePrint="field"
+          :inputDataValue="retrieveFieldValue(currentData, field.id)"
+          :isNew="currentData.isNew"
+          :editMode="editMode"
+          @signal-input="reactToFieldUpdate($event, field)"
+          />
+
       </div>
 
     </div>
@@ -202,7 +212,7 @@ import Field_MultiSelect from "src/components/fields/Field_MultiSelect.vue"
 import Field_SingleRelationship from "src/components/fields/Field_SingleRelationship.vue"
 import Field_MultiRelationship from "src/components/fields/Field_MultiRelationship.vue"
 import Field_Wysiwyg from "src/components/fields/Field_Wysiwyg.vue"
-import console from "console"
+import Field_Tags from "src/components/fields/Field_Tags.vue"
 
 @Component({
   components: {
@@ -216,7 +226,8 @@ import console from "console"
     Field_MultiSelect,
     Field_SingleRelationship,
     Field_MultiRelationship,
-    Field_Wysiwyg
+    Field_Wysiwyg,
+    Field_Tags
   }
 })
 
@@ -388,6 +399,18 @@ export default class PageDocumentDisplay extends BaseClass {
 
     // FIELD - Wysiwyg
     if (field.type === "wysiwyg") {
+      this.currentData.hasEdits = true
+      const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
+      this.currentData.extraFields[indexToUpdate].value = inputData
+
+      const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
+
+      const dataPass = { doc: dataCopy, treeAction: false }
+      this.SSET_updateOpenedDocument(dataPass)
+    }
+
+    // FIELD - Tags
+    if (field.type === "tags") {
       this.currentData.hasEdits = true
       const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
       this.currentData.extraFields[indexToUpdate].value = inputData

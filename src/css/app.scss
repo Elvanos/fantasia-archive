@@ -66,6 +66,9 @@ body {
   left: calc(100% - 30px);
 }
 
+.tagSelect,
+.singleSelect,
+.multiSelect,
 .singleRelashionshipSelect,
 .multiRelashionshipSelect,
 .existingDocumentSelect,
@@ -89,7 +92,7 @@ body {
 }
 
 .q-position-engine {
-  overflow-y: scroll !important;
+  overflow-y: auto !important;
 }
 
 .text-underline {

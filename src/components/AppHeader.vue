@@ -44,6 +44,7 @@ export default class AppHeader extends BaseClass {
 }
 
 .appHeaderInner {
+  z-index: 999999;
   display: flex;
   min-height: 40px;
   -webkit-app-region: drag;
