@@ -14,6 +14,12 @@
       @trigger-dialog-close="existingObjectDialogClose"
     />
 
+    <!-- Delele document dialog -->
+    <deleteDocumentCheckDialog
+      :dialog-trigger="deleteObjectDialogTrigger"
+      @trigger-dialog-close="deleteObjectDialogClose"
+    />
+
     <q-page-sticky position="top-right" class="documentControl">
 
       <div class="documentControl__blocker"></div>
@@ -61,6 +67,17 @@
         </div>
 
         <div class="documentControl__right">
+          <q-btn
+            icon="mdi-text-box-remove-outline"
+            color="secondary"
+            outline
+            @click="deleteObjectAssignUID"
+            :disable="SGET_allOpenedDocuments.docs.length < 1"
+          >
+            <q-tooltip>
+              Delete current document
+            </q-tooltip>
+          </q-btn>
 
         </div>
 
@@ -77,13 +94,15 @@ import { Component, Watch } from "vue-property-decorator"
 import BaseClass from "src/BaseClass"
 import newDocumentDialog from "src/components/dialogs/NewDocument.vue"
 import existingDocumentDialog from "src/components/dialogs/ExistingDocument.vue"
+import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentCheck.vue"
 
 import { retrieveCurrentProjectName, exportProject } from "src/scripts/projectManagement/projectManagent"
 
 @Component({
   components: {
     newDocumentDialog,
-    existingDocumentDialog
+    existingDocumentDialog,
+    deleteDocumentCheckDialog
   }
 })
 export default class DocumentControl extends BaseClass {
@@ -113,6 +132,24 @@ export default class DocumentControl extends BaseClass {
     if (this.determineKeyBind("quickExistingDocument")) {
       this.existingObjectAssignUID()
     }
+
+    // Delete dialog - CTRL + D
+    if (this.determineKeyBind("deleteDocument")) {
+      this.deleteObjectAssignUID()
+    }
+  }
+
+  /****************************************************************/
+  // Delete dialog
+  /****************************************************************/
+
+  deleteObjectDialogTrigger: string | false = false
+  deleteObjectDialogClose () {
+    this.deleteObjectDialogTrigger = false
+  }
+
+  deleteObjectAssignUID () {
+    this.deleteObjectDialogTrigger = this.generateUID()
   }
 
   /****************************************************************/

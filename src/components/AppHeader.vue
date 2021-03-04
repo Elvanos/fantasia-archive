@@ -57,7 +57,7 @@ export default class AppHeader extends BaseClass {
   }
 
   .topTabs {
-    max-width: calc(100% - 535px);
+    max-width: calc(100% - 415px);
   }
 
   .appWindowButtons {

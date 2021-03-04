@@ -95,7 +95,7 @@
 <script lang="ts">
 
 import { Component, Watch } from "vue-property-decorator"
-import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
+import { I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import PouchDB from "pouchdb"
 import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
 import { extend } from "quasar"
@@ -127,25 +127,30 @@ export default class ExistingDocumentDialog extends DialogBase {
     for (const blueprint of this.SGET_allBlueprints) {
       const CurrentObjectDB = new PouchDB(blueprint._id)
 
-      const dbDocuments = await CurrentObjectDB.allDocs({ include_docs: true })
-      const formattedDocuments = dbDocuments.rows.map(singleDocument => {
-        const doc = singleDocument.doc as unknown as I_ShortenedDocument
-        return {
+      const dbRows = await CurrentObjectDB.allDocs({ include_docs: true })
+      const dbDocuments = dbRows.rows.map(d => d.doc)
+      const formattedDocuments: I_ShortenedDocument[] = []
+
+      for (const singleDocument of dbDocuments) {
+        const doc = singleDocument as unknown as I_ShortenedDocument
+        const pushValue = {
           label: doc.extraFields.find(e => e.id === "name")?.value,
           icon: doc.icon,
           id: doc._id,
           url: doc.url,
           type: doc.type,
           // @ts-ignore
-          hierarchicalPath: this.getDocumentHieararchicalPath(doc, dbDocuments.rows),
+          hierarchicalPath: this.getDocumentHieararchicalPath(doc, dbDocuments),
           tags: doc.extraFields.find(e => e.id === "tags")?.value,
           color: doc.extraFields.find(e => e.id === "documentColor")?.value,
           isCategory: doc.extraFields.find(e => e.id === "categorySwitch")?.value
         } as unknown as I_ShortenedDocument
-      })
-        .sort((a, b) => a.label.localeCompare(b.label))
+        formattedDocuments.push(pushValue)
+      }
+      const sortedDocuments = formattedDocuments.sort((a, b) => a.label.localeCompare(b.label))
+
       // @ts-ignore
-      allDocs = [...allDocs, ...formattedDocuments]
+      allDocs = [...allDocs, ...sortedDocuments]
     }
 
     this.existingObjectsBackupList = allDocs

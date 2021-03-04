@@ -184,6 +184,15 @@ export default class BaseClass extends Vue {
   @OpenedDocuments.Action("triggerTreeAction") SSET_triggerTreeAction!: () => void
   @OpenedDocuments.Action("resetDocuments") SSET_resetDocuments!: () => void
 
+  findRequestedOrActiveDocument (doc?: I_OpenedDocument) {
+    if (doc) {
+      return (this.SGET_allOpenedDocuments.docs.find(e => e.url === doc.url)) || false
+    }
+    else {
+      return (this.SGET_allOpenedDocuments.docs.find(e => e.url === this.$route.path)) || false
+    }
+  }
+
   /**
    * Retrieves value of requested field. If the field doesn't exist, returns false instead
    * @param document - Document object that is expected to contain the field
@@ -260,31 +269,34 @@ export default class BaseClass extends Vue {
   /****************************************************************/
   // Document list management
   /****************************************************************/
-  getDocumentHieararchicalPath (document: I_OpenedDocument, list: I_OpenedDocument[]): string {
-    let hierarchiString = ""
+  getDocumentHieararchicalPath (document: I_OpenedDocument, list: I_OpenedDocument[]) {
+    let hierarchicalString = ""
 
     // @ts-ignore
     const parentDoc = (this.retrieveFieldValue(document, "parentDoc"))?.value
-    if (!parentDoc) {
+
+    const parentDocInDB = (list.find(p => p._id === parentDoc?._id))
+
+    if (!parentDoc || (parentDoc && !parentDocInDB)) {
       const singleBlueprintName = this.SGET_allBlueprints.find(e => e._id === document.type)?.nameSingular
-      hierarchiString += singleBlueprintName
-      return hierarchiString
+      hierarchicalString += singleBlueprintName
+      return hierarchicalString
     }
+
     const matchingDoc = list.find((doc:I_OpenedDocument) => {
-      // @ts-ignore
-      return doc.id === parentDoc._id
+      return doc._id === parentDoc._id
     }) as I_OpenedDocument
 
     // @ts-ignore
-    hierarchiString += this.retrieveFieldValue(matchingDoc.doc, "name")
+    hierarchicalString += this.retrieveFieldValue(matchingDoc, "name")
 
     // @ts-ignore
-    const connectedReturn = this.getDocumentHieararchicalPath(matchingDoc.doc, list)
+    const connectedReturn = this.getDocumentHieararchicalPath(matchingDoc, list)
     if (connectedReturn) {
-      hierarchiString = `${connectedReturn} > ${hierarchiString}`
+      hierarchicalString = `${connectedReturn} > ${hierarchicalString}`
     }
 
-    return hierarchiString
+    return hierarchicalString
   }
 
   retrieveIconColor (document: I_ShortenedDocument): string {

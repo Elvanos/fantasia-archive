@@ -29,6 +29,7 @@ add delete document dialog to dialog system
 - Lightly modified the app color-scheme to offer better readability of contrast
 - Changed icon for the button triggering quick-adding of new documents
 - Changed the looks of tooltips to go well with the current app looks
+- Adjusted tab-list width to allow for more content to show
 - Modified selected and active indicators for already selected/active items in dropdown lists in order to not clash with the highlighting from the filter results
 - Slightly modified the scrollbar visuals to be less intrusive
 - Added a light golden tint to the background of the app to go easy on user's eyes before dark mode is added

@@ -126,7 +126,7 @@ export default class TopTabs extends BaseClass {
   dialogDoc = null as unknown as I_OpenedDocument
 
   tryCloseTab (doc?: I_OpenedDocument) {
-    const matchingDocument = (doc) || this.localDocuments.find(e => e.url === this.$route.path)
+    const matchingDocument = this.findRequestedOrActiveDocument(doc)
 
     if (matchingDocument) {
       this.dialogDoc = matchingDocument

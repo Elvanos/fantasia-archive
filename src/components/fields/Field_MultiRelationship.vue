@@ -242,9 +242,10 @@ export default class Field_SingleRelationship extends BaseClass {
       const CurrentObjectDB = new PouchDB(this.inputDataBluePrint.relationshipSettings.connectedObjectType)
 
       const allDbObjects = (await CurrentObjectDB.allDocs({ include_docs: true })).rows
+      const allDbDocs = allDbObjects.map(doc => doc.doc)
 
-      const allObjects = allDbObjects.map((doc) => {
-        const objectDoc = doc.doc as unknown as I_ShortenedDocument
+      const allObjects = allDbDocs.map((doc) => {
+        const objectDoc = doc as unknown as I_ShortenedDocument
 
         const pairedField = (this.inputDataBluePrint?.relationshipSettings?.connectedField) || ""
         let isDisabled = false
@@ -271,7 +272,7 @@ export default class Field_SingleRelationship extends BaseClass {
           pairedField: pairedField,
           tags: objectDoc.extraFields.find(e => e.id === "tags")?.value,
           // @ts-ignore
-          hierarchicalPath: this.getDocumentHieararchicalPath(objectDoc, allDbObjects)
+          hierarchicalPath: this.getDocumentHieararchicalPath(objectDoc, allDbDocs)
 
         }
       }) as unknown as I_FieldRelationship[]

@@ -4,28 +4,6 @@
   >
     <div class="row justify-start q-col-gutter-x-xl">
 
-      <q-dialog
-        v-model="deleteConfirmationDialog"
-        >
-        <q-card
-          dark
-        >
-          <q-card-section class="row items-center">
-            <span class="q-ml-sm">Are you sure want to delete <b>{{retrieveFieldValue(currentData,'name')}}</b>? <br> This action can not be reverted and the data will be lost <b>forever</b>.</span>
-          </q-card-section>
-
-          <q-card-actions align="right">
-            <q-btn flat label="Cancel" color="accent" v-close-popup />
-            <q-btn
-              outline
-              label="Delete"
-              color="secondary"
-              v-close-popup
-              @click="deleteDocument()" />
-          </q-card-actions>
-        </q-card>
-      </q-dialog>
-
       <div class="col-12 flex justify-end q-mb-lg q-mt-md">
         <q-btn
           color="primary"
@@ -47,12 +25,6 @@
           @click="toggleEditMode"
           class="q-mr-xl"
           v-if="!editMode"
-        />
-        <q-btn
-          v-if="!currentData.isNew"
-          color="secondary"
-          :label="`Delete ${bluePrintData.nameSingular}`"
-          @click="openDeleteDialog"
         />
       </div>
 
@@ -527,8 +499,6 @@ export default class PageDocumentDisplay extends BaseClass {
     this.SSET_updateOpenedDocument(dataPass)
   }
 
-  deleteConfirmationDialog = false
-
   editMode = false
 
   /**
@@ -547,38 +517,6 @@ export default class PageDocumentDisplay extends BaseClass {
     if (this.determineKeyBind("editDocument") && !this.editMode) {
       this.toggleEditMode()
     }
-
-    // Delete dialog - CTRL + D
-    if (this.determineKeyBind("deleteDocument")) {
-      this.openDeleteDialog()
-    }
-  }
-
-  openDeleteDialog () {
-    this.deleteConfirmationDialog = true
-  }
-
-  async deleteDocument () {
-    this.deleteConfirmationDialog = false
-
-    const CurrentObjectDB = new PouchDB(this.$route.params.type)
-
-    let currentDocument = false as unknown as I_OpenedDocument
-    try {
-      currentDocument = await CurrentObjectDB.get(this.$route.params.id)
-    }
-    catch (error) {}
-
-    const documentCopy: I_OpenedDocument = extend(true, {}, this.currentData)
-    documentCopy._rev = currentDocument?._rev
-    // @ts-ignore
-    await CurrentObjectDB.remove(documentCopy)
-    // await cleanDatabases()
-
-    const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
-
-    const dataPass = { doc: dataCopy, treeAction: true }
-    this.SSET_removeOpenedDocument(dataPass)
   }
 
   currentData = false as unknown as I_OpenedDocument

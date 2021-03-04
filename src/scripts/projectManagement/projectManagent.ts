@@ -21,6 +21,19 @@ export const createNewProject = async (projectName: string, vueRouter: any) => {
 
   /*eslint-disable */
   // @ts-ignore
+  vueRouter.push({ path: "/" }).catch((e: {name: string}) => {
+    const errorName : string = e.name
+    if (errorName === "NavigationDuplicated") {
+      return
+    }
+    console.log(e)
+  })
+  /* eslint-enable */
+
+  await new Promise(resolve => setTimeout(resolve, 1000))
+
+  /*eslint-disable */
+  // @ts-ignore
   vueRouter.push({ path: "/project" }).catch((e: {name: string}) => {
     const errorName : string = e.name
     if (errorName === "NavigationDuplicated") {
