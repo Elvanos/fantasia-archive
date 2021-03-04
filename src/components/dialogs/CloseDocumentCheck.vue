@@ -12,12 +12,12 @@
           <q-btn
           flat
           label="Cancel"
-          color="primary"
+          color="accent"
           v-close-popup />
           <q-btn
-            flat
+            outline
             label="Discard changes"
-            color="red"
+            color="secondary"
             v-close-popup
             @click="closeDocument(dialogDocument)" />
         </q-card-actions>
@@ -55,16 +55,15 @@ export default class CloseDocumentCheckDialog extends DialogBase {
       this.dialogModel = true
     }
     else {
-      this.closeDocument(input)
+      this.closeDocument(input).catch(e => console.log(e))
     }
   }
 
-  closeDocument (input: I_OpenedDocument) {
+  async closeDocument (input: I_OpenedDocument) {
     const dataPass = { doc: input, treeAction: false }
     this.SSET_removeOpenedDocument(dataPass)
-    setTimeout(() => {
-      this.refreshRoute()
-    }, 100)
+    await this.$nextTick()
+    this.refreshRoute()
   }
 }
 </script>

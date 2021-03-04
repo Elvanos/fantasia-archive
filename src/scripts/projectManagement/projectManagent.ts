@@ -93,7 +93,7 @@ export const removeCurrentProject = async () => {
  * Opens a dialog to let user pick whatever project they wish to open and lets them select a directory
  * @param vueRouter The vue router object
  */
-export const openExistingProject = (vueRouter: any) => {
+export const importExistingProject = (vueRouter: any) => {
   /*eslint-disable */
   remote.dialog.showOpenDialog({
     properties: ["openDirectory"]
@@ -121,6 +121,19 @@ export const openExistingProject = (vueRouter: any) => {
       // @ts-ignore
       await CurrentDB.loadIt(fileContents)
     }
+
+    /*eslint-disable */
+    // @ts-ignore
+    vueRouter.push({ path: "/" }).catch((e: {name: string}) => {
+      const errorName : string = e.name
+      if (errorName === "NavigationDuplicated") {
+        return
+      }
+      console.log(e)
+    })
+    /* eslint-enable */
+
+    await new Promise(resolve => setTimeout(resolve, 1000))
 
     /*eslint-disable */
     // @ts-ignore

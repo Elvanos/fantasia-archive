@@ -2,12 +2,20 @@
 
 ## 0.1.3
 
+TODO
+move doc buttons to the top bar
+add delete document dialog to dialog system
+
 ### Bugfixes
 
 - Fixed the "Name" field disappearing upon full deletion of text
+- Fixed a bug with single/multi select fields working unintuitively for adding new values (eg: Character personality traits field or Sex field)
 
 ### New features
 
+- Added a safeguard dialog for new project creation in case an opened project exists
+- Added a safeguard dialog for project importing in case an opened project exists
+- New control bar added for documents and project control
 - A new logo added to the app (better visibility of the logo in small scales and icons)
 - Massive overhaul of the search engine used by the Quick opening existing document and single/multi relationship fields (now supports tags, categories, document types, inteligent filtering and inteligent sorting via importance of the found values)
 - Added color support to single/multi relationship fields
@@ -18,14 +26,18 @@
 
 ### QoL adjustments
 
+- Lightly modified the app color-scheme to offer better readability of contrast
+- Changed icon for the button triggering quick-adding of new documents
+- Changed the looks of tooltips to go well with the current app looks
+- Modified selected and active indicators for already selected/active items in dropdown lists in order to not clash with the highlighting from the filter results
 - Slightly modified the scrollbar visuals to be less intrusive
-- Added a light golden tint to the background of the app to go easy on user's eyes before farkmode is added
+- Added a light golden tint to the background of the app to go easy on user's eyes before dark mode is added
 - Improved performance by reducing the amount of time the side-tree re-renders
-- Visually alligned custom order badge for both nodes with and without children
-- Added dark visuals to the single-select and multi-select fields to align with thge rest of the app
+- Visually aligned custom order badge for both nodes with and without children
+- Added dark visuals to the single-select and multi-select fields to align with the rest of the app
 - All popup dialogs have been unified to dark-color mode
 - Prettified a dialog popup for confirmation of closing a document with active edits
-- Added a small filter over the big white areas to ease-up on the user's eyes before darkmode is added
+- Added a small filter over the big white areas to ease-up on the user's eyes before dark mode is added
 
 ## 0.1.2
 

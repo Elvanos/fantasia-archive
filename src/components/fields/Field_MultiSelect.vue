@@ -28,7 +28,8 @@
       style="width: 100%;"
       dense
       dark
-        menu-anchor="bottom middle"
+      :ref="`multiSelectField${this.inputDataBluePrint.id}`"
+      menu-anchor="bottom middle"
       menu-self="top middle"
       class="multiSelect"
       :options="extraInput"
@@ -94,6 +95,14 @@ export default class Field_MultiSelect extends BaseClass {
 
   extraInput: string[] = []
 
+  async defocusSelectRef () {
+    await this.$nextTick()
+    /*eslint-disable */
+    // @ts-ignore
+    this.$refs[`multiSelectField${this.inputDataBluePrint.id}`].setOptionIndex(-1)     
+    /* eslint-enable */
+  }
+
   @Watch("inputDataBluePrint", { deep: true, immediate: true })
   populateExtraInput () {
     if (this.inputDataBluePrint?.predefinedSelectValues) {
@@ -108,6 +117,7 @@ export default class Field_MultiSelect extends BaseClass {
           this.extraInput = this.inputDataBluePrint.predefinedSelectValues
         }
       })
+      this.defocusSelectRef().catch(e => console.log(e))
       return
     }
 
@@ -116,6 +126,7 @@ export default class Field_MultiSelect extends BaseClass {
         const needle = val.toLowerCase()
         this.extraInput = this.inputDataBluePrint.predefinedSelectValues.filter(v => v.toLowerCase().indexOf(needle) > -1)
       }
+      this.defocusSelectRef().catch(e => console.log(e))
     })
   }
 

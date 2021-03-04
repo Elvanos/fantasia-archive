@@ -66,7 +66,7 @@
       <div style="width: 115px;" class="justify-end flex">
         <q-btn
           v-if="editMode"
-          color="red"
+          color="secondary"
           @click="removeFromList(index)"
           label="Remove" />
       </div>

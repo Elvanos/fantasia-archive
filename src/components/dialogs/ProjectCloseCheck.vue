@@ -20,6 +20,7 @@
             clickable
             v-ripple
             active
+            class="noHigh"
             active-class="bg-primary-1 text-primary"
             v-close-popup
             :to="doc.url">
@@ -34,11 +35,15 @@
         </q-card-section>
 
         <q-card-actions align="around" class="q-mx-xl q-mt-lg q-mb-md">
-          <q-btn flat label="Cancel" color="primary" v-close-popup />
           <q-btn
             flat
+            label="Cancel"
+            color="accent"
+            v-close-popup />
+          <q-btn
+            outline
             :label="exitLabelText"
-            color="red"
+            color="secondary"
             v-close-popup
             @click="checkModeAction" />
         </q-card-actions>

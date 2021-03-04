@@ -1,5 +1,5 @@
 import { RouteConfig } from "vue-router"
-import MainLayout from "layouts/MainLayout.vue"
+import DocumentLayout from "src/layouts/DocumentLayout.vue"
 import ProjectManagentLayout from "layouts/ProjectManagentLayout.vue"
 
 const routes: RouteConfig[] = [
@@ -12,7 +12,7 @@ const routes: RouteConfig[] = [
   },
   {
     path: "/project",
-    component: MainLayout,
+    component: DocumentLayout,
     children: [
       { path: "/project", component: () => import("pages/ProjectScreen.vue") },
       { path: "/project/display-content/:type/:id", component: () => import("pages/DocumentDisplay.vue") }

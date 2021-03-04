@@ -12,11 +12,11 @@
 // to match your app's branding.
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
-$primary   : #d2a334;
-$secondary :  #a4031f;
+$primary   : #d7ac47;
+$secondary :  #e3173a;
 $accent    : #dde4e4;
 
-$dark      : #19323c;
+$dark      : #18303a;
 
 $positive  : #21ba45;
 $negative  : #c10015;
@@ -24,10 +24,12 @@ $info      : #31ccec;
 $warning   : #f2c037;
 
 $customColors: (
-  'gunmetal': #19323c,
-  'gunmetal-light': lighten(#19323c, 7.5),
-  'ruby-red': #a4031f,
-  'satin-sheen-gold': #d2a334,
+  'gunmetal': #18303a,
+  'gunmetal-light': lighten(#18303a, 7.5),
+  'gunmetal-bright': lighten(#18303a, 30),
+  'gunmetal-shine': lighten(#18303a, 60),
+  'ruby-red': #e3173a,
+  'satin-sheen-gold': #d7ac47,
   'gainsboro': #dde4e4,
   'cultured': #f5f5f5
 );

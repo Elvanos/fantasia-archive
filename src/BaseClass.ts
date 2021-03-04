@@ -291,4 +291,8 @@ export default class BaseClass extends Vue {
     // @ts-ignore
     return (document.activeTypeSearch) ? colors.getBrand("primary") : document.color
   }
+
+  sleep (ms:number) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
 }

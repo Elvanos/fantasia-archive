@@ -7,17 +7,19 @@
       <q-dialog
         v-model="deleteConfirmationDialog"
         >
-        <q-card>
+        <q-card
+          dark
+        >
           <q-card-section class="row items-center">
             <span class="q-ml-sm">Are you sure want to delete <b>{{retrieveFieldValue(currentData,'name')}}</b>? <br> This action can not be reverted and the data will be lost <b>forever</b>.</span>
           </q-card-section>
 
           <q-card-actions align="right">
-            <q-btn flat label="Cancel" color="primary" v-close-popup />
+            <q-btn flat label="Cancel" color="accent" v-close-popup />
             <q-btn
-              flat
+              outline
               label="Delete"
-              color="red"
+              color="secondary"
               v-close-popup
               @click="deleteDocument()" />
           </q-card-actions>
@@ -48,7 +50,7 @@
         />
         <q-btn
           v-if="!currentData.isNew"
-          color="red"
+          color="secondary"
           :label="`Delete ${bluePrintData.nameSingular}`"
           @click="openDeleteDialog"
         />

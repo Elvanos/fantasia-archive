@@ -38,12 +38,12 @@
                     v-on="itemEvents"
                     :style="`color: ${opt.color}`"
                   >
-                  <q-item-section avatar>
-                    <q-icon
-                      :style="`color: ${retrieveIconColor(opt)}`"
-                      :name="(opt.isCategory) ? 'fas fa-folder-open' : opt.icon"
-                      />
-                  </q-item-section>
+                    <q-item-section avatar>
+                      <q-icon
+                        :style="`color: ${retrieveIconColor(opt)}`"
+                        :name="(opt.isCategory) ? 'fas fa-folder-open' : opt.icon"
+                        />
+                    </q-item-section>
                     <q-item-section>
                       <q-item-label v-html="opt.label" ></q-item-label>
                       <q-item-label caption class="text-cultured" v-html="opt.hierarchicalPath"></q-item-label>
@@ -53,7 +53,7 @@
                         outline
                         style="opacity: 0.8;"
                         size="12px"
-                        class="bg-dark text-cultured"
+                        class="text-cultured"
                         v-html="`${input}`"
                         >
                         </q-chip>
@@ -83,8 +83,8 @@
         </q-card-section>
 
         <q-card-section>
-          <q-card-actions align="center" class="q-mb-sm">
-            <q-btn flat label="Close window" color="primary" v-close-popup />
+          <q-card-actions align="around" class="q-mb-sm">
+            <q-btn flat label="Close" color="accent" v-close-popup />
           </q-card-actions>
         </q-card-section>
 
@@ -151,35 +151,37 @@ export default class ExistingDocumentDialog extends DialogBase {
     this.existingObjectsBackupList = allDocs
     this.filterDocuments()
 
-    this.$nextTick(function () {
-    /*eslint-disable */
-      setTimeout( () =>{
-        if(this.$refs.ref_existingDocument){
-          // @ts-ignore 
-          this.$refs.ref_existingDocument.focus()
-        }
-      }, 300)
-    /* eslint-enable */
-    })
+    await this.$nextTick()
+    await this.sleep(200)
+
+    if (this.$refs.ref_existingDocument) {
+      /*eslint-disable */
+      // @ts-ignore 
+      this.$refs.ref_existingDocument.focus()
+      /* eslint-enable */
+    }
   }
 
   existingDocumentModel = null
 
   filteredExistingInput = null as unknown as I_ShortenedDocument[]
 
+  async refocusSelect () {
+    await this.$nextTick()
+    /*eslint-disable */
+    // @ts-ignore 
+    this.$refs.ref_existingDocument.setOptionIndex(-1)
+    // @ts-ignore 
+    this.$refs.ref_existingDocument.moveOptionSelection(1, true) 
+    /* eslint-enable */
+  }
+
   filterExistingSelect (val: string, update: (e: () => void) => void) {
     if (val === "") {
       update(() => {
         this.filteredExistingInput = this.existingObjectList
-        /*eslint-disable */
-        if(this.$refs.ref_existingDocument && this.filteredExistingInput.length > 0){
-          setTimeout(() => {
-          // @ts-ignore 
-          this.$refs.ref_existingDocument.setOptionIndex(-1)
-          // @ts-ignore 
-          this.$refs.ref_existingDocument.moveOptionSelection(1, true) 
-        }, 300)      
-        /* eslint-enable */
+        if (this.$refs.ref_existingDocument && this.filteredExistingInput.length > 0) {
+          this.refocusSelect().catch(e => console.log(e))
         }
       })
       return
@@ -188,19 +190,10 @@ export default class ExistingDocumentDialog extends DialogBase {
     update(() => {
       const needle = val.toLowerCase()
       const listCopy : I_ShortenedDocument[] = extend(true, [], this.existingObjectList)
-      setTimeout(() => {
-        this.filteredExistingInput = advancedDocumentFilter(needle, listCopy)
-      }, 100)
+      this.filteredExistingInput = advancedDocumentFilter(needle, listCopy)
 
-      /*eslint-disable */
-        if(this.$refs.ref_existingDocument && this.filteredExistingInput.length > 0){
-          setTimeout(() => {
-          // @ts-ignore 
-          this.$refs.ref_existingDocument.setOptionIndex(-1)
-          // @ts-ignore 
-          this.$refs.ref_existingDocument.moveOptionSelection(1, true) 
-        }, 100)      
-        /* eslint-enable */
+      if (this.$refs.ref_existingDocument && this.filteredExistingInput.length > 0) {
+        this.refocusSelect().catch(e => console.log(e))
       }
     })
   }

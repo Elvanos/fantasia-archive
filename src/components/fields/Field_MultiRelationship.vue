@@ -48,6 +48,7 @@
       dark
       style="flex-grow: 1;"
       dense
+      :ref="`multieRelationshipField${this.inputDataBluePrint.id}`"
       :options="filteredInput"
       use-input
       outlined
@@ -63,11 +64,28 @@
           v-bind="itemProps"
           v-on="itemEvents"
         >
+           <q-item-section avatar>
+            <q-icon
+              :style="`color: ${retrieveIconColor(opt)}`"
+              :name="(opt.isCategory) ? 'fas fa-folder-open' : opt.icon"
+              />
+          </q-item-section>
           <q-item-section>
             <q-item-label
             :style="`color: ${opt.color}`"
              v-html="opt.label" ></q-item-label>
-            <q-item-label caption class="text-cultured">{{opt.hierarchicalPath}}</q-item-label>
+            <q-item-label caption class="text-cultured" v-html="opt.hierarchicalPath"></q-item-label>
+            <q-item-label caption class="text-cultured" v-if="opt.tags">
+              <q-chip
+              v-for="(input,index) in opt.tags" :key="index"
+              outline
+              style="opacity: 0.8;"
+              size="12px"
+              class="text-cultured noBounce"
+              v-html="`${input}`"
+              >
+              </q-chip>
+            </q-item-label>
           </q-item-section>
           <q-tooltip v-if='opt.disable'>
             This option is unavailable for selection as it is already paired to another.
@@ -112,7 +130,8 @@ import { Component, Emit, Prop, Watch } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
 import PouchDB from "pouchdb"
-
+import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
+import { extend } from "quasar"
 import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { I_ExtraFields } from "src/interfaces/I_Blueprint"
 import { I_FieldRelationship, I_RelationshipPair } from "src/interfaces/I_FieldRelationship"
@@ -163,17 +182,39 @@ export default class Field_SingleRelationship extends BaseClass {
 
   inputNotes: { pairedId: string; value: string; }[] = []
 
+  async refocusSelect () {
+    await this.$nextTick()
+    /*eslint-disable */
+    // @ts-ignore 
+    this.$refs[`multiRelationshipField${this.inputDataBluePrint.id}`].setOptionIndex(-1)
+    // @ts-ignore 
+    this.$refs[`multiRelationshipField${this.inputDataBluePrint.id}`].moveOptionSelection(1, true) 
+    /* eslint-enable */
+  }
+
   filterSelect (val: string, update: (e: () => void) => void) {
     if (val === "") {
       update(() => {
         this.filteredInput = this.extraInput
+        if (this.$refs[`multiRelationshipField${this.inputDataBluePrint.id}`] && this.filteredInput.length > 0) {
+          this.refocusSelect().catch(e => console.log(e))
+        }
       })
       return
     }
 
     update(() => {
       const needle = val.toLowerCase()
-      this.filteredInput = this.extraInput.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
+      const listCopy : I_ShortenedDocument[] = extend(true, [], this.extraInput)
+
+      // @ts-ignore
+      this.filteredInput = advancedDocumentFilter(needle, listCopy)
+
+      /*eslint-disable */
+        if(this.$refs[`multiRelationshipField${this.inputDataBluePrint.id}`] && this.filteredInput.length > 0){
+          this.refocusSelect().catch(e => console.log(e)) 
+        }
+        /* eslint-enable */
     })
   }
 
@@ -219,6 +260,7 @@ export default class Field_SingleRelationship extends BaseClass {
 
         return {
           _id: objectDoc._id,
+          icon: objectDoc.icon,
           value: objectDoc._id,
           type: objectDoc.type,
           disable: isDisabled,
@@ -227,6 +269,7 @@ export default class Field_SingleRelationship extends BaseClass {
           isCategory: objectDoc.extraFields.find(e => e.id === "categorySwitch")?.value,
           color: objectDoc.extraFields.find(e => e.id === "documentColor")?.value,
           pairedField: pairedField,
+          tags: objectDoc.extraFields.find(e => e.id === "tags")?.value,
           // @ts-ignore
           hierarchicalPath: this.getDocumentHieararchicalPath(objectDoc, allDbObjects)
 

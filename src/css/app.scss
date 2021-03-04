@@ -32,6 +32,7 @@ html {
 
 body {
   background-color: rgba($primary, 0.025);
+  overflow-y: scroll;
 
   /* WebKit/Blink Browsers */
   ::selection {
@@ -48,10 +49,6 @@ body {
 
 .q-drawer-container * {
   user-select: none !important;
-}
-
-.q-tooltip {
-  font-size: 11px;
 }
 
 .q-toggle__inner {
@@ -97,4 +94,53 @@ body {
 
 .text-underline {
   text-decoration: underline;
+}
+
+.q-chip--outline {
+  border-style: outset !important;
+}
+
+.q-focus-helper {
+  background-color: map-get($customColors, 'gunmetal-bright') !important;
+}
+
+.q-chip.noBounce {
+  padding-bottom: 6px;
+  padding-left: 11px;
+  padding-right: 11px;
+  padding-top: 6px;
+}
+
+body .q-item--active:not(.noHigh) {
+  color: inherit;
+
+  &::after {
+    content: "";
+    background-color: #d7ac47;
+    left: 5px;
+    width: 3px;
+    top: 10px;
+    border-radius: 3px;
+    position: absolute;
+    bottom: 10px;
+  }
+
+  &::before {
+    content: "";
+    background-color: #d7ac47;
+    right: 5px;
+    width: 3px;
+    top: 10px;
+    border-radius: 3px;
+    position: absolute;
+    bottom: 10px;
+  }
+}
+
+body .q-tooltip {
+  background-color: $accent;
+  color: $dark;
+  font-size: 13px;
+  font-weight: 600;
+  max-width: 800px;
 }

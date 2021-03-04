@@ -6,30 +6,34 @@
     >
     <q-card
       class="keyBindsDialog"
+      dark
     >
       <q-card-section class="row items-center">
         <h6 class="text-center q-my-sm">Keybind list</h6>
       </q-card-section>
 
         <q-card-section>
-        <q-markup-table>
-          <thead>
-            <tr>
-              <th class="text-left">Action</th>
-              <th class="text-left">Keybind</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="keybind in SGET_getCurrentKeyBindData.defaults" :key="keybind.id">
-              <td class="text-left" v-html="keybind.tooltip"/>
-              <td class="text-left" v-html="retrieveKeybindString(keybind)"/>
-            </tr>
-          </tbody>
-        </q-markup-table>
-      </q-card-section>
+          <q-markup-table
+            dark
+            flat
+          >
+            <thead>
+              <tr>
+                <th class="text-left">Action</th>
+                <th class="text-left">Keybind</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="keybind in SGET_getCurrentKeyBindData.defaults" :key="keybind.id">
+                <td class="text-left" v-html="keybind.tooltip"/>
+                <td class="text-left" v-html="retrieveKeybindString(keybind)"/>
+              </tr>
+            </tbody>
+          </q-markup-table>
+       </q-card-section>
 
-      <q-card-actions align="center" class="q-mb-lg q-mt-md">
-          <q-btn flat label="Close window" color="primary" v-close-popup />
+      <q-card-actions align="around" class="q-mb-lg q-mt-md">
+          <q-btn flat label="Close" color="accent" v-close-popup />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -58,5 +62,27 @@ export default class KeybindCheatsheet extends DialogBase {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
+.keyBindsDialog {
+  width: 100%;
+  max-width: 1000px !important;
+
+  h6 {
+    display: block;
+    text-align: center;
+    width: 100%;
+  }
+
+  table {
+    td {
+      max-width: 300px;
+      white-space: inherit;
+    }
+  }
+
+  .keybindNote {
+    opacity: 0.8;
+    font-size: 0.9em;
+  }
+}
 </style>

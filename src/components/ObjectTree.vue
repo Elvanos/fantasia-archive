@@ -1,7 +1,7 @@
 <template>
 
   <span>
-    <q-input ref="treeFilter" dark filled v-model="treeFilter" label="Search...">
+    <q-input ref="treeFilter" dark filled v-model="treeFilter" label="Filter document tree...">
       <template v-slot:prepend>
         <q-icon name="mdi-text-search" />
       </template>
@@ -170,11 +170,11 @@ export default class ObjectTree extends BaseClass {
     await this.processBluePrints()
 
     // Unfuck the rendering by giving the app some time to load first
-    setTimeout(() => {
-      this.buildCurrentObjectTree().catch((e) => {
-        console.log(e)
-      })
-    }, 500)
+    await this.$nextTick()
+
+    this.buildCurrentObjectTree().catch((e) => {
+      console.log(e)
+    })
   }
 
   /****************************************************************/

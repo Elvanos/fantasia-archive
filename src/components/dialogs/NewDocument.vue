@@ -46,8 +46,8 @@
         </q-card-section>
 
       <q-card-section>
-        <q-card-actions align="center" class="q-mb-sm">
-          <q-btn flat label="Close window" color="primary" v-close-popup />
+        <q-card-actions align="around" class="q-mb-sm">
+          <q-btn flat label="Close" color="accent" v-close-popup />
         </q-card-actions>
       </q-card-section>
 
@@ -78,7 +78,7 @@ export default class NewDocumentDialog extends DialogBase {
       }
       this.SSET_setDialogState(true)
       this.dialogModel = true
-      this.populateNewObjectDialog()
+      this.populateNewObjectDialog().catch(e => console.log(e))
     }
   }
 
@@ -86,7 +86,7 @@ export default class NewDocumentDialog extends DialogBase {
 
   newDocumentModel = null
 
-  populateNewObjectDialog () {
+  async populateNewObjectDialog () {
     // @ts-ignore
     this.newObjectList = this.SGET_allBlueprints.map(blueprint => {
       return {
@@ -98,31 +98,32 @@ export default class NewDocumentDialog extends DialogBase {
       }
     })
 
-    this.$nextTick(function () {
-      /*eslint-disable */
-      setTimeout( () =>{
-        // @ts-ignore 
-        this.$refs.ref_newDocument.focus()
-      }, 300)
-      /* eslint-enable */
-    })
+    await this.$nextTick()
+    await this.sleep(300)
+    /*eslint-disable */
+    // @ts-ignore 
+    this.$refs.ref_newDocument.focus()
+    /* eslint-enable */
   }
 
   filteredNewInput = null as unknown as NewObjectDocument[]
+
+  async refocusSelect () {
+    await this.$nextTick()
+    /*eslint-disable */
+    // @ts-ignore 
+    this.$refs.ref_newDocument.setOptionIndex(-1)
+    // @ts-ignore 
+    this.$refs.ref_newDocument.moveOptionSelection(1, true) 
+    /* eslint-enable */
+  }
 
   filterNewSelect (val: string, update: (e: () => void) => void) {
     if (val === "") {
       update(() => {
         this.filteredNewInput = this.newObjectList
-        /*eslint-disable */
-        if(this.$refs.ref_newDocument && this.filteredNewInput.length > 0){
-          setTimeout(() => {
-          // @ts-ignore 
-          this.$refs.ref_newDocument.setOptionIndex(-1)
-          // @ts-ignore 
-          this.$refs.ref_newDocument.moveOptionSelection(1, true) 
-        }, 300)      
-        /* eslint-enable */
+        if (this.$refs.ref_newDocument && this.filteredNewInput.length > 0) {
+          this.refocusSelect().catch(e => console.log(e))
         }
       })
       return
@@ -131,16 +132,9 @@ export default class NewDocumentDialog extends DialogBase {
     update(() => {
       const needle = val.toLowerCase()
       this.filteredNewInput = this.newObjectList.filter(v => v.label.toLowerCase().indexOf(needle) > -1)
-      /*eslint-disable */
-      if(this.$refs.ref_newDocument && this.filteredNewInput.length > 0){        
-        setTimeout(() => {
-          // @ts-ignore 
-          this.$refs.ref_newDocument.setOptionIndex(-1)
-          // @ts-ignore 
-          this.$refs.ref_newDocument.moveOptionSelection(1, true) 
-        }, 300)       
+      if (this.$refs.ref_newDocument && this.filteredNewInput.length > 0) {
+        this.refocusSelect().catch(e => console.log(e))
       }
-      /* eslint-enable */
     })
   }
 

@@ -25,6 +25,7 @@
       style="width: 100%;"
       dense
       dark
+      :ref="`tagField${this.inputDataBluePrint.id}`"
       menu-anchor="bottom middle"
       menu-self="top middle"
       class="tagSelect"
@@ -96,12 +97,21 @@ export default class Field_Tags extends BaseClass {
 
   allTags: string[] = []
 
+  async defocusSelectRef () {
+    await this.$nextTick()
+    /*eslint-disable */
+    // @ts-ignore
+    this.$refs[`tagField${this.inputDataBluePrint.id}`].setOptionIndex(-1)     
+    /* eslint-enable */
+  }
+
   filterFn (val: string, update: (fn: any) => void) {
     if (val === "") {
       update(() => {
         if (this.inputDataBluePrint?.predefinedSelectValues) {
           this.allTags = this.inputDataBluePrint.predefinedSelectValues
         }
+        this.defocusSelectRef().catch(e => console.log(e))
       })
       return
     }
@@ -111,6 +121,7 @@ export default class Field_Tags extends BaseClass {
         const needle = val.toLowerCase()
         this.allTags = this.inputDataBluePrint.predefinedSelectValues.filter(v => v.toLowerCase().indexOf(needle) > -1)
       }
+      this.defocusSelectRef().catch(e => console.log(e))
     })
   }
 
