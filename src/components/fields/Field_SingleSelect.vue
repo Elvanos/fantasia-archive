@@ -39,6 +39,21 @@
       @input="signalInput"
       @keydown="signalInput"
     >
+     <template v-slot:selected-item="scope">
+      <q-chip
+        v-if="scope.opt && scope.opt.length > 0"
+        removable
+        dense
+        @remove="scope.removeAtIndex(scope.index)"
+        :tabindex="scope.tabindex"
+        color="accent"
+        text-color="dark"
+        class="text-bold"
+      >
+        {{ scope.opt }}
+      </q-chip>
+      </template>
+
     </q-select>
 
     <div class="separatorWrapper">

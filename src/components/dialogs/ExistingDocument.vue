@@ -74,7 +74,7 @@
                       <q-tooltip
                         :delay="300"
                       >
-                        Add a new document belonging under {{ opt.label }}
+                        Add a new document belonging under {{ stripTags(opt.label) }}
                       </q-tooltip>
                     </q-btn>
                   </q-item>

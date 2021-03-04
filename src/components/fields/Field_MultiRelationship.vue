@@ -10,12 +10,12 @@
       </q-icon>
       <q-icon v-if="isOneWayRelationship" name="mdi-arrow-right-bold" size="16px" class="q-ml-md">
          <q-tooltip :delay="500">
-          This is a one-way relationship. <br> Editing this value <b>will not</b> have effect on the connected document/s.
+          This is a one-way relationship. <br> Editing this value <span class="text-gunmetal-bright">will not</span> have effect on the connected document/s.
         </q-tooltip>
       </q-icon>
       <q-icon v-if="!isOneWayRelationship" name="mdi-arrow-left-right-bold" size="16px" class="q-ml-md">
          <q-tooltip :delay="500">
-          This is a two-way relationship. <br> Editing this value <b>will</b> also effect the connected document/s.
+          This is a two-way relationship. <br> Editing this value <span class="text-gunmetal-bright">will</span> also effect the connected document/s.
         </q-tooltip>
       </q-icon>
 
@@ -32,7 +32,7 @@
       class="text-primary"
       @click="openExistingDocumentRoute(single)">
         <q-item-section>
-           {{single.label}}
+           {{stripTags(single.label)}}
            <span class="inline-block q-ml-xs text-italic connectionNote">
             {{retrieveNoteText(single._id)}}
            </span>
@@ -57,8 +57,21 @@
       input-debounce="0"
       v-model="localInput"
       @filter="filterSelect"
-      @input="signalInput"
+      @input="signalInput(false)"
     >
+      <template v-slot:selected-item="scope">
+        <q-chip
+          removable
+          dense
+          @remove="scope.removeAtIndex(scope.index)"
+          :tabindex="scope.tabindex"
+          color="accent"
+          text-color="dark"
+          class="text-bold"
+        >
+          {{ stripTags(scope.opt.label) }}
+        </q-chip>
+      </template>
       <template v-slot:option="{ itemProps, itemEvents, opt }">
         <q-item
           v-bind="itemProps"
@@ -100,14 +113,14 @@
         :key="index"
       >
         <td>
-          {{localInput[index].label}}
+          {{stripTags(localInput[index].label)}}
         </td>
         <td>
           <q-input
             label="Note"
             v-model="singleNote.value"
             dense
-            @keyup="signalInput"
+            @keyup="signalInput(false)"
             outlined
             >
           </q-input>
@@ -154,7 +167,6 @@ export default class Field_SingleRelationship extends BaseClass {
 
   @Prop() readonly editMode!: boolean
 
-  changedInput = false
   localInput = [] as unknown as I_FieldRelationship[]
 
   @Watch("inputDataValue", { deep: true, immediate: true })
@@ -281,11 +293,14 @@ export default class Field_SingleRelationship extends BaseClass {
 
       this.localInput = (Array.isArray(this.localInput)) ? this.localInput : []
 
+      let nonExistValue = false
+
       this.localInput.forEach((s, index) => {
         if (s._id) {
           if (!allObjectsWithoutCurrent.find(e => e._id === s._id)) {
           // @ts-ignore
             this.localInput.splice(index, 1)
+            nonExistValue = true
           }
           else {
             const matchedFieldContent = allObjectsWithoutCurrent.find(e => e._id === s._id)
@@ -296,6 +311,10 @@ export default class Field_SingleRelationship extends BaseClass {
           }
         }
       })
+
+      if (nonExistValue) {
+        this.signalInput(true)
+      }
 
       const allObjectsWithoutCategories: I_FieldRelationship[] = allObjectsWithoutCurrent.filter((obj) => !obj.isCategory)
 
@@ -312,16 +331,13 @@ export default class Field_SingleRelationship extends BaseClass {
   }
 
   @Emit()
-  signalInput () {
-    this.changedInput = true
-
+  signalInput (skipSave?: boolean) {
     this.checkNotes()
-
     this.inputNotes = this.inputNotes.filter(single => this.localInput.find(e => single.pairedId === e._id))
-
     return {
       value: this.localInput,
-      addedValues: this.inputNotes
+      addedValues: this.inputNotes,
+      skipSave: (skipSave)
     }
   }
 }

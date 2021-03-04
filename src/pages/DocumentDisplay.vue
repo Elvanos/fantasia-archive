@@ -4,30 +4,6 @@
   >
     <div class="row justify-start q-col-gutter-x-xl">
 
-      <div class="col-12 flex justify-end q-mb-lg q-mt-md">
-        <q-btn
-          color="primary"
-          :label="`Add a new ${bluePrintData.nameSingular} belonging under ${retrieveFieldValue(currentData, 'name')}`"
-          @click="addNewUnderParent"
-          class="q-mr-xl"
-          v-if="!currentData.isNew"
-        />
-        <q-btn
-          color="primary"
-          :label="`Save ${bluePrintData.nameSingular}`"
-          @click="saveDocument"
-          class="q-mr-xl"
-          v-if="editMode"
-        />
-        <q-btn
-          color="primary"
-          :label="`Edit ${bluePrintData.nameSingular}`"
-          @click="toggleEditMode"
-          class="q-mr-xl"
-          v-if="!editMode"
-        />
-      </div>
-
       <div
         :class="`col-${field.sizing} q-mb-md`"
         v-for="field in bluePrintData.extraFields"
@@ -170,10 +146,9 @@ import BaseClass from "src/BaseClass"
 import { I_Blueprint, I_ExtraFields } from "src/interfaces/I_Blueprint"
 import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
 import PouchDB from "pouchdb"
-// import { cleanDatabases } from "src/scripts/databaseManager/cleaner"
-import { single_changeRelationshipToAnotherObject, many_changeRelationshipToAnotherObject } from "src/scripts/databaseManager/relationshipManager"
-
 import { extend } from "quasar"
+
+import { saveDocument } from "src/scripts/databaseManager/documentManager"
 
 import Field_Break from "src/components/fields/Field_Break.vue"
 import Field_Text from "src/components/fields/Field_Text.vue"
@@ -210,7 +185,24 @@ export default class PageDocumentDisplay extends BaseClass {
    * Watches on changes of the route in order to load proper blueprint and object data
    */
   @Watch("$route", { immediate: true, deep: true })
-  async onUrlChange () {
+  onUrlChange () {
+    this.reloadLocalContent().catch(e => console.log(e))
+  }
+
+  /**
+   * Watches on changes of the opened documents in order to load proper blueprint and object data
+   */
+  @Watch("SGET_allOpenedDocuments", { deep: true })
+  async onDocChange () {
+    await this.sleep(300)
+
+    const matchingDoc = this.findRequestedOrActiveDocument()
+    if (matchingDoc && matchingDoc._id === this.currentData._id && !matchingDoc.hasEdits) {
+      this.reloadLocalContent().catch(e => console.log(e))
+    }
+  }
+
+  async reloadLocalContent () {
     // Determine the type and retrieve the right blueprint
     this.bluePrintData = this.retrieveDocumentBlueprint()
 
@@ -251,7 +243,7 @@ export default class PageDocumentDisplay extends BaseClass {
     this.SSET_addOpenedDocument(dataPass)
   }
 
-  reactToFieldUpdate (inputData: string, field: I_ExtraFields) {
+  async reactToFieldUpdate (inputData: string, field: I_ExtraFields) {
     // FIELD - Text
     if (field.type === "text") {
       this.currentData.hasEdits = true
@@ -356,6 +348,14 @@ export default class PageDocumentDisplay extends BaseClass {
       const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
 
       const dataPass = { doc: dataCopy, treeAction: false }
+
+      // @ts-ignore
+      if (inputData.skipSave) {
+        this.currentData.extraFields[indexToUpdate].value.skipSave = false
+        await this.triggerSaveDocument()
+        return
+      }
+
       this.SSET_updateOpenedDocument(dataPass)
     }
 
@@ -368,6 +368,14 @@ export default class PageDocumentDisplay extends BaseClass {
       const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
 
       const dataPass = { doc: dataCopy, treeAction: false }
+
+      // @ts-ignore
+      if (inputData.skipSave) {
+        this.currentData.extraFields[indexToUpdate].value.skipSave = false
+        await this.triggerSaveDocument()
+        return
+      }
+
       this.SSET_updateOpenedDocument(dataPass)
     }
 
@@ -396,128 +404,39 @@ export default class PageDocumentDisplay extends BaseClass {
     }
   }
 
-  toggleEditMode () {
-    this.editMode = true
-    this.currentData.editMode = true
-    const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
-    const dataPass = { doc: dataCopy, treeAction: false }
-    this.SSET_updateOpenedDocument(dataPass)
-  }
+  async triggerSaveDocument () {
+    const currentDoc = this.currentData
 
-  async saveDocument () {
-    this.editMode = false
-    this.currentData.isNew = false
-    this.currentData.hasEdits = false
-    this.currentData.editMode = false
+    const allDocuments = this.SGET_allOpenedDocuments
 
-    const CurrentObjectDB = new PouchDB(this.$route.params.type)
+    const docCopy: I_OpenedDocument[] = extend(true, [], allDocuments.docs)
 
-    let currentDocument = false as unknown as I_OpenedDocument
-    try {
-      currentDocument = await CurrentObjectDB.get(this.$route.params.id)
+    if (currentDoc) {
+      // @ts-ignore
+      const savedDocument: {
+        documentCopy: I_OpenedDocument,
+        allOpenedDocuments: I_OpenedDocument[]
+      } = await saveDocument(currentDoc, docCopy)
+
+      // Update the opened document
+      const dataPass = { doc: savedDocument.documentCopy, treeAction: true }
+      this.SSET_updateOpenedDocument(dataPass)
+
+      // Update all others
+      for (const doc of savedDocument.allOpenedDocuments) {
+        // Update the opened document
+        const dataPass = { doc: doc, treeAction: true }
+        this.SSET_updateOpenedDocument(dataPass)
+      }
+
+      this.editMode = false
+      this.currentData.isNew = false
+      this.currentData.hasEdits = false
+      this.currentData.editMode = false
     }
-    catch (error) {}
-
-    let documentCopy = {} as unknown as I_OpenedDocument
-    if (currentDocument) {
-      documentCopy = extend(true, {}, this.currentData)
-      documentCopy._rev = currentDocument?._rev
-    }
-    else {
-      documentCopy = extend(true, {}, this.currentData)
-    }
-
-    // Handle relatinship fields
-    const single_relationshipTypes = ["singleToSingleRelationship", "singleToManyRelationship"]
-    const single_allRelationshipFields = documentCopy.extraFields.filter(field => {
-      const currentField = this.bluePrintData.extraFields.find(e => e.id === field.id) as unknown as I_ExtraFields
-      return (currentField && single_relationshipTypes.includes(currentField.type))
-    })
-    const many_relationshipTypes = ["manyToSingleRelationship", "manyToManyRelationship"]
-    const many_allRelationshipFields = documentCopy.extraFields.filter(field => {
-      const currentField = this.bluePrintData.extraFields.find(e => e.id === field.id) as unknown as I_ExtraFields
-      return (currentField && many_relationshipTypes.includes(currentField.type))
-    })
-
-    // Update single fields
-    for (const field of single_allRelationshipFields) {
-      const single_updatedDocuments: I_OpenedDocument[] = await single_changeRelationshipToAnotherObject(field, documentCopy, currentDocument)
-
-      const pairedFieldID = this.bluePrintData.extraFields.find(e => e.id === field.id)?.relationshipSettings?.connectedField
-
-      const filteredDocuments = single_updatedDocuments.filter(doc => {
-        return this.SGET_allOpenedDocuments.docs.find(subDoc => {
-          return subDoc._id === doc._id
-        })
-      })
-
-      // Update the particular field in each currently opened document
-      filteredDocuments.forEach(doc => {
-        const toUpdateIndex = doc.extraFields.findIndex(e => e.id === pairedFieldID)
-
-        if (toUpdateIndex) {
-          const docCopy: I_OpenedDocument = extend(true, {}, this.SGET_openedDocument(doc._id))
-          docCopy.extraFields[toUpdateIndex] = doc.extraFields[toUpdateIndex]
-
-          // Tree action here due to how parentDoc field works
-          const dataPass = { doc: docCopy, treeAction: true }
-          this.SSET_updateOpenedDocument(dataPass)
-        }
-      })
-    }
-
-    // Update many fields
-    for (const field of many_allRelationshipFields) {
-      const many_updatedDocuments: I_OpenedDocument[] = await many_changeRelationshipToAnotherObject(field, documentCopy, currentDocument)
-
-      const pairedFieldID = this.bluePrintData.extraFields.find(e => e.id === field.id)?.relationshipSettings?.connectedField
-
-      const filteredDocuments = many_updatedDocuments.filter(doc => {
-        return this.SGET_allOpenedDocuments.docs.find(subDoc => {
-          return subDoc._id === doc._id
-        })
-      })
-
-      // Update the particular field in each currently opened document
-      filteredDocuments.forEach(doc => {
-        const toUpdateIndex = doc.extraFields.findIndex(e => e.id === pairedFieldID)
-
-        if (toUpdateIndex) {
-          const docCopy: I_OpenedDocument = extend(true, {}, this.SGET_openedDocument(doc._id))
-          docCopy.extraFields[toUpdateIndex] = doc.extraFields[toUpdateIndex]
-
-          const dataPass = { doc: docCopy, treeAction: false }
-          this.SSET_updateOpenedDocument(dataPass)
-        }
-      })
-    }
-    // Save the document
-    await CurrentObjectDB.put(documentCopy)
-
-    // Update the opened document
-    const dataPass = { doc: documentCopy, treeAction: true }
-    this.SSET_updateOpenedDocument(dataPass)
   }
 
   editMode = false
-
-  /**
-   * React to keypresses
-   */
-  @Watch("SGET_getCurrentKeyBindData", { deep: true })
-  processKeyPush () {
-    // Save document
-    if (this.determineKeyBind("saveDocument") && this.editMode) {
-      this.saveDocument().catch(e => {
-        console.log(e)
-      })
-    }
-
-    // Edit document - CTRL + E
-    if (this.determineKeyBind("editDocument") && !this.editMode) {
-      this.toggleEditMode()
-    }
-  }
 
   currentData = false as unknown as I_OpenedDocument
 
@@ -627,15 +546,6 @@ export default class PageDocumentDisplay extends BaseClass {
 
     const ignoredList = ["breakBasic", "name", "documentColor", "parentDoc", "order", "categorySwitch"]
     return (!isCategory || ignoredList.includes(currentFieldID))
-  }
-
-  addNewUnderParent () {
-    const routeObject = {
-      _id: this.currentData.type,
-      parent: this.currentData._id
-    }
-    // @ts-ignore
-    this.addNewObjectRoute(routeObject)
   }
 }
 </script>

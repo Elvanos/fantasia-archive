@@ -1,14 +1,17 @@
 <template>
 
   <span>
+    <q-page-sticky position="top-left" class="treeSearchWrapper">
+
     <q-input ref="treeFilter" dark filled v-model="treeFilter" label="Filter document tree...">
-      <template v-slot:prepend>
+      <template v-slot:append>
         <q-icon name="mdi-text-search" />
       </template>
-      <template v-slot:append>
-        <q-icon v-if="treeFilter !== ''" name="clear" class="cursor-pointer" @click="resetTreeFilter" />
+      <template v-slot:prepend>
+        <q-icon v-if="treeFilter !== ''" name="clear" class="cursor-pointer text-secondary" @click="resetTreeFilter" />
       </template>
     </q-input>
+    </q-page-sticky>
 
     <q-tree
       class="objectTree q-pa-sm"
@@ -36,7 +39,14 @@
             <span
               class="text-primary text-weight-medium q-ml-xs"
               v-if="prop.node.isRoot">
-                ({{prop.node.documentCount}})
+                ({{prop.node.allCount}})
+                <q-tooltip
+                  :delay="1000"
+                >
+                Document count: <span class="text-bold text-gunmetal-bright">{{prop.node.documentCount}}</span>
+                <br>
+                Category count: <span class="text-bold text-gunmetal-bright">{{prop.node.categoryCount}}</span>
+                </q-tooltip>
               </span>
             <q-badge
               class="treeBadge"
@@ -63,7 +73,7 @@
                 color="dark"
                 class="z-1 q-ml-sm treeButton treeButton--edit"
                 icon="mdi-pencil"
-                size="8px"
+                size="10px"
                 @click.stop.prevent="openExistingDocumentRoute(prop.node)"
               >
                 <q-tooltip
@@ -81,7 +91,7 @@
                 color="dark"
                 class="z-1 q-ml-sm treeButton treeButton--add"
                 icon="mdi-plus"
-                size="8px"
+                size="10px"
                 @click.stop.prevent="processNodeNewDocumentButton(prop.node)"
                 >
                 <q-tooltip
@@ -380,6 +390,7 @@ export default class ObjectTree extends BaseClass {
           return {
             label: doc.extraFields.find(e => e.id === "name")?.value,
             icon: (isCategory) ? "fas fa-folder-open" : doc.icon,
+            isCategory: !!(isCategory),
             sticker: doc.extraFields.find(e => e.id === "order")?.value,
             parentDoc: (parentDocID) ? parentDocID._id : false,
             handler: this.openExistingDocumentRoute,
@@ -396,7 +407,10 @@ export default class ObjectTree extends BaseClass {
           } as I_ShortenedDocument
         })
 
-      const documentCount = allDocumentsRows.length
+      const documentCount = allDocumentsRows.filter(e => !e.isCategory).length
+      const categoryCount = allDocumentsRows.filter(e => e.isCategory).length
+      const allCount = allDocumentsRows.length
+
       const listCopy: I_ShortenedDocument[] = extend(true, [], allDocumentsRows)
       allTreeDocuments = [...allTreeDocuments, ...listCopy]
 
@@ -411,7 +425,9 @@ export default class ObjectTree extends BaseClass {
         handler: this.addNewObjectRoute,
         specialLabel: blueprint.nameSingular.toLowerCase(),
         isRoot: true,
+        allCount: allCount,
         documentCount: documentCount,
+        categoryCount: categoryCount,
         children: [
           ...hierarchicalTreeContent,
           {
@@ -459,12 +475,18 @@ export default class ObjectTree extends BaseClass {
         })
         .sort((a, b) => a.label.localeCompare(b.label))
 
+      const documentCount = tagDocs.filter(e => !e.isCategory).length
+      const categoryCount = tagDocs.filter(e => e.isCategory).length
+      const allCount = tagDocs.length
+
       const tagObject = {
         label: `${tag}`,
         icon: "mdi-tag",
         _id: `tag-${tag}`,
         key: `tag-${tag}`,
-        documentCount: tagDocs.length,
+        allCount: allCount,
+        documentCount: documentCount,
+        categoryCount: categoryCount,
         isRoot: true,
         isTag: true,
         children: tagDocs
@@ -632,10 +654,17 @@ export default class ObjectTree extends BaseClass {
 </script>
 
 <style lang="scss">
+
 .objectTree {
+  padding-top: 60px;
+
   .q-tree__arrow {
     margin-right: 0;
     padding: 4px 4px 4px 0;
+  }
+
+  .q-tree__node {
+    padding: 0 0 0 22px;
   }
 
   .q-tree__node-header {
@@ -672,6 +701,27 @@ export default class ObjectTree extends BaseClass {
 
   &.noChilden {
     right: calc(100% + 23px);
+  }
+}
+
+.treeSearchWrapper {
+  top: -40px;
+  left: -375px;
+  width: 375px;
+  z-index: 555;
+  background-color: $dark;
+
+  > div {
+    width: 100%;
+  }
+
+  label {
+    background-color: $dark;
+
+    &.q-field--focused {
+      width: 100vw;
+      max-width: inherit;
+    }
   }
 }
 

@@ -28,6 +28,12 @@
       @trigger-dialog-close="newProjectDialogClose"
     />
 
+    <!-- About app dialog -->
+    <aboutAppDialog
+      :dialog-trigger="aboutAppDialogTrigger"
+      @trigger-dialog-close="aboutAppDialogClose"
+    />
+
     <q-btn-group
       flat
       class="AppControl__buttons"
@@ -156,6 +162,17 @@
               <q-item-section>Show keybind cheatsheet</q-item-section>
             </q-item>
 
+            <q-item
+              @click="aboutAppDialogAssignUID"
+              v-close-popup
+              clickable
+              active
+              active-class="bg-gunmetal-light text-cultured"
+              class="noHigh"
+              >
+              <q-item-section>About Fantasia Archive</q-item-section>
+            </q-item>
+
             <q-separator dark />
 
             <q-item
@@ -188,6 +205,7 @@ import projectCloseCheckDialog from "src/components/dialogs/ProjectCloseCheck.vu
 import keybindCheatsheetDialog from "src/components/dialogs/KeybindCheatsheet.vue"
 import importProjectCheckDialog from "src/components/dialogs/ImportProjectCheck.vue"
 import newProjectCheckDialog from "src/components/dialogs/NewProjectCheck.vue"
+import aboutAppDialog from "src/components/dialogs/AboutApp.vue"
 
 import { retrieveCurrentProjectName, exportProject } from "src/scripts/projectManagement/projectManagent"
 
@@ -197,7 +215,8 @@ import { toggleDevTools } from "src/scripts/utilities/devTools"
     projectCloseCheckDialog,
     keybindCheatsheetDialog,
     importProjectCheckDialog,
-    newProjectCheckDialog
+    newProjectCheckDialog,
+    aboutAppDialog
   }
 })
 export default class AppControl extends BaseClass {
@@ -279,6 +298,19 @@ export default class AppControl extends BaseClass {
 
   keybindsDialogAssignUID () {
     this.keybindsDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
+  // About app dialog
+  /****************************************************************/
+
+  aboutAppDialogTrigger: string | false = false
+  aboutAppDialogClose () {
+    this.aboutAppDialogTrigger = false
+  }
+
+  aboutAppDialogAssignUID () {
+    this.aboutAppDialogTrigger = this.generateUID()
   }
 }
 </script>

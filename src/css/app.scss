@@ -75,8 +75,33 @@ body {
   }
 
   .q-field__input,
+  .q-icon,
   .q-field__native span {
     color: #000 !important;
+  }
+}
+
+.tagSelect,
+.singleSelect,
+.multiSelect,
+.singleRelashionshipSelect,
+.multiRelashionshipSelect {
+  .q-chip {
+    height: inherit;
+
+    &--dense {
+      padding: 0.2em 0.5em;
+    }
+
+    &__content {
+      white-space: normal;
+      flex-wrap: wrap;
+    }
+
+    &__icon--remove {
+      margin-right: -0.2em;
+      margin-left: 0.2em;
+    }
   }
 }
 
@@ -142,5 +167,4 @@ body .q-tooltip {
   color: $dark;
   font-size: 13px;
   font-weight: 600;
-  max-width: 800px;
 }

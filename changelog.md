@@ -3,19 +3,22 @@
 ## 0.1.3
 
 TODO
-move doc buttons to the top bar
-add delete document dialog to dialog system
+ADD TOOLTIPS TO SEACH!!!!
 
 ### Bugfixes
 
 - Fixed the "Name" field disappearing upon full deletion of text
 - Fixed a bug with single/multi select fields working unintuitively for adding new values (eg: Character personality traits field or Sex field)
+- Added an auto-remover of no longer existing relationships filled in within single and mutli-fields
 
 ### New features
 
 - Added a safeguard dialog for new project creation in case an opened project exists
 - Added a safeguard dialog for project importing in case an opened project exists
-- New control bar added for documents and project control
+- Added automatic redirecting to the project screen upon importing an existing project or creating a new one (better transition effect will be added later)
+- Added a "Advanced search guide" dialog with manual on how to use the advanced search
+- Added "About Fantasia Archive" dialog showing current app version (more details will be added in the future)
+- New control bar added for documents and project control along with more intelligent button redesign
 - A new logo added to the app (better visibility of the logo in small scales and icons)
 - Massive overhaul of the search engine used by the Quick opening existing document and single/multi relationship fields (now supports tags, categories, document types, inteligent filtering and inteligent sorting via importance of the found values)
 - Added color support to single/multi relationship fields
@@ -28,8 +31,10 @@ add delete document dialog to dialog system
 
 - Lightly modified the app color-scheme to offer better readability of contrast
 - Changed icon for the button triggering quick-adding of new documents
-- Changed the looks of tooltips to go well with the current app looks
+- Changed the looks of tooltips, relationship fields and selects to go well with the current app looks
 - Adjusted tab-list width to allow for more content to show
+- Added a tooptip showing how many of the object in the hierarchical tree are documents and how many are categoriesE
+- Hierarchical tree search bar is now attached on the top of the tree and no longer scrolls along with the rest of the content of the tree in order to allow better useability. The search now also expands to full app width on focus via user's interaction. The search icon was moved to right and the field reset icon as moved to the left.
 - Modified selected and active indicators for already selected/active items in dropdown lists in order to not clash with the highlighting from the filter results
 - Slightly modified the scrollbar visuals to be less intrusive
 - Added a light golden tint to the background of the app to go easy on user's eyes before dark mode is added

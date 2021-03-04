@@ -20,6 +20,18 @@
       @trigger-dialog-close="deleteObjectDialogClose"
     />
 
+    <!-- Advanced search guide dialog -->
+    <advancedSearchGuideDialog
+      :dialog-trigger="advancedSearchGuideDialogTrigger"
+      @trigger-dialog-close="advancedSearchGuideDialogClose"
+    />
+
+    <!-- Keybind dialog -->
+    <keybindCheatsheetDialog
+      :dialog-trigger="keybindsDialogTrigger"
+      @trigger-dialog-close="keybindsDialogClose"
+    />
+
     <q-page-sticky position="top-right" class="documentControl">
 
       <div class="documentControl__blocker"></div>
@@ -29,13 +41,49 @@
         <div class="documentControl__left">
 
           <q-btn
+            icon="mdi-keyboard-settings"
+            color="primary"
+            outline
+            @click="keybindsDialogAssignUID"
+          >
+            <q-tooltip
+              :delay="500"
+              anchor="bottom middle"
+              self="top middle"
+            >
+             Open keybinds cheatsheet
+            </q-tooltip>
+          </q-btn>
+
+          <q-btn
+            icon="mdi-file-question"
+            color="primary"
+            outline
+            @click="advancedSearchGuideAssignUID"
+          >
+            <q-tooltip
+              :delay="500"
+              anchor="bottom middle"
+              self="top middle"
+            >
+             Open advanced search guide
+            </q-tooltip>
+          </q-btn>
+
+          <q-separator vertical inset color="accent" />
+
+          <q-btn
             icon="mdi-package-variant-closed"
             color="primary"
             outline
             :disable="!projectExists"
             @click="commenceExport"
           >
-            <q-tooltip>
+            <q-tooltip
+              :delay="500"
+              anchor="bottom middle"
+              self="top middle"
+            >
              Export current project
             </q-tooltip>
           </q-btn>
@@ -48,7 +96,11 @@
             outline
             @click="existingObjectAssignUID"
           >
-            <q-tooltip>
+            <q-tooltip
+              :delay="500"
+              anchor="bottom middle"
+              self="top middle"
+            >
               Quick-search an existing document
             </q-tooltip>
           </q-btn>
@@ -59,7 +111,11 @@
             outline
             @click="newObjectAssignUID"
           >
-            <q-tooltip>
+            <q-tooltip
+              :delay="500"
+              anchor="bottom middle"
+              self="top middle"
+            >
               Quick-add a new document
             </q-tooltip>
           </q-btn>
@@ -67,14 +123,73 @@
         </div>
 
         <div class="documentControl__right">
+
+           <q-btn
+            icon="mdi-file-document-edit"
+            color="primary"
+            outline
+            @click="toggleEditMode"
+            v-if="currentyEditable && SGET_allOpenedDocuments.docs.length > 0"
+          >
+            <q-tooltip
+              :delay="500"
+              anchor="bottom middle"
+              self="top middle"
+            >
+             Edit current document
+            </q-tooltip>
+          </q-btn>
+
+          <q-btn
+            icon="mdi-content-save"
+            color="primary"
+            outline
+            @click="saveCurrentDocument"
+            v-if="!currentyEditable && SGET_allOpenedDocuments.docs.length > 0"
+          >
+            <q-tooltip
+              :delay="500"
+              anchor="bottom left"
+              self="top middle"
+            >
+             Save current document
+            </q-tooltip>
+
+          </q-btn>
+
+          <q-btn
+            icon="mdi-file-tree"
+            color="primary"
+            outline
+            @click="addNewUnderParent"
+            v-if="!currentlyNew && SGET_allOpenedDocuments.docs.length > 0"
+          >
+            <q-tooltip
+              :delay="500"
+              max-width="500px"
+              anchor="bottom left"
+              self="top middle"
+            >
+              Add new document with the current one as parent
+            </q-tooltip>
+          </q-btn>
+
+          <q-separator vertical inset color="accent"
+            v-if="!currentlyNew && SGET_allOpenedDocuments.docs.length > 0"
+          />
+
           <q-btn
             icon="mdi-text-box-remove-outline"
             color="secondary"
             outline
             @click="deleteObjectAssignUID"
-            :disable="SGET_allOpenedDocuments.docs.length < 1"
+            v-if="!currentlyNew && SGET_allOpenedDocuments.docs.length > 0"
           >
-            <q-tooltip>
+            <q-tooltip
+              :delay="500"
+              anchor="bottom left"
+              self="top middle"
+            >
               Delete current document
             </q-tooltip>
           </q-btn>
@@ -95,6 +210,12 @@ import BaseClass from "src/BaseClass"
 import newDocumentDialog from "src/components/dialogs/NewDocument.vue"
 import existingDocumentDialog from "src/components/dialogs/ExistingDocument.vue"
 import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentCheck.vue"
+import advancedSearchGuideDialog from "src/components/dialogs/AdvancedSearchGuide.vue"
+import keybindCheatsheetDialog from "src/components/dialogs/KeybindCheatsheet.vue"
+
+import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
+import { extend } from "quasar"
+import { saveDocument } from "src/scripts/databaseManager/documentManager"
 
 import { retrieveCurrentProjectName, exportProject } from "src/scripts/projectManagement/projectManagent"
 
@@ -102,7 +223,9 @@ import { retrieveCurrentProjectName, exportProject } from "src/scripts/projectMa
   components: {
     newDocumentDialog,
     existingDocumentDialog,
-    deleteDocumentCheckDialog
+    deleteDocumentCheckDialog,
+    advancedSearchGuideDialog,
+    keybindCheatsheetDialog
   }
 })
 export default class DocumentControl extends BaseClass {
@@ -137,6 +260,42 @@ export default class DocumentControl extends BaseClass {
     if (this.determineKeyBind("deleteDocument")) {
       this.deleteObjectAssignUID()
     }
+
+    // Edit document - CTRL + E
+    if (this.determineKeyBind("editDocument") && this.currentyEditable) {
+      this.toggleEditMode()
+    }
+
+    // Save document
+    if (this.determineKeyBind("saveDocument") && !this.currentyEditable) {
+      this.saveCurrentDocument().catch(e => console.log(e))
+    }
+  }
+
+  /****************************************************************/
+  // Advanced search guide dialog
+  /****************************************************************/
+
+  advancedSearchGuideDialogTrigger: string | false = false
+  advancedSearchGuideDialogClose () {
+    this.advancedSearchGuideDialogTrigger = false
+  }
+
+  advancedSearchGuideAssignUID () {
+    this.advancedSearchGuideDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
+  // Keybings cheatsheet dialog
+  /****************************************************************/
+
+  keybindsDialogTrigger: string | false = false
+  keybindsDialogClose () {
+    this.keybindsDialogTrigger = false
+  }
+
+  keybindsDialogAssignUID () {
+    this.keybindsDialogTrigger = this.generateUID()
   }
 
   /****************************************************************/
@@ -189,6 +348,98 @@ export default class DocumentControl extends BaseClass {
     const projectName = await retrieveCurrentProjectName()
     this.exportProject(projectName)
   }
+
+  /****************************************************************/
+  // Add new document under parent
+  /****************************************************************/
+  addNewUnderParent () {
+    const currentDoc = this.findRequestedOrActiveDocument()
+    if (currentDoc) {
+      const routeObject = {
+        _id: currentDoc.type,
+        parent: currentDoc._id
+      }
+      // @ts-ignore
+      this.addNewObjectRoute(routeObject)
+    }
+  }
+
+  /****************************************************************/
+  // Toggle edit mode & Save document
+  /****************************************************************/
+  toggleEditMode () {
+    const currentDoc = this.findRequestedOrActiveDocument()
+    if (currentDoc && !currentDoc.editMode) {
+      const dataCopy: I_OpenedDocument = extend(true, {}, currentDoc)
+      dataCopy.editMode = true
+      const dataPass = { doc: dataCopy, treeAction: false }
+      this.SSET_updateOpenedDocument(dataPass)
+    }
+  }
+
+  async saveCurrentDocument () {
+    const currentDoc = this.findRequestedOrActiveDocument()
+
+    const allDocuments = this.SGET_allOpenedDocuments
+
+    const docCopy: I_OpenedDocument[] = extend(true, [], allDocuments.docs)
+
+    if (currentDoc) {
+      // @ts-ignore
+      const savedDocument: {
+        documentCopy: I_OpenedDocument,
+        allOpenedDocuments: I_OpenedDocument[]
+      } = await saveDocument(currentDoc, docCopy)
+
+      // Update the opened document
+      const dataPass = { doc: savedDocument.documentCopy, treeAction: true }
+      this.SSET_updateOpenedDocument(dataPass)
+
+      // Update all others
+      for (const doc of savedDocument.allOpenedDocuments) {
+        // Update the opened document
+        const dataPass = { doc: doc, treeAction: true }
+        this.SSET_updateOpenedDocument(dataPass)
+      }
+    }
+  }
+
+  @Watch("$route", { immediate: true, deep: true })
+  onUrlChange () {
+    this.checkEditability()
+    this.checkNew()
+  }
+
+  @Watch("SGET_allOpenedDocuments", { deep: true })
+  onDocChange () {
+    this.checkEditability()
+    this.checkNew()
+  }
+
+  checkEditability () {
+    const currentDocument = this.findRequestedOrActiveDocument()
+
+    if (currentDocument && !currentDocument.editMode) {
+      this.currentyEditable = true
+    }
+    else {
+      this.currentyEditable = false
+    }
+  }
+
+  checkNew () {
+    const currentDocument = this.findRequestedOrActiveDocument()
+
+    if (currentDocument && currentDocument.isNew) {
+      this.currentlyNew = true
+    }
+    else {
+      this.currentlyNew = false
+    }
+  }
+
+  currentyEditable = false
+  currentlyNew = false
 }
 </script>
 
@@ -211,7 +462,7 @@ export default class DocumentControl extends BaseClass {
 
   &__wrapper {
     width: calc(100vw - 375px);
-    padding: 10px 15px;
+    padding: 8.5px 15px;
     display: flex;
     justify-content: space-between;
   }

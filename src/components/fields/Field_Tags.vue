@@ -15,7 +15,7 @@
     >
      <q-chip
       v-for="(input,index) in localInput" :key="index"
-      color="primary" text-color="white" class="text-bold">
+      color="accent" text-color="dark" class="text-bold">
         {{input}}
       </q-chip>
     </div>
@@ -41,6 +41,19 @@
       @input="signalInput"
       @keydown="signalInput"
     >
+      <template v-slot:selected-item="scope">
+        <q-chip
+          removable
+          dense
+          @remove="scope.removeAtIndex(scope.index)"
+          :tabindex="scope.tabindex"
+          color="accent"
+          text-color="dark"
+          class="text-bold"
+        >
+          {{ stripTags(scope.opt) }}
+        </q-chip>
+      </template>
     </q-select>
 
     <div class="separatorWrapper">

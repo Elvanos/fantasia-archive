@@ -47,6 +47,7 @@
             <q-btn
               round
               dense
+              flat
               class="z-max q-ml-auto"
               :class="{'q-mr-sm': document.hasEdits}"
               size="xs"

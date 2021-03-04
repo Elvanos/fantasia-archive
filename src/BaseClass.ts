@@ -307,4 +307,8 @@ export default class BaseClass extends Vue {
   sleep (ms:number) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
+
+  stripTags (input: string) {
+    return (input) ? input.replace(/<[^>]+>/g, "") : input
+  }
 }
