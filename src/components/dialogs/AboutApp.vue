@@ -29,6 +29,7 @@
 <script lang="ts">
 
 import { Component, Watch } from "vue-property-decorator"
+import { remote } from "electron"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
 @Component({
@@ -46,7 +47,7 @@ export default class AboutApp extends DialogBase {
     }
   }
 
-  appVersion = process.env.npm_package_version
+  appVersion = remote.app.getVersion()
 }
 </script>
 
