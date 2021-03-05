@@ -9,30 +9,39 @@
       dark
     >
       <q-card-section class="row items-center">
-        <h6 class="text-center q-my-sm">Keybind list</h6>
+        <h6 class="text-center q-mt-lg q-mb-xs">Keybind list</h6>
       </q-card-section>
 
         <q-card-section>
-          <q-markup-table
-            dark
-            flat
-          >
-            <thead>
-              <tr>
-                <th class="text-left">Action</th>
-                <th class="text-left">Keybind</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="keybind in SGET_getCurrentKeyBindData.defaults" :key="keybind.id">
-                <td class="text-left" v-html="keybind.tooltip"/>
-                <td class="text-left" v-html="retrieveKeybindString(keybind)"/>
-              </tr>
-            </tbody>
-          </q-markup-table>
+          <div class="flex justify-center">
+            <q-scroll-area
+              class="q-mx-xl q-my-xs"
+              visible
+              dark
+              :thumb-style="thumbStyle"
+              style="max-height: calc(100vh - 260px); height: 775px; width: 100%;">
+              <q-markup-table
+                dark
+                flat
+              >
+                <thead>
+                  <tr>
+                    <th class="text-left">Action</th>
+                    <th class="text-left">Keybind</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="keybind in SGET_getCurrentKeyBindData.defaults" :key="keybind.id">
+                    <td class="text-left" v-html="keybind.tooltip"/>
+                    <td class="text-left" v-html="retrieveKeybindString(keybind)"/>
+                  </tr>
+                </tbody>
+              </q-markup-table>
+            </q-scroll-area>
+          </div>
        </q-card-section>
 
-      <q-card-actions align="around" class="q-mb-lg q-mt-md">
+      <q-card-actions align="around" class="q-mb-lg">
           <q-btn flat label="Close" color="accent" v-close-popup />
       </q-card-actions>
     </q-card>
@@ -59,13 +68,21 @@ export default class KeybindCheatsheet extends DialogBase {
       this.dialogModel = true
     }
   }
+
+  thumbStyle ={
+    right: "-40px",
+    borderRadius: "5px",
+    backgroundColor: "#61a2bd",
+    width: "5px",
+    opacity: 1
+  }
 }
 </script>
 
 <style lang="scss">
 .keyBindsDialog {
-  width: 100%;
-  max-width: 1000px !important;
+  width: 1000px;
+  max-width: calc(100vw - 95px) !important;
 
   h6 {
     display: block;

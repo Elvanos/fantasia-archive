@@ -2,7 +2,7 @@ import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const techBlueprint: I_Blueprint = {
   _id: "tech",
   order: 12,
-  namePlural: "Science/Technology",
+  namePlural: "Sciences/Technologies",
   nameSingular: "Science/Technology",
   icon: "fas fa-wrench",
   extraFields: [

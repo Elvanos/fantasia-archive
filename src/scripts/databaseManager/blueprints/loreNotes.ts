@@ -2,8 +2,8 @@ import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const loreNotesBlueprint: I_Blueprint = {
   _id: "loreNotes",
   order: 19,
-  namePlural: "Other/Notes",
-  nameSingular: "Other/Note",
+  namePlural: "Lore notes/Other notes",
+  nameSingular: "Lore notes/Other note",
   icon: "mdi-script-text-outline",
   extraFields: [
     {

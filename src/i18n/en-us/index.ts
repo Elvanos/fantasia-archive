@@ -1,11 +1,10 @@
-// This is just an example,
-// so you can safely delete all default props below
+import changeLog from "src/documents/changeLog.md"
+import advancedSearchGuide from "src/documents/advancedSearchGuide.md"
 
 export default {
-  failed: "Action failed",
-  success: "Action was successful",
-  tooltips: {
-    advancedSearch: `stuff
-    more stuff`
+
+  documents: {
+    advancedSearchGuide: advancedSearchGuide,
+    changeLog: changeLog
   }
 }

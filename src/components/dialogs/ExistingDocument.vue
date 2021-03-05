@@ -95,7 +95,7 @@
 <script lang="ts">
 
 import { Component, Watch } from "vue-property-decorator"
-import { I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
+import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import PouchDB from "pouchdb"
 import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
 import { extend } from "quasar"

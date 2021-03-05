@@ -168,3 +168,26 @@ body .q-tooltip {
   font-size: 13px;
   font-weight: 600;
 }
+
+.q-markdown {
+  line-height: 1.75;
+
+  strong {
+    font-weight: 500;
+  }
+
+  hr {
+    opacity: 0.5;
+    margin: 30px 0;
+    border-radius: 5px;
+  }
+
+  ul {
+    margin-bottom: 3px;
+  }
+
+  li {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+}

@@ -34,6 +34,18 @@
       @trigger-dialog-close="aboutAppDialogClose"
     />
 
+    <!-- Changelog dialog -->
+    <changeLogDialog
+      :dialog-trigger="changeLogDialogTrigger"
+      @trigger-dialog-close="changeLogDialogClose"
+    />
+
+    <!-- Advanced search guide dialog -->
+    <advancedSearchGuideDialog
+      :dialog-trigger="advancedSearchGuideDialogTrigger"
+      @trigger-dialog-close="advancedSearchGuideDialogClose"
+    />
+
     <q-btn-group
       flat
       class="AppControl__buttons"
@@ -143,7 +155,7 @@
         size='md'
         no-caps
        >
-        Help
+        Help & Info
         <q-menu
           anchor="bottom left"
           class="bg-gunmetal-light"
@@ -160,6 +172,30 @@
               class="noHigh"
               >
               <q-item-section>Show keybind cheatsheet</q-item-section>
+            </q-item>
+
+            <q-item
+              @click="advancedSearchGuideAssignUID"
+              v-close-popup
+              clickable
+              active
+              active-class="bg-gunmetal-light text-cultured"
+              class="noHigh"
+              >
+              <q-item-section>Advanced search guide</q-item-section>
+            </q-item>
+
+            <q-separator dark />
+
+            <q-item
+              @click="changeLogDialogAssignUID"
+              v-close-popup
+              clickable
+              active
+              active-class="bg-gunmetal-light text-cultured"
+              class="noHigh"
+              >
+              <q-item-section>Changelog</q-item-section>
             </q-item>
 
             <q-item
@@ -206,6 +242,8 @@ import keybindCheatsheetDialog from "src/components/dialogs/KeybindCheatsheet.vu
 import importProjectCheckDialog from "src/components/dialogs/ImportProjectCheck.vue"
 import newProjectCheckDialog from "src/components/dialogs/NewProjectCheck.vue"
 import aboutAppDialog from "src/components/dialogs/AboutApp.vue"
+import changeLogDialog from "src/components/dialogs/ChangeLog.vue"
+import advancedSearchGuideDialog from "src/components/dialogs/AdvancedSearchGuide.vue"
 
 import { retrieveCurrentProjectName, exportProject } from "src/scripts/projectManagement/projectManagent"
 
@@ -216,7 +254,9 @@ import { toggleDevTools } from "src/scripts/utilities/devTools"
     keybindCheatsheetDialog,
     importProjectCheckDialog,
     newProjectCheckDialog,
-    aboutAppDialog
+    aboutAppDialog,
+    changeLogDialog,
+    advancedSearchGuideDialog
   }
 })
 export default class AppControl extends BaseClass {
@@ -311,6 +351,32 @@ export default class AppControl extends BaseClass {
 
   aboutAppDialogAssignUID () {
     this.aboutAppDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
+  // Changelog dialog
+  /****************************************************************/
+
+  changeLogDialogTrigger: string | false = false
+  changeLogDialogClose () {
+    this.changeLogDialogTrigger = false
+  }
+
+  changeLogDialogAssignUID () {
+    this.changeLogDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
+  // Advanced search guide dialog
+  /****************************************************************/
+
+  advancedSearchGuideDialogTrigger: string | false = false
+  advancedSearchGuideDialogClose () {
+    this.advancedSearchGuideDialogTrigger = false
+  }
+
+  advancedSearchGuideAssignUID () {
+    this.advancedSearchGuideDialogTrigger = this.generateUID()
   }
 }
 </script>

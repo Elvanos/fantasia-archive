@@ -112,11 +112,14 @@ export const advancedDocumentFilter = (inputString: string, documentList: I_Shor
   if (typeSeach) {
     documentList = documentList.filter(doc => {
       let stringPath = doc.type
+
+      stringPath = stringPath.split(/(?=[A-Z])/).join("-")
+
       stringPath = stringPath.toLowerCase()
 
       doc.activeTypeSearch = true
 
-      return (stringPath.toLowerCase().includes(typeSeach))
+      return (stringPath.includes(typeSeach))
     })
   }
 

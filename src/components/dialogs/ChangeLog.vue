@@ -5,7 +5,7 @@
     @hide="triggerDialogClose"
     >
     <q-card
-      class="advancedSearchDialog"
+      class="changeLogDialog"
       dark
     >
       <q-card-section>
@@ -17,7 +17,7 @@
             :thumb-style="thumbStyle"
             style="max-height: calc(100vh - 235px); height: 800px; width: 100%;">
             <q-markdown no-heading-anchor-links>
-            {{$t('documents.advancedSearchGuide')}}
+            {{$t('documents.changeLog')}}
             </q-markdown>
           </q-scroll-area>
         </div>
@@ -39,7 +39,7 @@ import DialogBase from "src/components/dialogs/_DialogBase"
 @Component({
   components: { }
 })
-export default class AdvancedSearchGuide extends DialogBase {
+export default class ChangeLog extends DialogBase {
   @Watch("dialogTrigger")
   openDialog (val: string|false) {
     if (val) {
@@ -62,7 +62,7 @@ export default class AdvancedSearchGuide extends DialogBase {
 </script>
 
 <style lang="scss">
-.advancedSearchDialog {
+.changeLogDialog {
   width: 1000px;
   max-width: calc(100vw - 100px) !important;
 
