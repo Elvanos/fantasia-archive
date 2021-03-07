@@ -55,15 +55,13 @@ export default class CloseDocumentCheckDialog extends DialogBase {
       this.dialogModel = true
     }
     else {
-      this.closeDocument(input).catch(e => console.log(e))
+      this.closeDocument(input)
     }
   }
 
-  async closeDocument (input: I_OpenedDocument) {
+  closeDocument (input: I_OpenedDocument) {
     const dataPass = { doc: input, treeAction: false }
     this.SSET_removeOpenedDocument(dataPass)
-    await this.$nextTick()
-    this.refreshRoute()
   }
 }
 </script>

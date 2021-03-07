@@ -18,7 +18,9 @@
       <div class="colorIndicatorWrapper">
         <div class="colorIndicator" :style="`background-color: ${localInput}`">
         </div>
-        {{localInput}}
+        <span class="text-weight-medium">
+          {{localInput}}
+        </span>
       </div>
 
       </q-item-section>
@@ -50,7 +52,7 @@
   </q-input>
 
   <div class="separatorWrapper">
-    <q-separator color="grey q-mt-lg" />
+    <q-separator color="grey q-mt-md" />
   </div>
 </div>
 

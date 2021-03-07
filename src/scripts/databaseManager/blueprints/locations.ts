@@ -348,7 +348,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedMyths",
-      name: "Connected to myths and legends",
+      name: "Connected to myths. legends and stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
       sizing: 4,

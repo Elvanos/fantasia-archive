@@ -79,7 +79,7 @@ import closeDocumentCheckDialog from "src/components/dialogs/CloseDocumentCheck.
 })
 export default class TopTabs extends BaseClass {
   @Watch("SGET_allOpenedDocuments", { deep: true })
-  reactToDocumentListChange (val: {docs: I_OpenedDocument[]}) {
+  reactToDocumentListChange (val: {docs: I_OpenedDocument[]}, oldVal: {docs: I_OpenedDocument[]}) {
     this.localDocuments = []
     this.localDocuments = val.docs
 

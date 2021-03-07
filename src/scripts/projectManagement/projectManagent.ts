@@ -12,7 +12,7 @@ import path from "path"
    * @param projectName The name of the new project
    * @praram vueRouter The vue router object
    */
-export const createNewProject = async (projectName: string, vueRouter: any) => {
+export const createNewProject = async (projectName: string, vueRouter: any, quasar: any, vueInstance: any) => {
   await removeCurrentProject()
 
   const ProjectDB = new PouchDB("project-data")
@@ -41,6 +41,12 @@ export const createNewProject = async (projectName: string, vueRouter: any) => {
     }
     console.log(e)
   })
+
+  quasar.notify({
+    type: 'positive',
+    message: `New project succesfully created`
+  })
+  vueInstance.SSET_resetDocuments()
   /* eslint-enable */
 }
 
@@ -48,13 +54,19 @@ export const createNewProject = async (projectName: string, vueRouter: any) => {
    * Open an file dialog asking the use for location where to export the project
    * @param projectName The name of the project to export
    */
-export const exportProject = (projectName: string) => {
+export const exportProject = (projectName: string, Loading: any, loadingSetup: any, quasar: any) => {
   remote.dialog.showOpenDialog({
     properties: ["openDirectory"]
   }).then(async (result) => {
     /*eslint-disable */
       const folderPath = result.filePaths[0]
 
+      if (!folderPath) {
+        return
+      }
+
+      Loading.show(loadingSetup)
+    
       PouchDB.plugin(replicationStream.plugin)
       // @ts-ignore
       PouchDB.adapter("writableStream", replicationStream.adapters.writableStream)
@@ -77,6 +89,12 @@ export const exportProject = (projectName: string) => {
         // @ts-ignore
         await CurrentDB.dump(ws)
       }
+
+      Loading.hide()
+      quasar.notify({
+        type: 'positive',
+        message: `Project succesfully exported`
+      })
     /* eslint-enable */
   }).catch(err => {
     console.log(err)
@@ -106,7 +124,7 @@ export const removeCurrentProject = async () => {
  * Opens a dialog to let user pick whatever project they wish to open and lets them select a directory
  * @param vueRouter The vue router object
  */
-export const importExistingProject = (vueRouter: any) => {
+export const importExistingProject = (vueRouter: any, Loading: any, loadingSetup: any, quasar: any, vueInstance: any) => {
   /*eslint-disable */
   remote.dialog.showOpenDialog({
     properties: ["openDirectory"]
@@ -116,6 +134,8 @@ export const importExistingProject = (vueRouter: any) => {
     if (!folderPath) {
       return
     }
+
+    Loading.show(loadingSetup)
 
     await removeCurrentProject()
 
@@ -157,6 +177,13 @@ export const importExistingProject = (vueRouter: any) => {
       }
       console.log(e)
     })
+
+    quasar.notify({
+      type: 'positive',
+      message: `Project succesfully imported`
+    })
+
+    vueInstance.SSET_resetDocuments()
     /* eslint-enable */
   }).catch(err => {
     console.log(err)

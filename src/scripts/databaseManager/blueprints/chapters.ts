@@ -7,6 +7,12 @@ export const chaptersBlueprint: I_Blueprint = {
   icon: "mdi-file-outline",
   extraFields: [
     {
+      id: "breakBasic",
+      name: "Basic information",
+      type: "break",
+      sizing: 12
+    },
+    {
       id: "name",
       name: "Name",
       type: "text",

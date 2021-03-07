@@ -12,13 +12,22 @@
 
     <q-list
       v-if="!editMode"
+      class="fieldMultiSelect_list"
       dense>
       <q-item v-for="(input,index) in localInput" :key="index">
-        <q-item-section side>
-          <q-icon name="mdi-menu-right" />
+        <q-item-section
+          class="fieldMultiSelect_itemDot"
+          side
+          >
+          <q-icon
+            color="primary"
+            name="mdi-menu-right"
+          />
         </q-item-section>
         <q-item-section>
-          {{input}}
+          <span class="text-weight-medium">
+            {{input}}
+          </span>
         </q-item-section>
       </q-item>
     </q-list>
@@ -61,7 +70,7 @@
     </q-select>
 
     <div class="separatorWrapper">
-      <q-separator color="grey q-mt-lg" />
+      <q-separator color="grey q-mt-md" />
     </div>
 
   </div>
@@ -151,3 +160,24 @@ export default class Field_MultiSelect extends BaseClass {
   }
 }
 </script>
+
+<style lang="scss">
+.fieldMultiSelect_list {
+  .q-item {
+    padding-right: 10px;
+    padding-left: 0;
+  }
+
+  .q-item__section {
+    position: relative;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .fieldMultiSelect_itemDot {
+    padding-right: 10px;
+  }
+}
+
+</style>

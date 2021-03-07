@@ -12,10 +12,13 @@
 
   <q-list
     v-if="!editMode"
+    class="fieldText_list"
     dense>
     <q-item>
       <q-item-section>
+        <span class="text-weight-medium">
           {{localInput}}
+        </span>
       </q-item-section>
     </q-item>
   </q-list>
@@ -34,7 +37,7 @@
     </q-input>
 
     <div class="separatorWrapper">
-      <q-separator color="grey q-mt-lg" />
+      <q-separator color="grey q-mt-md" />
     </div>
 
 </div>
@@ -102,3 +105,11 @@ export default class Field_Text extends BaseClass {
   }
 }
 </script>
+<style lang='scss'>
+.fieldText_list {
+  .q-item {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+}
+</style>

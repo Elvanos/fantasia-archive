@@ -90,17 +90,10 @@ export const techBlueprint: I_Blueprint = {
       name: "Headquarters",
       type: "singleToNoneRelationship",
       icon: "mdi-map-marker-radius",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "locations"
       }
-    },
-    {
-      id: "users",
-      name: "Practitioners/Engineers",
-      type: "text",
-      icon: "mdi-account-group",
-      sizing: 2
     },
     {
       id: "leaders",
@@ -161,7 +154,7 @@ export const techBlueprint: I_Blueprint = {
     },
     {
       id: "pairedCharacter",
-      name: "Noteable practitioners/scientists",
+      name: "Technogy/Science users",
       type: "manyToManyRelationship",
       icon: "mdi-account",
       sizing: 6,
@@ -245,11 +238,22 @@ export const techBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "pairedConnectionCharacter",
+      name: "Connected characters",
+      type: "manyToManyRelationship",
+      icon: "mdi-account",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "pairedConnectionTechGroup"
+      }
+    },
+    {
       id: "pairedBelongingCharacter",
       name: "Prominent members",
       type: "manyToManyRelationship",
       icon: "mdi-account",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedBelongingTechGroup"
@@ -260,7 +264,7 @@ export const techBlueprint: I_Blueprint = {
       name: "Prominent allies",
       type: "manyToManyRelationship",
       icon: "mdi-account",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedAllyTechGroup"
@@ -271,7 +275,7 @@ export const techBlueprint: I_Blueprint = {
       name: "Prominent enemies",
       type: "manyToManyRelationship",
       icon: "mdi-account",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedEnemyTechGroup"
@@ -378,6 +382,39 @@ export const techBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "pairedConnectedTechGroups",
+      name: "Connected scientifical/technological groups/teachings",
+      type: "manyToManyRelationship",
+      icon: "fas fa-wrench",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "tech",
+        connectedField: "pairedConnectedTechGroups"
+      }
+    },
+    {
+      id: "pairedAllyTechGroups",
+      name: "Allied scientifical/technological groups/teachings",
+      type: "manyToManyRelationship",
+      icon: "fas fa-wrench",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "tech",
+        connectedField: "pairedAllyTechGroups"
+      }
+    },
+    {
+      id: "pairedEnemyTechGroups",
+      name: "Enemy scientifical/technological groups/teachings",
+      type: "manyToManyRelationship",
+      icon: "fas fa-wrench",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "tech",
+        connectedField: "pairedEnemyTechGroups"
+      }
+    },
+    {
       id: "breakOther",
       name: "Other details",
       type: "break",
@@ -396,7 +433,7 @@ export const techBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedMyths",
-      name: "Connected to myths and legends",
+      name: "Connected to myths. legends and stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
       sizing: 4,

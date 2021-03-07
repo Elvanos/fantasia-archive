@@ -28,10 +28,17 @@ export default class App extends BaseClass {
     }
 
     this.registerDefaultKeybinds()
-    window.addEventListener("keyup", this.triggerKeyPush)
+    window.addEventListener("keydown", this.triggerKeyPush)
   }
 
   triggerKeyPush (e:any) {
+    // console.log("")
+    // console.log(`Key: ${e.key}`)
+    // console.log(`Ctrl: ${e.ctrlKey}`)
+    // console.log(`Shift: ${e.shiftKey}`)
+    // console.log(`Alt: ${e.altKey}`)
+    // console.log(e)
+
     if (e?.altKey === true || e?.ctrlKey || e?.shiftKey) {
       const ouputKeycombo = {
         altKey: e.altKey,
@@ -48,7 +55,7 @@ export default class App extends BaseClass {
     window.removeEventListener("auxclick", this.reactToMiddleClick)
 
     this.deregisterDefaultKeybinds()
-    window.removeEventListener("keyup", this.triggerKeyPush)
+    window.removeEventListener("keydown", this.triggerKeyPush)
   }
 
   reactToMiddleClick (e: {button: number, preventDefault: ()=> void}) {

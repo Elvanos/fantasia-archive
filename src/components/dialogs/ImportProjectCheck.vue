@@ -45,6 +45,7 @@ import { Component, Watch } from "vue-property-decorator"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
 import { retrieveCurrentProjectName, exportProject, importExistingProject } from "src/scripts/projectManagement/projectManagent"
+import { Loading, QSpinnerGears } from "quasar"
 
 @Component({
   components: { }
@@ -73,12 +74,31 @@ export default class ImportProjectCheckDialog extends DialogBase {
   }
 
   importProject () {
-    importExistingProject(this.$router)
+    const setup = {
+      message: "<h4>Importing selected project...</h4>",
+      spinnerColor: "primary",
+      messageColor: "cultured",
+      spinnerSize: 120,
+      backgroundColor: "dark",
+      // @ts-ignore
+      spinner: QSpinnerGears
+    }
+
+    importExistingProject(this.$router, Loading, setup, this.$q, this)
   }
 
   async commenceExport () {
     const projectName = await retrieveCurrentProjectName()
-    exportProject(projectName)
+    const setup = {
+      message: "<h4>Exporting current project...</h4>",
+      spinnerColor: "primary",
+      messageColor: "cultured",
+      spinnerSize: 120,
+      backgroundColor: "dark",
+      // @ts-ignore
+      spinner: QSpinnerGears
+    }
+    exportProject(projectName, Loading, setup, this.$q)
   }
 }
 </script>

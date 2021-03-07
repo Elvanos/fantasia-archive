@@ -163,7 +163,13 @@ export default class BaseClass extends Vue {
   // Open documents management
   /****************************************************************/
 
-  @OpenedDocuments.Getter("getAllDocuments") SGET_allOpenedDocuments !: {treeAction: boolean, timestamp: string, docs: I_OpenedDocument[]}
+  @OpenedDocuments.Getter("getAllDocuments") SGET_allOpenedDocuments !: {
+    treeAction: boolean,
+    lastRemovedIndex: number,
+    timestamp: string,
+    docs: I_OpenedDocument[]
+  }
+
   @OpenedDocuments.Getter("getDocument") SGET_openedDocument!: (id: string) => I_OpenedDocument
 
   @OpenedDocuments.Action("addDocument") SSET_addOpenedDocument!: (input: {
@@ -183,6 +189,7 @@ export default class BaseClass extends Vue {
 
   @OpenedDocuments.Action("triggerTreeAction") SSET_triggerTreeAction!: () => void
   @OpenedDocuments.Action("resetDocuments") SSET_resetDocuments!: () => void
+  @OpenedDocuments.Action("resetRemoveIndex") SSET_resetRemoveIndex!: () => void
 
   findRequestedOrActiveDocument (doc?: I_OpenedDocument) {
     if (doc) {
@@ -236,9 +243,17 @@ export default class BaseClass extends Vue {
   refreshRoute () {
     const remainingDocuments = this.SGET_allOpenedDocuments.docs
 
+    const lastIndex = this.SGET_allOpenedDocuments.lastRemovedIndex
+
+    const newIndex = (lastIndex > -1 && lastIndex < remainingDocuments.length) ? lastIndex : remainingDocuments.length - 1
+
+    if (lastIndex > -1) {
+      this.SSET_resetRemoveIndex()
+    }
+
     // Assuming there are any documents in the current list
     if (remainingDocuments.length > 0) {
-      const lastDocument = remainingDocuments[remainingDocuments.length - 1]
+      const lastDocument = remainingDocuments[newIndex]
       const currentRoute = this.$router.currentRoute.path
       const existingDocument = this.SGET_allOpenedDocuments.docs.find(e => {
         return e.url === currentRoute

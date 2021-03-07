@@ -25,7 +25,7 @@
         enter-active-class="animated fadeIn"
         leave-active-class="animated fadeOut"
         appear
-        :duration="300"
+        :duration="150"
       >
       <router-view :key="$route.path" />
       </transition>

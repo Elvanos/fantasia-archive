@@ -217,11 +217,22 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "pairedConnectionCharacter",
+      name: "Connected characters",
+      type: "manyToManyRelationship",
+      icon: "mdi-account",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "pairedConnectionPolGroup"
+      }
+    },
+    {
       id: "pairedBelongingCharacter",
       name: "Prominent members",
       type: "manyToManyRelationship",
       icon: "mdi-account",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedBelongingPolGroup"
@@ -232,7 +243,7 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       name: "Prominent allies",
       type: "manyToManyRelationship",
       icon: "mdi-account",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedAllyPolGroup"
@@ -243,7 +254,7 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       name: "Prominent enemies",
       type: "manyToManyRelationship",
       icon: "mdi-account",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedEnemyPolGroup"
@@ -315,7 +326,6 @@ export const politicalGroupsBlueprint: I_Blueprint = {
         connectedField: "pairedEnemyPolGroups"
       }
     },
-
     {
       id: "pairedConnectedMagicalGroups",
       name: "Connected magical groups/teachings",
@@ -402,7 +412,7 @@ export const politicalGroupsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedMyths",
-      name: "Connected to myths and legends",
+      name: "Connected to myths. legends and stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
       sizing: 4,

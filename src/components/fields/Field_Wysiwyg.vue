@@ -10,7 +10,10 @@
       </q-icon>
     </div>
 
-    <div v-if="!editMode" v-html="localInput">
+    <div
+    v-if="!editMode"
+    class="fieldWysiwyg"
+     v-html="localInput">
     </div>
 
     <q-editor
@@ -24,7 +27,7 @@
       />
 
     <div class="separatorWrapper">
-      <q-separator color="grey q-mt-lg" />
+      <q-separator color="grey q-mt-md" />
     </div>
 
   </div>
@@ -144,3 +147,10 @@ export default class Field_Wysiwyg extends BaseClass {
   ]
 }
 </script>
+
+<style lang='scss'>
+.fieldWysiwyg {
+  padding-right: 10px;
+  padding-left: 10px;
+}
+</style>

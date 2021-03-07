@@ -57,7 +57,7 @@
     </q-select>
 
     <div class="separatorWrapper">
-      <q-separator color="grey q-mt-lg" />
+      <q-separator color="grey q-mt-md" />
     </div>
 
   </div>

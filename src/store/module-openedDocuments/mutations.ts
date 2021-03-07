@@ -36,9 +36,13 @@ const mutation: MutationTree<OpenDocumentsStateInterface> = {
     const toRemoveIndex = state.documents.docs.findIndex(doc => doc.type === input.doc.type && doc._id === input.doc._id)
     state.documents.docs.splice(toRemoveIndex, 1)
     state.documents.treeAction = input.treeAction
+    state.documents.lastRemovedIndex = toRemoveIndex
     state.documents.timestamp = uid()
   },
 
+  resetRemoveIndex (state: OpenDocumentsStateInterface) {
+    state.documents.lastRemovedIndex = -1
+  },
   resetTreeAction (state: OpenDocumentsStateInterface) {
     state.documents.treeAction = false
   },

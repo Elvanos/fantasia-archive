@@ -142,7 +142,7 @@
 
           <q-btn
             icon="mdi-content-save"
-            color="primary"
+            :color="(!hasEdits) ? 'teal-14' : 'primary'"
             outline
             @click="saveCurrentDocument"
             v-if="!currentyEditable && SGET_allOpenedDocuments.docs.length > 0"
@@ -214,7 +214,7 @@ import advancedSearchGuideDialog from "src/components/dialogs/AdvancedSearchGuid
 import keybindCheatsheetDialog from "src/components/dialogs/KeybindCheatsheet.vue"
 
 import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
-import { extend } from "quasar"
+import { extend, Loading, QSpinnerGears } from "quasar"
 import { saveDocument } from "src/scripts/databaseManager/documentManager"
 
 import { retrieveCurrentProjectName, exportProject } from "src/scripts/projectManagement/projectManagent"
@@ -257,17 +257,17 @@ export default class DocumentControl extends BaseClass {
     }
 
     // Delete dialog - CTRL + D
-    if (this.determineKeyBind("deleteDocument")) {
+    if (this.determineKeyBind("deleteDocument") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0) {
       this.deleteObjectAssignUID()
     }
 
     // Edit document - CTRL + E
-    if (this.determineKeyBind("editDocument") && this.currentyEditable) {
+    if (this.determineKeyBind("editDocument") && this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0) {
       this.toggleEditMode()
     }
 
-    // Save document
-    if (this.determineKeyBind("saveDocument") && !this.currentyEditable) {
+    // Save document - CTRL + S
+    if (this.determineKeyBind("saveDocument") && !this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0) {
       this.saveCurrentDocument().catch(e => console.log(e))
     }
   }
@@ -342,11 +342,18 @@ export default class DocumentControl extends BaseClass {
   /****************************************************************/
   retrieveCurrentProjectName = retrieveCurrentProjectName
 
-  exportProject = exportProject
-
   async commenceExport () {
     const projectName = await retrieveCurrentProjectName()
-    this.exportProject(projectName)
+    const setup = {
+      message: "<h4>Exporting current project...</h4>",
+      spinnerColor: "primary",
+      messageColor: "cultured",
+      spinnerSize: 120,
+      backgroundColor: "dark",
+      // @ts-ignore
+      spinner: QSpinnerGears
+    }
+    exportProject(projectName, Loading, setup, this.$q)
   }
 
   /****************************************************************/
@@ -378,6 +385,10 @@ export default class DocumentControl extends BaseClass {
   }
 
   async saveCurrentDocument () {
+    if (document.activeElement) {
+      (document.activeElement as HTMLElement).blur()
+    }
+
     const currentDoc = this.findRequestedOrActiveDocument()
 
     const allDocuments = this.SGET_allOpenedDocuments
@@ -408,12 +419,27 @@ export default class DocumentControl extends BaseClass {
   onUrlChange () {
     this.checkEditability()
     this.checkNew()
+    this.checkHasEdits()
   }
 
   @Watch("SGET_allOpenedDocuments", { deep: true })
   onDocChange () {
     this.checkEditability()
     this.checkNew()
+    this.checkHasEdits()
+  }
+
+  hasEdits = false
+
+  checkHasEdits () {
+    const currentDocument = this.findRequestedOrActiveDocument()
+
+    if (currentDocument && !currentDocument.hasEdits) {
+      this.hasEdits = true
+    }
+    else {
+      this.hasEdits = false
+    }
   }
 
   checkEditability () {

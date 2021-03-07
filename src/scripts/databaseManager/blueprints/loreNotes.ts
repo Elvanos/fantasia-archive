@@ -7,6 +7,12 @@ export const loreNotesBlueprint: I_Blueprint = {
   icon: "mdi-script-text-outline",
   extraFields: [
     {
+      id: "breakBasic",
+      name: "Basic information",
+      type: "break",
+      sizing: 12
+    },
+    {
       id: "name",
       name: "Name",
       type: "text",

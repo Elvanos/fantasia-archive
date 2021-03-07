@@ -42,6 +42,10 @@ const actions: ActionTree<OpenDocumentsStateInterface, StateInterface> = {
     setTimeout(() => {
       state.commit("resetTreeAction")
     }, 200)
+  },
+
+  resetRemoveIndex (state) {
+    state.commit("resetRemoveIndex")
   }
 }
 

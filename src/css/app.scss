@@ -33,6 +33,7 @@ html {
 body {
   background-color: rgba($primary, 0.025);
   overflow-y: scroll;
+  color: darken($dark, 12.5);
 
   /* WebKit/Blink Browsers */
   ::selection {
@@ -45,6 +46,20 @@ body {
     background: lighten($dark, 30);
     color: white;
   }
+}
+
+.q-icon::after,
+.q-icon::before {
+  backface-visibility: hidden;
+}
+
+.q-notification__message {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.q-loading::before {
+  opacity: 1 !important;
 }
 
 .q-drawer-container * {
@@ -134,6 +149,11 @@ body {
   padding-left: 11px;
   padding-right: 11px;
   padding-top: 6px;
+}
+
+.q-editor.fullscreen {
+  top: 40px !important;
+  height: calc(100vh - 40px) !important;
 }
 
 body .q-item--active:not(.noHigh) {

@@ -101,7 +101,7 @@
               active
               active-class="bg-gunmetal-light text-cultured"
               class="noHigh"
-              @click="exportProject(projectName)"
+              @click="commenceExport"
               :disable="!projectExists"
             >
               <q-item-section>Export current project</q-item-section>
@@ -245,6 +245,8 @@ import aboutAppDialog from "src/components/dialogs/AboutApp.vue"
 import changeLogDialog from "src/components/dialogs/ChangeLog.vue"
 import advancedSearchGuideDialog from "src/components/dialogs/AdvancedSearchGuide.vue"
 
+import { Loading, QSpinnerGears } from "quasar"
+
 import { retrieveCurrentProjectName, exportProject } from "src/scripts/projectManagement/projectManagent"
 
 import { toggleDevTools } from "src/scripts/utilities/devTools"
@@ -264,7 +266,6 @@ export default class AppControl extends BaseClass {
 
   toggleDevTools = toggleDevTools
   retrieveCurrentProjectName = retrieveCurrentProjectName
-  exportProject = exportProject
   projectExists: undefined | string | boolean = false
   isFrontpage = true
   isProjectPage = true
@@ -272,6 +273,20 @@ export default class AppControl extends BaseClass {
 
   created () {
     this.checkProjectStatus().catch(e => console.log(e))
+  }
+
+  async commenceExport () {
+    const projectName = await retrieveCurrentProjectName()
+    const setup = {
+      message: "<h4>Exporting current project...</h4>",
+      spinnerColor: "primary",
+      messageColor: "cultured",
+      spinnerSize: 120,
+      backgroundColor: "dark",
+      // @ts-ignore
+      spinner: QSpinnerGears
+    }
+    exportProject(projectName, Loading, setup, this.$q)
   }
 
   async checkProjectStatus () {

@@ -97,7 +97,7 @@ export const magicBlueprint: I_Blueprint = {
     },
     {
       id: "users",
-      name: "Magic users amount",
+      name: "Member/user amount",
       type: "text",
       icon: "mdi-account-group",
       sizing: 2
@@ -121,6 +121,7 @@ export const magicBlueprint: I_Blueprint = {
       predefinedSelectValues: [
         "Magical institution",
         "Magical teaching",
+        "Magical technique",
         "Ritual",
         "School of magic",
         "Spell",
@@ -143,6 +144,7 @@ export const magicBlueprint: I_Blueprint = {
         "Necromancy",
         "Transmutation",
         "World alteration",
+        "Raw magical energy manipulation",
         "Other"
       ]
     },
@@ -152,6 +154,11 @@ export const magicBlueprint: I_Blueprint = {
       type: "manyToManyRelationship",
       icon: "mdi-account",
       sizing: 4,
+      tooltip:
+        `This field is meant to be used as a way to map out spell-users and their respected spells.
+        <br>
+        For diplomatic/ideological connections between magical groups/institutions and characters, use the field below in the "Diplomatic relationships & Influences" section.
+        `,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedMagic"
@@ -159,10 +166,15 @@ export const magicBlueprint: I_Blueprint = {
     },
     {
       id: "pairedSpells",
-      name: "Connected Spells/Rituals/Institutions",
+      name: "Connected Spells/Rituals",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 4,
+      tooltip:
+        `This field is meant to be used as a way to map out connection between different spells/rituals to each other.
+        <br>
+        For diplomatic/ideological connections between magical groups/institutions, use the field below in the "Diplomatic relationships & Influences" section.
+        `,
       relationshipSettings: {
         connectedObjectType: "magic",
         connectedField: "pairedSpells"
@@ -170,7 +182,7 @@ export const magicBlueprint: I_Blueprint = {
     },
     {
       id: "pairedItems",
-      name: "Useable through the use of items/artifacts",
+      name: "Usable through the use of items/artifacts",
       type: "manyToManyRelationship",
       icon: "mdi-sword-cross",
       sizing: 4,
@@ -192,7 +204,7 @@ export const magicBlueprint: I_Blueprint = {
     },
     {
       id: "localLanguages",
-      name: "Common languages",
+      name: "Common languages among the practitioners",
       type: "manyToManyRelationship",
       icon: "mdi-book-alphabet",
       sizing: 6,
@@ -232,7 +244,7 @@ export const magicBlueprint: I_Blueprint = {
     },
     {
       id: "connectedLocations",
-      name: "Conected locations",
+      name: "Connected locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 6,
@@ -242,11 +254,22 @@ export const magicBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "pairedConnectionCharacter",
+      name: "Connected characters",
+      type: "manyToManyRelationship",
+      icon: "mdi-account",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "pairedConnectionMagicGroup"
+      }
+    },
+    {
       id: "pairedBelongingCharacter",
       name: "Prominent members",
       type: "manyToManyRelationship",
       icon: "mdi-account",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedBelongingMagicGroup"
@@ -257,7 +280,7 @@ export const magicBlueprint: I_Blueprint = {
       name: "Prominent allies",
       type: "manyToManyRelationship",
       icon: "mdi-account",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedAllyMagicGroup"
@@ -268,7 +291,7 @@ export const magicBlueprint: I_Blueprint = {
       name: "Prominent enemies",
       type: "manyToManyRelationship",
       icon: "mdi-account",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedEnemyMagicGroup"
@@ -341,6 +364,40 @@ export const magicBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "pairedConnectedMagicalGroups",
+      name: "Connected magical groups/teachings",
+      type: "manyToManyRelationship",
+      icon: "fas fa-hat-wizard",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "magic",
+        connectedField: "pairedConnectedMagicalGroups"
+      }
+    },
+    {
+      id: "pairedAllyMagicalGroups",
+      name: "Allied magical groups/teachings",
+      type: "manyToManyRelationship",
+      icon: "fas fa-hat-wizard",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "magic",
+        connectedField: "pairedAllyMagicalGroups"
+      }
+    },
+    {
+      id: "pairedEnemyMagicalGroups",
+      name: "Enemy magical groups/teachings",
+      type: "manyToManyRelationship",
+      icon: "fas fa-hat-wizard",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "magic",
+        connectedField: "pairedEnemyMagicalGroups"
+      }
+    },
+
+    {
       id: "pairedConnectedTechGroups",
       name: "Connected scientifical/technological groups/teachings",
       type: "manyToManyRelationship",
@@ -392,7 +449,7 @@ export const magicBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedMyths",
-      name: "Connected to myths and legends",
+      name: "Connected to myths. legends and stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
       sizing: 4,

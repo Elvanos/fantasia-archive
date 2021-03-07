@@ -1,6 +1,6 @@
 <template>
 <div>
-  <h4 class="flex justify-start items-center text-weight-bolder q-mb-lg q-mt-xl">
+  <h4 class="flex justify-start items-center text-weight-bolder q-mb-xs q-mt-xl">
     <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
     {{inputDataBluePrint.name}}
   </h4>

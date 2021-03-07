@@ -9,13 +9,23 @@
         </q-tooltip>
       </q-icon>
       <q-icon v-if="isOneWayRelationship" name="mdi-arrow-right-bold" size="16px" class="q-ml-md">
-         <q-tooltip :delay="500">
-          This is a one-way relationship. <br> Editing this value <span class="text-gunmetal-bright">will not</span> have effect on the connected document/s.
+        <q-tooltip :delay="500">
+            This is a one-way relationship. <br> Editing this value <span class="text-secondary">WILL NOT</span>  have effect on the connected document/s.
+            <br>
+            <br>
+            Left-clicking the linked document in non-edit mode will open it in new tab and focuses on it.
+            <br>
+            Middle-clicking the linked document in non-edit mode will open it in new tab and not focus on it.
         </q-tooltip>
       </q-icon>
       <q-icon v-if="!isOneWayRelationship" name="mdi-arrow-left-right-bold" size="16px" class="q-ml-md">
          <q-tooltip :delay="500">
-          This is a two-way relationship. <br> Editing this value <span class="text-gunmetal-bright">will</span> also effect the connected document/s.
+            This is a two-way relationship. <br> Editing this value <span class="text-secondary">WILL</span> also effect the connected document/s.
+            <br>
+            <br>
+            Left-clicking the linked document in non-edit mode will open it in new tab and focuses on it.
+            <br>
+            Middle-clicking the linked document in non-edit mode will open it in new tab and not focus on it.
         </q-tooltip>
       </q-icon>
 
@@ -30,12 +40,33 @@
       :key="single._id"
       clickable
       class="text-primary"
-      @click="openExistingDocumentRoute(single)">
-        <q-item-section>
-           {{stripTags(single.label)}}
-           <span class="inline-block q-ml-xs text-italic connectionNote">
-            {{retrieveNoteText(single._id)}}
-           </span>
+      >
+        <q-item-section
+          @click.left="openExistingDocumentRoute(single)"
+          @click.middle="openNewTab(single)"
+          >
+            <span class="text-weight-medium">
+              {{stripTags(single.label)}}
+            </span>
+            <span class="inline-block q-ml-xs text-italic connectionNote">
+              {{retrieveNoteText(single._id)}}
+            </span>
+            <q-btn
+              tabindex="-1"
+              round
+              flat
+              dense
+              dark
+              color="primary"
+              icon="mdi-open-in-new"
+              size="12px"
+              class="relationshipOpeningButton"
+              @click.stop.prevent.left="openNewTab(single)"
+              >
+              <q-tooltip :delay="500">
+                Open in new tab without leaving this one
+              </q-tooltip>
+            </q-btn>
         </q-item-section>
       </q-item>
     </q-list>
@@ -131,7 +162,7 @@
   </div>
 
     <div class="separatorWrapper">
-      <q-separator color="grey q-mt-lg" />
+      <q-separator color="grey q-mt-md" />
     </div>
 
   </div>
@@ -187,6 +218,19 @@ export default class Field_SingleRelationship extends BaseClass {
 
   get toolTip () {
     return this.inputDataBluePrint?.tooltip
+  }
+
+  async openNewTab (input: I_FieldRelationship) {
+    const CurrentObjectDB = new PouchDB(input.type)
+    const retrievedObject = await CurrentObjectDB.get(input._id)
+
+    const dataPass = {
+      doc: retrievedObject,
+      treeAction: false
+    }
+
+    // @ts-ignore
+    this.SSET_addOpenedDocument(dataPass)
   }
 
   extraInput: I_FieldRelationship[] = []
@@ -266,7 +310,7 @@ export default class Field_SingleRelationship extends BaseClass {
           const pairedFieldObject = objectDoc.extraFields.find(f => f.id === pairedField)
 
           const pairingType = this.inputDataBluePrint.type
-          if (typeof pairedFieldObject?.value !== "string" && pairedFieldObject?.value !== null && pairingType === "manyToSingleRelationship") {
+          if (pairedFieldObject !== undefined && typeof pairedFieldObject?.value !== "string" && pairedFieldObject?.value !== null && pairingType === "manyToSingleRelationship") {
             isDisabled = true
           }
         }
@@ -352,10 +396,23 @@ table {
 </style>
 
 <style lang="scss">
-.connectionList .q-item__section {
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
+.connectionList {
+  .q-item {
+    padding-right: 30px;
+    padding-left: 10px;
+  }
+
+  .q-item__section {
+    position: relative;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    .relationshipOpeningButton {
+      position: absolute;
+      right: -30px;
+    }
+  }
 }
 
 .connectionList .connectionNote {

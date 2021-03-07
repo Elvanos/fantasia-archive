@@ -1,3 +1,4 @@
+import { addFieldToDocument } from "./documentManager"
 import PouchDB from "pouchdb"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
 import { I_FieldRelationship } from "src/interfaces/I_FieldRelationship"
@@ -63,9 +64,19 @@ export const single_addRelationShipToAnotherObject = async (
   const idToFind = currentValue._id
 
   const PairedObjectDB = new PouchDB(typeToFind)
-  const pairedDocument = await PairedObjectDB.get(idToFind) as I_OpenedDocument
+  let pairedDocument = await PairedObjectDB.get(idToFind) as I_OpenedDocument
   const pairedField = currentValue.pairedField
-  const pairedFieldIndex = pairedDocument.extraFields.findIndex(e => e.id === pairedField)
+  let pairedFieldIndex = pairedDocument.extraFields.findIndex(e => e.id === pairedField)
+
+  let targetPairedField = pairedDocument.extraFields[pairedFieldIndex]
+
+  // Fix non-existant fields
+  if (!targetPairedField) {
+    await addFieldToDocument(pairedDocument._id, pairedField, typeToFind)
+    pairedDocument = await PairedObjectDB.get(idToFind) as I_OpenedDocument
+    pairedFieldIndex = pairedDocument.extraFields.findIndex(e => e.id === pairedField)
+    targetPairedField = pairedDocument.extraFields[pairedFieldIndex]
+  }
 
   if (!pairedDocument.extraFields[pairedFieldIndex].value) {
     pairedDocument.extraFields[pairedFieldIndex].value = { value: "", addedValues: "" }
@@ -157,11 +168,21 @@ export const many_addRelationShipToAnotherObject = async (
   const idToFind = currentValue._id
 
   const PairedObjectDB = new PouchDB(typeToFind)
-  const pairedDocument = await PairedObjectDB.get(idToFind) as I_OpenedDocument
+  let pairedDocument = await PairedObjectDB.get(idToFind) as I_OpenedDocument
   const pairedField = currentValue.pairedField
-  const pairedFieldIndex = pairedDocument.extraFields.findIndex(e => e.id === pairedField)
+  let pairedFieldIndex = pairedDocument.extraFields.findIndex(e => e.id === pairedField)
 
-  let pairedFieldValue: I_FieldRelationship[] = pairedDocument.extraFields[pairedFieldIndex].value.value
+  let targetPairedField = pairedDocument.extraFields[pairedFieldIndex]
+
+  // Fix non-existant fields
+  if (!targetPairedField) {
+    await addFieldToDocument(pairedDocument._id, pairedField, typeToFind)
+    pairedDocument = await PairedObjectDB.get(idToFind) as I_OpenedDocument
+    pairedFieldIndex = pairedDocument.extraFields.findIndex(e => e.id === pairedField)
+    targetPairedField = pairedDocument.extraFields[pairedFieldIndex]
+  }
+
+  let pairedFieldValue: I_FieldRelationship[] = targetPairedField.value.value
 
   const newValue = {
     _id: currentDocument._id,

@@ -157,7 +157,6 @@ export default class ExistingDocumentDialog extends DialogBase {
     this.filterDocuments()
 
     await this.$nextTick()
-    await this.sleep(200)
 
     if (this.$refs.ref_existingDocument) {
       /*eslint-disable */

@@ -17,6 +17,7 @@ if (process.env.PROD) {
 let mainWindow
 
 function createWindow () {
+  app.commandLine.appendSwitch('disable-software-rasterizer', 'true')
   /**
    * Initial window options
    */

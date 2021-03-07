@@ -552,7 +552,7 @@ export default class PageDocumentDisplay extends BaseClass {
 
 <style lang="scss" scoped>
 .inputWrapper {
-  min-height: 105px;
+  min-height: 95px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

@@ -101,3 +101,30 @@ export const saveDocument = async (document: I_OpenedDocument, allOpenedDocument
 
   return { documentCopy, allOpenedDocuments }
 }
+
+export const addFieldToDocument = async (targetDocumentID: string, fieldID: string, blueprintID: string) => {
+  const BlueprintsDB = new PouchDB("blueprints")
+  const currentBlueprint: {extraFields: I_ExtraFields[], _id: string} = await BlueprintsDB.get(blueprintID)
+
+  // @ts-ignore
+  // const fieldBluePrint: I_ExtraFields = currentBlueprint.extraFields.find(e => e.id === fieldID)
+
+  const TargetObjectTypDB = new PouchDB(currentBlueprint._id)
+  const targetDocument: { extraFields: any[]} = await TargetObjectTypDB.get(targetDocumentID)
+
+  const newField = {
+    id: fieldID,
+    value: ""
+  }
+
+  // singleToNoneRelationship
+  // singleToManyRelationship
+  // singleToSingleRelationship
+  // manyToNoneRelationship
+  // manyToSingleRelationship
+  // manyToManyRelationship
+
+  targetDocument.extraFields.push(newField)
+
+  await TargetObjectTypDB.put(targetDocument)
+}

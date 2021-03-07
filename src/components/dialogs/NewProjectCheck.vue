@@ -62,6 +62,8 @@ import { Component, Watch } from "vue-property-decorator"
 import DialogBase from "src/components/dialogs/_DialogBase"
 import { retrieveCurrentProjectName, exportProject, createNewProject } from "src/scripts/projectManagement/projectManagent"
 
+import { Loading, QSpinnerGears } from "quasar"
+
 @Component({
   components: { }
 })
@@ -89,12 +91,31 @@ export default class ImportProjectCheckDialog extends DialogBase {
   newProjectName = ""
 
   createNewProject () {
-    createNewProject(this.newProjectName, this.$router).catch(e => console.log(e))
+    Loading.show({
+      message: "<h4>Setting up a new project...</h4>",
+      spinnerColor: "primary",
+      messageColor: "cultured",
+      spinnerSize: 120,
+      backgroundColor: "dark",
+      // @ts-ignore
+      spinner: QSpinnerGears
+    })
+
+    createNewProject(this.newProjectName, this.$router, this.$q, this).catch(e => console.log(e))
   }
 
   async commenceExport () {
     const projectName = await retrieveCurrentProjectName()
-    exportProject(projectName)
+    const setup = {
+      message: "<h4>Exporting current project...</h4>",
+      spinnerColor: "primary",
+      messageColor: "cultured",
+      spinnerSize: 120,
+      backgroundColor: "dark",
+      // @ts-ignore
+      spinner: QSpinnerGears
+    }
+    exportProject(projectName, Loading, setup, this.$q)
   }
 }
 </script>

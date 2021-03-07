@@ -12,9 +12,10 @@
 
     <q-list
       v-if="!editMode"
+      class="fieldSingleSelect_list"
       dense>
       <q-item>
-        <q-item-section>
+        <q-item-section class="text-weight-medium">
            {{localInput}}
         </q-item-section>
       </q-item>
@@ -57,7 +58,7 @@
     </q-select>
 
     <div class="separatorWrapper">
-      <q-separator color="grey q-mt-lg" />
+      <q-separator color="grey q-mt-md" />
     </div>
 
   </div>
@@ -143,3 +144,20 @@ export default class Field_SingleSelect extends BaseClass {
   }
 }
 </script>
+
+<style lang="scss">
+.fieldSingleSelect_list {
+  .q-item {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .q-item__section {
+    position: relative;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+  }
+}
+
+</style>

@@ -7,6 +7,7 @@ export interface OpenDocumentsStateInterface {
 export interface InnerOpenDocumentsStateInterface {
   timestamp: string,
   treeAction: boolean,
+  lastRemovedIndex: number
   docs: I_OpenedDocument[]
 }
 
@@ -15,6 +16,7 @@ function state (): OpenDocumentsStateInterface {
     documents: {
       timestamp: "",
       treeAction: false,
+      lastRemovedIndex: -1,
       docs: []
     }
   }

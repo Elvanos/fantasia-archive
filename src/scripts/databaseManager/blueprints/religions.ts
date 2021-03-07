@@ -210,11 +210,22 @@ export const religionsBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "pairedConnectionCharacter",
+      name: "Connected characters",
+      type: "manyToManyRelationship",
+      icon: "mdi-account",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "pairedConnectionRelGroup"
+      }
+    },
+    {
       id: "pairedBelongingCharacter",
       name: "Prominent members",
       type: "manyToManyRelationship",
       icon: "mdi-account",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedBelongingRelGroup"
@@ -225,7 +236,7 @@ export const religionsBlueprint: I_Blueprint = {
       name: "Prominent allies",
       type: "manyToManyRelationship",
       icon: "mdi-account",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedAllyRelGroup"
@@ -236,7 +247,7 @@ export const religionsBlueprint: I_Blueprint = {
       name: "Prominent enemies",
       type: "manyToManyRelationship",
       icon: "mdi-account",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedEnemyRelGroup"
@@ -275,7 +286,39 @@ export const religionsBlueprint: I_Blueprint = {
         connectedField: "pairedEnemyReligiousGroups"
       }
     },
-
+    {
+      id: "pairedConnectedReligiousGroups",
+      name: "Connected religious groups/teachings",
+      type: "manyToManyRelationship",
+      icon: "fas fa-ankh",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "religions",
+        connectedField: "pairedConnectedReligiousGroups"
+      }
+    },
+    {
+      id: "pairedAllyReligoiusGroups",
+      name: "Allied religious groups/teachings",
+      type: "manyToManyRelationship",
+      icon: "fas fa-ankh",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "religions",
+        connectedField: "pairedAllyReligoiusGroups"
+      }
+    },
+    {
+      id: "pairedEnemyReligiousGroups",
+      name: "Enemy religious groups/teaching",
+      type: "manyToManyRelationship",
+      icon: "fas fa-ankh",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "religions",
+        connectedField: "pairedEnemyReligiousGroups"
+      }
+    },
     {
       id: "pairedConnectedMagicGroups",
       name: "Connected magical groups/ideologies",
@@ -361,7 +404,7 @@ export const religionsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedMyths",
-      name: "Connected to myths and legends",
+      name: "Connected to myths. legends and stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
       sizing: 4,

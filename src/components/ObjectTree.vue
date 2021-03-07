@@ -13,6 +13,17 @@
     </q-input>
     </q-page-sticky>
 
+    <h6 class="projectTitle text-cultured">
+      <span>
+        {{projectName}}
+          <q-tooltip
+            :delay="1000"
+          >
+            This is your currently opened project's name.
+          </q-tooltip>
+      </span>
+    </h6>
+
     <q-tree
       class="objectTree q-pa-sm"
       :nodes="hierarchicalTree"
@@ -20,15 +31,20 @@
       no-connectors
       ref="tree"
       dark
+      :duration="200"
       :filter="treeFilter"
       :selected.sync="selectedTreeNode"
       :expanded.sync="expandedTreeNodes"
+      no-nodes-label="Loading your project..."
+      no-results-label="Nothing matches your request"
       >
       <template v-slot:default-header="prop">
-        <div class="row items-center col-grow" @click.stop.prevent="processNodeClick(prop.node)">
+        <div class="row items-center col-grow"
+        @click.stop.prevent="processNodeClick(prop.node)"
+        @click.stop.prevent.middle="processNodeLabelMiddleClick(prop.node)"
+        >
           <div class="documentLabel"
             :style="`color: ${prop.node.color}`"
-            @click.stop.prevent.middle="processNodeLabelMiddleClick(prop.node)"
            >
           <q-icon
             :style="`color: ${determineNodeColor(prop.node)}; width: 22px !important;`"
@@ -43,9 +59,9 @@
                 <q-tooltip
                   :delay="1000"
                 >
-                Document count: <span class="text-bold text-gunmetal-bright">{{prop.node.documentCount}}</span>
+                Document count: <span class="text-bold text-satin-sheen-gold-dark">{{prop.node.documentCount}}</span>
                 <br>
-                Category count: <span class="text-bold text-gunmetal-bright">{{prop.node.categoryCount}}</span>
+                Category count: <span class="text-bold text-satin-sheen-gold-dark">{{prop.node.categoryCount}}</span>
                 </q-tooltip>
               </span>
             <q-badge
@@ -139,13 +155,13 @@ import { Component, Watch } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
 import { I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
-import { I_NewObjectTrigger } from "src/interfaces/I_NewObjectTrigger"
 import PouchDB from "pouchdb"
 import { engageBlueprints, retrieveAllBlueprints } from "src/scripts/databaseManager/blueprintManager"
 // import { cleanDatabases } from "src/scripts/databaseManager/cleaner"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
 import { extend, colors } from "quasar"
 import { tagListBuildFromBlueprints } from "src/scripts/utilities/tagListBuilder"
+import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
 
 @Component({
   components: { }
@@ -172,10 +188,14 @@ export default class ObjectTree extends BaseClass {
   // GENERIC FUNCTIONALITY
   /****************************************************************/
 
+  projectName = ""
+
   /**
    * Load all blueprints and build the tree out of them
    */
   async created () {
+    this.projectName = await retrieveCurrentProjectName()
+
     // await cleanDatabases()
     await this.processBluePrints()
 
@@ -218,12 +238,15 @@ export default class ObjectTree extends BaseClass {
   // HIERARCHICAL TREE - HELPERS AND MODELS
   /****************************************************************/
 
-  /**
-   * Since we are using the object tree as URLs intead of selecting, this resets the select every time a node is clicked
-   */
-  @Watch("selectedTreeNode")
-  onNodeChange (val: I_NewObjectTrigger) {
-    if (val !== null) {
+  @Watch("$route", { deep: true })
+  async reactToRouteChange () {
+    // Wait for animations
+    await this.sleep(200)
+    if (this.SGET_allOpenedDocuments.docs.length > 0) {
+      const currentDoc = this.findRequestedOrActiveDocument() as unknown as I_OpenedDocument
+      this.selectedTreeNode = currentDoc._id
+    }
+    else {
       this.selectedTreeNode = null
     }
   }
@@ -261,7 +284,7 @@ export default class ObjectTree extends BaseClass {
   /**
    * A resetter for the currently selected node
    */
-  selectedTreeNode = null
+  selectedTreeNode = null as null | string
 
   /**
    * Holds all currently expanded notes
@@ -600,8 +623,6 @@ export default class ObjectTree extends BaseClass {
     isTag: boolean
     specialLabel: string|boolean
   }) {
-    this.selectedTreeNode = null
-
     if (node.isRoot && node.isTag) {
       return
     }
@@ -655,12 +676,25 @@ export default class ObjectTree extends BaseClass {
 
 <style lang="scss">
 
+.projectTitle {
+  margin: 0 0 -5px 0;
+  padding: 65px 10px 0;
+}
+
 .objectTree {
-  padding-top: 60px;
+  > .q-tree__node {
+    padding-left: 0 !important;
+  }
+
+  .q-tree__children {
+    padding-left: 5px;
+  }
 
   .q-tree__arrow {
     margin-right: 0;
     padding: 4px 4px 4px 0;
+    position: absolute;
+    pointer-events: none;
   }
 
   .q-tree__node {
@@ -669,13 +703,32 @@ export default class ObjectTree extends BaseClass {
 
   .q-tree__node-header {
     padding: 0;
+
+    &:focus {
+      > .q-focus-helper {
+        opacity: 0 !important;
+      }
+    }
+
+    &:hover {
+      > .q-focus-helper {
+        opacity: 0.15 !important;
+      }
+    }
+
+    &.q-tree__node--selected {
+      > .q-focus-helper {
+        opacity: 0.22 !important;
+      }
+    }
   }
 
   .documentLabel {
     width: 100%;
     display: flex;
     justify-content: space-between;
-    padding: 4px 4px 4px 4px;
+    padding: 4px 4px 4px 25px;
+    align-items: center;
   }
 
   .treeButtonGroup {
@@ -700,7 +753,7 @@ export default class ObjectTree extends BaseClass {
   justify-content: center;
 
   &.noChilden {
-    right: calc(100% + 23px);
+    right: calc(100% + 3px);
   }
 }
 

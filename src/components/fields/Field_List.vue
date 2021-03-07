@@ -12,18 +12,24 @@
 
   <q-list
       v-if="!editMode"
+      class="fieldList_list"
       dense>
       <q-item v-for="(input,index) in localInput" :key="index">
-        <q-item-section side>
-          <q-icon name="mdi-menu-right" />
+        <q-item-section
+        class="fieldList_itemDot"
+         side>
+          <q-icon
+            color="primary"
+            name="mdi-menu-right"
+             />
         </q-item-section>
         <q-item-section>
-          <span>
+          <span class="text-weight-medium">
             {{input.value}}
-            <span v-if="localInput[index].affix" class="inline-block q-ml-xs text-italic">
+          </span>
+          <span v-if="localInput[index].affix" class="inline-block q-ml-xs text-italic">
             ({{localInput[index].affix}})
             </span>
-          </span>
         </q-item-section>
       </q-item>
     </q-list>
@@ -58,6 +64,8 @@
           :readonly="!editMode"
           input-debounce="0"
           new-value-mode="add"
+          @input="signalInput"
+          @keydown="signalInput"
           :label="(inputAffix) ? inputAffix : ''"
           v-model="localInput[index].affix"
         />
@@ -80,7 +88,7 @@
   </div>
 
     <div class="separatorWrapper">
-      <q-separator color="grey q-mt-lg" />
+      <q-separator color="grey q-mt-md" />
     </div>
 
   </div>
@@ -164,3 +172,24 @@ export default class Field_List extends BaseClass {
   }
 }
 </script>
+
+<style lang="scss">
+.fieldList_list {
+  .q-item {
+    padding-right: 10px;
+    padding-left: 0;
+  }
+
+  .q-item__section {
+    position: relative;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .fieldList_itemDot {
+    padding-right: 10px;
+  }
+}
+
+</style>

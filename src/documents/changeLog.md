@@ -5,21 +5,49 @@
 
 ## 0.1.3
 
+### Known issues
+
+- When creating a brand new project, Fantasia Archive sometimes doesn't load the default categories in the left hierarchical tree. A temporary workaround before the issue is fixed is restarting the program - the project stays intact, can be normally edited no data loss occurs.
+
 ### Bugfixes
 
+- Fixed a MASSIVE two-way relationship bug that would have prevented a future integration of user-defined addition fields and document types
+- Hopefully fixed a bug with keybinds not registering sometimes
+- Added a missing row of connected "Sciences/Technologies" (connected, ally and enemy) to the "Sciences/Technologies" document type
+- Added a missing row of connected "Religions/Teachings" (connected, ally and enemy) to the "Religions/Teachings" document type
+- Added a missing row of connected "Magic/Spell" (connected, ally and enemy) to the "Magic/Spell" document type
+- Fixed an occasional wrong click register on the document tree (opening document instead of expanding/collapsing)
 - Fixed the "Name" field disappearing upon full deletion of text
 - Fixed a bug with single/multi-select fields working unintuitively for adding new values (eg: Character personality traits field or Sex field)
+- Fixed a tiny glitch when the hierarchical tree arrow was sometimes creating new documents instead of opening the category
+- Fixed a bug of persisting opened tabs when creating new projects/importing existing project over already opened ones
 - Added an auto-remover of no longer existing relationships filled in within single and multi relationship fields
 - Fixed a typo with "Sciences/Technologies" missing the plural form
 - Adjusted the naming of "Other/Notes" to "Lore notes/Other notes" to be functional with the new search engine (apologies for this one, a new solution might be implemented later)
+- Adjusted the naming of "Myths/Legends" to "Myths/Legends/Stories" to cover a wider area of content
+- Fixed a bug with a full-screen text editor overlapping the menu
+- Fixed a bug where list-typed fields were properly saving temporary data when switching between tabs in the note fields
+- Fixed broken padding of the document in "Chapters" and "Lore notes/Other notes"
+- Fixed a broken field "Practitioners/Engineers" in the category "Sciences/Technologies"
+- Fixed a typo in the "Connected Locations" field inside the "Magic/Spell" document type
+- Fixed a visual glitch with icons sometimes "bouncing" or "flickering" when hovered over with the mouse
 
 ### New features
 
+- Massive improvement to rendering and performance of the app by leveraging some of the workloads to the GPU from the CPU
 - Added a safeguard dialog for new project creation in case an opened project exists
 - Added a safeguard dialog for project importing in case an opened project exists
-- Added automatic redirecting to the project screen upon importing an existing project or creating a new one (better transition effect will be added later)
+- Added automatic redirecting to the project screen upon importing an existing project or creating a new one
+- Added loading transition for longer action (export, import, and creating a new project)
+- Added toast messaging informing the user of how the long actions went
+- Added a project title above the hierarchical tree
+- Added a new 2-way relationship field "Connected characters" for all kinds of groups (Political, Religious, Magical, and Technological) that connect with 4 new respect character fields.
+  - This change was done due to some characters having relationships with certain ground that didn't necessarily count as memberships, alliances, or hostilities.
+- Added support for opening connected document in single and multi-relationships without focusing on the document itself and instead just open it in the tab list
+- Added continuous closing of tabs via holding down CTRL + W
 - Added an "Advanced search guide" dialog with a manual on how to use the advanced search
 - Added a "Changelog" dialog - you might be reading it right now!
+- Added an option of "Raw magical energy manipulation" to "General schools of magic" in "Magic/Spell" document type (for those of us who like our characters throwing half a city at each other anime-style!)
 - Added "About Fantasia Archive" dialog showing current app version (more details will be added in the future)
 - New control bar added for documents and project control along with a more intelligent button redesign
 - A new logo added to the app (better visibility of the logo in small scales and icons)
@@ -27,16 +55,26 @@
 - Added color support to single/multi relationship fields
 - Added a hierarchical path to Quick opening existing document and single/multi relationship fields
 - Added filtering to include or exclude documents that are considered categories in the  Quick opening existing document dialog
+- Removed "Practitioners/Engineers" field from "Sciences/Technologies" document type as it was a duplicate of another one and was causing issues
 - Added automatic opening of hierarchical tree branches upon adding/moving documents under/among them
 - Added tags support
 
 ### QoL adjustments
 
+- Adjusted animations through the app to make it feel a bit more responsive
 - Lightly modified the app color-scheme to offer better readability of contrast
+- Adjusted document display screen for easier legibility, quicker navigation, and fancy-schmancy look
 - Changed icon for the button triggering quick-adding of new documents
+- Reworked the way tab closing works - now mimicks the functionality of how web-browsers handle it
+- Added syncing of opened tabs to the matching item in the hierarchical tree
+- Changed "Character traits" field name to "Traits & Characteristics" in the "Character" document type
+- Hierarchical tree looks optimized for more streamlined looks and better space-usage
 - Changed the looks of tooltips, relationship fields, and selects to go well with the current app looks
 - Adjusted tab-list width to allow for more content to show
 - Improved scroll behavior in the keybind cheatsheet dialog (looks a little strange now, but will work better as more keybinds are added)
+- Improved response time from the Quick-search popup upon opening
+- Renamed "Notable practitioners/scientists" to "Technology/Science users" from "Sciences/Technologies" document type
+- Added a highlight for the save document button in case the current document has edits
 - Added a tooltip showing how many of the objects in the hierarchical tree are documents and how many are categories
 - Hierarchical tree search bar is now attached on the top of the tree and no longer scrolls along with the rest of the content of the tree to allow better useability. The search now also expands to full app width on focus via user's interaction. The search icon was moved to the right and the field reset icon was moved to the left.
 - Modified selected and activity indicators for already selected/active items in dropdown lists to not clash with the highlighting from the filter results

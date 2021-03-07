@@ -274,7 +274,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "personalityTraits",
-      name: "Personality traits",
+      name: "Traits & Characteristics",
       type: "multiSelect",
       icon: "mdi-head-cog",
       sizing: 6,
@@ -1060,11 +1060,22 @@ export const charactersBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
+      id: "pairedConnectionPolGroup",
+      name: "Connected to political groups/ideologies",
+      type: "manyToManyRelationship",
+      icon: "mdi-bank-outline",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "politicalGroups",
+        connectedField: "pairedConnectionCharacter"
+      }
+    },
+    {
       id: "pairedBelongingPolGroup",
       name: "Member of political groups/ideologies",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
         connectedField: "pairedBelongingCharacter"
@@ -1075,7 +1086,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Ally of political groups/ideologies",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
         connectedField: "pairedAllyCharacter"
@@ -1086,10 +1097,21 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Enemy of political groups/ideologies",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
         connectedField: "pairedEnemyCharacter"
+      }
+    },
+    {
+      id: "pairedConnectionRelGroup",
+      name: "Connected to religious groups/teachings",
+      type: "manyToManyRelationship",
+      icon: "fas fa-ankh",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "religions",
+        connectedField: "pairedConnectionCharacter"
       }
     },
     {
@@ -1097,7 +1119,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Member of religious groups/teachings",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "religions",
         connectedField: "pairedBelongingCharacter"
@@ -1108,7 +1130,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Ally of religious groups/teachings",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "religions",
         connectedField: "pairedAllyCharacter"
@@ -1119,10 +1141,21 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Enemy of religious groups/teachings",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "religions",
         connectedField: "pairedEnemyCharacter"
+      }
+    },
+    {
+      id: "pairedConnectionMagicGroup",
+      name: "Connected to magical groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-hat-wizard",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "magic",
+        connectedField: "pairedConnectionCharacter"
       }
     },
     {
@@ -1130,7 +1163,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Member of magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "magic",
         connectedField: "pairedBelongingCharacter"
@@ -1141,7 +1174,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Ally of magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "magic",
         connectedField: "pairedAllyCharacter"
@@ -1152,10 +1185,21 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Enemy of magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "magic",
         connectedField: "pairedEnemyCharacter"
+      }
+    },
+    {
+      id: "pairedConnectionTechGroup",
+      name: "Connected to scientifical/technological groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-wrench",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "tech",
+        connectedField: "pairedConnectionCharacter"
       }
     },
     {
@@ -1163,7 +1207,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Member of scientifical/technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "tech",
         connectedField: "pairedBelongingCharacter"
@@ -1174,7 +1218,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Ally of scientifical/technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "tech",
         connectedField: "pairedAllyCharacter"
@@ -1185,7 +1229,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Enemy of scientifical/technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "tech",
         connectedField: "pairedEnemyCharacter"
@@ -1221,7 +1265,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedMyths",
-      name: "Connected to myths and legends",
+      name: "Connected to myths. legends and stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
       sizing: 6,

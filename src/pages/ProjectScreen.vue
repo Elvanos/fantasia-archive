@@ -12,6 +12,7 @@
 import { Component } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
+import { Loading } from "quasar"
 
 import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
 
@@ -23,6 +24,7 @@ export default class ProjectScreen extends BaseClass {
 
   async created () {
     this.projectName = await retrieveCurrentProjectName()
+    Loading.hide()
   }
 }
 </script>
