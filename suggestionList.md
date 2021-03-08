@@ -1,3 +1,7 @@
+- Tag upper/lower case issues
+- Non working tag filter
+
+---
 
 - Add "Related notes"
 - Add "Predecessors", "Successors", "Date of start", "Date of end" and "How long it lasted" fields to locations and all other groups
@@ -10,6 +14,7 @@
 - Add filtering by color and BG color (weird, but could work)
 - "Save all" keybind and "Save all and exit" option on the exiting
 
+- Considering multiple "belongs under" category listing
 - Add intelligent responsive design to the left tree and document body (maybe button to pull the left bar in and out?)
 
 ### Document & Project setting

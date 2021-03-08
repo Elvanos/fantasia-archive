@@ -74,7 +74,13 @@ export const religionsBlueprint: I_Blueprint = {
       type: "tags",
       icon: "mdi-tag",
       tooltip:
-        `tags
+        `Tags are used to sort the same (or even different) document types into a custom groups based on your needs.
+        <br>
+        A document may have any number of tags, but each tag can be present only once.
+        <br>
+        This limitation also applies to any variation of lower or upper case iterations of the same tag.
+        <br>
+        Example: A tag called "Player Party" will be consider the same tag as "player party", "PlAyER PaRtY" or any similar.
         `,
       sizing: 12
     },

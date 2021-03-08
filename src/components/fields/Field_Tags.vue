@@ -15,7 +15,7 @@
     >
      <q-chip
       v-for="(input,index) in localInput" :key="index"
-      color="accent" text-color="dark" class="text-bold">
+      color="gunmetal-light" text-color="satin-sheen-gold-light" class="text-weight-medium">
         {{input}}
       </q-chip>
     </div>
@@ -29,7 +29,7 @@
       menu-anchor="bottom middle"
       menu-self="top middle"
       class="tagSelect"
-      :options="allTags"
+      :options="filteredTags"
       use-input
       outlined
       use-chips
@@ -38,8 +38,11 @@
       new-value-mode="add"
       multiple
       v-model="localInput"
+      @new-value="addNewValue"
       @input="signalInput"
       @keydown="signalInput"
+      error-message="This tag is already present in the selection."
+      :error="tagAlreadyExists"
     >
       <template v-slot:selected-item="scope">
         <q-chip
@@ -88,11 +91,12 @@ export default class Field_Tags extends BaseClass {
   @Prop() readonly editMode!: boolean
 
   changedInput = false
-  localInput = []
+  localInput: string[] = []
 
   @Watch("inputDataValue", { deep: true, immediate: true })
   reactToInputChanges () {
     this.localInput = (this.inputDataValue) ? this.inputDataValue : []
+    this.buildTagList().catch(e => console.log(e))
   }
 
   @Watch("inputDataBluePrint", { deep: true, immediate: true })
@@ -110,6 +114,8 @@ export default class Field_Tags extends BaseClass {
 
   allTags: string[] = []
 
+  filteredTags: string[] = []
+
   async defocusSelectRef () {
     await this.$nextTick()
     /*eslint-disable */
@@ -118,11 +124,33 @@ export default class Field_Tags extends BaseClass {
     /* eslint-enable */
   }
 
+  tagAlreadyExists = false
+
+  addNewValue (val: string) {
+    const formattedNewTag = val.toLowerCase().trim()
+
+    const tagAlreadyExistsInList = (this.allTags.find(tag => tag.toLowerCase() === formattedNewTag))
+
+    const tagAlreadyExistsAttached = (this.localInput.find(tag => tag.toLowerCase() === formattedNewTag))
+
+    if (!tagAlreadyExistsInList) {
+      this.allTags.push(val)
+    }
+
+    if (!tagAlreadyExistsAttached) {
+      this.localInput.push(val)
+    }
+
+    if (tagAlreadyExistsInList && tagAlreadyExistsAttached) {
+      this.tagAlreadyExists = true
+    }
+  }
+
   filterFn (val: string, update: (fn: any) => void) {
     if (val === "") {
       update(() => {
-        if (this.inputDataBluePrint?.predefinedSelectValues) {
-          this.allTags = this.inputDataBluePrint.predefinedSelectValues
+        if (this.allTags) {
+          this.filteredTags = this.allTags
         }
         this.defocusSelectRef().catch(e => console.log(e))
       })
@@ -130,9 +158,9 @@ export default class Field_Tags extends BaseClass {
     }
 
     update(() => {
-      if (this.inputDataBluePrint?.predefinedSelectValues) {
+      if (this.allTags) {
         const needle = val.toLowerCase()
-        this.allTags = this.inputDataBluePrint.predefinedSelectValues.filter(v => v.toLowerCase().indexOf(needle) > -1)
+        this.filteredTags = this.allTags.filter(v => v.toLowerCase().indexOf(needle) > -1)
       }
       this.defocusSelectRef().catch(e => console.log(e))
     })
@@ -144,6 +172,7 @@ export default class Field_Tags extends BaseClass {
 
   @Emit()
   signalInput () {
+    this.tagAlreadyExists = false
     this.changedInput = true
     return this.localInput
   }

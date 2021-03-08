@@ -99,6 +99,7 @@
 import { Component, Emit, Prop, Watch } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
+import { extend } from "quasar"
 
 import { I_ExtraFields } from "src/interfaces/I_Blueprint"
 
@@ -160,7 +161,21 @@ export default class Field_List extends BaseClass {
   @Emit()
   signalInput () {
     this.changedInput = true
-    return this.localInput
+
+    const dataCopy: {
+      value: string
+      affix?: string
+    }[] = extend(true, [], this.localInput)
+
+    const returnValue = dataCopy.map(e => {
+      e.value = e.value.trim()
+      if (e.affix) {
+        e.affix = e.affix.trim()
+      }
+      return e
+    })
+
+    return returnValue
   }
 
   addNewInput () {

@@ -71,7 +71,7 @@ export default class Field_Text extends BaseClass {
   @Emit()
   signalInput () {
     this.changedInput = true
-    return this.localInput
+    return this.localInput.trim()
   }
 
   get toolTip () {

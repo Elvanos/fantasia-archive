@@ -70,17 +70,17 @@ import { I_ExtraFields } from "src/interfaces/I_Blueprint"
 })
 export default class Field_ColorPicker extends BaseClass {
   @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
-  @Prop({ default: null }) readonly inputDataValue!: null|number
+  @Prop({ default: null }) readonly inputDataValue!: string
   @Prop() readonly editMode!: boolean
   @Prop() readonly isNew!: boolean
 
   changedInput = false
-  localInput: null|number = null
+  localInput = ""
 
   @Emit()
   signalInput () {
     this.changedInput = true
-    return this.localInput
+    return this.localInput.trim()
   }
 
   get inputIcon () {

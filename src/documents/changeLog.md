@@ -17,6 +17,7 @@
 - Added a missing row of connected "Religions/Teachings" (connected, ally and enemy) to the "Religions/Teachings" document type
 - Added a missing row of connected "Magic/Spell" (connected, ally and enemy) to the "Magic/Spell" document type
 - Fixed an occasional wrong click register on the document tree (opening document instead of expanding/collapsing)
+- Fixed non-functional whitespace triming for multiple document fields upon filling in input
 - Fixed the "Name" field disappearing upon full deletion of text
 - Fixed a bug with single/multi-select fields working unintuitively for adding new values (eg: Character personality traits field or Sex field)
 - Fixed a tiny glitch when the hierarchical tree arrow was sometimes creating new documents instead of opening the category
@@ -28,7 +29,6 @@
 - Fixed a bug with a full-screen text editor overlapping the menu
 - Fixed a bug where list-typed fields were properly saving temporary data when switching between tabs in the note fields
 - Fixed broken padding of the document in "Chapters" and "Lore notes/Other notes"
-- Fixed a broken field "Practitioners/Engineers" in the category "Sciences/Technologies"
 - Fixed a typo in the "Connected Locations" field inside the "Magic/Spell" document type
 - Fixed a visual glitch with icons sometimes "bouncing" or "flickering" when hovered over with the mouse
 
