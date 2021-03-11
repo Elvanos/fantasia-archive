@@ -139,6 +139,11 @@ export default class Field_Tags extends BaseClass {
 
     if (!tagAlreadyExistsAttached) {
       this.localInput.push(val)
+      /*eslint-disable */
+      // @ts-ignore
+      this.$refs[`tagField${this.inputDataBluePrint.id}`].updateInputValue ('')     
+      /* eslint-enable */
+      this.signalInput()
     }
 
     if (tagAlreadyExistsInList && tagAlreadyExistsAttached) {

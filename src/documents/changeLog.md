@@ -17,7 +17,7 @@
 - Added a missing row of connected "Religions/Teachings" (connected, ally and enemy) to the "Religions/Teachings" document type
 - Added a missing row of connected "Magic/Spell" (connected, ally and enemy) to the "Magic/Spell" document type
 - Fixed an occasional wrong click register on the document tree (opening document instead of expanding/collapsing)
-- Fixed non-functional whitespace triming for multiple document fields upon filling in input
+- Fixed non-functional whitespace trimming for multiple document fields upon filling in input
 - Fixed the "Name" field disappearing upon full deletion of text
 - Fixed a bug with single/multi-select fields working unintuitively for adding new values (eg: Character personality traits field or Sex field)
 - Fixed a tiny glitch when the hierarchical tree arrow was sometimes creating new documents instead of opening the category

@@ -1,10 +1,16 @@
-- Tag upper/lower case issues
-- Non working tag filter
 
----
+### App options & Keybinds
 
+- Add "Document relevance" switch and integrate it into filters
+- Add "Find field" to quickly navigate the document
+- Add "Show in search results" checkbox for relationship searches
 - Add "Related notes"
 - Add "Predecessors", "Successors", "Date of start", "Date of end" and "How long it lasted" fields to locations and all other groups
+- Save scroll distance when switching tabs (consider some auto-scroll when opening edit mode)
+- Fix lag on opening Quick-search popup
+- Fix tag input hanging after adding new ones
+- Mass tag rename
+- Add click-through from chips in edit mode
 - Add "Ctrl + F" finding in the document (fields/data)
 - Fix filtering via the document type in advanced search
 - Add advanced search capabilities to the hierarchical tree
@@ -16,15 +22,29 @@
 
 - Considering multiple "belongs under" category listing
 - Add intelligent responsive design to the left tree and document body (maybe button to pull the left bar in and out?)
-
-### Document & Project setting
+- Add top level tags
+- Context menu: Expand all
+- Context menu: Collapse all
+- Context menu: Copy color (text and BG)
+- Context menu: Duplicate
+- Context menu: Copy name
+- Context menu: Delete
+- Context menu: Edit/Open
+- Context menu: Create new doc with parent of THIS
+- Context menu: Clone tab
+- Context menu: Pin tab
+- Context menu: Unpin tab
 
 - Pinned tabs (save through program closing)
 - Dark mode
 - Add "Open all search matches" button in the Quick-search that opens a new page with a list of items
 - Custom order document types
+- Option: Show tags as a subcategory or as each individually
+- Option: Show tags on or bottom of the list
+- Option: Hide non-filled fields in document view mode
 - Option: Retain opened tabs and their edited contents through sessions
 - Option: Dark Mode
+- Option: Quick-search popup determine if "Include categories" is prechecked or not
 - Option: Show tags in the tree
 - Option: Periodical backup (how many, how often, include files or not)
 - Option: Disable tooltips in the document body
@@ -38,6 +58,8 @@
 - Option: Close Quick-search and Quick-add dialogs with second keypress of the keybind instead of escape
 - Option: Disable tags showing in the sidebar
 - Option: Hide top navbar and move the document buttons back in the document body (top)
+
+### Project settings
 
 - Tag management (coloring)
 

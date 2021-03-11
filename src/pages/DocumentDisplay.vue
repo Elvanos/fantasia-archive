@@ -395,6 +395,7 @@ export default class PageDocumentDisplay extends BaseClass {
     if (field.type === "tags") {
       this.currentData.hasEdits = true
       const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
+
       this.currentData.extraFields[indexToUpdate].value = inputData
 
       const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
