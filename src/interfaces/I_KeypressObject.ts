@@ -2,7 +2,7 @@ export interface I_KeyPressObject {
   altKey: boolean
   ctrlKey: boolean
   shiftKey: boolean
-  keyCode: number
+  which: number
   editable?: boolean
   id?: string
   tooltip?: string

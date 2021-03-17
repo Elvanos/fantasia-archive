@@ -22,6 +22,7 @@
           v-if="projectExists"
           color="primary"
           size="md"
+          :outline="isDarkMode"
           class="q-px-xl q-py-xs"
           to="/project"
         >
@@ -33,6 +34,7 @@
         <q-btn
           color="primary"
           size="md"
+          :outline="isDarkMode"
           class="q-px-xl q-py-xs"
           @click="newProjectAssignUID"
         >
@@ -43,6 +45,7 @@
       <div class="col-12 q-mb-lg">
        <q-btn
           color="primary"
+          :outline="isDarkMode"
           size="md"
           class="q-px-xl q-py-xs"
           @click="importProjectAssignUID()"
@@ -55,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { Component } from "vue-property-decorator"
+import { Component, Watch } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
 import importProjectCheckDialog from "src/components/dialogs/ImportProjectCheck.vue"
@@ -71,6 +74,14 @@ import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projec
   }
 })
 export default class WelcomeScreen extends BaseClass {
+  isDarkMode = false
+
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    const options = this.SGET_options
+    this.isDarkMode = options.darkMode
+  }
+
   projectExists: undefined | string | boolean = false
   newProjectName = ""
   newProjectDialog = false

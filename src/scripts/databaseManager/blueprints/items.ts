@@ -21,7 +21,7 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "documentColor",
-      name: "Color",
+      name: "Text Color",
       type: "colorPicker",
       icon: "mdi-eyedropper",
       tooltip:
@@ -80,7 +80,7 @@ export const itemsBlueprint: I_Blueprint = {
         <br>
         This limitation also applies to any variation of lower or upper case iterations of the same tag.
         <br>
-        Example: A tag called "Player Party" will be consider the same tag as "player party", "PlAyER PaRtY" or any similar.
+        Example: A tag called "Player Party" will be considered the same tag as "player party", "PlAyER PaRtY" or anything similar.
         `,
       sizing: 12
     },

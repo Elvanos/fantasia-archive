@@ -22,7 +22,7 @@ function state (): KeybindsStateInterface {
         ctrlKey: true,
         shiftKey: true,
         id: "",
-        keyCode: 99999
+        which: 99999
       }
     }
   }

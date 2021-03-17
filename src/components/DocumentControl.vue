@@ -32,7 +32,7 @@
       @trigger-dialog-close="keybindsDialogClose"
     />
 
-    <q-page-sticky position="top-right" class="documentControl">
+    <q-page-sticky position="top-right" class="documentControl bg-dark" v-if="!disableDocumentControlBar">
 
       <div class="documentControl__blocker"></div>
 
@@ -40,37 +40,39 @@
 
         <div class="documentControl__left">
 
-          <q-btn
-            icon="mdi-keyboard-settings"
-            color="primary"
-            outline
-            @click="keybindsDialogAssignUID"
-          >
-            <q-tooltip
-              :delay="500"
-              anchor="bottom middle"
-              self="top middle"
+          <template v-if="!disableDocumentControlBarGuides">
+            <q-btn
+              icon="mdi-keyboard-settings"
+              color="primary"
+              outline
+              @click="keybindsDialogAssignUID"
             >
-             Open keybinds cheatsheet
-            </q-tooltip>
-          </q-btn>
+              <q-tooltip
+                :delay="500"
+                anchor="bottom middle"
+                self="top middle"
+              >
+              Open keybinds cheatsheet
+              </q-tooltip>
+            </q-btn>
 
-          <q-btn
-            icon="mdi-file-question"
-            color="primary"
-            outline
-            @click="advancedSearchGuideAssignUID"
-          >
-            <q-tooltip
-              :delay="500"
-              anchor="bottom middle"
-              self="top middle"
+            <q-btn
+              icon="mdi-file-question"
+              color="primary"
+              outline
+              @click="advancedSearchGuideAssignUID"
             >
-             Open advanced search guide
-            </q-tooltip>
-          </q-btn>
+              <q-tooltip
+                :delay="500"
+                anchor="bottom middle"
+                self="top middle"
+              >
+              Open advanced search guide
+              </q-tooltip>
+            </q-btn>
 
-          <q-separator vertical inset color="accent" />
+            <q-separator vertical inset color="accent" />
+          </template>
 
           <q-btn
             icon="mdi-package-variant-closed"
@@ -232,6 +234,16 @@ export default class DocumentControl extends BaseClass {
   projectExists: undefined | string | boolean = false
   projectName = ""
 
+  disableDocumentControlBar = false
+  disableDocumentControlBarGuides = false
+
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    const options = this.SGET_options
+    this.disableDocumentControlBar = options.disableDocumentControlBar
+    this.disableDocumentControlBarGuides = options.disableDocumentControlBarGuides
+  }
+
   async created () {
     this.projectName = await retrieveCurrentProjectName()
     this.projectExists = !!(await retrieveCurrentProjectName())
@@ -245,30 +257,36 @@ export default class DocumentControl extends BaseClass {
    * Local keybinds
    */
   @Watch("SGET_getCurrentKeyBindData", { deep: true })
-  processKeyPush () {
+  async processKeyPush () {
     // Quick new document
-    if (this.determineKeyBind("quickNewDocument")) {
+    if (this.determineKeyBind("quickNewDocument") && !this.SGET_getDialogsState) {
       this.newObjectAssignUID()
     }
 
     // Quick open existing document
-    if (this.determineKeyBind("quickExistingDocument")) {
+    if (this.determineKeyBind("quickExistingDocument") && !this.SGET_getDialogsState) {
       this.existingObjectAssignUID()
     }
 
     // Delete dialog - CTRL + D
-    if (this.determineKeyBind("deleteDocument") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0) {
+    if (this.determineKeyBind("deleteDocument") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState) {
       this.deleteObjectAssignUID()
     }
 
     // Edit document - CTRL + E
-    if (this.determineKeyBind("editDocument") && this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0) {
+    if (this.determineKeyBind("editDocument") && this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState) {
       this.toggleEditMode()
     }
 
     // Save document - CTRL + S
-    if (this.determineKeyBind("saveDocument") && !this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0) {
+    if (this.determineKeyBind("saveDocument") && !this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState) {
       this.saveCurrentDocument().catch(e => console.log(e))
+    }
+
+    // Add new under parent - CTRL + SHIFT + N
+    if (this.determineKeyBind("addUnderParent") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState) {
+      await this.sleep(100)
+      this.addNewUnderParent()
     }
   }
 
@@ -472,8 +490,7 @@ export default class DocumentControl extends BaseClass {
 <style lang="scss">
 .documentControl {
   z-index: 999;
-  background-color: $dark;
-  width: calc(100vw - 375px);
+  width: calc(100vw - 380px);
   margin-top: 2.5px;
 
   &__blocker {
@@ -487,10 +504,21 @@ export default class DocumentControl extends BaseClass {
   }
 
   &__wrapper {
-    width: calc(100vw - 375px);
+    width: calc(100vw - 385px);
     padding: 8.5px 15px;
     display: flex;
     justify-content: space-between;
+    position: relative;
+
+    &::after {
+      content: " ";
+      bottom: 1px;
+      right: -5px;
+      left: -5px;
+      position: absolute;
+      height: 1px;
+      background-color: rgba($accent, 0.2);
+    }
   }
 
   &__left,

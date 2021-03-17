@@ -1,13 +1,100 @@
 <template>
-  <q-page class="q-pa-xl"
+  <q-page
+  class="documentDisplay"
+  :class="{
+    'q-pb-xl q-pl-xl q-pr-xl': disableDocumentControlBar,
+    'q-pa-xl': !disableDocumentControlBar,
+    'hiddenFields': hideEmptyFields
+    }"
   v-if="bluePrintData"
   >
+
+    <!-- Delele document dialog -->
+    <deleteDocumentCheckDialog
+      :dialog-trigger="deleteObjectDialogTrigger"
+      @trigger-dialog-close="deleteObjectDialogClose"
+    />
+
     <div class="row justify-start q-col-gutter-x-xl">
+
+      <div
+       class="flex justify-end localControlRow"
+       v-if="disableDocumentControlBar"
+       >
+
+        <q-btn
+          :color="(hasEdits) ? 'teal-14' : 'primary'"
+          icon="mdi-content-save"
+          @click="saveCurrentDocument"
+          :outline="isDarkMode"
+          class="q-mr-md"
+          v-if="editMode"
+        >
+          <q-tooltip
+            :delay="500"
+            anchor="bottom middle"
+            self="top middle"
+          >
+            Save current document
+          </q-tooltip>
+        </q-btn>
+
+        <q-btn
+          color="primary"
+          icon="mdi-file-document-edit"
+          @click="toggleEditMode"
+          :outline="isDarkMode"
+          class="q-mr-md"
+          v-if="!editMode"
+        >
+          <q-tooltip
+            :delay="500"
+            anchor="bottom middle"
+            self="top middle"
+          >
+            Edit current document
+          </q-tooltip>
+        </q-btn>
+
+        <q-btn
+          color="primary"
+          icon="mdi-file-tree"
+          @click="addNewUnderParent"
+          :outline="isDarkMode"
+          class="q-mr-md"
+          v-if="!currentData.isNew"
+        >
+          <q-tooltip
+            :delay="500"
+            anchor="bottom middle"
+            self="top middle"
+          >
+            Add new document with the current one as parent
+          </q-tooltip>
+        </q-btn>
+
+        <q-btn
+          color="secondary"
+          icon="mdi-text-box-remove-outline"
+          :outline="isDarkMode"
+          @click="deleteObjectAssignUID"
+          v-if="!currentData.isNew"
+        >
+          <q-tooltip
+            :delay="500"
+            anchor="bottom left"
+            self="top middle"
+          >
+            Delete current document
+          </q-tooltip>
+        </q-btn>
+      </div>
 
       <div
         :class="`col-${field.sizing} q-mb-md`"
         v-for="field in bluePrintData.extraFields"
         :key="field.id"
+        v-show="determineFieldValue(field) || editMode"
         >
 
           <Field_Break
@@ -149,6 +236,7 @@ import PouchDB from "pouchdb"
 import { extend } from "quasar"
 
 import { saveDocument } from "src/scripts/databaseManager/documentManager"
+import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentCheck.vue"
 
 import Field_Break from "src/components/fields/Field_Break.vue"
 import Field_Text from "src/components/fields/Field_Text.vue"
@@ -176,7 +264,9 @@ import Field_Tags from "src/components/fields/Field_Tags.vue"
     Field_SingleRelationship,
     Field_MultiRelationship,
     Field_Wysiwyg,
-    Field_Tags
+    Field_Tags,
+
+    deleteDocumentCheckDialog
   }
 })
 
@@ -185,21 +275,53 @@ export default class PageDocumentDisplay extends BaseClass {
    * Watches on changes of the route in order to load proper blueprint and object data
    */
   @Watch("$route", { immediate: true, deep: true })
-  onUrlChange () {
-    this.reloadLocalContent().catch(e => console.log(e))
+  async onUrlChange () {
+    await this.sleep(50)
+    window.scrollTo({ top: 0, behavior: "auto" })
+
+    await this.reloadLocalContent().catch(e => console.log(e))
+
+    window.scrollTo({ top: 0, behavior: "auto" })
+  }
+
+  hasEdits = false
+
+  checkHasEdits () {
+    const currentDocument = this.findRequestedOrActiveDocument()
+
+    if (currentDocument && currentDocument.hasEdits) {
+      this.hasEdits = true
+    }
+    else {
+      this.hasEdits = false
+    }
   }
 
   /**
    * Watches on changes of the opened documents in order to load proper blueprint and object data
    */
-  @Watch("SGET_allOpenedDocuments", { deep: true })
+  @Watch("SGET_allOpenedDocuments", { immediate: true, deep: true })
   async onDocChange () {
+    this.checkHasEdits()
+
     await this.sleep(300)
 
     const matchingDoc = this.findRequestedOrActiveDocument()
     if (matchingDoc && matchingDoc._id === this.currentData._id && !matchingDoc.hasEdits) {
       this.reloadLocalContent().catch(e => console.log(e))
     }
+  }
+
+  disableDocumentControlBar = false
+  isDarkMode = false
+  hideEmptyFields = false
+
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    const options = this.SGET_options
+    this.disableDocumentControlBar = options.disableDocumentControlBar
+    this.isDarkMode = options.darkMode
+    this.hideEmptyFields = options.hideEmptyFields
   }
 
   async reloadLocalContent () {
@@ -545,8 +667,99 @@ export default class PageDocumentDisplay extends BaseClass {
   fieldLimiter (currentFieldID: string) {
     const isCategory = this.retrieveFieldValue(this.currentData, "categorySwitch")
 
-    const ignoredList = ["breakBasic", "name", "documentColor", "parentDoc", "order", "categorySwitch"]
+    const ignoredList = ["breakBasic", "name", "documentColor", "parentDoc", "order", "categorySwitch", "tags"]
     return (!isCategory || ignoredList.includes(currentFieldID))
+  }
+
+  /****************************************************************/
+  // Delete dialog
+  /****************************************************************/
+
+  deleteObjectDialogTrigger: string | false = false
+  deleteObjectDialogClose () {
+    this.deleteObjectDialogTrigger = false
+  }
+
+  deleteObjectAssignUID () {
+    this.deleteObjectDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
+  // Add new document under parent
+  /****************************************************************/
+  addNewUnderParent () {
+    const currentDoc = this.findRequestedOrActiveDocument()
+    if (currentDoc) {
+      const routeObject = {
+        _id: currentDoc.type,
+        parent: currentDoc._id
+      }
+      // @ts-ignore
+      this.addNewObjectRoute(routeObject)
+    }
+  }
+
+  /****************************************************************/
+  // Toggle edit mode & Save document
+  /****************************************************************/
+
+  toggleEditMode () {
+    const currentDoc = this.findRequestedOrActiveDocument()
+    if (currentDoc && !currentDoc.editMode) {
+      const dataCopy: I_OpenedDocument = extend(true, {}, currentDoc)
+      dataCopy.editMode = true
+      const dataPass = { doc: dataCopy, treeAction: false }
+      this.SSET_updateOpenedDocument(dataPass)
+    }
+  }
+
+  async saveCurrentDocument () {
+    if (document.activeElement) {
+      (document.activeElement as HTMLElement).blur()
+    }
+
+    const currentDoc = this.findRequestedOrActiveDocument()
+
+    const allDocuments = this.SGET_allOpenedDocuments
+
+    const docCopy: I_OpenedDocument[] = extend(true, [], allDocuments.docs)
+
+    if (currentDoc) {
+      // @ts-ignore
+      const savedDocument: {
+        documentCopy: I_OpenedDocument,
+        allOpenedDocuments: I_OpenedDocument[]
+      } = await saveDocument(currentDoc, docCopy)
+
+      // Update the opened document
+      const dataPass = { doc: savedDocument.documentCopy, treeAction: true }
+      this.SSET_updateOpenedDocument(dataPass)
+
+      // Update all others
+      for (const doc of savedDocument.allOpenedDocuments) {
+        // Update the opened document
+        const dataPass = { doc: doc, treeAction: true }
+        this.SSET_updateOpenedDocument(dataPass)
+      }
+    }
+  }
+
+  determineFieldValue (field: any) {
+    if (!this.hideEmptyFields) {
+      return true
+    }
+
+    const value = this.retrieveFieldValue(this.currentData, field.id)
+
+    if (!value ||
+    (Array.isArray(value) && value.length === 0) ||
+    // @ts-ignore
+     (value?.value && value.value.length === 0) ||
+    // @ts-ignore
+     (value.value === null)) {
+      return false
+    }
+    return true
   }
 }
 </script>
@@ -572,5 +785,97 @@ export default class PageDocumentDisplay extends BaseClass {
 
 .q-field {
   max-width: 100%;
+}
+
+.documentDisplay {
+  &.hiddenFields {
+    padding-top: 105px;
+  }
+
+  .localControlRow {
+    position: absolute;
+    right: 48px;
+    top: 50px;
+  }
+
+  /* WebKit/Blink Browsers */
+  ::selection {
+    background: lighten($dark, 30);
+    color: white;
+  }
+
+  /* Gecko Browsers */
+  ::-moz-selection {
+    background: lighten($dark, 30);
+    color: white;
+  }
+}
+
+body.body--dark {
+  .documentDisplay {
+
+    /* WebKit/Blink Browsers */
+    ::selection {
+      color: lighten($primary, 25);
+      background: lighten($secondary, 7);
+    }
+
+    /* Gecko Browsers */
+    ::-moz-selection {
+      color: lighten($primary, 25);
+      background: lighten($secondary, 7);
+    }
+    $darkModeText: #dcdcdc;
+
+    color: $darkModeText;
+
+    .connectionList .connectionNote,
+    .listNote {
+      color: $darkModeText;
+      opacity: 0.9;
+    }
+
+    .q-list--dark,
+    .q-item--dark,
+    .q-field--dark .q-field__native,
+    .q-field--dark .q-field__prefix,
+    .q-field--dark .q-field__suffix,
+    .q-field--dark .q-field__input {
+      color: $darkModeText;
+    }
+
+    .q-separator {
+      opacity: 0.85;
+      background-color: $primary !important;
+    }
+
+    .q-field--dark .q-field__control::before {
+      background-color: rgba(255, 255, 255, 0.1);
+      opacity: 0.6;
+      border: none;
+    }
+
+    .tagSelect,
+    .singleSelect,
+    .multiSelect,
+    .singleRelashionshipSelect,
+    .multiRelashionshipSelect,
+    .existingDocumentSelect,
+    .newDocumentSelect {
+      &.q-field--dark .q-field__control::before {
+        border: none;
+      }
+
+      .q-field__input,
+      .q-icon,
+      .q-field__native span {
+        color: $darkModeText !important;
+
+        &.q-chip__icon--remove {
+          color: #000 !important;
+        }
+      }
+    }
+  }
 }
 </style>

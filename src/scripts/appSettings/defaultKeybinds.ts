@@ -5,10 +5,21 @@ export const defaultKeybinds = [
     altKey: true,
     ctrlKey: true,
     shiftKey: false,
-    keyCode: 75,
+    which: 75,
     editable: true,
     id: "openKeybindsCheatsheet",
     tooltip: "Open keybind cheatsheet"
+  },
+
+  // Open app options - CTRL + ALT + J
+  {
+    altKey: true,
+    ctrlKey: true,
+    shiftKey: false,
+    which: 74,
+    editable: true,
+    id: "openAppOptions",
+    tooltip: "Open Fantasia Archive options"
   },
 
   // Quick new document - CTRL + N
@@ -16,7 +27,7 @@ export const defaultKeybinds = [
     altKey: false,
     ctrlKey: true,
     shiftKey: false,
-    keyCode: 78,
+    which: 78,
     editable: true,
     id: "quickNewDocument",
     tooltip: "Quick-add new document"
@@ -27,7 +38,7 @@ export const defaultKeybinds = [
     altKey: false,
     ctrlKey: true,
     shiftKey: false,
-    keyCode: 81,
+    which: 81,
     editable: true,
     id: "quickExistingDocument",
     tooltip: "Quick-search existing document"
@@ -38,7 +49,7 @@ export const defaultKeybinds = [
     altKey: false,
     ctrlKey: true,
     shiftKey: true,
-    keyCode: 81,
+    which: 81,
     editable: true,
     id: "focusHierarchicalTree",
     tooltip: "Focus search field in the left hierarchical tree"
@@ -49,10 +60,10 @@ export const defaultKeybinds = [
     altKey: false,
     ctrlKey: true,
     shiftKey: true,
-    keyCode: 87,
+    which: 87,
     editable: true,
     id: "clearInputHierarchicalTree",
-    tooltip: "Clears any input in the search field in the left hierarchical tree"
+    tooltip: "Clear any input in the search field in the left hierarchical tree"
   },
 
   // Close tab - CTRL + W
@@ -60,7 +71,7 @@ export const defaultKeybinds = [
     altKey: false,
     ctrlKey: true,
     shiftKey: false,
-    keyCode: 87,
+    which: 87,
     editable: true,
     id: "closeTab",
     tooltip: "Close active document"
@@ -71,7 +82,7 @@ export const defaultKeybinds = [
     altKey: true,
     ctrlKey: false,
     shiftKey: false,
-    keyCode: 39,
+    which: 39,
     editable: true,
     id: "nextTab",
     tooltip: "Next tab"
@@ -82,7 +93,7 @@ export const defaultKeybinds = [
     altKey: true,
     ctrlKey: false,
     shiftKey: false,
-    keyCode: 37,
+    which: 37,
     editable: true,
     id: "previousTab",
     tooltip: "Previous tab"
@@ -93,7 +104,7 @@ export const defaultKeybinds = [
     altKey: false,
     ctrlKey: true,
     shiftKey: false,
-    keyCode: 83,
+    which: 83,
     editable: true,
     id: "saveDocument",
     tooltip: "Save active document"
@@ -104,10 +115,21 @@ export const defaultKeybinds = [
     altKey: false,
     ctrlKey: true,
     shiftKey: false,
-    keyCode: 69,
+    which: 69,
     editable: true,
     id: "editDocument",
     tooltip: "Edit active document"
+  },
+
+  // Edit document - CTRL + SHIFT + N
+  {
+    altKey: false,
+    ctrlKey: true,
+    shiftKey: true,
+    which: 78,
+    editable: true,
+    id: "addUnderParent",
+    tooltip: "Add a new document with currently opened one as parent"
   },
 
   // Delete document - CTRL + D
@@ -115,7 +137,7 @@ export const defaultKeybinds = [
     altKey: false,
     ctrlKey: true,
     shiftKey: false,
-    keyCode: 68,
+    which: 68,
     editable: true,
     id: "deleteDocument",
     tooltip: "Delete active document"
@@ -126,7 +148,7 @@ export const defaultKeybinds = [
     altKey: false,
     ctrlKey: false,
     shiftKey: false,
-    keyCode: 9,
+    which: 9,
     editable: false,
     id: "nextFocus",
     tooltip: "Focuses next input field/input element/hierarchical tree node",
@@ -138,7 +160,7 @@ export const defaultKeybinds = [
     altKey: false,
     ctrlKey: false,
     shiftKey: true,
-    keyCode: 9,
+    which: 9,
     editable: false,
     id: "previousFocus",
     tooltip: "Focuses previous input field/input element/hierarchical tree node",
@@ -150,7 +172,7 @@ export const defaultKeybinds = [
     altKey: false,
     ctrlKey: false,
     shiftKey: false,
-    keyCode: 13,
+    which: 13,
     editable: false,
     id: "openTreeNode",
     tooltip: "Open the focused document in the left hierarchical tree",
@@ -162,7 +184,7 @@ export const defaultKeybinds = [
     altKey: false,
     ctrlKey: false,
     shiftKey: false,
-    keyCode: 32,
+    which: 32,
     editable: false,
     id: "collapseExpandeTreeNode",
     tooltip: "Collapse or open the focused category in the left hierarchical tree",

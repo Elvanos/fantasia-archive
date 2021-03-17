@@ -21,7 +21,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "documentColor",
-      name: "Color",
+      name: "Text Color",
       type: "colorPicker",
       icon: "mdi-eyedropper",
       tooltip:
@@ -80,7 +80,7 @@ export const charactersBlueprint: I_Blueprint = {
         <br>
         This limitation also applies to any variation of lower or upper case iterations of the same tag.
         <br>
-        Example: A tag called "Player Party" will be consider the same tag as "player party", "PlAyER PaRtY" or any similar.
+        Example: A tag called "Player Party" will be considered the same tag as "player party", "PlAyER PaRtY" or anything similar.
         `,
       sizing: 12
     },
@@ -1199,7 +1199,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectionTechGroup",
-      name: "Connected to scientifical/technological groups",
+      name: "Connected to scientific/technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
@@ -1210,7 +1210,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedBelongingTechGroup",
-      name: "Member of scientifical/technological groups",
+      name: "Member of scientific/technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
@@ -1221,7 +1221,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedAllyTechGroup",
-      name: "Ally of scientifical/technological groups",
+      name: "Ally of scientific/technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
@@ -1232,7 +1232,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedEnemyTechGroup",
-      name: "Enemy of scientifical/technological groups",
+      name: "Enemy of scientific/technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
@@ -1271,7 +1271,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedMyths",
-      name: "Connected to myths. legends and stories",
+      name: "Connected to myths, legends and stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
       sizing: 6,

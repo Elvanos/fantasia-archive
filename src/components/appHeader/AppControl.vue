@@ -3,6 +3,19 @@
   <div
     :class="{'AppControl': isProject}"
   >
+
+    <!-- New document dialog -->
+    <newDocumentDialog
+      :dialog-trigger="newObjectDialogTrigger"
+      @trigger-dialog-close="newObjectDialogClose"
+    />
+
+    <!-- Existing document dialog -->
+    <existingDocumentDialog
+      :dialog-trigger="existingObjectDialogTrigger"
+      @trigger-dialog-close="existingObjectDialogClose"
+    />
+
     <!-- Project close dialog -->
     <projectCloseCheckDialog
      :dialog-trigger="projectCloseCheckDialogTrigger"
@@ -40,6 +53,12 @@
       @trigger-dialog-close="changeLogDialogClose"
     />
 
+    <!-- Program settings dialog -->
+    <programSettingsDialog
+      :dialog-trigger="programSettingsDialogTrigger"
+      @trigger-dialog-close="programSettingsDialogClose"
+    />
+
     <!-- Advanced search guide dialog -->
     <advancedSearchGuideDialog
       :dialog-trigger="advancedSearchGuideDialogTrigger"
@@ -54,15 +73,22 @@
       <!-- Options button -->
       <q-btn
         flat
-        v-if="true === false"
         :ripple="false"
         dark
         size='md'
         no-caps
+        @click="programSettingsDialogAssignUID"
        >
-        Options
-      </q-btn>
+        <q-img
+          :src="appLogo"
+          style="height: 26px; width: 26px; margin: 0 -9px;"
+        />
+        <q-tooltip anchor="center right" self="center left" :delay="500">
+          Program settings
+        </q-tooltip>
 
+      </q-btn>
+      <q-separator color="primary" vertical dark style="opacity: 0.1;" />
       <!-- Project button-->
       <q-btn
         flat
@@ -88,9 +114,44 @@
               active
               active-class="bg-gunmetal-light text-cultured"
               class="noHigh"
+              @click="newObjectAssignUID"
+              :disable="!projectExists || isFrontpage"
+            >
+              <q-item-section>Quick-add new document</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-text-box-plus-outline" />
+              </q-item-section>
+            </q-item>
+
+             <q-item
+              v-close-popup
+              clickable
+              active
+              active-class="bg-gunmetal-light text-cultured"
+              class="noHigh"
+              @click="existingObjectAssignUID"
+              :disable="!projectExists || isFrontpage"
+            >
+              <q-item-section>Quick-search existing document</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-database-search" />
+              </q-item-section>
+            </q-item>
+
+            <q-separator dark />
+
+             <q-item
+              v-close-popup
+              clickable
+              active
+              active-class="bg-gunmetal-light text-cultured"
+              class="noHigh"
               @click="newProjectAssignUID"
             >
               <q-item-section>New project</q-item-section>
+               <q-item-section avatar>
+                <q-icon name="mdi-plus" />
+              </q-item-section>
             </q-item>
 
             <q-separator dark />
@@ -105,6 +166,9 @@
               :disable="!projectExists"
             >
               <q-item-section>Export current project</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-package-variant-closed" />
+              </q-item-section>
             </q-item>
 
             <q-item
@@ -116,6 +180,9 @@
               @click="importProjectAssignUID"
             >
               <q-item-section>Import existing project</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-package-variant" />
+              </q-item-section>
             </q-item>
 
             <q-separator dark />
@@ -130,6 +197,9 @@
               :disable="!projectExists || isProjectPage"
             >
               <q-item-section>Resume project</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-folder-open-outline" />
+              </q-item-section>
             </q-item>
 
             <q-item
@@ -142,6 +212,9 @@
               :disable="!projectExists || isFrontpage"
             >
               <q-item-section>Close project</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-exit-to-app" />
+              </q-item-section>
             </q-item>
           </q-list>
         </q-menu>
@@ -155,7 +228,7 @@
         size='md'
         no-caps
        >
-        Help & Info
+        Help, Settings & Info
         <q-menu
           anchor="bottom left"
           class="bg-gunmetal-light"
@@ -163,6 +236,22 @@
           square
         >
           <q-list class="bg-gunmetal-light" dark>
+            <q-item
+              @click="programSettingsDialogAssignUID"
+              v-close-popup
+              clickable
+              active
+              active-class="bg-gunmetal-light text-cultured"
+              class="noHigh"
+              >
+              <q-item-section>Program settings</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-tune" />
+              </q-item-section>
+            </q-item>
+
+            <q-separator dark />
+
             <q-item
               @click="keybindsDialogAssignUID"
               v-close-popup
@@ -172,6 +261,9 @@
               class="noHigh"
               >
               <q-item-section>Show keybind cheatsheet</q-item-section>
+                <q-item-section avatar>
+                <q-icon name="mdi-keyboard-settings" />
+              </q-item-section>
             </q-item>
 
             <q-item
@@ -183,6 +275,9 @@
               class="noHigh"
               >
               <q-item-section>Advanced search guide</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-file-question" />
+              </q-item-section>
             </q-item>
 
             <q-separator dark />
@@ -196,6 +291,9 @@
               class="noHigh"
               >
               <q-item-section>Changelog</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-clipboard-text" />
+              </q-item-section>
             </q-item>
 
             <q-item
@@ -207,6 +305,9 @@
               class="noHigh"
               >
               <q-item-section>About Fantasia Archive</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-information-variant" />
+              </q-item-section>
             </q-item>
 
             <q-separator dark />
@@ -220,6 +321,9 @@
               class="noHigh"
               >
               <q-item-section>Toggle developer tools</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-code-tags" />
+              </q-item-section>
             </q-item>
 
           </q-list>
@@ -243,13 +347,19 @@ import importProjectCheckDialog from "src/components/dialogs/ImportProjectCheck.
 import newProjectCheckDialog from "src/components/dialogs/NewProjectCheck.vue"
 import aboutAppDialog from "src/components/dialogs/AboutApp.vue"
 import changeLogDialog from "src/components/dialogs/ChangeLog.vue"
+import programSettingsDialog from "src/components/dialogs/ProgramSettings.vue"
 import advancedSearchGuideDialog from "src/components/dialogs/AdvancedSearchGuide.vue"
+import newDocumentDialog from "src/components/dialogs/NewDocument.vue"
+import existingDocumentDialog from "src/components/dialogs/ExistingDocument.vue"
 
 import { Loading, QSpinnerGears } from "quasar"
 
 import { retrieveCurrentProjectName, exportProject } from "src/scripts/projectManagement/projectManagent"
 
 import { toggleDevTools } from "src/scripts/utilities/devTools"
+
+import appLogo from "src/assets/appLogo.png"
+
 @Component({
   components: {
     projectCloseCheckDialog,
@@ -258,7 +368,10 @@ import { toggleDevTools } from "src/scripts/utilities/devTools"
     newProjectCheckDialog,
     aboutAppDialog,
     changeLogDialog,
-    advancedSearchGuideDialog
+    advancedSearchGuideDialog,
+    programSettingsDialog,
+    newDocumentDialog,
+    existingDocumentDialog
   }
 })
 export default class AppControl extends BaseClass {
@@ -270,6 +383,8 @@ export default class AppControl extends BaseClass {
   isFrontpage = true
   isProjectPage = true
   projectName = ""
+
+  appLogo = appLogo
 
   created () {
     this.checkProjectStatus().catch(e => console.log(e))
@@ -337,8 +452,13 @@ export default class AppControl extends BaseClass {
   @Watch("SGET_getCurrentKeyBindData", { deep: true })
   processKeyPush () {
     // Keybind cheatsheet
-    if (this.determineKeyBind("openKeybindsCheatsheet")) {
+    if (this.determineKeyBind("openKeybindsCheatsheet") && !this.SGET_getDialogsState) {
       this.keybindsDialogAssignUID()
+    }
+
+    // App options
+    if (this.determineKeyBind("openAppOptions") && !this.SGET_getDialogsState) {
+      this.programSettingsDialogAssignUID()
     }
   }
 
@@ -382,6 +502,19 @@ export default class AppControl extends BaseClass {
   }
 
   /****************************************************************/
+  // Program settings dialog
+  /****************************************************************/
+
+  programSettingsDialogTrigger: string | false = false
+  programSettingsDialogClose () {
+    this.programSettingsDialogTrigger = false
+  }
+
+  programSettingsDialogAssignUID () {
+    this.programSettingsDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
   // Advanced search guide dialog
   /****************************************************************/
 
@@ -392,6 +525,32 @@ export default class AppControl extends BaseClass {
 
   advancedSearchGuideAssignUID () {
     this.advancedSearchGuideDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
+  // New document dialog
+  /****************************************************************/
+
+  newObjectDialogTrigger: string | false = false
+  newObjectDialogClose () {
+    this.newObjectDialogTrigger = false
+  }
+
+  newObjectAssignUID () {
+    this.newObjectDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
+  // Existing document dialog
+  /****************************************************************/
+
+  existingObjectDialogTrigger: string | false = false
+  existingObjectDialogClose () {
+    this.existingObjectDialogTrigger = false
+  }
+
+  existingObjectAssignUID () {
+    this.existingObjectDialogTrigger = this.generateUID()
   }
 }
 </script>

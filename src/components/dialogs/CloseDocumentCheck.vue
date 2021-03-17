@@ -18,7 +18,6 @@
             outline
             label="Discard changes"
             color="secondary"
-            v-close-popup
             @click="closeDocument(dialogDocument)" />
         </q-card-actions>
       </q-card>
@@ -61,6 +60,9 @@ export default class CloseDocumentCheckDialog extends DialogBase {
 
   closeDocument (input: I_OpenedDocument) {
     const dataPass = { doc: input, treeAction: false }
+    this.dialogModel = false
+    this.SSET_setDialogState(false)
+
     this.SSET_removeOpenedDocument(dataPass)
   }
 }

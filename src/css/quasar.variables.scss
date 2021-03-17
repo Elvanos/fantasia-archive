@@ -13,7 +13,7 @@
 // Tip: Use the "Theme Builder" on Quasar's documentation website.
 
 $primary   : #d7ac47;
-$secondary :  #f72e43;
+$secondary :  #f75746;
 $accent    : #dde4e4;
 
 $dark      : #18303a;
@@ -26,9 +26,10 @@ $warning   : #f2c037;
 $customColors: (
   'gunmetal': #18303a,
   'gunmetal-light': lighten(#18303a, 7.5),
+  'gunmetal-lighter': lighten(#18303a, 10),
   'gunmetal-bright': lighten(#18303a, 50),
   'gunmetal-shine': lighten(#18303a, 60),
-  'ruby-red': #f72e43,
+  'ruby-red': #f75746,
   'satin-sheen-gold': #d7ac47,
   'satin-sheen-gold-dark': darken(#d7ac47, 12.5),
   'satin-sheen-gold-light': lighten(#d7ac47, 7.5),

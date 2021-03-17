@@ -3,7 +3,7 @@
     <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
       <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
       {{inputDataBluePrint.name}}
-       <q-icon v-if="toolTip" name="mdi-help-circle" size="16px" class="q-ml-md">
+       <q-icon v-if="toolTip && !disableDocumentToolTips" name="mdi-help-circle" size="16px" class="q-ml-md">
          <q-tooltip :delay="500">
            <span v-html="toolTip"/>
         </q-tooltip>
@@ -32,7 +32,8 @@
       class="singleSelect"
       :options="extraInput"
       use-input
-      outlined
+      :outlined="!isDarkMode"
+      :filled="isDarkMode"
       @filter="filterFn"
       input-debounce="0"
       new-value-mode="add"
@@ -77,12 +78,19 @@ import { I_ExtraFields } from "src/interfaces/I_Blueprint"
 })
 export default class Field_SingleSelect extends BaseClass {
   @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
-
   @Prop({ default: "" }) readonly inputDataValue!: ""
-
   @Prop() readonly isNew!: boolean
-
   @Prop() readonly editMode!: boolean
+
+  isDarkMode = false
+  disableDocumentToolTips = false
+
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    const options = this.SGET_options
+    this.isDarkMode = options.darkMode
+    this.disableDocumentToolTips = options.disableDocumentToolTips
+  }
 
   changedInput = false
   localInput = ""

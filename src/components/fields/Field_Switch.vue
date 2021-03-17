@@ -3,7 +3,7 @@
   <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
     <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md" min="1"/>
     {{inputDataBluePrint.name}}
-     <q-icon v-if="toolTip" name="mdi-help-circle" size="16px" class="q-ml-md">
+     <q-icon v-if="toolTip && !disableDocumentToolTips" name="mdi-help-circle" size="16px" class="q-ml-md">
          <q-tooltip :delay="500">
            <span v-html="toolTip"/>
         </q-tooltip>
@@ -41,6 +41,16 @@ export default class Field_Switch extends BaseClass {
 
   changedInput = false
   localInput: null|boolean = null
+
+  isDarkMode = false
+  disableDocumentToolTips = false
+
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    const options = this.SGET_options
+    this.isDarkMode = options.darkMode
+    this.disableDocumentToolTips = options.disableDocumentToolTips
+  }
 
   @Emit()
   signalInput () {

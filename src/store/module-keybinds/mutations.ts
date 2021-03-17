@@ -10,7 +10,7 @@ const resetCurrentKey = () => {
     ctrlKey: true,
     shiftKey: true,
     id: "",
-    keyCode: 99999
+    which: 99999
   }
 }
 const mutation: MutationTree<KeybindsStateInterface> = {

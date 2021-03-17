@@ -215,7 +215,10 @@ module.exports = configure(function (ctx) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: "fantasiaarchive"
+        appId: "fantasiaarchive",
+          win: {
+            icon: 'src-electron/icons/icon.ico'
+        }
       },
 
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration

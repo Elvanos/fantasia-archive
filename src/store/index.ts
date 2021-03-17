@@ -9,6 +9,7 @@ import blueprintsModule from "./module-blueprints"
 import openedDocumentsModule from "./module-openedDocuments"
 import keybindsModule from "./module-keybinds"
 import dialogsModule from "./module-dialogs"
+import optionsModule from "./module-options"
 
 /*
  * If not building with SSR mode, you can
@@ -30,7 +31,8 @@ export default store(function ({ Vue }) {
       blueprintsModule,
       openedDocumentsModule,
       keybindsModule,
-      dialogsModule
+      dialogsModule,
+      optionsModule
       // example
     },
 

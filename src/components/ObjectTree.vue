@@ -1,19 +1,28 @@
 <template>
 
   <span>
-    <q-page-sticky position="top-left" class="treeSearchWrapper">
+    <div
+      class="treeSearchWrapper"
+      :class="{'fullWidth': disableDocumentControlBar}"
+    >
+      <q-input
+        ref="treeFilter"
+        filled
+        dark
+        debounce="200"
+        v-model="treeFilter"
+        label="Filter document tree..."
+      >
+        <template v-slot:append>
+          <q-icon name="mdi-text-search" />
+        </template>
+        <template v-slot:prepend>
+          <q-icon v-if="treeFilter !== ''" name="clear" class="cursor-pointer text-secondary" @click="resetTreeFilter" />
+        </template>
+      </q-input>
+    </div>
 
-    <q-input ref="treeFilter" dark filled v-model="treeFilter" label="Filter document tree...">
-      <template v-slot:append>
-        <q-icon name="mdi-text-search" />
-      </template>
-      <template v-slot:prepend>
-        <q-icon v-if="treeFilter !== ''" name="clear" class="cursor-pointer text-secondary" @click="resetTreeFilter" />
-      </template>
-    </q-input>
-    </q-page-sticky>
-
-    <h6 class="projectTitle text-cultured">
+    <h6 class="projectTitle text-cultured" v-if="!noProjectName">
       <span>
         {{projectName}}
           <q-tooltip
@@ -26,6 +35,7 @@
 
     <q-tree
       class="objectTree q-pa-sm"
+      :class="{'hasTextShadow': textShadow}"
       :nodes="hierarchicalTree"
       node-key="key"
       no-connectors
@@ -54,7 +64,7 @@
             {{ prop.node.label }}
             <span
               class="text-primary text-weight-medium q-ml-xs"
-              v-if="prop.node.isRoot">
+              v-if="prop.node.isRoot || prop.node.isTag">
                 ({{prop.node.allCount}})
                 <q-tooltip
                   :delay="1000"
@@ -100,7 +110,7 @@
               </q-btn>
               <q-btn
                 tabindex="-1"
-                v-if="(!prop.node.specialLabel && !prop.node.isRoot) || (prop.node.isRoot && !prop.node.isTag)"
+                v-if="(!prop.node.specialLabel && !prop.node.isRoot) && !prop.node.isTag"
                 round
                 flat
                 dense
@@ -173,13 +183,13 @@ export default class ObjectTree extends BaseClass {
   @Watch("SGET_getCurrentKeyBindData", { deep: true })
   processKeyPush () {
     // Focus left tree search
-    if (this.determineKeyBind("focusHierarchicalTree")) {
+    if (this.determineKeyBind("focusHierarchicalTree") && !this.SGET_getDialogsState) {
       const treeFilterDOM = this.$refs.treeFilter as unknown as HTMLInputElement
       treeFilterDOM.focus()
     }
 
     // Clear input in the left tree search
-    if (this.determineKeyBind("clearInputHierarchicalTree")) {
+    if (this.determineKeyBind("clearInputHierarchicalTree") && !this.SGET_getDialogsState) {
       this.resetTreeFilter()
     }
   }
@@ -201,6 +211,28 @@ export default class ObjectTree extends BaseClass {
 
     // Unfuck the rendering by giving the app some time to load first
     await this.$nextTick()
+  }
+
+  tagsAtTop = false
+  compactTags = false
+  noTags = false
+  noProjectName = false
+  invertTreeSorting = false
+  doNotcollaseTreeOptions = false
+  disableDocumentControlBar = false
+  textShadow = false
+
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    const options = this.SGET_options
+    this.tagsAtTop = options.tagsAtTop
+    this.compactTags = options.compactTags
+    this.noTags = options.noTags
+    this.noProjectName = options.noProjectName
+    this.invertTreeSorting = options.invertTreeSorting
+    this.doNotcollaseTreeOptions = options.doNotcollaseTreeOptions
+    this.disableDocumentControlBar = options.disableDocumentControlBar
+    this.textShadow = options.textShadow
 
     this.buildCurrentObjectTree().catch((e) => {
       console.log(e)
@@ -289,7 +321,7 @@ export default class ObjectTree extends BaseClass {
   /**
    * Holds all currently expanded notes
    */
-  expandedTreeNodes = []
+  expandedTreeNodes: string[] = []
 
   /**
    * Filter model for the tree
@@ -323,8 +355,17 @@ export default class ObjectTree extends BaseClass {
 
       // Sort by custom order
       .sort((a, b) => {
-        const order1 = a.extraFields.find(e => e.id === "order")?.value
-        const order2 = b.extraFields.find(e => e.id === "order")?.value
+        let order1 = 0
+        let order2 = 0
+
+        if (!this.invertTreeSorting) {
+          order1 = a.extraFields.find(e => e.id === "order")?.value
+          order2 = b.extraFields.find(e => e.id === "order")?.value
+        }
+        else {
+          order2 = a.extraFields.find(e => e.id === "order")?.value
+          order1 = b.extraFields.find(e => e.id === "order")?.value
+        }
 
         if (order1 > order2) {
           return 1
@@ -393,7 +434,7 @@ export default class ObjectTree extends BaseClass {
    */
   async buildCurrentObjectTree () {
     const allBlueprings = this.SGET_allBlueprints
-    const treeObject: any[] = []
+    let treeObject: any[] = []
     let allTreeDocuments: I_ShortenedDocument[] = []
 
     // Process all documents, build hieararchy out of the and sort them via name and custom order
@@ -481,41 +522,78 @@ export default class ObjectTree extends BaseClass {
       return 0
     })
 
-    const tagList = await tagListBuildFromBlueprints(this.SGET_allBlueprints)
+    if (!this.noTags) {
+      const tagList = await tagListBuildFromBlueprints(this.SGET_allBlueprints)
 
-    tagList.forEach((tag: string) => {
-      const tagDocs = allTreeDocuments
-        .filter(doc => {
-          const docTags = doc.extraFields.find(e => e.id === "tags")?.value as unknown as string[]
-          return (docTags && docTags.includes(tag))
-        })
-        .map((doc:I_ShortenedDocument) => {
+      let allTags = 0
+      let allTagsCategories = 0
+      let allTagsDocuments = 0
+
+      let tagNodeList = tagList.map((tag: string) => {
+        const tagDocs = allTreeDocuments
+          .filter(doc => {
+            const docTags = doc.extraFields.find(e => e.id === "tags")?.value as unknown as string[]
+            return (docTags && docTags.includes(tag))
+          })
+          .map((doc:I_ShortenedDocument) => {
           // @ts-ignore
-          doc.key = `${tag}${doc._id}`
-          // @ts-ignore
-          doc.isTag = true
-          return doc
-        })
-        .sort((a, b) => a.label.localeCompare(b.label))
+            doc.key = `${tag}${doc._id}`
+            // @ts-ignore
+            // doc.isTag = true
+            return doc
+          })
+          .sort((a, b) => a.label.localeCompare(b.label))
 
-      const documentCount = tagDocs.filter(e => !e.isCategory).length
-      const categoryCount = tagDocs.filter(e => e.isCategory).length
-      const allCount = tagDocs.length
+        const documentCount = tagDocs.filter(e => !e.isCategory).length
+        const categoryCount = tagDocs.filter(e => e.isCategory).length
+        const allCount = tagDocs.length
 
-      const tagObject = {
-        label: `${tag}`,
-        icon: "mdi-tag",
-        _id: `tag-${tag}`,
-        key: `tag-${tag}`,
-        allCount: allCount,
-        documentCount: documentCount,
-        categoryCount: categoryCount,
-        isRoot: true,
-        isTag: true,
-        children: tagDocs
+        allTags += allCount
+        allTagsCategories += categoryCount
+        allTagsDocuments += documentCount
+
+        return {
+          label: `${tag}`,
+          icon: "mdi-tag",
+          _id: `tag-${tag}`,
+          key: `tag-${tag}`,
+          allCount: allCount,
+          documentCount: documentCount,
+          categoryCount: categoryCount,
+          isRoot: true,
+          isTag: true,
+          children: tagDocs
+        }
+      })
+
+      if (this.compactTags && tagNodeList.length > 0) {
+        tagNodeList = [
+          {
+            label: "Tags",
+            icon: "mdi-tag",
+            _id: "tagsList",
+            key: "tagList",
+            isRoot: true,
+            allCount: allTags,
+            documentCount: allTagsDocuments,
+            categoryCount: allTagsCategories,
+            isTag: true,
+            // @ts-ignore
+            children: tagNodeList.map(e => {
+              e.isRoot = false
+              return e
+            })
+          }
+        ]
       }
-      treeObject.push(tagObject)
-    })
+
+      if (this.tagsAtTop) {
+        treeObject = [...tagNodeList, ...treeObject]
+      }
+      else {
+        treeObject = [...treeObject, ...tagNodeList]
+      }
+    }
 
     // Assign the finished object to the render model
     this.hierarchicalTree = treeObject
@@ -548,8 +626,10 @@ export default class ObjectTree extends BaseClass {
   buildTreeExpands (newDocs: I_OpenedDocument[]) {
     const expandIDs: string[] = []
 
+    const newDocsSnapshot: I_OpenedDocument[] = extend(true, [], newDocs)
+
     // Check for parent changes
-    newDocs.forEach(s => {
+    newDocsSnapshot.forEach((s, index) => {
       const oldParentDoc = this.lastDocsSnapShot.find(doc => doc._id === s._id)
       // Fizzle if the parent doesn't exist in the old version
       if (!oldParentDoc) {
@@ -570,13 +650,19 @@ export default class ObjectTree extends BaseClass {
     })
 
     // Process top level documents
-    newDocs.forEach(s => {
+    newDocsSnapshot.forEach(s => {
       const newParentDocField = this.retrieveFieldValue(s, "parentDoc")
+      const oldParentDoc = this.lastDocsSnapShot.find(doc => doc._id === s._id)
+      // @ts-ignore
+      const oldParentDocField = this.retrieveFieldValue(oldParentDoc, "parentDoc")
+
+      // @ts-ignore
+      const oldParentDocID = (oldParentDocField?.value) ? oldParentDocField.value.value : false
 
       // @ts-ignore
       const newParentDocID = (newParentDocField?.value) ? newParentDocField.value.value : false
 
-      if (!newParentDocID) {
+      if (!newParentDocID && oldParentDocID !== newParentDocID) {
         expandIDs.push(s.type)
       }
     })
@@ -657,19 +743,38 @@ export default class ObjectTree extends BaseClass {
     }
   }
 
-  expandeCollapseNode (node: {key: string}) {
+  expandeCollapseNode (node: {key: string, children: []}) {
     const treeDOM = this.$refs.tree as unknown as {
       setExpanded: (key:string, state: boolean)=> void,
       isExpanded: (key:string)=> boolean
     }
 
     const isExpanded = treeDOM.isExpanded(node.key)
-    treeDOM.setExpanded(node.key, !isExpanded)
+
+    if (isExpanded) {
+      this.collapseAllNodes(node)
+    }
+    else {
+      treeDOM.setExpanded(node.key, true)
+    }
   }
 
   determineNodeColor (node: {color: string, isTag: boolean, isRoot: boolean}) {
     // @ts-ignore
-    return (node?.isTag && node?.isRoot) ? colors.getBrand("primary") : node.color
+    return (node?.isTag) ? colors.getBrand("primary") : node.color
+  }
+
+  collapseAllNodes (node: {key: string, children: []}) {
+    if (node.children && !this.doNotcollaseTreeOptions) {
+      for (const child of node.children) {
+        if (this.expandedTreeNodes.includes(node.key)) {
+          this.collapseAllNodes(child)
+        }
+      }
+    }
+    if (this.expandedTreeNodes.includes(node.key)) {
+      this.expandedTreeNodes = this.expandedTreeNodes.filter(n => n !== node.key)
+    }
   }
 }
 </script>
@@ -678,10 +783,29 @@ export default class ObjectTree extends BaseClass {
 
 .projectTitle {
   margin: 0 0 -5px 0;
-  padding: 65px 10px 0;
+  padding: 10px 10px 0;
 }
 
 .objectTree {
+  &.hasTextShadow {
+    .documentLabel {
+      font-weight: 500;
+      $shadowColorOutline: #000;
+      $shadowColorSurround: #000;
+
+      filter: drop-shadow(0 0 4px #000);
+      text-shadow:
+        -2px -2px 0 $shadowColorSurround,
+        2px -2px 0 $shadowColorSurround,
+        -2px 2px 0 $shadowColorSurround,
+        2px 2px 0 $shadowColorSurround,
+        -1px -1px 0 $shadowColorOutline,
+        1px -1px 0 $shadowColorOutline,
+        -1px 1px 0 $shadowColorOutline,
+        1px 1px 0 $shadowColorOutline;
+    }
+  }
+
   > .q-tree__node {
     padding-left: 0 !important;
   }
@@ -758,11 +882,16 @@ export default class ObjectTree extends BaseClass {
 }
 
 .treeSearchWrapper {
-  top: -40px;
-  left: -375px;
+  top: -55px;
+  left: 0;
+  position: fixed;
   width: 375px;
   z-index: 555;
   background-color: $dark;
+
+  &.fullWidth {
+    width: 100%;
+  }
 
   > div {
     width: 100%;
@@ -791,6 +920,18 @@ export default class ObjectTree extends BaseClass {
       font-size: 14px;
       color: #fff;
     }
+  }
+}
+
+body.body--dark {
+  .objectTree {
+    .documentLabel {
+      color: #dcdcdc;
+    }
+  }
+
+  .projectTitle {
+    color: #dcdcdc;
   }
 }
 </style>

@@ -36,6 +36,9 @@ The search itself works the following: You can search any amount of words and th
 
 Except for the advanced search functionality, Fantasia Archive also offers instant filtering via multiple attributes for further narrowing search results.
 
+- **NOTE: All of the following filter values (including the Full-search filtering in the next section) support matching any part of the search-text with any part of the search-term**
+  - Example: `>nada` will match with `Continent > North America > Canada > Toronto`
+
 ### The filtering works in the following ways and follows these rules
 
 - **Any of the following filter terms will not conflict with the normal word search**
@@ -49,4 +52,32 @@ Except for the advanced search functionality, Fantasia Archive also offers insta
   - `$` - Symbol for document type search
   - `#` - Symbol for tag search
   - `>` - Symbol for hierarchical path search
-  
+
+## Full-search filtering
+
+This feature is meant mostly for those in need of full-scale search that can crawl through any field in any document to match any value field in almost anywhere. Full-search filtering allows the user to narrow down the search marginally by digging through the whole document database and pinpointing exactly what is needed.
+
+### A few words of caution
+
+**The full-search is a very powerful, but also demanding tool - the more your project will grow, the more demanding it will become. This means that if you for example have 2000+ documents in your project and the search algorithm will have to go crawl through all of them, then the full-search might take a few second to reload your search results - please keep this in mind when using this feature: It can potentially be A LOT of data.**
+
+### The filtering works in the following ways and follows these rules
+
+- **The full-search can be used in combination with any other filters and/or normal search terms**
+- **It is possible to have only a single instance of the full-search present in the search at once**
+- **The filter is case-insensitive, which means that you can type everything in UPPER or lower case, it won't matter**
+- **In the case of lists and multi-relationships, all the entered values get converted to one big text-line for the sake of searching**
+  - Example with a field called `Local currencies`:
+    - Original values: `Canadian Dollar` `American Dollar` `Euro` `Klingon Darsek`
+    - Converted values: `canadian-dollar-american-dollar-euro-klingon-darsek`
+- **The following filter terms must be used inside of the search term**
+  - `%` - Symbol for the beginning full-search
+  - `:` - Symbol for the division between the field-name and field value
+- **If your filter-term contained whitespaces, replace them with the `-` symbol**
+  - Example: You wish to search for a field called `Local Currencies` that contains `Canadian Dollars` as value, to fully match this tag, you will need to type `%local-currencies:canadian-dollars`
+- **A list of fields/field types the full-search doesn't work with:**
+  - The `Break` field type (these are the big titles present throughout the document)
+  - The `Tags` field type (this one is covered with a more sophisticated tag filter)
+  - The `Switch` field type (this one doesn't contain any text values to even filter)
+  - The `Name` field (this one is the main concern of the search and the normal search is far more advanced for searching through this one)
+  - The `Belongs under` field (this one is covered by a much more advanced hierarchical path search)

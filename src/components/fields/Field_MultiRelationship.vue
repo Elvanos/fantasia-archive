@@ -3,14 +3,14 @@
     <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
       <q-icon v-if="inputIcon" :name="inputIcon" :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
       {{inputDataBluePrint.name}}
-       <q-icon v-if="toolTip" name="mdi-help-circle" size="16px" class="q-ml-md">
+       <q-icon v-if="toolTip && !disableDocumentToolTips" name="mdi-help-circle" size="16px" class="q-ml-md">
          <q-tooltip :delay="500">
            <span v-html="toolTip"/>
         </q-tooltip>
       </q-icon>
       <q-icon v-if="isOneWayRelationship" name="mdi-arrow-right-bold" size="16px" class="q-ml-md">
-        <q-tooltip :delay="500">
-            This is a one-way relationship. <br> Editing this value <span class="text-secondary">WILL NOT</span>  have effect on the connected document/s.
+        <q-tooltip :delay="500" v-if="!disableDocumentToolTips">
+            This is a one-way relationship. <br> Editing this value <span class="text-secondary">WILL NOT</span> have any effect on the connected document/s.
             <br>
             <br>
             Left-clicking the linked document in non-edit mode will open it in new tab and focuses on it.
@@ -19,8 +19,8 @@
         </q-tooltip>
       </q-icon>
       <q-icon v-if="!isOneWayRelationship" name="mdi-arrow-left-right-bold" size="16px" class="q-ml-md">
-         <q-tooltip :delay="500">
-            This is a two-way relationship. <br> Editing this value <span class="text-secondary">WILL</span> also effect the connected document/s.
+         <q-tooltip :delay="500" v-if="!disableDocumentToolTips">
+            This is a two-way relationship. <br> Editing this value <span class="text-secondary">WILL</span> also affect the connected document/s.
             <br>
             <br>
             Left-clicking the linked document in non-edit mode will open it in new tab and focuses on it.
@@ -79,13 +79,15 @@
       dark
       style="flex-grow: 1;"
       dense
+      @popup-show="reloadAllDocuments"
       :ref="`multieRelationshipField${this.inputDataBluePrint.id}`"
       :options="filteredInput"
       use-input
-      outlined
+      :outlined="!isDarkMode"
+      :filled="isDarkMode"
       use-chips
       multiple
-      input-debounce="0"
+      input-debounce="200"
       v-model="localInput"
       @filter="filterSelect"
       @input="signalInput(false)"
@@ -105,6 +107,7 @@
       </template>
       <template v-slot:option="{ itemProps, itemEvents, opt }">
         <q-item
+          :class="{'hasTextShadow': textShadow}"
           v-bind="itemProps"
           v-on="itemEvents"
         >
@@ -152,7 +155,8 @@
             v-model="singleNote.value"
             dense
             @keyup="signalInput(false)"
-            outlined
+            :outlined="!isDarkMode"
+            :filled="isDarkMode"
             >
           </q-input>
         </td>
@@ -199,6 +203,17 @@ export default class Field_SingleRelationship extends BaseClass {
   @Prop() readonly editMode!: boolean
 
   localInput = [] as unknown as I_FieldRelationship[]
+
+  isDarkMode = false
+  disableDocumentToolTips = false
+  textShadow = false
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    const options = this.SGET_options
+    this.isDarkMode = options.darkMode
+    this.disableDocumentToolTips = options.disableDocumentToolTips
+    this.textShadow = options.textShadow
+  }
 
   @Watch("inputDataValue", { deep: true, immediate: true })
   reactToInputChanges () {
@@ -248,6 +263,12 @@ export default class Field_SingleRelationship extends BaseClass {
     /* eslint-enable */
   }
 
+  allDocuments: I_ShortenedDocument[] = []
+
+  async reloadAllDocuments () {
+    this.allDocuments = await this.retrieveAllDocuments()
+  }
+
   filterSelect (val: string, update: (e: () => void) => void) {
     if (val === "") {
       update(() => {
@@ -264,7 +285,7 @@ export default class Field_SingleRelationship extends BaseClass {
       const listCopy : I_ShortenedDocument[] = extend(true, [], this.extraInput)
 
       // @ts-ignore
-      this.filteredInput = advancedDocumentFilter(needle, listCopy)
+      this.filteredInput = advancedDocumentFilter(needle, listCopy, this.SGET_allBlueprints, this.allDocuments)
 
       /*eslint-disable */
         if(this.$refs[`multiRelationshipField${this.inputDataBluePrint.id}`] && this.filteredInput.length > 0){
@@ -321,6 +342,7 @@ export default class Field_SingleRelationship extends BaseClass {
           value: objectDoc._id,
           type: objectDoc.type,
           disable: isDisabled,
+          extraFields: objectDoc.extraFields,
           url: `/project/display-content/${objectDoc.type}/${objectDoc._id}`,
           label: objectDoc.extraFields.find(e => e.id === "name")?.value,
           isCategory: objectDoc.extraFields.find(e => e.id === "categorySwitch")?.value,

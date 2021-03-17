@@ -31,7 +31,7 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="keybind in SGET_getCurrentKeyBindData.defaults" :key="keybind.id">
+                  <tr v-for="keybind in localCheatSheet" :key="keybind.id">
                     <td class="text-left" v-html="keybind.tooltip"/>
                     <td class="text-left" v-html="retrieveKeybindString(keybind)"/>
                   </tr>
@@ -54,6 +54,7 @@
 import { Component, Watch } from "vue-property-decorator"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
+import { I_KeyPressObject } from "src/interfaces/I_KeypressObject"
 @Component({
   components: { }
 })
@@ -66,8 +67,33 @@ export default class KeybindCheatsheet extends DialogBase {
       }
       this.SSET_setDialogState(true)
       this.dialogModel = true
+      this.localCheatSheet = this.SGET_getCurrentKeyBindData.defaults.map((bind, index) => {
+        const mappedKeybind = (this.SGET_getCurrentKeyBindData.userKeybinds[index] && this.SGET_getCurrentKeyBindData.userKeybinds[index].which)
+          ? {
+            altKey: this.SGET_getCurrentKeyBindData.userKeybinds[index].altKey,
+            ctrlKey: this.SGET_getCurrentKeyBindData.userKeybinds[index].ctrlKey,
+            shiftKey: this.SGET_getCurrentKeyBindData.userKeybinds[index].shiftKey,
+            which: this.SGET_getCurrentKeyBindData.userKeybinds[index].which,
+            id: bind.id,
+            tooltip: bind.tooltip,
+            note: bind.note
+          }
+          : {
+            altKey: bind.altKey,
+            ctrlKey: bind.ctrlKey,
+            shiftKey: bind.shiftKey,
+            which: bind.which,
+            id: bind.id,
+            tooltip: bind.tooltip,
+            note: bind.note
+          }
+
+        return mappedKeybind
+      })
     }
   }
+
+  localCheatSheet: I_KeyPressObject[] = []
 
   thumbStyle ={
     right: "-40px",

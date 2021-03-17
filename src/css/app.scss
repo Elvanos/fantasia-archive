@@ -3,15 +3,17 @@
 @import './app/customColors.scss';
 
 * {
+  letter-spacing: 0.025em;
 
   /* width */
   ::-webkit-scrollbar {
     width: 5px;
+    height: 5px;
   }
 
   /* Track */
   ::-webkit-scrollbar-track {
-    background: $dark;
+    background: var(--q-color-dark);
   }
 
   /* Handle */
@@ -37,14 +39,145 @@ body {
 
   /* WebKit/Blink Browsers */
   ::selection {
-    background: lighten($dark, 30);
-    color: white;
+    color: lighten($primary, 25);
+    background: lighten($secondary, 10);
   }
 
   /* Gecko Browsers */
   ::-moz-selection {
-    background: lighten($dark, 30);
-    color: white;
+    color: lighten($primary, 25);
+    background: lighten($secondary, 10);
+  }
+
+  &.body--dark {
+    background: #303742;
+
+    /* WebKit/Blink Browsers */
+    ::selection {
+      color: lighten($primary, 25);
+      background: lighten($secondary, 7);
+    }
+
+    /* Gecko Browsers */
+    ::-moz-selection {
+      color: lighten($primary, 25);
+      background: lighten($secondary, 7);
+    }
+
+    .q-editor {
+      border: none !important;
+      background-color: #303742;
+      color: #dcdcdc;
+    }
+
+    .q-field__control {
+      background-color: transparent;
+    }
+
+    .q-markdown {
+      color: #d4d0c9;
+    }
+
+    .existingDocumentSelect,
+    .newDocumentSelect {
+      .q-field__input,
+      .q-icon,
+      .q-field__native span {
+        color: #d4d0c9 !important;
+      }
+    }
+
+    .q-editor__content {
+      background-color: #4c515a;
+      box-shadow: none;
+    }
+
+    .q-editor__toolbars-container {
+      background-color: rgba(#000, 0.3);
+    }
+  }
+}
+
+.q-editor {
+  background-color: rgba(250, 250, 250, 1);
+  padding-bottom: 15px;
+}
+
+.fieldWysiwyg,
+.q-editor__content,
+.fieldWysiwygTitle,
+.q-editor__toolbars-container {
+  max-width: 1040px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+}
+
+.fieldWysiwyg {
+  font-size: 16px;
+  text-align: justify;
+
+  > div {
+    margin: 12.5px 0;
+  }
+}
+
+.q-editor__content {
+  padding: 35px 50px;
+  line-height: 1.7;
+  background-color: #fff;
+  box-shadow: 2px 2px 5px 0 rgba(0, 0, 0, 0.25);
+  border-radius: 2px;
+  font-size: 16px;
+  text-align: justify;
+
+  * {
+    letter-spacing: 0.02em;
+  }
+
+  > div {
+    margin: 12.5px 0;
+  }
+}
+
+.q-editor__toolbars-container {
+  padding: 5px;
+  max-width: 1200px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  background-color: rgba($dark, 0.05);
+}
+
+.q-editor.fullscreen {
+  top: 40px !important;
+  height: calc(100vh - 40px) !important;
+  padding: 10px 0 15px;
+
+  .q-editor__content {
+    padding: 35px 60px;
+  }
+}
+
+.q-editor__toolbar {
+  border: none;
+}
+
+.q-item {
+  &.hasTextShadow {
+    $shadowColorOutline: #000;
+    $shadowColorSurround: #000;
+
+    filter: drop-shadow(0 0 4px #000);
+    font-weight: 500;
+    text-shadow:
+      -2px -2px 0 $shadowColorSurround,
+      2px -2px 0 $shadowColorSurround,
+      -2px 2px 0 $shadowColorSurround,
+      2px 2px 0 $shadowColorSurround,
+      -1px -1px 0 $shadowColorOutline,
+      1px -1px 0 $shadowColorOutline,
+      -1px 1px 0 $shadowColorOutline,
+      1px 1px 0 $shadowColorOutline;
   }
 }
 
@@ -76,6 +209,14 @@ body {
 
 .q-toggle__inner--truthy .q-toggle__thumb {
   left: calc(100% - 30px);
+}
+
+.existingDocumentPopup,
+.newDocumentPopup {
+  .q-checkbox__bg {
+    border-color: #d4d0c9 !important;
+    background: transparent !important;
+  }
 }
 
 .tagSelect,
@@ -120,6 +261,15 @@ body {
   }
 }
 
+.existingDocumentSelect,
+.newDocumentSelect {
+  .q-field__input,
+  .q-icon,
+  .q-field__native span {
+    color: #d4d0c9 !important;
+  }
+}
+
 .q-menu .q-item {
   transition: none !important;
 }
@@ -149,11 +299,6 @@ body {
   padding-left: 11px;
   padding-right: 11px;
   padding-top: 6px;
-}
-
-.q-editor.fullscreen {
-  top: 40px !important;
-  height: calc(100vh - 40px) !important;
 }
 
 body .q-item--active:not(.noHigh) {
@@ -192,6 +337,13 @@ body .q-tooltip {
 .q-markdown {
   line-height: 1.75;
 
+  .q-markdown--token {
+    font-weight: 600;
+    padding: 0 5px;
+    background-color: $accent !important;
+    color: $dark !important;
+  }
+
   strong {
     font-weight: 500;
   }
@@ -210,4 +362,16 @@ body .q-tooltip {
     margin-top: 5px;
     margin-bottom: 5px;
   }
+}
+
+.q-splitter__before {
+  z-index: 2;
+}
+
+.q-splitter__after {
+  z-index: 1;
+}
+
+.q-splitter__separator {
+  z-index: 3;
 }

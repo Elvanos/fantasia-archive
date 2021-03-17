@@ -23,7 +23,7 @@
               class="newDocumentSelect"
               :options="filteredNewInput"
               use-input
-              outlined
+              filled
               input-debounce="0"
               v-model="newDocumentModel"
               @filter="filterNewSelect"
@@ -31,6 +31,7 @@
             >
               <template v-slot:option="{ itemProps, itemEvents, opt }">
                   <q-item
+                    :class="{'hasTextShadow': textShadow}"
                     v-bind="itemProps"
                     v-on="itemEvents"
                   >
@@ -76,6 +77,7 @@ export default class NewDocumentDialog extends DialogBase {
       if (this.SGET_getDialogsState) {
         return
       }
+      this.isCloseAbleViaKeybind = false
       this.SSET_setDialogState(true)
       this.dialogModel = true
       this.populateNewObjectDialog().catch(e => console.log(e))
@@ -104,6 +106,8 @@ export default class NewDocumentDialog extends DialogBase {
     // @ts-ignore 
     this.$refs.ref_newDocument.focus()
     /* eslint-enable */
+
+    this.isCloseAbleViaKeybind = true
   }
 
   filteredNewInput = null as unknown as NewObjectDocument[]
@@ -142,6 +146,35 @@ export default class NewDocumentDialog extends DialogBase {
     this.dialogModel = false
     this.addNewObjectRoute(e)
     this.newDocumentModel = null
+  }
+
+  isCloseAbleViaKeybind = false
+  closeWithSameClick = false
+  textShadow = false
+
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    this.reloadOptions()
+  }
+
+  reloadOptions () {
+    const options = this.SGET_options
+    this.closeWithSameClick = options.allowQuickPopupSameKeyClose
+    this.textShadow = options.textShadow
+  }
+
+  /**
+   * Local keybinds
+   */
+  @Watch("SGET_getCurrentKeyBindData", { deep: true })
+  processKeyPush () {
+    // Keybind cheatsheet
+    if (this.determineKeyBind("quickNewDocument") && this.dialogModel && this.closeWithSameClick && this.isCloseAbleViaKeybind && this.SGET_getDialogsState) {
+      this.dialogModel = false
+      this.SSET_setDialogState(false)
+      // @ts-ignore
+      this.existingDocumentModel = null
+    }
   }
 }
 </script>

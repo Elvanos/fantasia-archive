@@ -74,7 +74,9 @@ export const exportProject = (projectName: string, Loading: any, loadingSetup: a
       // @ts-ignore
       const allDBS = await indexedDB.databases()
 
-      const DBnames: string[] = allDBS.map((db: {name: string}) => {
+      const DBnames: string[] = allDBS
+      .filter((d: {name: string}) => d.name !== '_pouch_fa-settings')
+      .map((db: {name: string}) => {
         return db.name.replace("_pouch_", "")
       })
 
@@ -108,10 +110,14 @@ export const removeCurrentProject = async () => {
   /*eslint-disable */
     // @ts-ignore
     const allDBS = await indexedDB.databases()
+    console.log(allDBS)
 
-    const DBnames: string[] = allDBS.map((db: {name: string}) => {
+    const DBnames: string[] = allDBS
+    .filter((d: {name: string}) => d.name !== '_pouch_fa-settings')
+    .map((db: {name: string}) => {
       return db.name.replace("_pouch_", "")
     })
+
 
     for (const db of DBnames) {
       const CurrentDB = new PouchDB(db)

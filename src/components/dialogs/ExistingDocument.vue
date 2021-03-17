@@ -1,5 +1,6 @@
 <template>
       <q-dialog
+      no-route-dismiss
       v-model="dialogModel"
       @hide="triggerDialogClose"
       >
@@ -14,7 +15,7 @@
 
         <q-card-section class="column items-center">
           <div class="q-mb-lg">
-            <q-checkbox dark v-model="includeCategories" label="Include categories in the list?" />
+            <q-checkbox dark color="primary" v-model="includeCategories" label="Include categories in the list?" />
           </div>
            <q-select
               style="width: 400px;"
@@ -26,14 +27,16 @@
               menu-self="top middle"
               :options="filteredExistingInput"
               use-input
-              outlined
-              input-debounce="0"
+              multiple
+              filled
+              input-debounce="200"
               v-model="existingDocumentModel"
               @filter="filterExistingSelect"
               @input="openExistingInput"
             >
               <template v-slot:option="{ itemProps, itemEvents, opt }">
                   <q-item
+                    :class="{'hasTextShadow': textShadow}"
                     v-bind="itemProps"
                     v-on="itemEvents"
                     :style="`color: ${opt.color}`"
@@ -96,11 +99,12 @@
 
 import { Component, Watch } from "vue-property-decorator"
 import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
-import PouchDB from "pouchdb"
 import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
 import { extend } from "quasar"
+import PouchDB from "pouchdb"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
+import { I_Blueprint } from "src/interfaces/I_Blueprint"
 
 @Component({
   components: { }
@@ -112,46 +116,23 @@ export default class ExistingDocumentDialog extends DialogBase {
       if (this.SGET_getDialogsState) {
         return
       }
+      this.isCloseAbleViaKeybind = false
       this.SSET_setDialogState(true)
       this.dialogModel = true
 
+      this.reloadOptions()
       this.populateExistingObjectDialog().catch(e => console.log(e))
     }
   }
 
   existingObjectsBackupList = [] as I_ShortenedDocument[]
   existingObjectList = [] as I_ShortenedDocument[]
+  allDocumentBluePrints = [] as I_Blueprint[]
 
   async populateExistingObjectDialog () {
-    let allDocs = [] as I_ShortenedDocument[]
-    for (const blueprint of this.SGET_allBlueprints) {
-      const CurrentObjectDB = new PouchDB(blueprint._id)
+    this.allDocumentBluePrints = this.SGET_allBlueprints
 
-      const dbRows = await CurrentObjectDB.allDocs({ include_docs: true })
-      const dbDocuments = dbRows.rows.map(d => d.doc)
-      const formattedDocuments: I_ShortenedDocument[] = []
-
-      for (const singleDocument of dbDocuments) {
-        const doc = singleDocument as unknown as I_ShortenedDocument
-        const pushValue = {
-          label: doc.extraFields.find(e => e.id === "name")?.value,
-          icon: doc.icon,
-          id: doc._id,
-          url: doc.url,
-          type: doc.type,
-          // @ts-ignore
-          hierarchicalPath: this.getDocumentHieararchicalPath(doc, dbDocuments),
-          tags: doc.extraFields.find(e => e.id === "tags")?.value,
-          color: doc.extraFields.find(e => e.id === "documentColor")?.value,
-          isCategory: doc.extraFields.find(e => e.id === "categorySwitch")?.value
-        } as unknown as I_ShortenedDocument
-        formattedDocuments.push(pushValue)
-      }
-      const sortedDocuments = formattedDocuments.sort((a, b) => a.label.localeCompare(b.label))
-
-      // @ts-ignore
-      allDocs = [...allDocs, ...sortedDocuments]
-    }
+    const allDocs = await this.retrieveAllDocuments()
 
     this.existingObjectsBackupList = allDocs
     this.filterDocuments()
@@ -164,9 +145,10 @@ export default class ExistingDocumentDialog extends DialogBase {
       this.$refs.ref_existingDocument.focus()
       /* eslint-enable */
     }
+    this.isCloseAbleViaKeybind = true
   }
 
-  existingDocumentModel = null
+  existingDocumentModel = []
 
   filteredExistingInput = null as unknown as I_ShortenedDocument[]
 
@@ -194,7 +176,7 @@ export default class ExistingDocumentDialog extends DialogBase {
     update(() => {
       const needle = val.toLowerCase()
       const listCopy : I_ShortenedDocument[] = extend(true, [], this.existingObjectList)
-      this.filteredExistingInput = advancedDocumentFilter(needle, listCopy)
+      this.filteredExistingInput = advancedDocumentFilter(needle, listCopy, this.allDocumentBluePrints, this.existingObjectsBackupList)
 
       if (this.$refs.ref_existingDocument && this.filteredExistingInput.length > 0) {
         this.refocusSelect().catch(e => console.log(e))
@@ -202,11 +184,29 @@ export default class ExistingDocumentDialog extends DialogBase {
     })
   }
 
-  openExistingInput (e: I_ShortenedDocument) {
-    this.dialogModel = false
-    // @ts-ignore
-    this.openExistingDocumentRoute(e)
-    this.existingDocumentModel = null
+  async openExistingInput (e: I_ShortenedDocument[]) {
+    if (!this.disableCloseAftertSelectQuickSearch) {
+      this.dialogModel = false
+      // @ts-ignore
+      this.openExistingDocumentRoute(e[0])
+      this.existingDocumentModel = []
+    }
+    else {
+      // @ts-ignore
+      this.existingDocumentModel = []
+
+      const CurrentObjectDB = new PouchDB(e[0].type)
+      // @ts-ignore
+      const retrievedObject = await CurrentObjectDB.get(e[0].id)
+
+      const dataPass = {
+        doc: retrievedObject,
+        treeAction: false
+      }
+
+      // @ts-ignore
+      this.SSET_addOpenedDocument(dataPass)
+    }
   }
 
   addNewItemUnderSelected (parent: any) {
@@ -218,6 +218,23 @@ export default class ExistingDocumentDialog extends DialogBase {
     this.addNewObjectRoute(routeObject)
   }
 
+  disableCloseAftertSelectQuickSearch = false
+  closeWithSameClick = false
+  textShadow = false
+
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    this.reloadOptions()
+  }
+
+  reloadOptions () {
+    const options = this.SGET_options
+    this.closeWithSameClick = options.allowQuickPopupSameKeyClose
+    this.disableCloseAftertSelectQuickSearch = options.disableCloseAftertSelectQuickSearch
+    this.includeCategories = !options.disableQuickSearchCategoryPrecheck
+    this.textShadow = options.textShadow
+  }
+
   includeCategories = true
 
   @Watch("includeCategories")
@@ -227,6 +244,22 @@ export default class ExistingDocumentDialog extends DialogBase {
 
   filterDocuments () {
     this.existingObjectList = this.existingObjectsBackupList.filter(e => !((!this.includeCategories && e.isCategory)))
+  }
+
+  isCloseAbleViaKeybind = false
+
+  /**
+   * Local keybinds
+   */
+  @Watch("SGET_getCurrentKeyBindData", { deep: true })
+  processKeyPush () {
+    // Keybind cheatsheet
+    if (this.determineKeyBind("quickExistingDocument") && this.dialogModel && this.closeWithSameClick && this.isCloseAbleViaKeybind && this.SGET_getDialogsState) {
+      this.dialogModel = false
+      this.SSET_setDialogState(false)
+      // @ts-ignore
+      this.existingDocumentModel = null
+    }
   }
 }
 </script>

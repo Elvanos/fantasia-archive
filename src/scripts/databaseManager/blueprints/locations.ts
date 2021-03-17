@@ -21,7 +21,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "documentColor",
-      name: "Color",
+      name: "Text Color",
       type: "colorPicker",
       icon: "mdi-eyedropper",
       tooltip:
@@ -80,7 +80,7 @@ export const locationsBlueprint: I_Blueprint = {
         <br>
         This limitation also applies to any variation of lower or upper case iterations of the same tag.
         <br>
-        Example: A tag called "Player Party" will be consider the same tag as "player party", "PlAyER PaRtY" or any similar.
+        Example: A tag called "Player Party" will be considered the same tag as "player party", "PlAyER PaRtY" or anything similar.
         `,
       sizing: 12
     },
@@ -315,7 +315,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "governTech",
-      name: "Governing tech/scientifical groups",
+      name: "Governing tech/scientific groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
@@ -326,7 +326,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedTech",
-      name: "Connected tech/scientifical groups",
+      name: "Connected tech/scientific groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
@@ -354,7 +354,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedMyths",
-      name: "Connected to myths. legends and stories",
+      name: "Connected to myths, legends and stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
       sizing: 4,

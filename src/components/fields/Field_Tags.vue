@@ -3,7 +3,7 @@
   <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
     <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
     {{inputDataBluePrint.name}}
-     <q-icon v-if="toolTip" name="mdi-help-circle" size="16px" class="q-ml-md">
+     <q-icon v-if="toolTip && !disableDocumentToolTips" name="mdi-help-circle" size="16px" class="q-ml-md">
          <q-tooltip :delay="500">
            <span v-html="toolTip"/>
         </q-tooltip>
@@ -15,7 +15,9 @@
     >
      <q-chip
       v-for="(input,index) in localInput" :key="index"
-      color="gunmetal-light" text-color="satin-sheen-gold-light" class="text-weight-medium">
+      :color="(isDarkMode) ? 'accent' : 'gunmetal-light'"
+      :text-color="(isDarkMode) ? 'dark' :'satin-sheen-gold-light'"
+      :class="(isDarkMode) ? 'text-weight-bold':'text-weight-medium'">
         {{input}}
       </q-chip>
     </div>
@@ -31,7 +33,8 @@
       class="tagSelect"
       :options="filteredTags"
       use-input
-      outlined
+      :outlined="!isDarkMode"
+      :filled="isDarkMode"
       use-chips
       @filter="filterFn"
       input-debounce="0"
@@ -89,6 +92,16 @@ export default class Field_Tags extends BaseClass {
   @Prop() readonly isNew!: boolean
 
   @Prop() readonly editMode!: boolean
+
+  isDarkMode = false
+  disableDocumentToolTips = false
+
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    const options = this.SGET_options
+    this.isDarkMode = options.darkMode
+    this.disableDocumentToolTips = options.disableDocumentToolTips
+  }
 
   changedInput = false
   localInput: string[] = []

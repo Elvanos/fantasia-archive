@@ -30,7 +30,6 @@
             outline
             label="Delete document"
             color="secondary"
-            v-close-popup
             @click="deleteDocument()" />
         </q-card-actions>
       </q-card>
@@ -71,6 +70,10 @@ export default class DeleteDocumentCheckDialog extends DialogBase {
     await CurrentObjectDB.remove(this.currentDocument)
 
     const dataPass = { doc: this.currentDocument, treeAction: true }
+
+    this.dialogModel = false
+    this.SSET_setDialogState(false)
+
     this.SSET_removeOpenedDocument(dataPass)
   }
 }

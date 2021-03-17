@@ -3,7 +3,7 @@
     <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
       <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
       {{inputDataBluePrint.name}}
-       <q-icon v-if="toolTip" name="mdi-help-circle" size="16px" class="q-ml-md">
+       <q-icon v-if="toolTip && !disableDocumentToolTips" name="mdi-help-circle" size="16px" class="q-ml-md">
          <q-tooltip :delay="500">
            <span v-html="toolTip"/>
         </q-tooltip>
@@ -16,8 +16,8 @@
       dense>
       <q-item v-for="(input,index) in localInput" :key="index">
         <q-item-section
-        class="fieldList_itemDot"
-         side>
+          class="fieldList_itemDot"
+          side>
           <q-icon
             color="primary"
             name="mdi-menu-right"
@@ -27,7 +27,7 @@
           <span class="text-weight-medium">
             {{input.value}}
           </span>
-          <span v-if="localInput[index].affix" class="inline-block q-ml-xs text-italic">
+          <span v-if="localInput[index].affix" class="inline-block q-ml-xs text-italic listNote">
             ({{localInput[index].affix}})
             </span>
         </q-item-section>
@@ -42,9 +42,11 @@
       <div class="col">
         <q-input
           v-model="localInput[index].value"
+          :class="`listField_input${index}_${inputDataBluePrint.id}`"
           dense
           @keyup="signalInput"
-          outlined
+          :outlined="!isDarkMode"
+          :filled="isDarkMode"
           >
         </q-input>
       </div>
@@ -59,8 +61,9 @@
           :options="localExtraInput"
           use-input
           :hide-dropdown-icon="!editMode"
-          :outlined="editMode"
+          :outlined="editMode && !isDarkMode"
           :borderless="!editMode"
+          :filled="editMode && isDarkMode"
           :readonly="!editMode"
           input-debounce="0"
           new-value-mode="add"
@@ -75,6 +78,7 @@
         <q-btn
           v-if="editMode"
           color="secondary"
+          :outline="isDarkMode"
           @click="removeFromList(index)"
           label="Remove" />
       </div>
@@ -82,7 +86,11 @@
 
     <div class="row q-mt-xs" v-if="editMode">
       <div class="col justify-start flex">
-        <q-btn color="primary" :label="`Add new`" @click="addNewInput" />
+        <q-btn
+        color="primary"
+        :outline="isDarkMode"
+        label="Add new"
+        @click="addNewInput" />
       </div>
     </div>
   </div>
@@ -121,6 +129,16 @@ export default class Field_List extends BaseClass {
   @Prop() readonly isNew!: boolean
 
   @Prop() readonly editMode!: boolean
+
+  isDarkMode = false
+  disableDocumentToolTips = false
+
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    const options = this.SGET_options
+    this.isDarkMode = options.darkMode
+    this.disableDocumentToolTips = options.disableDocumentToolTips
+  }
 
   changedInput = false
   localInput = [] as {
@@ -178,11 +196,22 @@ export default class Field_List extends BaseClass {
     return returnValue
   }
 
-  addNewInput () {
+  async addNewInput () {
     this.localInput.push({
       value: "",
       affix: ""
     })
+
+    const targetRefStringNamer = `.listField_input${this.localInput.length - 1}_${this.inputDataBluePrint.id}`
+
+    await this.$nextTick()
+
+    const newInput = document.querySelector(targetRefStringNamer) as HTMLInputElement
+
+    if (newInput) {
+      newInput.focus()
+    }
+
     this.signalInput()
   }
 }

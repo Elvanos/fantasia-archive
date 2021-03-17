@@ -3,7 +3,7 @@
   <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
     <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md" min="1"/>
     {{inputDataBluePrint.name}}
-     <q-icon v-if="toolTip" name="mdi-help-circle" size="16px" class="q-ml-md">
+     <q-icon v-if="toolTip && !disableDocumentToolTips" name="mdi-help-circle" size="16px" class="q-ml-md">
          <q-tooltip :delay="500">
            <span v-html="toolTip"/>
         </q-tooltip>
@@ -32,7 +32,8 @@
     v-model.number="localInput"
     type="text"
     @keyup="signalInput"
-    outlined
+    :outlined="!isDarkMode"
+    :filled="isDarkMode"
     dense
   >
     <template v-slot:prepend>
@@ -73,6 +74,16 @@ export default class Field_ColorPicker extends BaseClass {
   @Prop({ default: null }) readonly inputDataValue!: string
   @Prop() readonly editMode!: boolean
   @Prop() readonly isNew!: boolean
+
+  isDarkMode = false
+  disableDocumentToolTips = false
+
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    const options = this.SGET_options
+    this.isDarkMode = options.darkMode
+    this.disableDocumentToolTips = options.disableDocumentToolTips
+  }
 
   changedInput = false
   localInput = ""

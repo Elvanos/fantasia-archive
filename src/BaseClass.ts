@@ -1,3 +1,4 @@
+import { OptionsStateInteface } from "./store/module-options/state"
 import { KeyManagementInterface } from "./store/module-keybinds/state"
 import { I_OpenedDocument, I_ShortenedDocument } from "./interfaces/I_OpenedDocument"
 import { Component, Vue } from "vue-property-decorator"
@@ -7,10 +8,13 @@ import { I_NewObjectTrigger } from "src/interfaces/I_NewObjectTrigger"
 import { uid, colors } from "quasar"
 import { I_FieldRelationship } from "src/interfaces/I_FieldRelationship"
 import { I_KeyPressObject } from "src/interfaces/I_KeypressObject"
+import PouchDB from "pouchdb"
 
 const Blueprints = namespace("blueprintsModule")
 const OpenedDocuments = namespace("openedDocumentsModule")
 const Keybinds = namespace("keybindsModule")
+const Options = namespace("optionsModule")
+const Dialogs = namespace("dialogsModule")
 
 @Component
 export default class BaseClass extends Vue {
@@ -37,6 +41,10 @@ export default class BaseClass extends Vue {
   retrieveKeybindString (keybind: I_KeyPressObject): string {
     let keybindString = ""
 
+    if (!keybind) {
+      return keybindString
+    }
+
     if (keybind.ctrlKey) {
       keybindString += "CTRL + "
     }
@@ -49,33 +57,102 @@ export default class BaseClass extends Vue {
       keybindString += "SHIFT + "
     }
 
-    const keybinds = [37, 38, 39, 40, 9, 32, 13]
+    const keybinds = [37, 38, 39, 40, 9, 32, 13, 192, 189, 187, 219, 221, 220, 186, 222, 188, 190, 191, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123]
 
-    if (keybinds.includes(keybind.keyCode)) {
-      if (keybind.keyCode === 13) {
+    if (keybinds.includes(keybind.which)) {
+      if (keybind.which === 13) {
         keybindString += "ENTER"
       }
-      if (keybind.keyCode === 9) {
+      if (keybind.which === 9) {
         keybindString += "TAB"
       }
-      if (keybind.keyCode === 32) {
+      if (keybind.which === 32) {
         keybindString += "SPACE"
       }
-      if (keybind.keyCode === 37) {
+      if (keybind.which === 37) {
         keybindString += "LEFT ARROW"
       }
-      if (keybind.keyCode === 38) {
+      if (keybind.which === 38) {
         keybindString += "UP ARROW"
       }
-      if (keybind.keyCode === 39) {
+      if (keybind.which === 39) {
         keybindString += "RIGHT ARROW"
       }
-      if (keybind.keyCode === 40) {
+      if (keybind.which === 40) {
         keybindString += "DOWN ARROW"
+      }
+      if (keybind.which === 192) {
+        keybindString += "`"
+      }
+      if (keybind.which === 189) {
+        keybindString += "-"
+      }
+      if (keybind.which === 187) {
+        keybindString += "+"
+      }
+      if (keybind.which === 219) {
+        keybindString += "["
+      }
+      if (keybind.which === 221) {
+        keybindString += "]"
+      }
+      if (keybind.which === 220) {
+        keybindString += "\\"
+      }
+      if (keybind.which === 186) {
+        keybindString += ";"
+      }
+      if (keybind.which === 222) {
+        keybindString += "'"
+      }
+      if (keybind.which === 188) {
+        keybindString += ","
+      }
+      if (keybind.which === 190) {
+        keybindString += "."
+      }
+      if (keybind.which === 191) {
+        keybindString += "/"
+      }
+      if (keybind.which === 112) {
+        keybindString += "F1"
+      }
+      if (keybind.which === 113) {
+        keybindString += "F2"
+      }
+      if (keybind.which === 114) {
+        keybindString += "F3"
+      }
+      if (keybind.which === 115) {
+        keybindString += "F4"
+      }
+      if (keybind.which === 116) {
+        keybindString += "F5"
+      }
+      if (keybind.which === 117) {
+        keybindString += "F6"
+      }
+      if (keybind.which === 118) {
+        keybindString += "F7"
+      }
+      if (keybind.which === 119) {
+        keybindString += "F8"
+      }
+      if (keybind.which === 120) {
+        keybindString += "F9"
+      }
+      if (keybind.which === 121) {
+        keybindString += "F10"
+      }
+      if (keybind.which === 122) {
+        keybindString += "F11"
+      }
+      if (keybind.which === 123) {
+        keybindString += "F12"
       }
     }
     else {
-      keybindString += String.fromCharCode(keybind.keyCode)
+      keybindString += String.fromCharCode(keybind.which)
     }
 
     if (keybind.note) {
@@ -107,7 +184,7 @@ export default class BaseClass extends Vue {
       currentKeyPress.altKey === fieldToCheck.altKey &&
       currentKeyPress.ctrlKey === fieldToCheck.ctrlKey &&
       currentKeyPress.shiftKey === fieldToCheck.shiftKey &&
-      currentKeyPress.keyCode === fieldToCheck.keyCode
+      currentKeyPress.which === fieldToCheck.which
     ) {
       return true
     }
@@ -158,6 +235,14 @@ export default class BaseClass extends Vue {
       console.log(e)
     })
   }
+
+  /****************************************************************/
+  // Option management
+  /****************************************************************/
+
+  @Options.Getter("getOptions") SGET_options!: OptionsStateInteface
+
+  @Options.Action("setOptions") SSET_options!: (input: OptionsStateInteface) => void
 
   /****************************************************************/
   // Open documents management
@@ -237,10 +322,16 @@ export default class BaseClass extends Vue {
     return fieldValue.length
   }
 
+  @Dialogs.Getter("getDialogsState") SGET_getDialogsState!: boolean
+
   /**
    * Refreshes the route
    */
   refreshRoute () {
+    if (this.SGET_options.disableCloseAftertSelectQuickSearch && this.SGET_getDialogsState) {
+      return
+    }
+
     const remainingDocuments = this.SGET_allOpenedDocuments.docs
 
     const lastIndex = this.SGET_allOpenedDocuments.lastRemovedIndex
@@ -312,6 +403,40 @@ export default class BaseClass extends Vue {
     }
 
     return hierarchicalString
+  }
+
+  async retrieveAllDocuments () {
+    let allDocs = [] as I_ShortenedDocument[]
+    for (const blueprint of this.SGET_allBlueprints) {
+      const CurrentObjectDB = new PouchDB(blueprint._id)
+
+      const dbRows = await CurrentObjectDB.allDocs({ include_docs: true })
+      const dbDocuments = dbRows.rows.map(d => d.doc)
+      const formattedDocuments: I_ShortenedDocument[] = []
+
+      for (const singleDocument of dbDocuments) {
+        const doc = singleDocument as unknown as I_ShortenedDocument
+        const pushValue = {
+          label: doc.extraFields.find(e => e.id === "name")?.value,
+          icon: doc.icon,
+          id: doc._id,
+          url: doc.url,
+          type: doc.type,
+          extraFields: doc.extraFields,
+          // @ts-ignore
+          hierarchicalPath: this.getDocumentHieararchicalPath(doc, dbDocuments),
+          tags: doc.extraFields.find(e => e.id === "tags")?.value,
+          color: doc.extraFields.find(e => e.id === "documentColor")?.value,
+          isCategory: doc.extraFields.find(e => e.id === "categorySwitch")?.value
+        } as unknown as I_ShortenedDocument
+        formattedDocuments.push(pushValue)
+      }
+      const sortedDocuments = formattedDocuments.sort((a, b) => a.label.localeCompare(b.label))
+
+      // @ts-ignore
+      allDocs = [...allDocs, ...sortedDocuments]
+    }
+    return allDocs
   }
 
   retrieveIconColor (document: I_ShortenedDocument): string {

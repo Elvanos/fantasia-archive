@@ -10,10 +10,11 @@
 
     <q-tabs
       v-if="localDocuments.length > 0"
+      :class="{'hasTextShadow': textShadow}"
       align="left"
       inline-label
       outside-arrows
-       mobile-arrows
+      mobile-arrows
       class="tabsWrapper"
       dense
       no-caps>
@@ -78,6 +79,14 @@ import closeDocumentCheckDialog from "src/components/dialogs/CloseDocumentCheck.
   components: { closeDocumentCheckDialog }
 })
 export default class TopTabs extends BaseClass {
+  textShadow = false
+
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    const options = this.SGET_options
+    this.textShadow = options.textShadow
+  }
+
   @Watch("SGET_allOpenedDocuments", { deep: true })
   reactToDocumentListChange (val: {docs: I_OpenedDocument[]}, oldVal: {docs: I_OpenedDocument[]}) {
     this.localDocuments = []
@@ -108,18 +117,18 @@ export default class TopTabs extends BaseClass {
    */
   @Watch("SGET_getCurrentKeyBindData", { deep: true })
   processKeyPush () {
-    // Delete dialog
-    if (this.determineKeyBind("closeTab") && this.localDocuments.length > 0) {
+    // Close tab dialog
+    if (this.determineKeyBind("closeTab") && this.localDocuments.length > 0 && !this.SGET_getDialogsState) {
       this.tryCloseTab()
     }
 
     // Next tab
-    if (this.determineKeyBind("nextTab") && this.localDocuments.length > 0) {
+    if (this.determineKeyBind("nextTab") && this.localDocuments.length > 0 && !this.SGET_getDialogsState) {
       this.goToNextTab()
     }
 
     // Previous tab
-    if (this.determineKeyBind("previousTab") && this.localDocuments.length > 0) {
+    if (this.determineKeyBind("previousTab") && this.localDocuments.length > 0 && !this.SGET_getDialogsState) {
       this.goToPreviousTab()
     }
   }
@@ -202,6 +211,25 @@ export default class TopTabs extends BaseClass {
 .tabsWrapper {
   -webkit-app-region: no-drag;
 
+  &.hasTextShadow {
+    .q-tab__label,
+    .q-tab__icon {
+      $shadowColorOutline: #000;
+      $shadowColorSurround: #000;
+
+      filter: drop-shadow(0 0 4px #000);
+      text-shadow:
+        -2px -2px 0 $shadowColorSurround,
+        2px -2px 0 $shadowColorSurround,
+        -2px 2px 0 $shadowColorSurround,
+        2px 2px 0 $shadowColorSurround,
+        -1px -1px 0 $shadowColorOutline,
+        1px -1px 0 $shadowColorOutline,
+        -1px 1px 0 $shadowColorOutline,
+        1px 1px 0 $shadowColorOutline;
+    }
+  }
+
   .q-tabs__arrow {
     text-shadow: none !important;
   }
@@ -246,6 +274,14 @@ export default class TopTabs extends BaseClass {
     top: 4px;
     right: -10px;
     color: $primary;
+  }
+}
+
+body.body--dark {
+  .topTabs {
+    .q-tab {
+      color: #dcdcdc;
+    }
   }
 }
 </style>

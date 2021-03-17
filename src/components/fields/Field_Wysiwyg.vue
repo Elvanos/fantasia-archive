@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
+    <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md fieldWysiwygTitle">
       <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
       {{inputDataBluePrint.name}}
-       <q-icon v-if="toolTip" name="mdi-help-circle" size="16px" class="q-ml-md">
+       <q-icon v-if="toolTip && !disableDocumentToolTips" name="mdi-help-circle" size="16px" class="q-ml-md">
          <q-tooltip :delay="500">
            <span v-html="toolTip"/>
         </q-tooltip>
@@ -11,19 +11,22 @@
     </div>
 
     <div
-    v-if="!editMode"
-    class="fieldWysiwyg"
-     v-html="localInput">
+      v-if="!editMode"
+      class="fieldWysiwyg"
+      v-html="localInput">
     </div>
 
     <q-editor
       v-model="localInput"
+      :ref="`wysiwygField${this.inputDataBluePrint.id}`"
+      @paste.native="evt => pasteCapture(evt)"
       :toolbar="wysiwygOptions"
       :fonts="wysiwygFonts"
       @input="signalInput"
+      :flat="isDarkMode"
       v-if="editMode"
       :definitions="definitions"
-      min-height="250px"
+      min-height="350px"
       />
 
     <div class="separatorWrapper">
@@ -53,6 +56,16 @@ export default class Field_Wysiwyg extends BaseClass {
   changedInput = false
   localInput = ""
 
+  isDarkMode = false
+  disableDocumentToolTips = false
+
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    const options = this.SGET_options
+    this.isDarkMode = options.darkMode
+    this.disableDocumentToolTips = options.disableDocumentToolTips
+  }
+
   @Emit()
   signalInput () {
     this.changedInput = true
@@ -70,6 +83,47 @@ export default class Field_Wysiwyg extends BaseClass {
   @Watch("inputDataValue", { deep: true, immediate: true })
   reactToInputChanges () {
     this.localInput = this.inputDataValue
+  }
+
+  @Watch("editMode")
+  turnOffFullScreen () {
+    if (!this.editMode && this.$refs[`wysiwygField${this.inputDataBluePrint.id}`]) {
+      /*eslint-disable */
+      // @ts-ignore
+      this.$refs[`wysiwygField${this.inputDataBluePrint.id}`].exitFullscreen()
+      /* eslint-enable */
+    }
+  }
+
+  pasteCapture (evt: any) {
+    /*eslint-disable */
+
+    // Let inputs do their thing, so we don't break pasting of links.
+    if (evt.target.nodeName === "INPUT") {
+      return
+    }
+    let text, onPasteStripFormattingIEPaste
+    evt.preventDefault()
+    if (evt.originalEvent && evt.originalEvent.clipboardData.getData) {
+      text = evt.originalEvent.clipboardData.getData("text/plain")
+      // @ts-ignore
+      this.$refs[`wysiwygField${this.inputDataBluePrint.id}`].runCmd("insertText", text)
+    }
+    else if (evt.clipboardData && evt.clipboardData.getData) {
+      text = evt.clipboardData.getData("text/plain")
+      // @ts-ignore
+      this.$refs[`wysiwygField${this.inputDataBluePrint.id}`].runCmd("insertText", text)
+    }
+    // @ts-ignore
+    else if (window.clipboardData && window.clipboardData.getData) {
+      if (!onPasteStripFormattingIEPaste) {
+        onPasteStripFormattingIEPaste = true
+        // @ts-ignore
+        this.$refs[`wysiwygField${this.inputDataBluePrint.id}`].runCmd("ms-pasteTextOnly", text)
+      }
+      onPasteStripFormattingIEPaste = false
+    }
+    /* eslint-enable */
   }
 
   definitions = {
@@ -150,7 +204,7 @@ export default class Field_Wysiwyg extends BaseClass {
 
 <style lang='scss'>
 .fieldWysiwyg {
-  padding-right: 10px;
-  padding-left: 10px;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 </style>
