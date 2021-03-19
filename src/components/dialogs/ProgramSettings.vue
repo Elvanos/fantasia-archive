@@ -56,7 +56,7 @@
                     </div>
                   </div>
 
-                  <div class="col-3 optionWrapper">
+                  <div class="col-4 optionWrapper">
                     <div class="optionTitle">
                       Dark mode
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -71,7 +71,7 @@
                       />
                   </div>
 
-                   <div class="col-3 optionWrapper">
+                   <div class="col-4 optionWrapper">
                     <div class="optionTitle">
                       Accessibility - Text shadow
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -83,6 +83,36 @@
 
                       <q-toggle
                         v-model="options.textShadow"
+                      />
+                  </div>
+
+                  <div class="col-4 optionWrapper">
+                    <div class="optionTitle">
+                      Accessibility - Pronounced count divider
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        This setting adds another | character between the category and document count in the hierarchival tree.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.doubleDashDocCount"
+                      />
+                  </div>
+
+                  <div class="col-4 optionWrapper">
+                    <div class="optionTitle">
+                      Hide Welcome screen social links
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Hides all the social links on the Welcome screen.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.hideWelcomeScreenSocials"
                       />
                   </div>
 
@@ -261,6 +291,51 @@
 
                       <q-toggle
                         v-model="options.invertTreeSorting"
+                      />
+                  </div>
+
+                  <div class="col-4 optionWrapper">
+                    <div class="optionTitle">
+                      Hide document count entirely
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Hides all the document count information in the hiearachical tree
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.disableDocumentCounts"
+                      />
+                  </div>
+
+                  <div class="col-4 optionWrapper">
+                    <div class="optionTitle">
+                      Hide category count
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Display the document count without adding the secondary category number.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.compactDocumentCount"
+                      />
+                  </div>
+
+                  <div class="col-4 optionWrapper">
+                    <div class="optionTitle">
+                      Invert category position
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Switches the place of category and document numbers.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.invertCategoryPosition"
                       />
                   </div>
 
@@ -511,6 +586,7 @@ export default class ProgramSettings extends DialogBase {
     _id: "settings",
     darkMode: false,
     textShadow: false,
+    doubleDashDocCount: false,
     tagsAtTop: false,
     noTags: false,
     compactTags: false,
@@ -524,6 +600,10 @@ export default class ProgramSettings extends DialogBase {
     disableCloseAftertSelectQuickSearch: false,
     disableQuickSearchCategoryPrecheck: false,
     allowQuickPopupSameKeyClose: false,
+    disableDocumentCounts: false,
+    compactDocumentCount: false,
+    invertCategoryPosition: false,
+    hideWelcomeScreenSocials: false,
     userKeybindList: []
   }
 

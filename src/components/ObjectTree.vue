@@ -63,12 +63,14 @@
             class="q-mr-sm self-center" />
             {{ prop.node.label }}
             <span
-              class="text-primary text-weight-medium q-ml-xs"
-              v-if="prop.node.isRoot || prop.node.isTag">
-                ({{prop.node.allCount}})
+              class="text-grey-5 text-weight-medium q-ml-xs"
+              v-if="(prop.node.isRoot || prop.node.isTag) && !disableDocumentCounts">
+                <span v-html="determineCatyegoryString(prop.node)"/>
                 <q-tooltip
-                  :delay="1000"
+                  :delay="500"
                 >
+                Document & Categories count: <span class="text-bold text-satin-sheen-gold-dark">{{prop.node.allCount}}</span>
+                <br>
                 Document count: <span class="text-bold text-satin-sheen-gold-dark">{{prop.node.documentCount}}</span>
                 <br>
                 Category count: <span class="text-bold text-satin-sheen-gold-dark">{{prop.node.categoryCount}}</span>
@@ -221,6 +223,10 @@ export default class ObjectTree extends BaseClass {
   doNotcollaseTreeOptions = false
   disableDocumentControlBar = false
   textShadow = false
+  disableDocumentCounts = false
+  compactDocumentCount = false
+  invertCategoryPosition = false
+  doubleDashDocCount = false
 
   @Watch("SGET_options", { immediate: true, deep: true })
   onSettingsChange () {
@@ -233,7 +239,10 @@ export default class ObjectTree extends BaseClass {
     this.doNotcollaseTreeOptions = options.doNotcollaseTreeOptions
     this.disableDocumentControlBar = options.disableDocumentControlBar
     this.textShadow = options.textShadow
-
+    this.disableDocumentCounts = options.disableDocumentCounts
+    this.compactDocumentCount = options.compactDocumentCount
+    this.invertCategoryPosition = options.invertCategoryPosition
+    this.doubleDashDocCount = options.doubleDashDocCount
     this.buildCurrentObjectTree().catch((e) => {
       console.log(e)
     })
@@ -776,6 +785,26 @@ export default class ObjectTree extends BaseClass {
       this.expandedTreeNodes = this.expandedTreeNodes.filter(n => n !== node.key)
     }
   }
+
+  determineCatyegoryString (node: {
+    documentCount: string
+    categoryCount: string
+  }) {
+    let extraDivider = ""
+    if (this.doubleDashDocCount) {
+      extraDivider = "|"
+    }
+
+    if (this.compactDocumentCount) {
+      return `(<span class="docCount">${node.documentCount}</span>)`
+    }
+    if (this.invertCategoryPosition) {
+      return `(<span class="catCount">${node.categoryCount}</span>&nbsp;|${extraDivider}&nbsp;<span class="docCount">${node.documentCount}</span>)`
+    }
+    else {
+      return `(<span class="docCount">${node.documentCount}</span>&nbsp;|${extraDivider}&nbsp;<span class="catCount">${node.categoryCount}</span>)`
+    }
+  }
 }
 </script>
 
@@ -804,6 +833,14 @@ export default class ObjectTree extends BaseClass {
         -1px 1px 0 $shadowColorOutline,
         1px 1px 0 $shadowColorOutline;
     }
+  }
+
+  .catCount {
+    color: var(--q-color-accent);
+  }
+
+  .docCount {
+    color: var(--q-color-primary);
   }
 
   > .q-tree__node {

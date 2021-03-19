@@ -179,10 +179,10 @@ export const racesBlueprint: I_Blueprint = {
       sizing: 6,
       predefinedSelectValues: [
         "Ascended",
-        "Half-sentient",
+        "Half-sapient",
         "Hivemind",
-        "Non-sentient",
-        "Sentient",
+        "Non-sapient",
+        "Sapient",
         "Other"
       ]
     },

@@ -12,53 +12,62 @@
 ### Bugfixes
 
 - Fixed a bug that was preventing the text editor field from closing the full-screen view upon saving via the CTRL+S shortcut while in the full-screen mode.
-- Fixed a bug that was causing top level documents to randomly expand their respect document type when opened in the active tab list
+- Fixed a bug that was causing top-level documents to randomly expand their respect document type when opened in the active tab list
 - Fixed a small bug causing newly created documents to "bounce around" or scroll roughly to the half of the document on their own
-- Fixed a bug with filter via the document type that was cuasing the filter to search by document type ID instead of the actual name
+- Fixed a bug with filter via the document type that was causing the filter to search by document type ID instead of the actual name
 - Fixed a bug where the big text editor field was also copying input text styles (colors, backgrounds, fonts)
-- Globally changed a typo in "Connected to myths. legends and stories" field
-- Globally changed a typo in the tooltip of "Tags" field
+- Globally changed a typo in the "Connected to myths. legends and stories" field
+- Globally changed a typo in the tooltip of the "Tags" field
 - Globally changed a typo in the tooltip of "Scientifical" to "Scientific"
-- Reworded and fixed typos in the Single and Mutli relationship field tooltips
+- Reworded and fixed typos in the Single and Multi relationship field tooltips
 - Fixed horizontal scrollbar looks and functionality
 - Fixed a bug that was causing keybinds to register and affect the UI even if a popup was opened over it
+- Fixed typos of "Sentience" instead of "Sapience" in some of the "Race/Species" document type fiels
 
 ### New features
 
 - Added a custom keybind support to the app
-- Added a resizeable hieararchical tree for all your categorical needs
-  - The app also remembers the tree-size on restart so your prefered width gets transfered between your world-building sessions
+- Added a resizeable hierarchical tree for all your categorical needs
+  - The app also remembers the tree-size on restart so your preferred width gets transferred between your world-building sessions
 - Added dark mode
+- Added a fancier Welcome screen looks
+- Added social links (Discord and Patreon)
 - Restyled and pimped-up text editor field to replace most of your MS-word needs (obviously supports both light and dark modes properly)!
 - Added a specific field/value support for the relationship and quick-search popups
-  - This also means added suppoirt for filtering by document color
+  - This also means added support for filtering by document color
 - Added automatic sub-category closure in the hierarchical tree when closing the parent category
 - Added new App option keybind
 - Added App options
   - Added option: Dark mode
   - Added option: Accessibility - Text shadow
+  - Added option: Accessibility - Pronounced count divider
+  - Added option: Hide Welcome screen social links
   - Added option: Disable document control bar
   - Added option: Disable document guides
   - Added option: Disable document tooltips
   - Added option: Hide empty fields
   - Added option: Stop quick-search close after selection
   - Added option: Don't precheck category filter
-  - Added option: Close quick popups with same key
+  - Added option: Close quick popups with the same key
   - Added option: Stop sublevel collapse in tree
-  - Added option: Hide project name in tree
+  - Added option: Hide project name in the tree
+  - Added option: Hide document count entirely
+  - Added option: Hide category count
+  - Added option: Invert category position
   - Added option: Invert tree custom order sorting
-  - Added option: Hide tags in tree
-  - Added option: Top tags in tree
+  - Added option: Hide tags in the tree
+  - Added option: Top tags in the tree
   - Added option: Compact tags
 
 ### QoL adjustments
 
-- Globally renamed "Color" field to "Text Color" in order to allow better filtering via field-search for future addition of background color support
-- Added a more contrasting text-select colors for dark mode
+- Globally renamed "Color" field to "Text Color" to allow better filtering via field-search for future addition of background color support
+- Added displaying category and document count in the hierarchical tree by default at first glance
+- Added more contrasting text-select colors for dark mode
 - Added Quick add/search popup functionality to the Project menu
 - Added icons to the app menus
-- Added a small debounce timer to the relationship searches in order to reduce the of lag it was causing
-- Lightly touched up on the color scheme
+- Added a small debounce timer to the relationship searches to reduce the lag it was causing
+- Lightly touched upon the color scheme
 - Increased readability of highlit bits of the Advanced search guide
 - Added an auto-select of the newly added field upon adding new text items in the list field-type
 

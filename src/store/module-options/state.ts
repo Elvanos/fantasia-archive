@@ -3,6 +3,8 @@ export interface OptionsStateInteface {
   _rev?: string,
   darkMode: boolean
   textShadow: boolean
+  doubleDashDocCount: boolean
+  hideWelcomeScreenSocials: boolean
   noTags: boolean
   tagsAtTop: boolean
   compactTags: boolean
@@ -16,6 +18,9 @@ export interface OptionsStateInteface {
   disableCloseAftertSelectQuickSearch: boolean
   disableQuickSearchCategoryPrecheck: boolean
   allowQuickPopupSameKeyClose: boolean
+  disableDocumentCounts: boolean
+  compactDocumentCount: boolean
+  invertCategoryPosition: boolean
 
   userKeybindList: any[]
   treeWidth?: number
@@ -26,6 +31,8 @@ function state (): OptionsStateInteface {
     _id: "settings",
     darkMode: false,
     textShadow: false,
+    doubleDashDocCount: false,
+    hideWelcomeScreenSocials: false,
     noTags: false,
     tagsAtTop: false,
     compactTags: false,
@@ -39,6 +46,9 @@ function state (): OptionsStateInteface {
     disableQuickSearchCategoryPrecheck: false,
     allowQuickPopupSameKeyClose: false,
     hideEmptyFields: false,
+    disableDocumentCounts: false,
+    compactDocumentCount: false,
+    invertCategoryPosition: false,
     treeWidth: 374,
     userKeybindList: []
   }

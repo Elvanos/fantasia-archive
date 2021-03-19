@@ -14,7 +14,10 @@
     />
 
       <div class="col-12">
-        <h3>Welcome to Fantasia Archive</h3>
+        <h5 class="mainSubTitle">Welcome to </h5>
+      </div>
+      <div class="col-12">
+        <h2 class="mainTitle">Fantasia Archive</h2>
       </div>
 
       <div class="col-12 q-mb-lg">
@@ -42,7 +45,7 @@
         </q-btn>
       </div>
 
-      <div class="col-12 q-mb-lg">
+      <div class="col-12">
        <q-btn
           color="primary"
           :outline="isDarkMode"
@@ -54,6 +57,22 @@
        </q-btn>
       </div>
 
+      <template v-if="!hideWelcomeScreenSocials">
+        <q-separator color="primary" horizonatal dark class="q-my-xl" style="opacity: 0.5; width: 400px;" />
+
+        <div class="col-12 q-mb-lg">
+          <div class="discordButton" @click="openDiscordInviteLink">
+            Join Fantasia Archive Discord!
+          </div>
+        </div>
+
+        <div class="col-12 q-mt-sm">
+          <div class="patreonButton" @click="openPatreonLink">
+            Support Fantasia Archive on Patreon!
+          </div>
+        </div>
+      </template>
+
   </q-page>
 </template>
 
@@ -63,6 +82,7 @@ import { Component, Watch } from "vue-property-decorator"
 import BaseClass from "src/BaseClass"
 import importProjectCheckDialog from "src/components/dialogs/ImportProjectCheck.vue"
 import newProjectCheckDialog from "src/components/dialogs/NewProjectCheck.vue"
+import { shell } from "electron"
 
 import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
 
@@ -75,11 +95,13 @@ import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projec
 })
 export default class WelcomeScreen extends BaseClass {
   isDarkMode = false
+  hideWelcomeScreenSocials = false
 
   @Watch("SGET_options", { immediate: true, deep: true })
   onSettingsChange () {
     const options = this.SGET_options
     this.isDarkMode = options.darkMode
+    this.hideWelcomeScreenSocials = options.hideWelcomeScreenSocials
   }
 
   projectExists: undefined | string | boolean = false
@@ -107,5 +129,68 @@ export default class WelcomeScreen extends BaseClass {
   async created () {
     this.projectExists = await retrieveCurrentProjectName()
   }
+
+  openDiscordInviteLink () {
+    shell.openExternal("https://discord.gg/JQDBvsN9Te").catch(e => console.log(e))
+  }
+
+  openPatreonLink () {
+    shell.openExternal("https://www.patreon.com/elvanos").catch(e => console.log(e))
+  }
 }
 </script>
+
+<style  lang="scss">
+
+.mainTitle {
+  color: var(--q-color-dark);
+}
+
+body.body--dark {
+  .mainTitle {
+    color: var(--q-color-primary);
+  }
+}
+</style>
+
+<style scoped lang="scss">
+
+.mainSubTitle {
+  margin-top: 0;
+  margin-bottom: 0;
+  opacity: 0.8;
+}
+
+.mainTitle {
+  position: relative;
+  margin-top: 10px;
+  font-weight: 500;
+
+  &::after {
+    content: '';
+    top: -25px;
+    right: -95px;
+    position: absolute;
+    height: 100px;
+    width: 90px;
+    background-image: url('../assets/appLogo.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    transform: scaleX(-1);
+    filter: drop-shadow(-1px 1px 2px var(--q-color-dark));
+  }
+
+  &::before {
+    content: '';
+    top: -25px;
+    left: -95px;
+    position: absolute;
+    height: 100px;
+    width: 90px;
+    background-image: url('../assets/appLogo.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    filter: drop-shadow(-1px 1px 2px var(--q-color-dark));
+  }
+}
+</style>

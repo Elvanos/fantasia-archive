@@ -9,13 +9,29 @@
       dark
     >
       <q-card-section>
-        <h6 class="text-center q-my-sm">About Fantasia Archive</h6>
+        <h6 class="text-center q-mt-lg q-mb-sm">About Fantasia Archive</h6>
       </q-card-section>
 
         <q-card-section>
           <div>
             Currently running Fantasia Archive version: <span class="text-bold text-primary">{{appVersion}}</span>
           </div>
+       </q-card-section>
+
+      <q-separator color="primary" horizonatal dark class="q-my-lg q-mx-auto" style="opacity: 0.5; width: 400px;" />
+
+       <q-card-section>
+        <div class="col-12 q-mb-lg">
+          <div class="discordButton" @click="openDiscordInviteLink">
+            Join our Discord!
+          </div>
+        </div>
+
+        <div class="col-12 q-mt-sm">
+          <div class="patreonButton" @click="openPatreonLink">
+            Support Fantasia Archive on Patreon!
+          </div>
+        </div>
        </q-card-section>
 
       <q-card-actions align="around" class="q-mb-lg q-mt-md">
@@ -29,7 +45,7 @@
 <script lang="ts">
 
 import { Component, Watch } from "vue-property-decorator"
-import { remote } from "electron"
+import { shell, remote } from "electron"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
 @Component({
@@ -48,6 +64,14 @@ export default class AboutApp extends DialogBase {
   }
 
   appVersion = remote.app.getVersion()
+
+  openDiscordInviteLink () {
+    shell.openExternal("https://discord.gg/JQDBvsN9Te").catch(e => console.log(e))
+  }
+
+  openPatreonLink () {
+    shell.openExternal("https://www.patreon.com/elvanos").catch(e => console.log(e))
+  }
 }
 </script>
 
