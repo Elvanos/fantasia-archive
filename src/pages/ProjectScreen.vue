@@ -13,6 +13,14 @@
       <div class="col-12">
         <h2 class="mainProjectTitle"> {{projectName}}</h2>
       </div>
+      <div class="hintWrapper" v-if="graphDataShowing && !hideTooltipsProject">
+        <div class="text-subtitle1 text-primary text-weight-medium text-left">
+          Did you know?
+        </div>
+        <div class="text-weight-medium text-left text-accent">
+          {{tipTrickMessage}}
+          </div>
+      </div>
 
       <div>
         <q-card
@@ -95,13 +103,14 @@
 </template>
 
 <script lang="ts">
-import { Component } from "vue-property-decorator"
+import { Component, Watch } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
 import { Loading, colors } from "quasar"
 import PouchDB from "pouchdb"
 import newDocumentDialog from "src/components/dialogs/NewDocument.vue"
 import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
+import { tipsTricks } from "src/scripts/utilities/tipsTricks"
 
 @Component({
   components: {
@@ -116,10 +125,22 @@ export default class ProjectScreen extends BaseClass {
 
   allDocuments = 0
 
+  tipTrickMessage = ""
+
   async created () {
     this.projectName = await retrieveCurrentProjectName()
     this.loadGraphData().catch(e => console.log(e))
     Loading.hide()
+
+    this.tipTrickMessage = tipsTricks[Math.floor(Math.random() * tipsTricks.length)]
+  }
+
+  hideTooltipsProject = false
+
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    const options = this.SGET_options
+    this.hideTooltipsProject = options.hideTooltipsProject
   }
 
   async loadGraphData () {
@@ -289,7 +310,16 @@ export default class ProjectScreen extends BaseClass {
 }
 </script>
 
-<style  lang="scss">
+<style lang="scss">
+
+.hintWrapper {
+  max-width: 950px;
+  padding: 15px 20px;
+  width: 100%;
+  background-color: $info;
+  border-radius: 5px;
+  margin-bottom: 30px;
+}
 
 .mainProjectTitle {
   color: var(--q-color-dark);

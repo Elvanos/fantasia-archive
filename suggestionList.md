@@ -1,5 +1,3 @@
-### App options & Keybinds
-
 - Add "Document relevance" switch and integrate it into filters
 - Add "Show in search results" checkbox for relationship searches
 - Add "Related notes"
@@ -16,6 +14,7 @@
 - Add support for dates in "custom order"... reee
 - Add cogwheels (loading) for the relationship fields when opening/closing since it takes a while on some PCs
 - Add safeguard to escape closing of settings only after something actually got modified
+- Add hover/on-demand document preview to relationships
 
 - Considering multiple "belongs under" category listing
 - Add intelligent responsive design to the left tree and document body (maybe button to pull the left bar in and out?)
@@ -64,3 +63,4 @@
 - Timeline/Calendar support
 - AFMG support
 - Add printing support
+- Add % bar graphs in tree (pinned in #general, idea by popoto)

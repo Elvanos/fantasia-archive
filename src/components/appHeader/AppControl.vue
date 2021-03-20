@@ -65,6 +65,12 @@
       @trigger-dialog-close="advancedSearchGuideDialogClose"
     />
 
+    <!-- Tips, Tricks & Trivia dialog -->
+    <tipsTricksTriviaDialog
+      :dialog-trigger="tipsTricksDialogTrigger"
+      @trigger-dialog-close="tipsTricksDialogClose"
+    />
+
     <q-btn-group
       flat
       class="AppControl__buttons"
@@ -280,6 +286,20 @@
               </q-item-section>
             </q-item>
 
+            <q-item
+              @click="tipsTricksAssignUID"
+              v-close-popup
+              clickable
+              active
+              active-class="bg-gunmetal-light text-cultured"
+              class="noHigh"
+              >
+              <q-item-section>Tips, Tricks & Trivia</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-fire-alert" />
+              </q-item-section>
+            </q-item>
+
             <q-separator dark />
 
             <q-item
@@ -351,6 +371,7 @@ import programSettingsDialog from "src/components/dialogs/ProgramSettings.vue"
 import advancedSearchGuideDialog from "src/components/dialogs/AdvancedSearchGuide.vue"
 import newDocumentDialog from "src/components/dialogs/NewDocument.vue"
 import existingDocumentDialog from "src/components/dialogs/ExistingDocument.vue"
+import tipsTricksTriviaDialog from "src/components/dialogs/TipsTricksTrivia.vue"
 
 import { Loading, QSpinnerGears } from "quasar"
 
@@ -371,7 +392,8 @@ import appLogo from "src/assets/appLogo.png"
     advancedSearchGuideDialog,
     programSettingsDialog,
     newDocumentDialog,
-    existingDocumentDialog
+    existingDocumentDialog,
+    tipsTricksTriviaDialog
   }
 })
 export default class AppControl extends BaseClass {
@@ -551,6 +573,19 @@ export default class AppControl extends BaseClass {
 
   existingObjectAssignUID () {
     this.existingObjectDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
+  // Tips, Tricka & Trivia dialog
+  /****************************************************************/
+
+  tipsTricksDialogTrigger: string | false = false
+  tipsTricksDialogClose () {
+    this.tipsTricksDialogTrigger = false
+  }
+
+  tipsTricksAssignUID () {
+    this.tipsTricksDialogTrigger = this.generateUID()
   }
 }
 </script>

@@ -116,6 +116,36 @@
                       />
                   </div>
 
+                  <div class="col-4 optionWrapper">
+                    <div class="optionTitle">
+                      Hide tips popup on start screen
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Hides the start screen tips & tricks popup.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.hideTooltipsStart"
+                      />
+                  </div>
+
+                  <div class="col-4 optionWrapper">
+                    <div class="optionTitle">
+                      Hide tips on project screen
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Hides all the social links on the Project overview screen.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.hideTooltipsProject"
+                      />
+                  </div>
+
                   <div class="col-12">
                     <div class="text-h6 q-mt-lg">
                       Document view settings
@@ -392,6 +422,7 @@
             <q-table
               class="keybindsTable"
               virtual-scroll
+              dark
               flat
               title="Keybinds"
               :filter="filter"
@@ -404,7 +435,7 @@
               :columns="keybindListCollums"
             >
             <template v-slot:top-right>
-              <q-input clearable dense debounce="300" v-model="filter" placeholder="Filter the keybinds">
+              <q-input clearable dark dense debounce="300" v-model="filter" placeholder="Filter the keybinds">
                 <template v-slot:prepend>
                   <q-icon name="search" />
                 </template>
@@ -604,6 +635,8 @@ export default class ProgramSettings extends DialogBase {
     compactDocumentCount: false,
     invertCategoryPosition: false,
     hideWelcomeScreenSocials: false,
+    hideTooltipsStart: false,
+    hideTooltipsProject: false,
     userKeybindList: []
   }
 
@@ -903,6 +936,10 @@ export default class ProgramSettings extends DialogBase {
   width: 550px;
   padding: 40px;
 
+  .q-field--filled .q-field__control {
+    background-color: transparent;
+  }
+
   .q-field__label {
     text-align: center;
     margin-top: 7px;
@@ -932,6 +969,10 @@ export default class ProgramSettings extends DialogBase {
   max-height: calc(100vh - 340px);
   height: calc(100vh - 340px);
   margin-top: -25px;
+
+  .q-field__control {
+    background-color: transparent;
+  }
 
   .q-table__control,
   .q-table__control label {

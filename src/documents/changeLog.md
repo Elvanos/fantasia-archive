@@ -27,6 +27,7 @@
 ### New features
 
 - Added a custom keybind support to the app
+- Added Tips, Tricks & Trivia popup, a menu item, buttons and project screen box
 - Added a resizeable hierarchical tree for all your categorical needs
   - The app also remembers the tree-size on restart so your preferred width gets transferred between your world-building sessions
 - Added dark mode
@@ -42,6 +43,8 @@
   - Added option: Accessibility - Text shadow
   - Added option: Accessibility - Pronounced count divider
   - Added option: Hide Welcome screen social links
+  - Added option: Hide tips popup on start screen
+  - Added option: Hide tips on project screen
   - Added option: Disable document control bar
   - Added option: Disable document guides
   - Added option: Disable document tooltips

@@ -21,6 +21,8 @@ export interface OptionsStateInteface {
   disableDocumentCounts: boolean
   compactDocumentCount: boolean
   invertCategoryPosition: boolean
+  hideTooltipsStart: boolean
+  hideTooltipsProject: boolean
 
   userKeybindList: any[]
   treeWidth?: number
@@ -49,6 +51,8 @@ function state (): OptionsStateInteface {
     disableDocumentCounts: false,
     compactDocumentCount: false,
     invertCategoryPosition: false,
+    hideTooltipsStart: false,
+    hideTooltipsProject: false,
     treeWidth: 374,
     userKeybindList: []
   }

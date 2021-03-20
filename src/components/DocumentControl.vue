@@ -32,6 +32,12 @@
       @trigger-dialog-close="keybindsDialogClose"
     />
 
+    <!-- Tips, Tricks & Trivia dialog -->
+    <tipsTricksTriviaDialog
+      :dialog-trigger="tipsTricksDialogTrigger"
+      @trigger-dialog-close="tipsTricksDialogClose"
+    />
+
     <q-page-sticky position="top-right" class="documentControl bg-dark" v-if="!disableDocumentControlBar">
 
       <div class="documentControl__blocker"></div>
@@ -68,6 +74,21 @@
                 self="top middle"
               >
               Open advanced search guide
+              </q-tooltip>
+            </q-btn>
+
+            <q-btn
+              icon="mdi-fire-alert"
+              color="primary"
+              outline
+              @click="tipsTricksAssignUID"
+            >
+              <q-tooltip
+                :delay="500"
+                anchor="bottom middle"
+                self="top middle"
+              >
+              Open Tips, Tricks & Trivia
               </q-tooltip>
             </q-btn>
 
@@ -214,6 +235,7 @@ import existingDocumentDialog from "src/components/dialogs/ExistingDocument.vue"
 import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentCheck.vue"
 import advancedSearchGuideDialog from "src/components/dialogs/AdvancedSearchGuide.vue"
 import keybindCheatsheetDialog from "src/components/dialogs/KeybindCheatsheet.vue"
+import tipsTricksTriviaDialog from "src/components/dialogs/TipsTricksTrivia.vue"
 
 import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
 import { extend, Loading, QSpinnerGears } from "quasar"
@@ -227,7 +249,8 @@ import { retrieveCurrentProjectName, exportProject } from "src/scripts/projectMa
     existingDocumentDialog,
     deleteDocumentCheckDialog,
     advancedSearchGuideDialog,
-    keybindCheatsheetDialog
+    keybindCheatsheetDialog,
+    tipsTricksTriviaDialog
   }
 })
 export default class DocumentControl extends BaseClass {
@@ -353,6 +376,19 @@ export default class DocumentControl extends BaseClass {
 
   existingObjectAssignUID () {
     this.existingObjectDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
+  // Tips, Tricka & Trivia dialog
+  /****************************************************************/
+
+  tipsTricksDialogTrigger: string | false = false
+  tipsTricksDialogClose () {
+    this.tipsTricksDialogTrigger = false
+  }
+
+  tipsTricksAssignUID () {
+    this.tipsTricksDialogTrigger = this.generateUID()
   }
 
   /****************************************************************/

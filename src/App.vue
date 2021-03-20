@@ -13,6 +13,7 @@ import appWindowButtons from "src/components/appHeader/AppWindowButtons.vue"
 import PouchDB from "pouchdb"
 import { OptionsStateInteface } from "./store/module-options/state"
 import { colors } from "quasar"
+import { tipsTricks } from "src/scripts/utilities/tipsTricks"
 
 @Component({
   components: {
@@ -32,6 +33,37 @@ export default class App extends BaseClass {
 
     this.loadSettings().catch(e => console.log(e))
     window.addEventListener("keydown", this.triggerKeyPush)
+    this.loadHintPopup()
+  }
+
+  popupCheck = 0
+
+  loadHintPopup () {
+    const options = this.SGET_options
+
+    // Considering there is a bit of a delay between the initial load of the store DB content, we give the program 3 attempts to load the data over 3 seconds. If no is loaded in that time, we assume that the settings are not set at all and display the hint as normal.
+    if ((!options._id || !options._rev) && this.popupCheck < 3) {
+      setTimeout(() => {
+        this.popupCheck++
+        this.loadHintPopup()
+      }, 1000)
+      return
+    }
+
+    if (options.hideTooltipsStart) {
+      return
+    }
+
+    const messageToShow = tipsTricks[Math.floor(Math.random() * tipsTricks.length)]
+
+    this.$q.notify({
+      timeout: 15000,
+      icon: "mdi-help",
+      type: "info",
+      message: "Did you know?",
+      caption: messageToShow,
+      actions: [{ icon: "mdi-close", color: "white" }]
+    })
   }
 
   triggerKeyPush (e:any) {
@@ -109,7 +141,7 @@ export default class App extends BaseClass {
     }
     else {
       colors.setBrand("dark", "#18303a")
-      colors.setBrand("primary", "#d7ac47")
+      colors.setBrand("primary", "#e8bb50")
     }
   }
 }

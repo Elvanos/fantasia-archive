@@ -33,7 +33,7 @@ html {
 }
 
 body {
-  background-color: rgba($primary, 0.025);
+  background-color: rgba($primary, 0.001);
   overflow-y: scroll;
   color: darken($dark, 12.5);
 
@@ -101,6 +101,18 @@ body {
 .q-editor {
   background-color: rgba(250, 250, 250, 1);
   padding-bottom: 15px;
+}
+
+.q-notification__caption {
+  opacity: 1;
+}
+
+.q-notification.bg-info {
+  max-width: 500px;
+
+  .q-notification__message > div:not(.q-notification__caption) {
+    color: var(--q-color-primary);
+  }
 }
 
 .fieldWysiwyg,
