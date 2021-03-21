@@ -13,13 +13,19 @@
       <div class="col-12">
         <h2 class="mainProjectTitle"> {{projectName}}</h2>
       </div>
-      <div class="hintWrapper" v-if="graphDataShowing && !hideTooltipsProject">
-        <div class="text-subtitle1 text-primary text-weight-medium text-left">
-          Did you know?
+      <div class="hintWrapper" v-if="!hideTooltipsProject && allDocuments > 0">
+        <div>
+            <q-icon name="mdi-help" size="30px" class="q-mr-md" />
         </div>
-        <div class="text-weight-medium text-left text-accent">
-          {{tipTrickMessage}}
+        <div>
+          <div class="text-subtitle1 text-dark text-bold text-left">
+            Did you know?
           </div>
+          <div class="text-weight-medium text-dark text-left">
+            {{tipTrickMessage}}
+          </div>
+        </div>
+
       </div>
 
       <div>
@@ -314,11 +320,15 @@ export default class ProjectScreen extends BaseClass {
 
 .hintWrapper {
   max-width: 950px;
+  display: flex;
+  align-items: center;
   padding: 15px 20px;
   width: 100%;
-  background-color: $info;
+  background-color: lighten(#d7ac47, 35);
   border-radius: 5px;
   margin-bottom: 30px;
+  color: var(--q-color-dark);
+  border: 2px solid var(--q-color-primary);
 }
 
 .mainProjectTitle {

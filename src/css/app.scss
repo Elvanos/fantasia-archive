@@ -33,7 +33,7 @@ html {
 }
 
 body {
-  background-color: rgba($primary, 0.001);
+  background-color: rgba($primary, 0.02);
   overflow-y: scroll;
   color: darken($dark, 12.5);
 
@@ -109,9 +109,11 @@ body {
 
 .q-notification.bg-info {
   max-width: 500px;
+  border: 2px solid var(--q-color-primary);
+  color: var(--q-color-dark);
 
-  .q-notification__message > div:not(.q-notification__caption) {
-    color: var(--q-color-primary);
+  i {
+    color: var(--q-color-dark);
   }
 }
 

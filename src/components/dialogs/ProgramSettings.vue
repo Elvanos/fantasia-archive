@@ -136,7 +136,7 @@
                       Hide tips on project screen
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
                       <q-tooltip :delay="500">
-                        Hides all the social links on the Project overview screen.
+                        Hides the project screen tips & tricks info card.
                       </q-tooltip>
                     </q-icon>
                     </div>

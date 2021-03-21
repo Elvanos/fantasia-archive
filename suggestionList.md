@@ -15,6 +15,7 @@
 - Add cogwheels (loading) for the relationship fields when opening/closing since it takes a while on some PCs
 - Add safeguard to escape closing of settings only after something actually got modified
 - Add hover/on-demand document preview to relationships
+- Floating notes corkboard
 
 - Considering multiple "belongs under" category listing
 - Add intelligent responsive design to the left tree and document body (maybe button to pull the left bar in and out?)
