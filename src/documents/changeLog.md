@@ -20,6 +20,8 @@
 - Globally changed a typo in the tooltip of the "Tags" field
 - Globally changed a typo in the tooltip of "Scientifical" to "Scientific"
 - Fixed a typo in "Add under parent" strings
+- Fixed a few typos in some keybind strings strings
+- Fixed and unified a lot of typos/gramatical errors across multiple fields and document types
 - Reworded and fixed typos in the Single and Multi relationship field tooltips
 - Fixed horizontal scrollbar looks and functionality
 - Fixed a bug that was causing keybinds to register and affect the UI even if a popup was opened over it

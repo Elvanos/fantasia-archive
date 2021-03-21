@@ -129,7 +129,7 @@ export const defaultKeybinds = [
     which: 78,
     editable: true,
     id: "addUnderParent",
-    tooltip: "Add a new document with the currently opened one as a parent"
+    tooltip: "Add a new document with the currently opened one as the parent"
   },
 
   // Delete document - CTRL + D
@@ -151,7 +151,7 @@ export const defaultKeybinds = [
     which: 9,
     editable: false,
     id: "nextFocus",
-    tooltip: "Focuses next input field/input element/hierarchical tree node",
+    tooltip: "Focuses the next input field/input element/hierarchical tree node",
     note: "(functionality is the same as when using a web-browser)"
   },
 
@@ -163,7 +163,7 @@ export const defaultKeybinds = [
     which: 9,
     editable: false,
     id: "previousFocus",
-    tooltip: "Focuses previous input field/input element/hierarchical tree node",
+    tooltip: "Focuses the previous input field/input element/hierarchical tree node",
     note: "(functionality is the same as when using a web-browser)"
   },
 

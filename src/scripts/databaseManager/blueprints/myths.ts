@@ -132,7 +132,7 @@ export const mythsBlueprint: I_Blueprint = {
     },
     {
       id: "traditions",
-      name: "Connected traditions & customs to the myth/legend",
+      name: "Connected traditions & Customs to the myth/legend",
       type: "wysiwyg",
       sizing: 12
     },

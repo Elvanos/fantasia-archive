@@ -218,7 +218,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedPolitical",
-      name: "Connected political groups",
+      name: "Involved political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
@@ -229,7 +229,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedReligious",
-      name: "Connected religious groups",
+      name: "Involved religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 6,
@@ -240,7 +240,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedMagical",
-      name: "Connected magical groups",
+      name: "Involved magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -251,7 +251,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedTech",
-      name: "Connected tech/scientific groups",
+      name: "Involved tech/scientific groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,

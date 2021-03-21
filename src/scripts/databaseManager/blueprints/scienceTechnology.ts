@@ -130,7 +130,7 @@ export const techBlueprint: I_Blueprint = {
     },
     {
       id: "formTech",
-      name: "Branch of sciences",
+      name: "Scientific branches",
       type: "multiSelect",
       icon: "fas fa-vial",
       sizing: 3,
@@ -160,7 +160,7 @@ export const techBlueprint: I_Blueprint = {
     },
     {
       id: "pairedCharacter",
-      name: "Technogy/Science users",
+      name: "Technology/Science users",
       type: "manyToManyRelationship",
       icon: "mdi-account",
       sizing: 6,

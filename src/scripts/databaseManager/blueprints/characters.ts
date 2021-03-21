@@ -274,7 +274,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "breakSkills",
-      name: "Skill and other features",
+      name: "Skills and other features",
       type: "break",
       sizing: 12
     },
@@ -1282,7 +1282,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedItems",
-      name: "Connected legendary items/artifacts",
+      name: "Connected to legendary items/artifacts",
       type: "manyToManyRelationship",
       icon: "mdi-sword-cross",
       sizing: 6,

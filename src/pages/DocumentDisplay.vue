@@ -69,7 +69,7 @@
             anchor="bottom middle"
             self="top middle"
           >
-            Add a new document with the currently opened one as a parent
+            Add a new document with the currently opened one as the parent
           </q-tooltip>
         </q-btn>
 

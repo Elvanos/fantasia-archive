@@ -314,7 +314,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "breakRelasionships",
-      name: "Race members & other connections",
+      name: "Members & Other connections",
       type: "break",
       sizing: 12
     },
@@ -437,7 +437,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedItems",
-      name: "Connected legendary items/artifacts",
+      name: "Connected to legendary items/artifacts",
       type: "manyToManyRelationship",
       icon: "mdi-sword-cross",
       sizing: 4,

@@ -103,7 +103,7 @@ export const religionsBlueprint: I_Blueprint = {
     },
     {
       id: "followers",
-      name: "Follower amount",
+      name: "Follower count",
       type: "text",
       icon: "mdi-account-group",
       sizing: 2

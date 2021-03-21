@@ -103,7 +103,7 @@ export const magicBlueprint: I_Blueprint = {
     },
     {
       id: "users",
-      name: "Member/user amount",
+      name: "Member/User count",
       type: "text",
       icon: "mdi-account-group",
       sizing: 2

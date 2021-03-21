@@ -133,7 +133,7 @@ export const languagesBlueprint: I_Blueprint = {
     },
     {
       id: "description",
-      name: "History & Conteporary situation",
+      name: "History & Contemporary situation",
       type: "wysiwyg",
       sizing: 12
     },
@@ -145,7 +145,7 @@ export const languagesBlueprint: I_Blueprint = {
     },
     {
       id: "breakSpeakers",
-      name: "Spoken in groups, areas and by characters",
+      name: "Speakers, groups and areas connected to the language",
       type: "break",
       sizing: 12
     },
