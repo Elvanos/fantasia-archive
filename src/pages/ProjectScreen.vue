@@ -328,7 +328,7 @@ export default class ProjectScreen extends BaseClass {
   border-radius: 5px;
   margin-bottom: 30px;
   color: var(--q-color-dark);
-  border: 2px solid var(--q-color-primary);
+  border: 2px solid var(--q-color-dark);
 }
 
 .mainProjectTitle {

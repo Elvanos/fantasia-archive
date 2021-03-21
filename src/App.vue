@@ -38,6 +38,8 @@ export default class App extends BaseClass {
 
   popupCheck = 0
 
+  starupNotif = null as any
+
   loadHintPopup () {
     const options = this.SGET_options
 
@@ -56,7 +58,7 @@ export default class App extends BaseClass {
 
     const messageToShow = tipsTricks[Math.floor(Math.random() * tipsTricks.length)]
 
-    this.$q.notify({
+    this.starupNotif = this.$q.notify({
       timeout: 15000,
       icon: "mdi-help",
       type: "info",
@@ -64,6 +66,12 @@ export default class App extends BaseClass {
       caption: messageToShow,
       actions: [{ icon: "mdi-close", color: "white" }]
     })
+  }
+
+  @Watch("$route", { deep: true })
+  onUrlChange () {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    this.starupNotif()
   }
 
   triggerKeyPush (e:any) {
