@@ -14,6 +14,7 @@
 - Fixed a bug that was preventing the text editor field from closing the full-screen view upon saving via the CTRL+S shortcut while in the full-screen mode.
 - Fixed a bug that was causing top-level documents to randomly expand their respect document type when opened in the active tab list
 - Fixed a small bug causing newly created documents to "bounce around" or scroll roughly to the half of the document on their own
+- Fixed a bug that was preventing external URL links opening from the text editor field
 - Fixed a bug with filter via the document type that was causing the filter to search by document type ID instead of the actual name
 - Fixed a bug where the big text editor field was also copying input text styles (colors, backgrounds, fonts)
 - Globally changed a typo in the "Connected to myths. legends and stories" field
@@ -34,6 +35,7 @@
 - Added a resizeable hierarchical tree for all your categorical needs
   - The app also remembers the tree-size on restart so your preferred width gets transferred between your world-building sessions
 - Added dark mode
+- Finally added license to the software (oopsy...)
 - Added a fancier Welcome screen looks
 - Added social links (Discord and Patreon)
 - Restyled and pimped-up text editor field to replace most of your MS-word needs (obviously supports both light and dark modes properly)!
@@ -68,6 +70,7 @@
 ### QoL adjustments
 
 - Globally renamed "Color" field to "Text Color" to allow better filtering via field-search for future addition of background color support
+- Added proper coloring to custom links in the text editor field
 - Added displaying category and document count in the hierarchical tree by default at first glance
 - Added more contrasting text-select colors for dark mode
 - Added Quick add/search popup functionality to the Project menu

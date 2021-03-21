@@ -14,6 +14,7 @@ import PouchDB from "pouchdb"
 import { OptionsStateInteface } from "./store/module-options/state"
 import { colors } from "quasar"
 import { tipsTricks } from "src/scripts/utilities/tipsTricks"
+import { shell } from "electron"
 
 @Component({
   components: {
@@ -23,6 +24,7 @@ import { tipsTricks } from "src/scripts/utilities/tipsTricks"
 export default class App extends BaseClass {
   created () {
     window.addEventListener("auxclick", this.reactToMiddleClick)
+    window.addEventListener("click", this.openWysiwygLink)
 
     document.body.onmousedown = function (e) {
       if (e.button === 1) {
@@ -34,6 +36,15 @@ export default class App extends BaseClass {
     this.loadSettings().catch(e => console.log(e))
     window.addEventListener("keydown", this.triggerKeyPush)
     this.loadHintPopup()
+  }
+
+  openWysiwygLink (event: MouseEvent) {
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    if (event.target && event.target.tagName.toLowerCase() === "a" && event.target.closest(".fieldWysiwyg")) {
+      // @ts-ignore
+      shell.openExternal(event.target.href).catch(e => console.log(e))
+    }
   }
 
   popupCheck = 0
@@ -70,8 +81,10 @@ export default class App extends BaseClass {
 
   @Watch("$route", { deep: true })
   onUrlChange () {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    this.starupNotif()
+    if (typeof this.starupNotif === "function") {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      this.starupNotif()
+    }
   }
 
   triggerKeyPush (e:any) {

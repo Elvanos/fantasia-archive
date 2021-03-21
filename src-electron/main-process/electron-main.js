@@ -1,4 +1,4 @@
-import { app, BrowserWindow, nativeTheme, Menu, MenuItem } from 'electron'
+import { app, BrowserWindow, nativeTheme, Menu, MenuItem, shell } from 'electron'
 
 try {
   if (process.platform === 'win32' && nativeTheme.shouldUseDarkColors === true) {
@@ -49,8 +49,9 @@ function createWindow () {
     event.preventDefault()
   })
 
- mainWindow.webContents.on('new-window', event => {
+ mainWindow.webContents.on('new-window',  (event, url) => {
     event.preventDefault()
+     shell.openExternal(url)
   })
 
   mainWindow.webContents.on('context-menu', (event, params) => {

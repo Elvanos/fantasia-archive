@@ -4,6 +4,7 @@
   "description": "A database manager for world building",
   "productName": "Fantasia archive",
   "author": "Elvanos <elvanos66@gmail.com>",
+  "license": "GNU GENERAL PUBLIC LICENSE",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",

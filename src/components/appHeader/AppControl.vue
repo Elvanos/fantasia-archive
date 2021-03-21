@@ -71,6 +71,12 @@
       @trigger-dialog-close="tipsTricksDialogClose"
     />
 
+    <!-- License dialog -->
+    <licenseDialog
+      :dialog-trigger="licenseDialogTrigger"
+      @trigger-dialog-close="licenseDialogClose"
+    />
+
     <q-btn-group
       flat
       class="AppControl__buttons"
@@ -330,6 +336,20 @@
               </q-item-section>
             </q-item>
 
+            <q-item
+              @click="licenseAssignUID"
+              v-close-popup
+              clickable
+              active
+              active-class="bg-gunmetal-light text-cultured"
+              class="noHigh"
+              >
+              <q-item-section>License</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-script-text-outline" />
+              </q-item-section>
+            </q-item>
+
             <q-separator dark />
 
             <q-item
@@ -372,6 +392,7 @@ import advancedSearchGuideDialog from "src/components/dialogs/AdvancedSearchGuid
 import newDocumentDialog from "src/components/dialogs/NewDocument.vue"
 import existingDocumentDialog from "src/components/dialogs/ExistingDocument.vue"
 import tipsTricksTriviaDialog from "src/components/dialogs/TipsTricksTrivia.vue"
+import licenseDialog from "src/components/dialogs/License.vue"
 
 import { Loading, QSpinnerGears } from "quasar"
 
@@ -393,7 +414,8 @@ import appLogo from "src/assets/appLogo.png"
     programSettingsDialog,
     newDocumentDialog,
     existingDocumentDialog,
-    tipsTricksTriviaDialog
+    tipsTricksTriviaDialog,
+    licenseDialog
   }
 })
 export default class AppControl extends BaseClass {
@@ -586,6 +608,19 @@ export default class AppControl extends BaseClass {
 
   tipsTricksAssignUID () {
     this.tipsTricksDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
+  // License dialog
+  /****************************************************************/
+
+  licenseDialogTrigger: string | false = false
+  licenseDialogClose () {
+    this.licenseDialogTrigger = false
+  }
+
+  licenseAssignUID () {
+    this.licenseDialogTrigger = this.generateUID()
   }
 }
 </script>
