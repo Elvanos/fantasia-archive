@@ -129,7 +129,7 @@ export const defaultKeybinds = [
     which: 78,
     editable: true,
     id: "addUnderParent",
-    tooltip: "Add a new document with currently opened one as parent"
+    tooltip: "Add a new document with the currently opened one as a parent"
   },
 
   // Delete document - CTRL + D

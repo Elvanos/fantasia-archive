@@ -19,6 +19,7 @@
 - Globally changed a typo in the "Connected to myths. legends and stories" field
 - Globally changed a typo in the tooltip of the "Tags" field
 - Globally changed a typo in the tooltip of "Scientifical" to "Scientific"
+- Fixed a typo in "Add under parent" strings
 - Reworded and fixed typos in the Single and Multi relationship field tooltips
 - Fixed horizontal scrollbar looks and functionality
 - Fixed a bug that was causing keybinds to register and affect the UI even if a popup was opened over it
