@@ -585,6 +585,9 @@ export default class ProgramSettings extends DialogBase {
   // DIALOG CONTROL
   /****************************************************************/
 
+  /**
+   * React to dialog opening request
+   */
   @Watch("dialogTrigger")
   openDialog (val: string|false) {
     if (val) {
@@ -594,25 +597,59 @@ export default class ProgramSettings extends DialogBase {
       this.SSET_setDialogState(true)
       this.dialogModel = true
       this.activeTab = "uiSettings"
-      this.retrieveOptions()
+      this.options = extend(true, {}, this.SGET_options)
       this.mapKeybinds()
     }
   }
 
-  thumbStyle ={
-    right: "-40px",
-    borderRadius: "5px",
-    backgroundColor: "#61a2bd",
-    width: "5px",
-    opacity: 1
-  }
-
+  /**
+   * Currently active tab model of the options\
+   * "uiSettings" by default
+   */
   activeTab = "uiSettings"
+
+  /**
+   * Save settings and keybings
+   */
+  saveSettings () {
+    const optionsSnapShot: OptionsStateInteface = extend(true, {}, this.options)
+    optionsSnapShot.userKeybindList = []
+
+    this.keybindList.forEach(e => {
+      // Deregister all custom user keybinds
+      this.SSET_deregisterUserKeybind({
+        id: e.id,
+        altKey: e.defaultKeybind.altKey,
+        ctrlKey: e.defaultKeybind.ctrlKey,
+        shiftKey: e.defaultKeybind.shiftKey,
+        which: e.defaultKeybind.which
+      })
+
+      // Re-register new user keybinds if there are any present
+      if (e.userKeybind && e.userKeybind.which) {
+        const tempkey = {
+          id: e.id,
+          altKey: e.userKeybind.altKey,
+          ctrlKey: e.userKeybind.ctrlKey,
+          shiftKey: e.userKeybind.shiftKey,
+          which: e.userKeybind.which
+        }
+
+        optionsSnapShot.userKeybindList.push(tempkey)
+        this.SSET_registerUserKeybind(tempkey)
+      }
+    })
+
+    this.SSET_options(optionsSnapShot)
+  }
 
   /****************************************************************/
   // OPTIONS TAB
   /****************************************************************/
 
+  /**
+   * Default options list state
+   */
   options: OptionsStateInteface = {
     _id: "settings",
     darkMode: false,
@@ -640,50 +677,20 @@ export default class ProgramSettings extends DialogBase {
     userKeybindList: []
   }
 
-  retrieveOptions () {
-    const optionsSnapShot: OptionsStateInteface = extend(true, {}, this.SGET_options)
-
-    this.options = optionsSnapShot
-  }
-
-  saveSettings () {
-    const optionsSnapShot: OptionsStateInteface = extend(true, {}, this.options)
-    optionsSnapShot.userKeybindList = []
-
-    this.keybindList.forEach(e => {
-      this.SSET_deregisterUserKeybind({
-        id: e.id,
-        altKey: e.defaultKeybind.altKey,
-        ctrlKey: e.defaultKeybind.ctrlKey,
-        shiftKey: e.defaultKeybind.shiftKey,
-        which: e.defaultKeybind.which
-      })
-
-      if (e.userKeybind && e.userKeybind.which) {
-        const tempkey = {
-          id: e.id,
-          altKey: e.userKeybind.altKey,
-          ctrlKey: e.userKeybind.ctrlKey,
-          shiftKey: e.userKeybind.shiftKey,
-          which: e.userKeybind.which
-        }
-
-        optionsSnapShot.userKeybindList.push(tempkey)
-        this.SSET_registerUserKeybind(tempkey)
-      }
-    })
-
-    this.SSET_options(optionsSnapShot)
-  }
-
   /****************************************************************/
-  // KEYBDINS MANAGEMENT
+  // KEYBINDS MANAGEMENT
   /****************************************************************/
 
+  /**
+   * Keybinds table pagination settings
+   */
   pagination = {
     rowsPerPage: 0
   }
 
+  /**
+   * Keybinds table settings
+   */
   keybindListCollums = [
     {
       name: "name",
@@ -708,19 +715,50 @@ export default class ProgramSettings extends DialogBase {
     }
   ]
 
+  /**
+   * Keybinds table string filter
+   */
   filter = ""
 
+  /**
+   * Temporary keybind string value entered by the user
+   * EG: "CTRL + V"
+   */
   tempKeybindString = ""
+
+  /**
+   * Temporary keybind object details entered by the user
+   */
   tempKeybindData = null as any
+
+  /**
+   * Determines if any change has been done to the input entered by the user after it was lodead
+   */
   tempHasChange = false
 
+  /**
+   * A list of all keybinds
+   */
   keybindList: any[] = []
 
+  /**
+   * Determines if the keybinds popup has any error right now
+   */
   keybindError = false
+
+  /**
+   * Current error message
+   */
   keybindErrorMessage = ""
 
+  /**
+   * Temporary variable for holding on to currently active row data
+   */
   currentRowData = {} as any
 
+  /**
+   * Resets the particular keybind
+   */
   async resetKeybind () {
     this.tempKeybindString = ""
     this.tempKeybindData = null
@@ -737,6 +775,9 @@ export default class ProgramSettings extends DialogBase {
     this.keybindList = temp
   }
 
+  /**
+   * Sets the particular keybind
+   */
   async setKeybind () {
     this.currentRowData.userKeybind = this.tempKeybindData
     const temp: any[] = extend(true, [], this.keybindList)
@@ -748,10 +789,16 @@ export default class ProgramSettings extends DialogBase {
     this.keybindList = temp
   }
 
+  /**
+   * Process all needed actions after the keybind window popup closes
+   */
   processKeybindSetting () {
     window.removeEventListener("keydown", this.triggerKeyPush)
   }
 
+  /**
+   * Process all needed actions before the keybind window popup opens
+   */
   prepareKeybindSetting (row: any) {
     this.keybindError = false
     this.tempHasChange = false
@@ -761,75 +808,14 @@ export default class ProgramSettings extends DialogBase {
     window.addEventListener("keydown", this.triggerKeyPush)
   }
 
+  /**
+   * Register keybind input for the keybind popup
+   */
   triggerKeyPush (e:any) {
     this.keybindError = false
 
     const ignoredKeys = [16, 17, 18, 27]
-    const allowedKeys = [
-      186,
-      187,
-      188,
-      189,
-      190,
-      191,
-      192,
-      219,
-      220,
-      221,
-      222,
-      112,
-      113,
-      114,
-      115,
-      116,
-      117,
-      118,
-      119,
-      120,
-      121,
-      122,
-      123,
-      37,
-      38,
-      39,
-      40,
-      48,
-      49,
-      50,
-      51,
-      52,
-      53,
-      54,
-      55,
-      56,
-      57,
-      65,
-      66,
-      67,
-      68,
-      69,
-      70,
-      71,
-      72,
-      73,
-      74,
-      75,
-      76,
-      77,
-      78,
-      79,
-      80,
-      81,
-      82,
-      83,
-      84,
-      85,
-      86,
-      87,
-      88,
-      89,
-      90
-    ]
+    const allowedKeys = [186, 187, 188, 189, 190, 191, 192, 219, 220, 221, 222, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 37, 38, 39, 40, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90]
 
     // Prevent all non-permitted key presses
     if ((e?.altKey || e?.ctrlKey) && e?.keyCode && !ignoredKeys.includes(e.which)) {
@@ -899,6 +885,9 @@ export default class ProgramSettings extends DialogBase {
     }
   }
 
+  /**
+   * Map all existing keybinds to something useable for the table
+   */
   mapKeybinds () {
     this.keybindList = this.SGET_getCurrentKeyBindData.defaults.map((keybind, index) => {
       return {

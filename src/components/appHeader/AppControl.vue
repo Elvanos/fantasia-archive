@@ -1,7 +1,7 @@
 <template>
 
   <div
-    :class="{'AppControl': isProject}"
+    :class="{'AppControl': !isFrontpage}"
   >
 
     <!-- New document dialog -->
@@ -378,7 +378,7 @@
 
 <script lang="ts">
 
-import { Component, Prop, Watch } from "vue-property-decorator"
+import { Component, Watch } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
 import projectCloseCheckDialog from "src/components/dialogs/ProjectCloseCheck.vue"
@@ -395,9 +395,7 @@ import tipsTricksTriviaDialog from "src/components/dialogs/TipsTricksTrivia.vue"
 import licenseDialog from "src/components/dialogs/License.vue"
 
 import { Loading, QSpinnerGears } from "quasar"
-
 import { retrieveCurrentProjectName, exportProject } from "src/scripts/projectManagement/projectManagent"
-
 import { toggleDevTools } from "src/scripts/utilities/devTools"
 
 import appLogo from "src/assets/appLogo.png"
@@ -419,20 +417,92 @@ import appLogo from "src/assets/appLogo.png"
   }
 })
 export default class AppControl extends BaseClass {
-  @Prop() readonly isProject!: boolean
+  /****************************************************************/
+  // Import handling
+  /****************************************************************/
 
+  /**
+   * Toggles the developer tools on and off
+   */
   toggleDevTools = toggleDevTools
-  retrieveCurrentProjectName = retrieveCurrentProjectName
-  projectExists: undefined | string | boolean = false
-  isFrontpage = true
-  isProjectPage = true
-  projectName = ""
 
+  /**
+   * Retrieves the current project name
+   */
+  retrieveCurrentProjectName = retrieveCurrentProjectName
+
+  /**
+   * Just an image
+   */
   appLogo = appLogo
+
+  /****************************************************************/
+  // Basic component functionality
+  /****************************************************************/
+
+  /**
+   * Determines if the project exists or not
+   */
+  projectExists: undefined | string | boolean = false
+
+  /**
+   * Determines if we are on frontpage or not
+   */
+  isFrontpage = true
+
+  /**
+   * Determines if we are on project page or not
+   */
+  isProjectPage = true
+
+  /**
+   * Current project name
+   */
+  projectName = ""
 
   created () {
     this.checkProjectStatus().catch(e => console.log(e))
   }
+
+  async checkProjectStatus () {
+    this.projectName = await retrieveCurrentProjectName()
+    this.projectExists = !!(await retrieveCurrentProjectName())
+    this.isFrontpage = (this.$route.path === "/")
+    this.isProjectPage = (this.$route.path === "/project")
+  }
+
+  /****************************************************************/
+  // Local keybinds
+  /****************************************************************/
+
+  @Watch("SGET_getCurrentKeyBindData", { deep: true })
+  processKeyPush () {
+    // Keybind cheatsheet
+    if (this.determineKeyBind("openKeybindsCheatsheet") && !this.SGET_getDialogsState) {
+      this.keybindsDialogAssignUID()
+    }
+
+    // App options
+    if (this.determineKeyBind("openAppOptions") && !this.SGET_getDialogsState) {
+      this.programSettingsDialogAssignUID()
+    }
+  }
+
+  /****************************************************************/
+  // Navigate to project page action
+  /****************************************************************/
+
+  navigateToProjectPage () {
+    this.$router.push({ path: "/project" }).catch((e: {name: string}) => {
+      if (e && e.name !== "NavigationDuplicated") {
+        console.log(e)
+      }
+    })
+  }
+
+  /****************************************************************/
+  // Export project action
+  /****************************************************************/
 
   async commenceExport () {
     const projectName = await retrieveCurrentProjectName()
@@ -448,12 +518,9 @@ export default class AppControl extends BaseClass {
     exportProject(projectName, Loading, setup, this.$q)
   }
 
-  async checkProjectStatus () {
-    this.projectName = await retrieveCurrentProjectName()
-    this.projectExists = !!(await retrieveCurrentProjectName())
-    this.isFrontpage = (this.$route.path === "/")
-    this.isProjectPage = (this.$route.path === "/project")
-  }
+  /****************************************************************/
+  // Close project dialog
+  /****************************************************************/
 
   projectCloseCheckDialogTrigger: string | false = false
   projectCloseCheckDialogClose () {
@@ -464,13 +531,9 @@ export default class AppControl extends BaseClass {
     this.projectCloseCheckDialogTrigger = this.generateUID()
   }
 
-  navigateToProjectPage () {
-    this.$router.push({ path: "/project" }).catch((e: {name: string}) => {
-      if (e && e.name !== "NavigationDuplicated") {
-        console.log(e)
-      }
-    })
-  }
+  /****************************************************************/
+  // Import project dialog
+  /****************************************************************/
 
   importProjectDialogTrigger: string | false = false
   importProjectDialogClose () {
@@ -481,6 +544,10 @@ export default class AppControl extends BaseClass {
     this.importProjectDialogTrigger = this.generateUID()
   }
 
+  /****************************************************************/
+  // New project dialog
+  /****************************************************************/
+
   newProjectDialogTrigger: string | false = false
   newProjectDialogClose () {
     this.newProjectDialogTrigger = false
@@ -488,22 +555,6 @@ export default class AppControl extends BaseClass {
 
   newProjectAssignUID () {
     this.newProjectDialogTrigger = this.generateUID()
-  }
-
-  /**
-   * Local keybinds
-   */
-  @Watch("SGET_getCurrentKeyBindData", { deep: true })
-  processKeyPush () {
-    // Keybind cheatsheet
-    if (this.determineKeyBind("openKeybindsCheatsheet") && !this.SGET_getDialogsState) {
-      this.keybindsDialogAssignUID()
-    }
-
-    // App options
-    if (this.determineKeyBind("openAppOptions") && !this.SGET_getDialogsState) {
-      this.programSettingsDialogAssignUID()
-    }
   }
 
   /****************************************************************/

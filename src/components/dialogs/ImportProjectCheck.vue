@@ -51,13 +51,16 @@ import { Loading, QSpinnerGears } from "quasar"
   components: { }
 })
 export default class ImportProjectCheckDialog extends DialogBase {
+  /**
+   * React to dialog opening request
+   */
   @Watch("dialogTrigger")
-  async openDialog (val: string|false) {
+  async checkForOpenedProject (val: string|false) {
     if (val) {
       const projectName = await retrieveCurrentProjectName()
 
       if (projectName) {
-        this.checkForCloseOpenedDocument()
+        this.openDialog()
       }
       else {
         this.importProject()
@@ -65,7 +68,10 @@ export default class ImportProjectCheckDialog extends DialogBase {
     }
   }
 
-  checkForCloseOpenedDocument () {
+  /**
+   * Open the the dialog if project is present on the window
+   */
+  openDialog () {
     if (this.SGET_getDialogsState) {
       return
     }
@@ -73,6 +79,9 @@ export default class ImportProjectCheckDialog extends DialogBase {
     this.dialogModel = true
   }
 
+  /**
+  * Import a new project
+  */
   importProject () {
     const setup = {
       message: "<h4>Importing selected project...</h4>",
@@ -87,6 +96,9 @@ export default class ImportProjectCheckDialog extends DialogBase {
     importExistingProject(this.$router, Loading, setup, this.$q, this)
   }
 
+  /**
+   * Export the current project
+   */
   async commenceExport () {
     const projectName = await retrieveCurrentProjectName()
     const setup = {

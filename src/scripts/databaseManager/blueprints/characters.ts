@@ -246,7 +246,7 @@ export const charactersBlueprint: I_Blueprint = {
       icon: "fas fa-fist-raised",
       sizing: 3,
       predefinedSelectValues: [
-        /*
+
         "0 - Civilian",
         "1 - Trainee / Athletic civilian",
         "2 - Trained soldier / Weak magic user",
@@ -263,7 +263,7 @@ export const charactersBlueprint: I_Blueprint = {
         "13 - World-shaping god / Powerful ascendant / Strong outerplanar entity",
         "14 - New transcendant / Genius ascendant / Powerful outerplanar entity",
         "15 - Established transcendant / Prodigy ascendant / Ancient outerplanar entity",
-        "16 & Above - Off the scale / Impossible to even categorize" */
+        "16 & Above - Off the scale / Impossible to even categorize"
       ]
     },
     {

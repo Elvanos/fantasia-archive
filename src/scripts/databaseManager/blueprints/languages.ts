@@ -117,7 +117,7 @@ export const languagesBlueprint: I_Blueprint = {
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "languages",
-        connectedField: "predecessorLanguages"
+        connectedField: "followingLanguages"
       }
     },
     {
@@ -128,7 +128,7 @@ export const languagesBlueprint: I_Blueprint = {
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "languages",
-        connectedField: "followingLanguages"
+        connectedField: "predecessorLanguages"
       }
     },
     {

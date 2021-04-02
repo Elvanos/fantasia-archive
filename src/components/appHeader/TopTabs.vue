@@ -25,7 +25,7 @@
         enter-active-class="animated fadeIn"
         leave-active-class="animated fadeOut"
         appear
-        :duration="150">
+        :duration="50">
 
         <q-route-tab
           :ripple="false"
@@ -35,7 +35,13 @@
           :icon="(retrieveFieldValue(document,'categorySwitch') ? 'fas fa-folder-open' : document.icon)"
           :label="retrieveFieldValue(document,'name')"
           :style="`color: ${retrieveFieldValue(document,'documentColor')};`"
-          :class="[{'isBold': (retrieveFieldValue(document,'documentColor') !== '#ffffff' && retrieveFieldValue(document,'documentColor') !== '#fff') && retrieveFieldValue(document,'documentColor') !== ''}]"
+          :class="[
+            {'isBold':
+              (
+                retrieveFieldValue(document,'documentColor') !== '#ffffff' &&
+                retrieveFieldValue(document,'documentColor') !== '#fff'
+              ) &&
+              retrieveFieldValue(document,'documentColor') !== ''}]"
           :alert="document.hasEdits"
           alert-icon="mdi-feather"
           @click.prevent.middle="tryCloseTab(document)"
@@ -44,6 +50,8 @@
               :delay="700"
             >
               {{retrieveFieldValue(document,'name')}}
+              <br>
+              <span class="text-caption">Middle mouse button to close</span>
             </q-tooltip>
             <q-btn
               round
@@ -67,11 +75,10 @@
 
 <script lang="ts">
 
-import { I_KeyPressObject } from "src/interfaces/I_KeypressObject"
-
-import { Component, Watch, Prop } from "vue-property-decorator"
-
 import BaseClass from "src/BaseClass"
+
+import { Component, Watch } from "vue-property-decorator"
+
 import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
 import closeDocumentCheckDialog from "src/components/dialogs/CloseDocumentCheck.vue"
 
@@ -79,33 +86,22 @@ import closeDocumentCheckDialog from "src/components/dialogs/CloseDocumentCheck.
   components: { closeDocumentCheckDialog }
 })
 export default class TopTabs extends BaseClass {
+  /****************************************************************/
+  // App options
+  /****************************************************************/
+
+  /**
+   * Determines if the tabs have text shadow or not
+   */
   textShadow = false
 
+  /**
+   * Watch changes on options
+   */
   @Watch("SGET_options", { immediate: true, deep: true })
   onSettingsChange () {
     const options = this.SGET_options
     this.textShadow = options.textShadow
-  }
-
-  @Watch("SGET_allOpenedDocuments", { deep: true })
-  reactToDocumentListChange (val: {docs: I_OpenedDocument[]}, oldVal: {docs: I_OpenedDocument[]}) {
-    this.localDocuments = []
-    this.localDocuments = val.docs
-
-    this.refreshRoute()
-  }
-
-  localDocuments: I_OpenedDocument[] = []
-
-  @Prop() readonly pushedKey!: I_KeyPressObject
-
-  closeDocumentCheckDialogTrigger: string | false = false
-  closeDocumentCheckDialogClose () {
-    this.closeDocumentCheckDialogTrigger = false
-  }
-
-  closeDocumentCheckDialogAssignUID () {
-    this.closeDocumentCheckDialogTrigger = this.generateUID()
   }
 
   /****************************************************************/
@@ -133,8 +129,35 @@ export default class TopTabs extends BaseClass {
     }
   }
 
+  /****************************************************************/
+  // Tab management
+  /****************************************************************/
+
+  /**
+   * Refresh the local reference whenever something gets changed
+   */
+  @Watch("SGET_allOpenedDocuments", { deep: true })
+  reactToDocumentListChange (val: {docs: I_OpenedDocument[]}, oldVal: {docs: I_OpenedDocument[]}) {
+    this.localDocuments = []
+    this.localDocuments = val.docs
+
+    // Re-check the route after a change
+    this.refreshRoute()
+  }
+
+  /**
+   * Local reference to the opened document list
+   */
+  localDocuments: I_OpenedDocument[] = []
+
+  /**
+   * Current document to be closed
+   */
   dialogDoc = null as unknown as I_OpenedDocument
 
+  /**
+   * Attempts to close the document being closed
+   */
   tryCloseTab (doc?: I_OpenedDocument) {
     const matchingDocument = this.findRequestedOrActiveDocument(doc)
 
@@ -144,6 +167,9 @@ export default class TopTabs extends BaseClass {
     }
   }
 
+  /**
+   * Attempt to navigate to next tab
+   */
   goToNextTab () {
     let index = -1
     const matchingDocument = this.localDocuments.find((e, i) => {
@@ -167,6 +193,9 @@ export default class TopTabs extends BaseClass {
     }
   }
 
+  /**
+   * Attempt to navigate to previous tab
+   */
   goToPreviousTab () {
     let index = -1
     const matchingDocument = this.localDocuments.find((e, i) => {
@@ -189,6 +218,19 @@ export default class TopTabs extends BaseClass {
         }
       })
     }
+  }
+
+  /****************************************************************/
+  // Close document dialog
+  /****************************************************************/
+
+  closeDocumentCheckDialogTrigger: string | false = false
+  closeDocumentCheckDialogClose () {
+    this.closeDocumentCheckDialogTrigger = false
+  }
+
+  closeDocumentCheckDialogAssignUID () {
+    this.closeDocumentCheckDialogTrigger = this.generateUID()
   }
 }
 </script>

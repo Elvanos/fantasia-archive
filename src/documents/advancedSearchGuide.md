@@ -75,6 +75,7 @@ This feature is meant mostly for those in need of full-scale search that can cra
   - `:` - Symbol for the division between the field-name and field value
 - **If your filter-term contained whitespaces, replace them with the `-` symbol**
   - Example: You wish to search for a field called `Local Currencies` that contains `Canadian Dollars` as value, to fully match this tag, you will need to type `%local-currencies:canadian-dollars`
+- **It is possible to do a full-text search, checking all fields for the desired text by doing the following: `%:canadian-dollars`**
 - **A list of fields/field types the full-search doesn't work with:**
   - The `Break` field type (these are the big titles present throughout the document)
   - The `Tags` field type (this one is covered with a more sophisticated tag filter)

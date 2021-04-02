@@ -153,7 +153,7 @@ export const racesBlueprint: I_Blueprint = {
       predefinedSelectValues: [
         "Amphibian",
         "Animal",
-        "Atrificial",
+        "Artificial",
         "Bacteria",
         "Bird",
         "Draconoid",

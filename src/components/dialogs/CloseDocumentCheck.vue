@@ -35,6 +35,9 @@ import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
   components: { }
 })
 export default class CloseDocumentCheckDialog extends DialogBase {
+  /**
+   * React to dialog opening request
+   */
   @Watch("dialogTrigger")
   openDialog (val: string|false) {
     if (val) {
@@ -42,8 +45,14 @@ export default class CloseDocumentCheckDialog extends DialogBase {
     }
   }
 
+  /**
+   * Current document being processed by the dialog
+   */
   @Prop() readonly dialogDocument!: I_OpenedDocument
 
+  /**
+   * Determine if the document has edits or not. Based on this either skip this dialog altogether or show it.
+   */
   checkForCloseOpenedDocument () {
     const input = this.dialogDocument
     if (input?.hasEdits) {
@@ -58,12 +67,15 @@ export default class CloseDocumentCheckDialog extends DialogBase {
     }
   }
 
+  /**
+   * Closes the document and removes it from the list
+   */
   closeDocument (input: I_OpenedDocument) {
     const dataPass = { doc: input, treeAction: false }
+    this.SSET_removeOpenedDocument(dataPass)
+
     this.dialogModel = false
     this.SSET_setDialogState(false)
-
-    this.SSET_removeOpenedDocument(dataPass)
   }
 }
 </script>

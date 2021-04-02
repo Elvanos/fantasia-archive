@@ -50,6 +50,9 @@ import DialogBase from "src/components/dialogs/_DialogBase"
   components: { }
 })
 export default class ChangeLog extends DialogBase {
+  /**
+   * React to dialog opening request
+   */
   @Watch("dialogTrigger")
   openDialog (val: string|false) {
     if (val) {
@@ -61,15 +64,10 @@ export default class ChangeLog extends DialogBase {
     }
   }
 
+  /**
+   * An array of string with the trivia
+   */
   tipsTricks = tipsTricks
-
-  thumbStyle ={
-    right: "-40px",
-    borderRadius: "5px",
-    backgroundColor: "#61a2bd",
-    width: "5px",
-    opacity: 1
-  }
 }
 </script>
 

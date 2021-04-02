@@ -3,6 +3,28 @@
 
 ---
 
+## 0.1.5
+
+### Known issues
+
+- When creating a brand new project, Fantasia Archive sometimes doesn't load the default categories in the left hierarchical tree. A temporary workaround before the issue is fixed is restarting the program - the project stays intact, can be normally edited no data loss occurs.
+- Some users report that dialog (popups) don't function the very first time you start FA. This is solved by restarting the application. The bug doesn't seem to appear again once FA has been started at least once before.
+
+### Bugfixes
+
+- Fixed a typo in `Type of being` field in the `Races/Species` document type
+- Updated advanced search guide with missing information about full-text search
+- Changes a small bug when the `New Object` dialog wasn't respecting option changes being done in the same session of the program being opened
+
+### New features
+
+### QoL adjustments
+
+- Updated fullscreen editor looks to work more like a proper document editor
+- Made the app a bit more "snappy" by decreasing animation lengths when transitioning between documents
+
+---
+
 ## 0.1.4
 
 ### Known issues

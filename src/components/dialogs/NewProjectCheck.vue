@@ -68,6 +68,9 @@ import { Loading, QSpinnerGears } from "quasar"
   components: { }
 })
 export default class ImportProjectCheckDialog extends DialogBase {
+  /**
+   * React to dialog opening request
+   */
   @Watch("dialogTrigger")
   async openDialog (val: string|false) {
     if (val) {
@@ -86,10 +89,19 @@ export default class ImportProjectCheckDialog extends DialogBase {
     }
   }
 
+  /**
+   * Determines if any project currently exists or not
+   */
   projectExists: undefined | string | boolean = false
 
+  /**
+   * Model for the new project name
+   */
   newProjectName = ""
 
+  /**
+   * Create new project
+   */
   createNewProject () {
     Loading.show({
       message: "<h4>Setting up a new project...</h4>",
@@ -104,6 +116,9 @@ export default class ImportProjectCheckDialog extends DialogBase {
     createNewProject(this.newProjectName, this.$router, this.$q, this).catch(e => console.log(e))
   }
 
+  /**
+   * Export current project
+   */
   async commenceExport () {
     const projectName = await retrieveCurrentProjectName()
     const setup = {

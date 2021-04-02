@@ -18,7 +18,7 @@
       :class="{'minimize': osSystem === 'darwin'}"
       dark
       size='sm'
-      @click="minimize">
+      @click="minimizeWindow">
         <q-icon name="mdi-window-minimize"></q-icon>
     </q-btn>
 
@@ -29,7 +29,7 @@
       :class="{'minMax': osSystem === 'darwin'}"
       dark
       size='sm'
-      @click="maximize">
+      @click="resizeWindow">
         <q-icon :name="(isMaximized)? 'mdi-window-restore' : 'mdi-window-maximize'"></q-icon>
     </q-btn>
 
@@ -61,37 +61,63 @@ import projectCloseCheckDialog from "src/components/dialogs/ProjectCloseCheck.vu
   components: { projectCloseCheckDialog }
 })
 export default class AppWindowButtons extends BaseClass {
+  /****************************************************************/
+  // Basic component functionality
+  /****************************************************************/
+
+  /**
+   * Determines if the window is maximed or not
+   */
   isMaximized = false
 
+  /**
+   * Gets the currently used OS
+   */
   osSystem = remote.process.platform
 
+  /**
+   * Currently opened window
+   */
+  currentWindow = remote.getCurrentWindow()
+
+  /**
+   * Checks if the window is currently maximized or not
+   */
+  checkIfMaximized () {
+    this.isMaximized = this.currentWindow.isMaximized()
+  }
+
+  /**
+   * Minimizes the current window
+   */
+  minimizeWindow () {
+    this.currentWindow.minimize()
+  }
+
+  /**
+   * Resizes the window to either smaller or maximized
+   */
+  resizeWindow () {
+    if (this.currentWindow.isMaximized()) {
+      this.currentWindow.unmaximize()
+    }
+    else {
+      this.currentWindow.maximize()
+    }
+  }
+
   created () {
-    window.addEventListener("resize", this.checkMaximized)
-    this.checkMaximized()
+    window.addEventListener("resize", this.checkIfMaximized)
+    this.checkIfMaximized()
   }
 
   destroyed () {
-    window.addEventListener("resize", this.checkMaximized)
+    window.addEventListener("resize", this.checkIfMaximized)
   }
 
-  checkMaximized () {
-    this.isMaximized = remote.getCurrentWindow().isMaximized()
-  }
-
-  minimize () {
-    remote.getCurrentWindow().minimize()
-  }
-
-  maximize () {
-    const win = remote.getCurrentWindow()
-
-    if (win.isMaximized()) {
-      win.unmaximize()
-    }
-    else {
-      win.maximize()
-    }
-  }
+  /****************************************************************/
+  // Close project dialog
+  /****************************************************************/
 
   projectCloseCheckDialogTrigger: string | false = false
   projectCloseCheckDialogClose () {

@@ -52,6 +52,9 @@ import DialogBase from "src/components/dialogs/_DialogBase"
   components: { }
 })
 export default class AboutApp extends DialogBase {
+  /**
+   * React to dialog opening request
+   */
   @Watch("dialogTrigger")
   openDialog (val: string|false) {
     if (val) {
@@ -63,12 +66,22 @@ export default class AboutApp extends DialogBase {
     }
   }
 
+  /**
+   * Current app version
+   * NOTE: Show Electon version in DEV mode instead of NPM package version
+   */
   appVersion = remote.app.getVersion()
 
+  /**
+   * Opens Discord link via browser
+   */
   openDiscordInviteLink () {
     shell.openExternal("https://discord.gg/JQDBvsN9Te").catch(e => console.log(e))
   }
 
+  /**
+   * Opens Patreon link via browser
+   */
   openPatreonLink () {
     shell.openExternal("https://www.patreon.com/elvanos").catch(e => console.log(e))
   }

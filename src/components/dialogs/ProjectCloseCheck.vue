@@ -16,7 +16,7 @@
         <div class="q-mb-md text-bold">Affected documents:</div>
         <q-list class="projectCloseDalogList">
           <q-item
-          v-for=" doc in openedDocs"
+          v-for=" doc in openedDocsWithEdits"
           :key="doc._id"
           clickable
           v-ripple
@@ -46,7 +46,7 @@
           :label="exitLabelText"
           color="secondary"
           v-close-popup
-          @click="checkModeAction" />
+          @click="determineModeAction" />
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -63,8 +63,25 @@ import { remote } from "electron"
   components: { }
 })
 export default class ProjectCloseCheck extends DialogBase {
+  /**
+   * React to dialog opening request
+   */
+  @Watch("dialogTrigger")
+  openDialog (val: string|false) {
+    if (val) {
+      this.SSET_setDialogState(true)
+      this.checkForDocumentsWithEdits()
+    }
+  }
+
+  /**
+   * Determines if the dialog should be used in application closing mode or in project closing mode
+   */
   @Prop() readonly dialogMode!: "appClose" | "projectClose"
 
+  /**
+   * Label text for the dialog
+   */
   get exitLabelText () {
     if (this.dialogMode === "appClose") {
       return "Exit app without saving"
@@ -75,42 +92,53 @@ export default class ProjectCloseCheck extends DialogBase {
     }
   }
 
-  @Watch("dialogTrigger")
-  openDialog (val: string|false) {
-    if (val) {
-      this.SSET_setDialogState(true)
-      this.checkForDocumentsWithEdits()
-    }
-  }
+  /**
+   * List of opened documents with edits in them
+   */
+  openedDocsWithEdits: I_OpenedDocument[]= []
 
-  openedDocs: I_OpenedDocument[]= []
-
+  /**
+   * Check if we have any documents with edit. If not, skip the dialog and proceed.
+   */
   checkForDocumentsWithEdits () {
-    this.openedDocs = this.SGET_allOpenedDocuments.docs.filter(doc => doc.hasEdits)
+    this.openedDocsWithEdits = this.SGET_allOpenedDocuments.docs.filter(doc => doc.hasEdits)
 
-    if (this.openedDocs.length > 0) {
+    if (this.openedDocsWithEdits.length > 0) {
       this.dialogModel = true
     }
     else {
-      this.checkModeAction()
+      this.determineModeAction()
     }
   }
 
-  checkModeAction () {
+  /**
+   * Decide what action to take depending on the dialog mode
+   */
+  determineModeAction () {
     if (this.dialogMode === "appClose") {
       this.closeApp()
     }
     if (this.dialogMode === "projectClose") {
-      this.SSET_resetDocuments()
-      this.triggerDialogClose()
-      this.$router.push({ path: "/" }).catch((e: {name: string}) => {
-        if (e && e.name !== "NavigationDuplicated") {
-          console.log(e)
-        }
-      })
+      this.closeProject()
     }
   }
 
+  /**
+   * Close the project and navigate to the intro screen
+   */
+  closeProject () {
+    this.SSET_resetDocuments()
+    this.triggerDialogClose()
+    this.$router.push({ path: "/" }).catch((e: {name: string}) => {
+      if (e && e.name !== "NavigationDuplicated") {
+        console.log(e)
+      }
+    })
+  }
+
+  /**
+   * Close app
+   */
   closeApp () {
     remote.getCurrentWindow().destroy()
   }

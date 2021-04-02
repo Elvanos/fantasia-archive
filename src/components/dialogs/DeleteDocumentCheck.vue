@@ -48,6 +48,9 @@ import PouchDB from "pouchdb"
   components: { }
 })
 export default class DeleteDocumentCheckDialog extends DialogBase {
+  /**
+   * React to dialog opening request
+   */
   @Watch("dialogTrigger")
   async openDialog (val: string|false) {
     if (val && this.SGET_allOpenedDocuments.docs.length > 0) {
@@ -61,8 +64,14 @@ export default class DeleteDocumentCheckDialog extends DialogBase {
     }
   }
 
+  /**
+   * Current document for deletion
+   */
   currentDocument = false as unknown as I_OpenedDocument
 
+  /**
+   * Delete the document
+   */
   async deleteDocument () {
     const CurrentObjectDB = new PouchDB(this.$route.params.type)
 

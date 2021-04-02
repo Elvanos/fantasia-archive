@@ -110,6 +110,13 @@ import { I_Blueprint } from "src/interfaces/I_Blueprint"
   components: { }
 })
 export default class ExistingDocumentDialog extends DialogBase {
+  /****************************************************************/
+  // DIALOG CONTROL
+  /****************************************************************/
+
+  /**
+   * React to dialog opening request
+   */
   @Watch("dialogTrigger")
   openDialog (val: string|false) {
     if (val) {
@@ -125,17 +132,117 @@ export default class ExistingDocumentDialog extends DialogBase {
     }
   }
 
-  existingObjectsBackupList = [] as I_ShortenedDocument[]
-  existingObjectList = [] as I_ShortenedDocument[]
+  /****************************************************************/
+  // COMPONENT SETTINGS
+  /****************************************************************/
+
+  /**
+   * Watch options and react to changes
+   */
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    this.reloadOptions()
+  }
+
+  /**
+   * Reloads local options
+   */
+  reloadOptions () {
+    this.closeWithSameClick = this.SGET_options.allowQuickPopupSameKeyClose
+    this.disableCloseAftertSelectQuickSearch = this.SGET_options.disableCloseAftertSelectQuickSearch
+    this.includeCategories = !this.SGET_options.disableQuickSearchCategoryPrecheck
+    this.textShadow = this.SGET_options.textShadow
+  }
+
+  /**
+   * Determines if the popup shouldnt close after a document is selected from the dropdown list
+   */
+  disableCloseAftertSelectQuickSearch = false
+
+  /**
+   * Determines if the popup is closeable with the same keybind that summoned it
+   */
+  closeWithSameClick = false
+
+  /**
+   * Determines if text shadow will be shows for accesiblity reasons or not
+   */
+  textShadow = false
+
+  /**
+   * A local lock that prevents double-triggering and instant re-closing of the dialog via keybinds
+   */
+  isCloseAbleViaKeybind = false
+
+  /****************************************************************/
+  // LOCAL KEYBINDS
+  /****************************************************************/
+
+  /**
+   * Local keybinds
+   */
+  @Watch("SGET_getCurrentKeyBindData", { deep: true })
+  processKeyPush () {
+    // Keybind cheatsheet
+    if (this.determineKeyBind("quickExistingDocument") && this.dialogModel && this.closeWithSameClick && this.isCloseAbleViaKeybind && this.SGET_getDialogsState) {
+      this.dialogModel = false
+      this.SSET_setDialogState(false)
+      // @ts-ignore
+      this.existingDocumentModel = null
+    }
+  }
+
+  /****************************************************************/
+  // PRE-FILTERING
+  /****************************************************************/
+
+  /**
+   * Model for pre-filtering via categories
+   */
+  includeCategories = true
+
+  /**
+   * React to the category checkbox changes
+   */
+  @Watch("includeCategories")
+  reactToCheckboxChange () {
+    this.preFilterDocuments()
+  }
+
+  /**
+   * Prefilter documents based on what is in the checkbox
+   */
+  preFilterDocuments () {
+    this.existingObjectPrefilteredList = this.existingObjectsFullList.filter(e => !((!this.includeCategories && e.isCategory)))
+  }
+
+  /****************************************************************/
+  // SELECT LIST MANAGEMENT
+  /****************************************************************/
+
+  /**
+   * Raw list of objects retrieved from the database
+   */
+  existingObjectPrefilteredList = [] as I_ShortenedDocument[]
+
+  /**
+   * Pre-filtered list based on the category inclussion or exlcussion
+   */
+  existingObjectsFullList = [] as I_ShortenedDocument[]
+
+  /**
+   * All currently loaded blueprints
+   */
   allDocumentBluePrints = [] as I_Blueprint[]
 
+  /**
+   * Set up up all data in to the dialog on popup load
+   */
   async populateExistingObjectDialog () {
     this.allDocumentBluePrints = this.SGET_allBlueprints
 
-    const allDocs = await this.retrieveAllDocuments()
-
-    this.existingObjectsBackupList = allDocs
-    this.filterDocuments()
+    this.existingObjectsFullList = await this.retrieveAllDocuments()
+    this.preFilterDocuments()
 
     await this.$nextTick()
 
@@ -148,10 +255,19 @@ export default class ExistingDocumentDialog extends DialogBase {
     this.isCloseAbleViaKeybind = true
   }
 
+  /**
+   * Currently being opened document
+   */
   existingDocumentModel = []
 
+  /**
+   * Filtered list of items
+   */
   filteredExistingInput = null as unknown as I_ShortenedDocument[]
 
+  /**
+   * Refocuses the first value in the selct upon filtering for intuitive keyboard control
+   */
   async refocusSelect () {
     await this.$nextTick()
     /*eslint-disable */
@@ -162,10 +278,18 @@ export default class ExistingDocumentDialog extends DialogBase {
     /* eslint-enable */
   }
 
+  /**
+   * Local list copty for filtering in order to not mess up the original list
+   */
+  listCopy: I_ShortenedDocument[] = []
+
+  /**
+   * Filter the pre-filtered list
+   */
   filterExistingSelect (val: string, update: (e: () => void) => void) {
     if (val === "") {
       update(() => {
-        this.filteredExistingInput = this.existingObjectList
+        this.filteredExistingInput = this.existingObjectPrefilteredList
         if (this.$refs.ref_existingDocument && this.filteredExistingInput.length > 0) {
           this.refocusSelect().catch(e => console.log(e))
         }
@@ -175,8 +299,8 @@ export default class ExistingDocumentDialog extends DialogBase {
 
     update(() => {
       const needle = val.toLowerCase()
-      const listCopy : I_ShortenedDocument[] = extend(true, [], this.existingObjectList)
-      this.filteredExistingInput = advancedDocumentFilter(needle, listCopy, this.allDocumentBluePrints, this.existingObjectsBackupList)
+      this.listCopy = extend(true, [], this.existingObjectPrefilteredList)
+      this.filteredExistingInput = advancedDocumentFilter(needle, this.listCopy, this.allDocumentBluePrints, this.existingObjectsFullList)
 
       if (this.$refs.ref_existingDocument && this.filteredExistingInput.length > 0) {
         this.refocusSelect().catch(e => console.log(e))
@@ -184,13 +308,24 @@ export default class ExistingDocumentDialog extends DialogBase {
     })
   }
 
+  /****************************************************************/
+  // TRIGGER ACTIONS
+  /****************************************************************/
+
+  /**
+   * Opened the existing input in two modes
+   * Either as a focus with closure of the dialog.
+   * Or as a background tab without closing of the dialog.
+   */
   async openExistingInput (e: I_ShortenedDocument[]) {
+    // Open document and close dialog
     if (!this.disableCloseAftertSelectQuickSearch) {
       this.dialogModel = false
       // @ts-ignore
       this.openExistingDocumentRoute(e[0])
       this.existingDocumentModel = []
     }
+    // Open document and DO NOT close the dialog
     else {
       // @ts-ignore
       this.existingDocumentModel = []
@@ -209,6 +344,9 @@ export default class ExistingDocumentDialog extends DialogBase {
     }
   }
 
+  /**
+   * Add new item under whatever document this was called from
+   */
   addNewItemUnderSelected (parent: any) {
     const routeObject = {
       _id: parent.type,
@@ -216,50 +354,6 @@ export default class ExistingDocumentDialog extends DialogBase {
     }
     // @ts-ignore
     this.addNewObjectRoute(routeObject)
-  }
-
-  disableCloseAftertSelectQuickSearch = false
-  closeWithSameClick = false
-  textShadow = false
-
-  @Watch("SGET_options", { immediate: true, deep: true })
-  onSettingsChange () {
-    this.reloadOptions()
-  }
-
-  reloadOptions () {
-    const options = this.SGET_options
-    this.closeWithSameClick = options.allowQuickPopupSameKeyClose
-    this.disableCloseAftertSelectQuickSearch = options.disableCloseAftertSelectQuickSearch
-    this.includeCategories = !options.disableQuickSearchCategoryPrecheck
-    this.textShadow = options.textShadow
-  }
-
-  includeCategories = true
-
-  @Watch("includeCategories")
-  reactToCheckboxChange () {
-    this.filterDocuments()
-  }
-
-  filterDocuments () {
-    this.existingObjectList = this.existingObjectsBackupList.filter(e => !((!this.includeCategories && e.isCategory)))
-  }
-
-  isCloseAbleViaKeybind = false
-
-  /**
-   * Local keybinds
-   */
-  @Watch("SGET_getCurrentKeyBindData", { deep: true })
-  processKeyPush () {
-    // Keybind cheatsheet
-    if (this.determineKeyBind("quickExistingDocument") && this.dialogModel && this.closeWithSameClick && this.isCloseAbleViaKeybind && this.SGET_getDialogsState) {
-      this.dialogModel = false
-      this.SSET_setDialogState(false)
-      // @ts-ignore
-      this.existingDocumentModel = null
-    }
   }
 }
 </script>

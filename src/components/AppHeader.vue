@@ -8,7 +8,6 @@
     <div class="appHeaderInner">
       <appControl
         class="appControl"
-        :is-project="isProject"
       />
       <topTabs
         class="topTabs"
@@ -21,7 +20,7 @@
 
 <script lang="ts">
 
-import { Component, Prop } from "vue-property-decorator"
+import { Component } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
 import topTabs from "src/components/appHeader/TopTabs.vue"
@@ -34,7 +33,6 @@ import appControl from "src/components/appHeader/AppControl.vue"
   }
 })
 export default class AppHeader extends BaseClass {
-  @Prop() readonly isProject!: boolean
 }
 </script>
 

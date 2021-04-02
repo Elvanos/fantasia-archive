@@ -58,7 +58,6 @@
 
 <script lang="ts">
 
-import { Component, Watch } from "vue-property-decorator"
 interface NewObjectDocument {
   label: string
   icon: string
@@ -66,11 +65,21 @@ interface NewObjectDocument {
   _id: string
   specialLabel: string
 }
+
+import { Component, Watch } from "vue-property-decorator"
 import DialogBase from "src/components/dialogs/_DialogBase"
+
 @Component({
   components: { }
 })
 export default class NewDocumentDialog extends DialogBase {
+  /****************************************************************/
+  // DIALOG CONTROL
+  /****************************************************************/
+
+  /**
+   * React to dialog opening request
+   */
   @Watch("dialogTrigger")
   openDialog (val: string|false) {
     if (val) {
@@ -81,13 +90,80 @@ export default class NewDocumentDialog extends DialogBase {
       this.SSET_setDialogState(true)
       this.dialogModel = true
       this.populateNewObjectDialog().catch(e => console.log(e))
+      this.reloadOptions()
     }
   }
 
+  /****************************************************************/
+  // COMPONENT SETTINGS
+  /****************************************************************/
+
+  /**
+   * Watch options and react to changes
+   */
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    this.reloadOptions()
+  }
+
+  /**
+   * Reloads local options
+   */
+  reloadOptions () {
+    this.closeWithSameClick = this.SGET_options.allowQuickPopupSameKeyClose
+    this.textShadow = this.SGET_options.textShadow
+  }
+
+  /**
+   * A local lock that prevents double-triggering and instant re-closing of the dialog via keybinds
+   */
+  isCloseAbleViaKeybind = false
+
+  /**
+   * Determines if the popup is closeable with the same keybind that summoned it
+   */
+  closeWithSameClick = false
+
+  /**
+   * Determines if text shadow will be shows for accesiblity reasons or not
+   */
+  textShadow = false
+
+  /****************************************************************/
+  // LOCAL KEYBINDS
+  /****************************************************************/
+
+  /**
+   * Local keybinds
+   */
+  @Watch("SGET_getCurrentKeyBindData", { deep: true })
+  processKeyPush () {
+    // Keybind cheatsheet
+    if (this.determineKeyBind("quickNewDocument") && this.dialogModel && this.closeWithSameClick && this.isCloseAbleViaKeybind && this.SGET_getDialogsState) {
+      this.dialogModel = false
+      this.SSET_setDialogState(false)
+      // @ts-ignore
+      this.existingDocumentModel = null
+    }
+  }
+
+  /****************************************************************/
+  // SELECT LIST MANAGEMENT
+  /****************************************************************/
+
+  /**
+   * List of all possible new objects
+   */
   newObjectList = [] as NewObjectDocument[]
 
+  /**
+   * Currently selected new object type
+   */
   newDocumentModel = null
 
+  /**
+   * Map the object types based on what is currently loaded into the blueprint list
+   */
   async populateNewObjectDialog () {
     // @ts-ignore
     this.newObjectList = this.SGET_allBlueprints.map(blueprint => {
@@ -110,8 +186,9 @@ export default class NewDocumentDialog extends DialogBase {
     this.isCloseAbleViaKeybind = true
   }
 
-  filteredNewInput = null as unknown as NewObjectDocument[]
-
+  /**
+   * Refocuses the first value in the selct upon filtering for intuitive keyboard control
+   */
   async refocusSelect () {
     await this.$nextTick()
     /*eslint-disable */
@@ -122,6 +199,14 @@ export default class NewDocumentDialog extends DialogBase {
     /* eslint-enable */
   }
 
+  /**
+   * Filtered list of new document types
+   */
+  filteredNewInput = null as unknown as NewObjectDocument[]
+
+  /**
+   * Filtering of the value list
+   */
   filterNewSelect (val: string, update: (e: () => void) => void) {
     if (val === "") {
       update(() => {
@@ -142,39 +227,17 @@ export default class NewDocumentDialog extends DialogBase {
     })
   }
 
+  /****************************************************************/
+  // TRIGGER ACTIONS
+  /****************************************************************/
+
+  /**
+   * Add new document
+   */
   triggerNewInput (e: NewObjectDocument) {
     this.dialogModel = false
     this.addNewObjectRoute(e)
     this.newDocumentModel = null
-  }
-
-  isCloseAbleViaKeybind = false
-  closeWithSameClick = false
-  textShadow = false
-
-  @Watch("SGET_options", { immediate: true, deep: true })
-  onSettingsChange () {
-    this.reloadOptions()
-  }
-
-  reloadOptions () {
-    const options = this.SGET_options
-    this.closeWithSameClick = options.allowQuickPopupSameKeyClose
-    this.textShadow = options.textShadow
-  }
-
-  /**
-   * Local keybinds
-   */
-  @Watch("SGET_getCurrentKeyBindData", { deep: true })
-  processKeyPush () {
-    // Keybind cheatsheet
-    if (this.determineKeyBind("quickNewDocument") && this.dialogModel && this.closeWithSameClick && this.isCloseAbleViaKeybind && this.SGET_getDialogsState) {
-      this.dialogModel = false
-      this.SSET_setDialogState(false)
-      // @ts-ignore
-      this.existingDocumentModel = null
-    }
   }
 }
 </script>

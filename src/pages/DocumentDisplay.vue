@@ -304,7 +304,7 @@ export default class PageDocumentDisplay extends BaseClass {
   async onDocChange () {
     this.checkHasEdits()
 
-    await this.sleep(300)
+    await this.sleep(100)
 
     const matchingDoc = this.findRequestedOrActiveDocument()
     if (matchingDoc && matchingDoc._id === this.currentData._id && !matchingDoc.hasEdits) {

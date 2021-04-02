@@ -59,16 +59,26 @@ import { I_KeyPressObject } from "src/interfaces/I_KeypressObject"
   components: { }
 })
 export default class KeybindCheatsheet extends DialogBase {
+  /**
+   * React to dialog opening request
+   */
   @Watch("dialogTrigger")
   openDialog (val: string|false) {
     if (val) {
       if (this.SGET_getDialogsState) {
         return
       }
+
       this.SSET_setDialogState(true)
       this.dialogModel = true
+
+      // Remap the cheetcheet based on available input settings
       this.localCheatSheet = this.SGET_getCurrentKeyBindData.defaults.map((bind, index) => {
-        const mappedKeybind = (this.SGET_getCurrentKeyBindData.userKeybinds[index] && this.SGET_getCurrentKeyBindData.userKeybinds[index].which)
+        const mappedKeybind = (
+          this.SGET_getCurrentKeyBindData.userKeybinds[index] &&
+          this.SGET_getCurrentKeyBindData.userKeybinds[index].which
+        )
+          // If user keybind
           ? {
             altKey: this.SGET_getCurrentKeyBindData.userKeybinds[index].altKey,
             ctrlKey: this.SGET_getCurrentKeyBindData.userKeybinds[index].ctrlKey,
@@ -78,6 +88,7 @@ export default class KeybindCheatsheet extends DialogBase {
             tooltip: bind.tooltip,
             note: bind.note
           }
+          // If default keybind
           : {
             altKey: bind.altKey,
             ctrlKey: bind.ctrlKey,
@@ -93,15 +104,10 @@ export default class KeybindCheatsheet extends DialogBase {
     }
   }
 
+  /**
+   * Local, remaped cheatsheet
+   */
   localCheatSheet: I_KeyPressObject[] = []
-
-  thumbStyle ={
-    right: "-40px",
-    borderRadius: "5px",
-    backgroundColor: "#61a2bd",
-    width: "5px",
-    opacity: 1
-  }
 }
 </script>
 
