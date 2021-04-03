@@ -106,17 +106,20 @@
 <script lang="ts">
 import { Component, Emit, Prop, Watch } from "vue-property-decorator"
 
-import BaseClass from "src/BaseClass"
+import FieldBase from "src/components/fields/_FieldBase"
 import { extend } from "quasar"
-
-import { I_ExtraFields } from "src/interfaces/I_Blueprint"
 
 @Component({
   components: { }
 })
-export default class Field_List extends BaseClass {
-  @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
+export default class Field_List extends FieldBase {
+  /****************************************************************/
+  // BASIC FIELD DATA
+  /****************************************************************/
 
+  /**
+   * Already existing value in the input field (IF one is there right now)
+   */
   @Prop({
     default: () => {
       return []
@@ -126,76 +129,59 @@ export default class Field_List extends BaseClass {
     affix?: string
   }[]
 
-  @Prop() readonly isNew!: boolean
+  /****************************************************************/
+  // INPUT HANDLING
+  /****************************************************************/
 
-  @Prop() readonly editMode!: boolean
-
-  isDarkMode = false
-  disableDocumentToolTips = false
-
-  @Watch("SGET_options", { immediate: true, deep: true })
-  onSettingsChange () {
-    const options = this.SGET_options
-    this.isDarkMode = options.darkMode
-    this.disableDocumentToolTips = options.disableDocumentToolTips
-  }
-
-  changedInput = false
-  localInput = [] as {
-    value: string
-    affix?: string
-  }[]
-
-  localExtraInput = []
-
+  /**
+   * Watch changes to the prefilled data already existing in the field and update local input accordingly
+   */
   @Watch("inputDataValue", { deep: true, immediate: true })
   reactToInputChanges () {
     this.localInput = (this.inputDataValue) ? this.inputDataValue : []
   }
 
-  get inputAffix () {
-    return (this.inputDataBluePrint?.predefinedListExtras?.affix) || ""
-  }
+  /**
+   * Model for the local input
+   */
+  localInput = [] as {
+    value: string
+    affix?: string
+  }[]
 
-  removeFromList (index: number) {
-    this.localInput.splice(index, 1)
-    this.signalInput()
-  }
-
-  get inputIcon () {
-    return this.inputDataBluePrint?.icon
-  }
-
-  get toolTip () {
-    return this.inputDataBluePrint?.tooltip
-  }
-
+  /**
+   * Determine if the input has any extra values attached to it or not
+   */
   get hasExtraInput () {
     // @ts-ignore
     this.localExtraInput = this.inputDataBluePrint?.predefinedListExtras?.extraSelectValueList
     return this.inputDataBluePrint?.predefinedListExtras?.extraSelectValueList
   }
 
-  @Emit()
-  signalInput () {
-    this.changedInput = true
+  /**
+   * List of extra input values
+   */
+  localExtraInput:string[] = []
 
-    const dataCopy: {
-      value: string
-      affix?: string
-    }[] = extend(true, [], this.localInput)
-
-    const returnValue = dataCopy.map(e => {
-      e.value = e.value.trim()
-      if (e.affix) {
-        e.affix = e.affix.trim()
-      }
-      return e
-    })
-
-    return returnValue
+  /**
+   * Label for the extra input
+   * EG: "Level" or "Skill tier"
+   */
+  get inputAffix () {
+    return (this.inputDataBluePrint?.predefinedListExtras?.affix) || ""
   }
 
+  /**
+   * Remove an existing row from the input list
+   */
+  removeFromList (index: number) {
+    this.localInput.splice(index, 1)
+    this.signalInput()
+  }
+
+  /**
+   * Adds new row to the input list
+   */
   async addNewInput () {
     this.localInput.push({
       value: "",
@@ -213,6 +199,28 @@ export default class Field_List extends BaseClass {
     }
 
     this.signalInput()
+  }
+
+  /**
+   * Signals the input change to the document body parent component
+   */
+  @Emit()
+  signalInput () {
+    const dataCopy: {
+      value: string
+      affix?: string
+    }[] = extend(true, [], this.localInput)
+
+    // Fix hanging whitespaces in inputs
+    const returnValue = dataCopy.map(e => {
+      e.value = e.value.trim()
+      if (e.affix) {
+        e.affix = e.affix.trim()
+      }
+      return e
+    })
+
+    return returnValue
   }
 }
 </script>

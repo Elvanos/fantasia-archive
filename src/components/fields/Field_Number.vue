@@ -43,49 +43,44 @@
 <script lang="ts">
 import { Component, Emit, Prop, Watch } from "vue-property-decorator"
 
-import BaseClass from "src/BaseClass"
-
-import { I_ExtraFields } from "src/interfaces/I_Blueprint"
+import FieldBase from "src/components/fields/_FieldBase"
 
 @Component({
   components: { }
 })
-export default class Field_Number extends BaseClass {
-  @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
+export default class Field_Number extends FieldBase {
+  /****************************************************************/
+  // BASIC FIELD DATA
+  /****************************************************************/
+
+  /**
+   * Already existing value in the input field (IF one is there right now)
+   */
   @Prop({ default: null }) readonly inputDataValue!: null|number
-  @Prop() readonly editMode!: boolean
-  @Prop() readonly isNew!: boolean
 
-  changedInput = false
-  localInput: null|number = null
+  /****************************************************************/
+  // INPUT HANDLING
+  /****************************************************************/
 
-  isDarkMode = false
-  disableDocumentToolTips = false
-
-  @Watch("SGET_options", { immediate: true, deep: true })
-  onSettingsChange () {
-    const options = this.SGET_options
-    this.isDarkMode = options.darkMode
-    this.disableDocumentToolTips = options.disableDocumentToolTips
-  }
-
-  @Emit()
-  signalInput () {
-    this.changedInput = true
-    return this.localInput
-  }
-
-  get inputIcon () {
-    return this.inputDataBluePrint?.icon
-  }
-
-  get toolTip () {
-    return this.inputDataBluePrint?.tooltip
-  }
-
+  /**
+   * Watch changes to the prefilled data already existing in the field and update local input accordingly
+   */
   @Watch("inputDataValue", { deep: true, immediate: true })
   reactToInputChanges () {
     this.localInput = this.inputDataValue
+  }
+
+  /**
+   * Model for the local input
+   */
+  localInput: null|number = null
+
+  /**
+   * Signals the input change to the document body parent component
+   */
+  @Emit()
+  signalInput () {
+    return this.localInput
   }
 }
 </script>

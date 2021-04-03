@@ -9,26 +9,14 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop } from "vue-property-decorator"
+import { Component } from "vue-property-decorator"
 
-import BaseClass from "src/BaseClass"
-
-import { I_ExtraFields } from "src/interfaces/I_Blueprint"
+import FieldBase from "src/components/fields/_FieldBase"
 
 @Component({
   components: { }
 })
-export default class Field_Text extends BaseClass {
-  @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
-  @Prop({ default: "" }) readonly inputDataValue!: string
-  @Prop() readonly editMode!: boolean
-  @Prop() readonly isNew!: boolean
+export default class Field_Text extends FieldBase {
 
-  get inputIcon () {
-    return this.inputDataBluePrint?.icon
-  }
-
-  changedInput = false
-  localInput = ""
 }
 </script>

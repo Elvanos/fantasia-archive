@@ -365,7 +365,7 @@ export default class PageDocumentDisplay extends BaseClass {
     this.SSET_addOpenedDocument(dataPass)
   }
 
-  async reactToFieldUpdate (inputData: string, field: I_ExtraFields) {
+  reactToFieldUpdate (inputData: string, field: I_ExtraFields) {
     // FIELD - Text
     if (field.type === "text") {
       this.currentData.hasEdits = true
@@ -474,8 +474,7 @@ export default class PageDocumentDisplay extends BaseClass {
       // @ts-ignore
       if (inputData.skipSave) {
         this.currentData.extraFields[indexToUpdate].value.skipSave = false
-        await this.triggerSaveDocument()
-        return
+        dataPass.doc.hasEdits = false
       }
 
       this.SSET_updateOpenedDocument(dataPass)
@@ -494,8 +493,7 @@ export default class PageDocumentDisplay extends BaseClass {
       // @ts-ignore
       if (inputData.skipSave) {
         this.currentData.extraFields[indexToUpdate].value.skipSave = false
-        await this.triggerSaveDocument()
-        return
+        dataPass.doc.hasEdits = false
       }
 
       this.SSET_updateOpenedDocument(dataPass)

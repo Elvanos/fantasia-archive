@@ -40,51 +40,53 @@
 <script lang="ts">
 import { Component, Emit, Prop, Watch } from "vue-property-decorator"
 
-import BaseClass from "src/BaseClass"
-
-import { I_ExtraFields } from "src/interfaces/I_Blueprint"
+import FieldBase from "src/components/fields/_FieldBase"
 
 @Component({
   components: { }
 })
-export default class Field_Wysiwyg extends BaseClass {
-  @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
+export default class Field_Wysiwyg extends FieldBase {
+  /****************************************************************/
+  // BASIC FIELD DATA
+  /****************************************************************/
+
+  /**
+   * Already existing value in the input field (IF one is there right now)
+   */
   @Prop({ default: "" }) readonly inputDataValue!: string
-  @Prop() readonly editMode!: boolean
-  @Prop() readonly isNew!: boolean
 
-  changedInput = false
-  localInput = ""
+  /****************************************************************/
+  // INPUT HANDLING
+  /****************************************************************/
 
-  isDarkMode = false
-  disableDocumentToolTips = false
-
-  @Watch("SGET_options", { immediate: true, deep: true })
-  onSettingsChange () {
-    const options = this.SGET_options
-    this.isDarkMode = options.darkMode
-    this.disableDocumentToolTips = options.disableDocumentToolTips
-  }
-
-  @Emit()
-  signalInput () {
-    this.changedInput = true
-    return this.localInput.trim()
-  }
-
-  get toolTip () {
-    return this.inputDataBluePrint?.tooltip
-  }
-
-  get inputIcon () {
-    return this.inputDataBluePrint?.icon
-  }
-
+  /**
+   * Watch changes to the prefilled data already existing in the field and update local input accordingly
+   */
   @Watch("inputDataValue", { deep: true, immediate: true })
   reactToInputChanges () {
     this.localInput = this.inputDataValue
   }
 
+  /**
+   * Model for the local input
+   */
+  localInput = ""
+
+  /**
+   * Signals the input change to the document body parent component
+   */
+  @Emit()
+  signalInput () {
+    return this.localInput.trim()
+  }
+
+  /****************************************************************/
+  // WYSIWYG FUNCTIONALITY
+  /****************************************************************/
+
+  /**
+   * Disableds the full-screen edit mode upon cancleling the editing mode
+   */
   @Watch("editMode")
   turnOffFullScreen () {
     if (!this.editMode && this.$refs[`wysiwygField${this.inputDataBluePrint.id}`]) {
@@ -95,6 +97,9 @@ export default class Field_Wysiwyg extends BaseClass {
     }
   }
 
+  /**
+   * Strips all formatting from CTRL + V pasting
+   */
   pasteCapture (evt: any) {
     /*eslint-disable */
 
@@ -126,10 +131,16 @@ export default class Field_Wysiwyg extends BaseClass {
     /* eslint-enable */
   }
 
+  /**
+   * Subsitution strings for toolbar
+   */
   definitions = {
     fullscreen: { label: "Fullscreen" }
   }
 
+  /**
+   * Font list
+   */
   wysiwygFonts = {
     arial: "Arial",
     arial_black: "Arial Black",
@@ -141,6 +152,9 @@ export default class Field_Wysiwyg extends BaseClass {
     verdana: "Verdana"
   }
 
+  /**
+   * Wysiwyg toolbar ontions
+   */
   wysiwygOptions = [
     ["left", "center", "right", "justify"],
     ["bold", "italic", "underline", "subscript", "superscript"],

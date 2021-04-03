@@ -15,8 +15,11 @@
 - Fixed a typo in `Type of being` field in the `Races/Species` document type
 - Updated advanced search guide with missing information about full-text search
 - Changes a small bug when the `New Object` dialog wasn't respecting option changes being done in the same session of the program being opened
+- Fixed a rather peculiar recuring bug that could cause the database to endlessly attempt to update a document while constantly throwing errors
 
 ### New features
+
+- Added a dedicated button that opens the connected documents straight from the little chips in relationship fields while in edit mode
 
 ### QoL adjustments
 

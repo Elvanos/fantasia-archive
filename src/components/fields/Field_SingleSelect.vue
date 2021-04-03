@@ -69,47 +69,56 @@
 <script lang="ts">
 import { Component, Emit, Prop, Watch } from "vue-property-decorator"
 
-import BaseClass from "src/BaseClass"
-
-import { I_ExtraFields } from "src/interfaces/I_Blueprint"
+import FieldBase from "src/components/fields/_FieldBase"
 
 @Component({
   components: { }
 })
-export default class Field_SingleSelect extends BaseClass {
-  @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
+export default class Field_SingleSelect extends FieldBase {
+  /****************************************************************/
+  // BASIC FIELD DATA
+  /****************************************************************/
+
+  /**
+   * Already existing value in the input field (IF one is there right now)
+   */
   @Prop({ default: "" }) readonly inputDataValue!: ""
-  @Prop() readonly isNew!: boolean
-  @Prop() readonly editMode!: boolean
 
-  isDarkMode = false
-  disableDocumentToolTips = false
+  /****************************************************************/
+  // INPUT HANDLING
+  /****************************************************************/
 
-  @Watch("SGET_options", { immediate: true, deep: true })
-  onSettingsChange () {
-    const options = this.SGET_options
-    this.isDarkMode = options.darkMode
-    this.disableDocumentToolTips = options.disableDocumentToolTips
-  }
-
-  changedInput = false
-  localInput = ""
-
+  /**
+   * Watch changes to the prefilled data already existing in the field and update local input accordingly
+   */
   @Watch("inputDataValue", { deep: true, immediate: true })
   reactToInputChanges () {
     this.localInput = (this.inputDataValue) ? this.inputDataValue : ""
   }
 
-  get inputIcon () {
-    return this.inputDataBluePrint?.icon
-  }
+  /**
+   * Model for the local input
+   */
+  localInput = ""
 
-  get toolTip () {
-    return this.inputDataBluePrint?.tooltip
-  }
-
+  /**
+   * List of extra input values
+   */
   extraInput: string[] = []
 
+  /**
+   * Load data into the extra input
+   */
+  @Watch("inputDataBluePrint", { deep: true, immediate: true })
+  populateExtraInput () {
+    if (this.inputDataBluePrint?.predefinedSelectValues) {
+      this.extraInput = this.inputDataBluePrint?.predefinedSelectValues
+    }
+  }
+
+  /**
+   * Defocus after filtering to avoid un-intuitive focus
+   */
   async defocusSelectRef () {
     await this.$nextTick()
     /*eslint-disable */
@@ -118,13 +127,9 @@ export default class Field_SingleSelect extends BaseClass {
     /* eslint-enable */
   }
 
-  @Watch("inputDataBluePrint", { deep: true, immediate: true })
-  populateExtraInput () {
-    if (this.inputDataBluePrint?.predefinedSelectValues) {
-      this.extraInput = this.inputDataBluePrint?.predefinedSelectValues
-    }
-  }
-
+  /**
+   * Filter the input list
+   */
   filterFn (val: string, update: (fn: any) => void) {
     if (val === "") {
       update(() => {
@@ -145,9 +150,11 @@ export default class Field_SingleSelect extends BaseClass {
     })
   }
 
+  /**
+   * Signals the input change to the document body parent component
+   */
   @Emit()
   signalInput () {
-    this.changedInput = true
     return this.localInput
   }
 }

@@ -73,62 +73,79 @@
 <script lang="ts">
 import { Component, Emit, Prop, Watch } from "vue-property-decorator"
 
-import BaseClass from "src/BaseClass"
+import FieldBase from "src/components/fields/_FieldBase"
+
 import { tagListBuildFromBlueprints } from "src/scripts/utilities/tagListBuilder"
-import { I_ExtraFields } from "src/interfaces/I_Blueprint"
 
 @Component({
   components: { }
 })
-export default class Field_Tags extends BaseClass {
-  @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
+export default class Field_Tags extends FieldBase {
+  /****************************************************************/
+  // BASIC FIELD DATA
+  /****************************************************************/
 
+  /**
+   * Already existing value in the input field (IF one is there right now)
+   */
   @Prop({
     default: () => {
       return []
     }
   }) readonly inputDataValue!: []
 
-  @Prop() readonly isNew!: boolean
+  /****************************************************************/
+  // INPUT HANDLING
+  /****************************************************************/
 
-  @Prop() readonly editMode!: boolean
-
-  isDarkMode = false
-  disableDocumentToolTips = false
-
-  @Watch("SGET_options", { immediate: true, deep: true })
-  onSettingsChange () {
-    const options = this.SGET_options
-    this.isDarkMode = options.darkMode
-    this.disableDocumentToolTips = options.disableDocumentToolTips
-  }
-
-  changedInput = false
-  localInput: string[] = []
-
+  /**
+   * Watch changes to the prefilled data already existing in the field and update local input accordingly
+   */
   @Watch("inputDataValue", { deep: true, immediate: true })
   reactToInputChanges () {
     this.localInput = (this.inputDataValue) ? this.inputDataValue : []
     this.buildTagList().catch(e => console.log(e))
   }
 
+  /**
+   * Model for the local input
+   */
+  localInput: string[] = []
+
+  /**
+   * Add an additional blueprint watch to catch all the changes for the tag refresh to avoid glitches and bugs
+   */
   @Watch("inputDataBluePrint", { deep: true, immediate: true })
   reactToBlueprintChanges () {
     this.buildTagList().catch(e => console.log(e))
   }
 
-  get inputIcon () {
-    return this.inputDataBluePrint?.icon
+  /**
+   * Signals the input change to the document body parent component
+   */
+  @Emit()
+  signalInput () {
+    this.tagAlreadyExists = false
+    return this.localInput
   }
 
-  get toolTip () {
-    return this.inputDataBluePrint?.tooltip
-  }
+  /****************************************************************/
+  // TAG MANAGEMENT
+  /****************************************************************/
 
+  /**
+   * List of all currently existing tags
+   */
   allTags: string[] = []
 
+  /**
+   * List of all currently filtered tags
+   */
   filteredTags: string[] = []
 
+  /**
+   * Defocus after filtering to avoid un-intuitive focus
+   */
   async defocusSelectRef () {
     await this.$nextTick()
     /*eslint-disable */
@@ -137,8 +154,14 @@ export default class Field_Tags extends BaseClass {
     /* eslint-enable */
   }
 
+  /**
+   * Determines if the newly added tag already exists or not
+   */
   tagAlreadyExists = false
 
+  /**
+   * Add a new tag value to the list
+   */
   addNewValue (val: string) {
     const formattedNewTag = val.toLowerCase().trim()
 
@@ -164,6 +187,9 @@ export default class Field_Tags extends BaseClass {
     }
   }
 
+  /**
+   * Filter the tag list
+   */
   filterFn (val: string, update: (fn: any) => void) {
     if (val === "") {
       update(() => {
@@ -184,15 +210,11 @@ export default class Field_Tags extends BaseClass {
     })
   }
 
+  /**
+   * Build a new tag list from all existing tags on all documents across the whole project
+   */
   async buildTagList () {
     this.allTags = await tagListBuildFromBlueprints(this.SGET_allBlueprints)
-  }
-
-  @Emit()
-  signalInput () {
-    this.tagAlreadyExists = false
-    this.changedInput = true
-    return this.localInput
   }
 }
 </script>

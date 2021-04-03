@@ -48,51 +48,59 @@
 <script lang="ts">
 import { Component, Emit, Prop, Watch } from "vue-property-decorator"
 
-import BaseClass from "src/BaseClass"
-
-import { I_ExtraFields } from "src/interfaces/I_Blueprint"
+import FieldBase from "src/components/fields/_FieldBase"
 
 @Component({
   components: { }
 })
-export default class Field_Text extends BaseClass {
-  @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
+export default class Field_Text extends FieldBase {
+  /****************************************************************/
+  // BASIC FIELD DATA
+  /****************************************************************/
+
+  /**
+   * Already existing value in the input field (IF one is there right now)
+   */
   @Prop({ default: "" }) readonly inputDataValue!: string
-  @Prop() readonly editMode!: boolean
+
+  /**
+   * Determines if the parent document is new or not
+   */
   @Prop() readonly isNew!: boolean
 
-  isDarkMode = false
-  disableDocumentToolTips = false
+  /****************************************************************/
+  // INPUT HANDLING
+  /****************************************************************/
 
-  @Watch("SGET_options", { immediate: true, deep: true })
-  onSettingsChange () {
-    const options = this.SGET_options
-    this.isDarkMode = options.darkMode
-    this.disableDocumentToolTips = options.disableDocumentToolTips
+  /**
+   * Watch changes to the prefilled data already existing in the field and update local input accordingly
+   */
+  @Watch("inputDataValue", { deep: true, immediate: true })
+  reactToInputChanges () {
+    this.localInput = this.inputDataValue
   }
 
+  /**
+   * Determines if the input has any changes on it or not
+   */
   changedInput = false
+
+  /**
+   * Model for the local input
+   */
   localInput = ""
 
+  /**
+   * Deletes the placeholder value in the input field
+   */
   deletePlaceholder () {
     this.localInput = ""
     this.signalInput()
   }
 
-  @Emit()
-  signalInput () {
-    this.changedInput = true
-    return this.localInput.trim()
-  }
-
-  get toolTip () {
-    return this.inputDataBluePrint?.tooltip
-  }
-
-  get inputIcon () {
-    return this.inputDataBluePrint?.icon
-  }
-
+  /**
+   * Observe change on the edit mode and in case this field is "name", auto-select it as first field
+   */
   @Watch("editMode", { immediate: true })
   checkForNameFields () {
     if (this.inputDataBluePrint?.id === "name" && this.editMode === true) {
@@ -110,9 +118,13 @@ export default class Field_Text extends BaseClass {
     }
   }
 
-  @Watch("inputDataValue", { deep: true, immediate: true })
-  reactToInputChanges () {
-    this.localInput = this.inputDataValue
+  /**
+   * Signals the input change to the document body parent component
+   */
+  @Emit()
+  signalInput () {
+    this.changedInput = true
+    return this.localInput.trim()
   }
 }
 </script>

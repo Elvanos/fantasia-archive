@@ -1,5 +1,6 @@
 - Fix custom order sorting in tag groups
-- Add to "-webkit-app-region: no-drag;" ".q-position-engine" 
+- Add to "-webkit-app-region: no-drag;" ".q-position-engine"
+
 ### ADD DOCS ABOUT BUGGY BUILD FILE
 
 - Unify "/" style capitals across document fields
@@ -10,7 +11,6 @@
 - Save scroll distance when switching tabs (consider some auto-scroll when opening edit mode)
 - Fix lag on opening Quick-search popup
 - Mass tag rename
-- Add click-through from chips in edit mode
 - Add advanced search capabilities to the hierarchical tree
 - Add "is dead" or some similar switch to documents and show strike-through/etc on items in lists, tombstone icon or overlay crossed out icon
 - Custom icons/images to documents

@@ -79,9 +79,8 @@
       dark
       style="flex-grow: 1;"
       dense
-      @popup-show="reloadAllDocuments"
       :ref="`multieRelationshipField${this.inputDataBluePrint.id}`"
-      :options="filteredInput"
+      :options="filterList"
       use-input
       :outlined="!isDarkMode"
       :filled="isDarkMode"
@@ -103,6 +102,20 @@
           class="text-bold"
         >
           {{ stripTags(scope.opt.label) }}
+           <q-btn
+            round
+            dense
+            flat
+            class="z-max"
+            style="color: #000 !important;"
+            size="sm"
+            icon="mdi-open-in-new"
+            @click.stop.prevent="openNewTab(scope.opt)"
+          >
+           <q-tooltip :delay="500">
+              Open in new tab without leaving this one
+            </q-tooltip>
+          </q-btn>
         </q-chip>
       </template>
       <template v-slot:option="{ itemProps, itemEvents, opt }">
@@ -176,45 +189,50 @@
 <script lang="ts">
 import { Component, Emit, Prop, Watch } from "vue-property-decorator"
 
-import BaseClass from "src/BaseClass"
+import FieldBase from "src/components/fields/_FieldBase"
 import PouchDB from "pouchdb"
 import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
 import { extend } from "quasar"
 import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
-import { I_ExtraFields } from "src/interfaces/I_Blueprint"
 import { I_FieldRelationship, I_RelationshipPair } from "src/interfaces/I_FieldRelationship"
 
 @Component({
   components: { }
 })
-export default class Field_SingleRelationship extends BaseClass {
-  @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
+export default class Field_MultiRelationship extends FieldBase {
+  /****************************************************************/
+  // BASIC FIELD DATA
+  /****************************************************************/
 
+  /**
+   * Already existing value in the input field (IF one is there right now)
+   */
   @Prop({
     default: () => {
       return []
     }
   }) readonly inputDataValue!: I_RelationshipPair
 
+  /**
+   * ID of the document this field belongs to
+   */
   @Prop({ default: "" }) readonly currentId!: ""
 
-  @Prop() readonly isNew!: boolean
-
-  @Prop() readonly editMode!: boolean
-
-  localInput = [] as unknown as I_FieldRelationship[]
-
-  isDarkMode = false
-  disableDocumentToolTips = false
-  textShadow = false
-  @Watch("SGET_options", { immediate: true, deep: true })
-  onSettingsChange () {
-    const options = this.SGET_options
-    this.isDarkMode = options.darkMode
-    this.disableDocumentToolTips = options.disableDocumentToolTips
-    this.textShadow = options.textShadow
+  /**
+   * Determines if this is a one or two way relationship
+   */
+  get isOneWayRelationship () {
+    return (this.inputDataBluePrint.type === "singleToNoneRelationship" || this.inputDataBluePrint.type === "manyToNoneRelationship")
   }
 
+  /****************************************************************/
+  // INPUT HANDLING
+  /****************************************************************/
+
+  /**
+   * Watch changes to the prefilled data already existing in the field and update local input accordingly
+   * Also reload the local object list
+   */
   @Watch("inputDataValue", { deep: true, immediate: true })
   reactToInputChanges () {
     this.localInput = (this.inputDataValue?.value) ? this.inputDataValue.value : []
@@ -227,32 +245,54 @@ export default class Field_SingleRelationship extends BaseClass {
     this.reloadObjectListAndCheckIfValueExists().catch(e => console.log(e))
   }
 
-  get inputIcon () {
-    return this.inputDataBluePrint?.icon
+  /**
+   * Reload the local object list based on blueprint changes
+   */
+  @Watch("inputDataBluePrint", { deep: true, immediate: true })
+  reactToBlueprintChanges () {
+    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log(e))
   }
 
-  get toolTip () {
-    return this.inputDataBluePrint?.tooltip
+  /**
+   * Reload the local object list based on current document ID changes
+   */
+  @Watch("currentId")
+  reactToIDChanges () {
+    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log(e))
   }
 
-  async openNewTab (input: I_FieldRelationship) {
-    const CurrentObjectDB = new PouchDB(input.type)
-    const retrievedObject = await CurrentObjectDB.get(input._id)
+  /**
+   * Model for the local input
+   */
+  localInput = [] as unknown as I_FieldRelationship[]
 
-    const dataPass = {
-      doc: retrievedObject,
-      treeAction: false
-    }
-
-    // @ts-ignore
-    this.SSET_addOpenedDocument(dataPass)
-  }
-
-  extraInput: I_FieldRelationship[] = []
-  filteredInput: I_FieldRelationship[] = []
-
+  /**
+   * List of notes paired to the local input
+   */
   inputNotes: { pairedId: string; value: string; }[] = []
 
+  /**
+   * Retrieves note text
+   */
+  retrieveNoteText (id: string) {
+    const pairedNote = this.inputNotes.find(e => e.pairedId === id)
+    return (pairedNote && pairedNote.value.length > 0) ? `(${pairedNote.value})` : ""
+  }
+
+  /**
+   * A list of all retrieved documents without the current one
+   */
+  allDocumentsWithoutCurrent: I_ShortenedDocument[] = []
+
+  /**
+   * A copy of the list for the filter feed
+   * A copy is needed here as the list gets modified as the filter returns highlights and similar
+   */
+  filterList: I_ShortenedDocument[] = []
+
+  /**
+   * Refocus after filtering to avoid un-intuitive focusing
+   */
   async refocusSelect () {
     await this.$nextTick()
     /*eslint-disable */
@@ -263,17 +303,14 @@ export default class Field_SingleRelationship extends BaseClass {
     /* eslint-enable */
   }
 
-  allDocuments: I_ShortenedDocument[] = []
-
-  async reloadAllDocuments () {
-    this.allDocuments = await this.retrieveAllDocuments()
-  }
-
+  /**
+   * Filter the document list
+   */
   filterSelect (val: string, update: (e: () => void) => void) {
     if (val === "") {
       update(() => {
-        this.filteredInput = this.extraInput
-        if (this.$refs[`multiRelationshipField${this.inputDataBluePrint.id}`] && this.filteredInput.length > 0) {
+        this.filterList = this.allDocumentsWithoutCurrent
+        if (this.$refs[`multiRelationshipField${this.inputDataBluePrint.id}`] && this.filterList.length > 0) {
           this.refocusSelect().catch(e => console.log(e))
         }
       })
@@ -282,51 +319,35 @@ export default class Field_SingleRelationship extends BaseClass {
 
     update(() => {
       const needle = val.toLowerCase()
-      const listCopy : I_ShortenedDocument[] = extend(true, [], this.extraInput)
+      this.filterList = extend(true, [], this.allDocumentsWithoutCurrent)
 
       // @ts-ignore
-      this.filteredInput = advancedDocumentFilter(needle, listCopy, this.SGET_allBlueprints, this.allDocuments)
+      this.filterList = advancedDocumentFilter(needle, this.filterList, this.SGET_allBlueprints, this.filterList)
 
-      /*eslint-disable */
-        if(this.$refs[`multiRelationshipField${this.inputDataBluePrint.id}`] && this.filteredInput.length > 0){
-          this.refocusSelect().catch(e => console.log(e)) 
-        }
-        /* eslint-enable */
+      if (this.$refs[`multiRelationshipField${this.inputDataBluePrint.id}`] && this.filterList.length > 0) {
+        this.refocusSelect().catch(e => console.log(e))
+      }
     })
   }
 
-  retrieveNoteText (id: string) {
-    const pairedNote = this.inputNotes.find(e => e.pairedId === id)
-    return (pairedNote && pairedNote.value.length > 0) ? `(${pairedNote.value})` : ""
-  }
-
-  @Watch("inputDataBluePrint", { deep: true, immediate: true })
-  reactToBlueprintChanges () {
-    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log(e))
-  }
-
-  @Watch("currentId")
-  reactToIDChanges () {
-    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log(e))
-  }
-
-  get isOneWayRelationship () {
-    return (this.inputDataBluePrint.type === "singleToNoneRelationship" || this.inputDataBluePrint.type === "manyToNoneRelationship")
-  }
-
+  /**
+   * Prepares the initial loading of the list for filtering and furhter use
+   * Also remove the document itself from the list, checks if connected input fields even exist and altogether formats and clears the list
+   */
   async reloadObjectListAndCheckIfValueExists () {
     if (this.inputDataBluePrint?.relationshipSettings && this.currentId.length > 0) {
+      // Get a list of all objects connected to this field and remap them
       const CurrentObjectDB = new PouchDB(this.inputDataBluePrint.relationshipSettings.connectedObjectType)
+      const allDbObjects = (await CurrentObjectDB.allDocs({ include_docs: true })).rows.map(doc => doc.doc)
 
-      const allDbObjects = (await CurrentObjectDB.allDocs({ include_docs: true })).rows
-      const allDbDocs = allDbObjects.map(doc => doc.doc)
-
-      const allObjects = allDbDocs.map((doc) => {
+      // Map all of the documents to something more digestible for the select
+      const allObjects = allDbObjects.map((doc) => {
         const objectDoc = doc as unknown as I_ShortenedDocument
 
         const pairedField = (this.inputDataBluePrint?.relationshipSettings?.connectedField) || ""
         let isDisabled = false
 
+        // If the paired field exists and if this is "singleToSingleRelationship", set it as disabled since it is already paired
         if (pairedField.length > 0) {
           const pairedFieldObject = objectDoc.extraFields.find(f => f.id === pairedField)
 
@@ -350,52 +371,72 @@ export default class Field_SingleRelationship extends BaseClass {
           pairedField: pairedField,
           tags: objectDoc.extraFields.find(e => e.id === "tags")?.value,
           // @ts-ignore
-          hierarchicalPath: this.getDocumentHieararchicalPath(objectDoc, allDbDocs)
+          hierarchicalPath: this.getDocumentHieararchicalPath(objectDoc, allDbObjects)
 
         }
-      }) as unknown as I_FieldRelationship[]
+      }) as unknown as I_ShortenedDocument[]
 
-      const allObjectsWithoutCurrent: I_FieldRelationship[] = allObjects.filter((obj) => obj._id !== this.currentId)
+      // Filter out current object
+      const allObjectsWithoutCurrent: I_ShortenedDocument[] = allObjects.filter((obj) => obj._id !== this.currentId)
 
+      // Do a quick check on formatting of the current input (if something is wrong with it, set it as empty array)
       this.localInput = (Array.isArray(this.localInput)) ? this.localInput : []
 
-      let nonExistValue = false
+      let needsRefresh = false
 
       this.localInput.forEach((s, index) => {
+        // Proceed only if the local input is properly set up
         if (s._id) {
+          // If the matched object doesn't exist in the object, assume it has been deleted or newer existed and silently emit a signal input which auto-updates the document
           if (!allObjectsWithoutCurrent.find(e => e._id === s._id)) {
           // @ts-ignore
             this.localInput.splice(index, 1)
-            nonExistValue = true
+            needsRefresh = true
           }
+          // If the object does exist, make sure we have the newest available name by reasigning the label if it is different. Then trigger a silent update
           else {
             const matchedFieldContent = allObjectsWithoutCurrent.find(e => e._id === s._id)
 
-            if (matchedFieldContent) {
+            if (matchedFieldContent && this.localInput[index].label !== matchedFieldContent.label) {
               this.localInput[index].label = matchedFieldContent.label
+              needsRefresh = true
             }
           }
         }
       })
 
-      if (nonExistValue) {
+      if (needsRefresh) {
         this.signalInput(true)
       }
 
-      const allObjectsWithoutCategories: I_FieldRelationship[] = allObjectsWithoutCurrent.filter((obj) => !obj.isCategory)
-
-      this.extraInput = allObjectsWithoutCategories
+      // Do a last set of filtering
+      this.allDocumentsWithoutCurrent = allObjectsWithoutCurrent.filter((obj) => !obj.isCategory)
     }
   }
 
-  checkNotes () {
-    this.localInput.forEach(single => {
-      if (!this.inputNotes.find(e => single._id === e.pairedId)) {
-        this.inputNotes.push({ pairedId: single._id, value: "" })
-      }
-    })
+  /****************************************************************/
+  // FIELD ACTIONS
+  /****************************************************************/
+
+  /**
+   * Opens a new tab from a connected rleationship
+   */
+  async openNewTab (input: I_FieldRelationship) {
+    const CurrentObjectDB = new PouchDB(input.type)
+    const retrievedObject = await CurrentObjectDB.get(input._id)
+
+    const dataPass = {
+      doc: retrievedObject,
+      treeAction: false
+    }
+
+    // @ts-ignore
+    this.SSET_addOpenedDocument(dataPass)
   }
 
+  /**
+   * Signals the input change to the document body parent component
+   */
   @Emit()
   signalInput (skipSave?: boolean) {
     this.checkNotes()
@@ -405,6 +446,17 @@ export default class Field_SingleRelationship extends BaseClass {
       addedValues: this.inputNotes,
       skipSave: (skipSave)
     }
+  }
+
+  /**
+   * Rebuilds the note list to match the input relationships
+   */
+  checkNotes () {
+    this.localInput.forEach(single => {
+      if (!this.inputNotes.find(e => single._id === e.pairedId)) {
+        this.inputNotes.push({ pairedId: single._id, value: "" })
+      }
+    })
   }
 }
 </script>
