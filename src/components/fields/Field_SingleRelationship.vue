@@ -341,10 +341,10 @@ export default class Field_SingleRelationship extends FieldBase {
     if (this.inputDataBluePrint?.relationshipSettings && this.currentId.length > 0) {
       // Get a list of all objects connected to this field and remap them
       const CurrentObjectDB = new PouchDB(this.inputDataBluePrint.relationshipSettings.connectedObjectType)
-      const allDbObjects = (await CurrentObjectDB.allDocs({ include_docs: true })).rows.map(doc => doc.doc)
+      let allDbObjects = (await CurrentObjectDB.allDocs({ include_docs: true })).rows.map(doc => doc.doc)
 
       // Map all of the documents to something more digestible for the select
-      const allObjects = allDbObjects.map((doc) => {
+      let allObjects = allDbObjects.map((doc) => {
         const objectDoc = doc as unknown as I_ShortenedDocument
 
         const pairedField = (this.inputDataBluePrint?.relationshipSettings?.connectedField) || ""
@@ -402,7 +402,14 @@ export default class Field_SingleRelationship extends FieldBase {
         }
       }
 
+      await CurrentObjectDB.close()
+
       this.allDocumentsWithoutCurrent = objectsWithoutCurrent
+
+      // @ts-ignore
+      allObjects = null
+      // @ts-ignore
+      allDbObjects = null
     }
   }
 
@@ -424,6 +431,7 @@ export default class Field_SingleRelationship extends FieldBase {
 
     // @ts-ignore
     this.SSET_addOpenedDocument(dataPass)
+    await CurrentObjectDB.close()
   }
 
   /**

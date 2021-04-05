@@ -99,6 +99,8 @@ export const saveDocument = async (document: I_OpenedDocument, allOpenedDocument
   // Save the document
   await CurrentObjectDB.put(documentCopy)
 
+  await CurrentObjectDB.close()
+
   return { documentCopy, allOpenedDocuments }
 }
 
@@ -127,4 +129,7 @@ export const addFieldToDocument = async (targetDocumentID: string, fieldID: stri
   targetDocument.extraFields.push(newField)
 
   await TargetObjectTypDB.put(targetDocument)
+
+  await BlueprintsDB.close()
+  await TargetObjectTypDB.close()
 }

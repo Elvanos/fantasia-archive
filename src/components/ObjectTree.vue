@@ -484,8 +484,8 @@ export default class ObjectTree extends BaseClass {
       const categoryCount = allDocumentsRows.filter(e => e.isCategory).length
       const allCount = allDocumentsRows.length
 
-      const listCopy: I_ShortenedDocument[] = extend(true, [], allDocumentsRows)
-      allTreeDocuments = [...allTreeDocuments, ...listCopy]
+      // @ts-ignore
+      allTreeDocuments = [...allTreeDocuments, ...extend(true, [], allDocumentsRows)]
 
       const hierarchicalTreeContent = this.buildTreeHierarchy(allDocumentsRows)
 
@@ -517,6 +517,8 @@ export default class ObjectTree extends BaseClass {
       }
 
       treeObject.push(treeRow)
+
+      await CurrentObjectDB.close()
     }
 
     // Sort the top level of the blueprints
@@ -635,7 +637,7 @@ export default class ObjectTree extends BaseClass {
   buildTreeExpands (newDocs: I_OpenedDocument[]) {
     const expandIDs: string[] = []
 
-    const newDocsSnapshot: I_OpenedDocument[] = extend(true, [], newDocs)
+    let newDocsSnapshot: I_OpenedDocument[] = extend(true, [], newDocs)
 
     // Check for parent changes
     newDocsSnapshot.forEach((s, index) => {
@@ -675,6 +677,9 @@ export default class ObjectTree extends BaseClass {
         expandIDs.push(s.type)
       }
     })
+
+    // @ts-ignore
+    newDocsSnapshot = null
 
     expandIDs.forEach(s => {
       this.recursivelyExpandNode(s)

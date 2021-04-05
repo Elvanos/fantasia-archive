@@ -19,7 +19,7 @@
           content-class="bg-dark text-cultured sideWrapper"
           v-model="leftDrawerOpen"
           side="left"
-          :width="drawerWidth"
+          :width="splitterModel"
           :breakpoint="0"
           show-if-above
           >
@@ -64,7 +64,7 @@ import { OptionsStateInteface } from "src/store/module-options/state"
 })
 export default class DocumentLayout extends BaseClass {
   /****************************************************************/
-  // Local settings
+  // BASIC COMPONENT DATA
   /****************************************************************/
 
   /**
@@ -72,10 +72,32 @@ export default class DocumentLayout extends BaseClass {
    */
   leftDrawerOpen = true
 
-  splitterModel = 374
+  /**
+   * Width of the splitted model
+   */
+  splitterModel = 375
 
-  disableDocumentToolTips = false
+  /**
+   * Special class for the splitter
+   */
+  get splitterClass () {
+    return !this.leftDrawerOpen ? "splitt" : ""
+  }
 
+  /**
+   * Special padding reset for the main page
+   */
+  get compPadding () {
+    return this.leftDrawerOpen ? { paddingLeft: "0px" } : ""
+  }
+
+  /****************************************************************/
+  // LOCAL SETTINGS
+  /****************************************************************/
+
+  /**
+   * React to changes on the options store
+   */
   @Watch("SGET_options", { immediate: true, deep: true })
   onSettingsChange () {
     const options = this.SGET_options
@@ -84,31 +106,34 @@ export default class DocumentLayout extends BaseClass {
     }
   }
 
-  get drawerWidth () {
-    return this.splitterModel + 1
-  }
+  /****************************************************************/
+  // OPTTION UPDATER
+  /****************************************************************/
 
-  get splitterClass () {
-    return !this.leftDrawerOpen ? "splitt" : ""
-  }
-
-  get compPadding () {
-    return this.leftDrawerOpen ? { paddingLeft: "0px" } : ""
-  }
-
+  /**
+   * Debounce timer to prevent infinite dragging
+   */
   pullTimer = null as any
 
+  /**
+   * Snapshop of the current settings in the store for further modification
+   */
+  optionsSnapShot = {} as OptionsStateInteface
+
+  /**
+   * React to dragging of the splitter
+   */
   onChange (value: number) {
     this.leftDrawerOpen = value > 0
 
-    const optionsSnapShot: OptionsStateInteface = extend(true, {}, this.SGET_options)
+    this.optionsSnapShot = extend(true, {}, this.SGET_options)
 
-    optionsSnapShot.treeWidth = this.splitterModel
+    this.optionsSnapShot.treeWidth = this.splitterModel
 
     clearTimeout(this.pullTimer)
 
     this.pullTimer = setTimeout(() => {
-      this.SSET_options(optionsSnapShot)
+      this.SSET_options(this.optionsSnapShot)
     }, 500)
   }
 }

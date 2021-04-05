@@ -64,6 +64,7 @@ export const engageBlueprints = async () => {
       }
     }
   }
+  await BlueprintsDB.close()
 }
 
 /**
@@ -92,5 +93,8 @@ export const checkBlueprintUpdate = (newBlueprint: I_Blueprint, currentBlueprint
  */
 export const retrieveAllBlueprints = async () => {
   const BlueprintsDB = new PouchDB("blueprints")
-  return await BlueprintsDB.allDocs({ include_docs: true })
+  const allBlueprints = await BlueprintsDB.allDocs({ include_docs: true })
+  await BlueprintsDB.close()
+
+  return allBlueprints
 }

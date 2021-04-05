@@ -48,6 +48,8 @@ export const createNewProject = async (projectName: string, vueRouter: any, quas
   })
   vueInstance.SSET_resetDocuments()
   /* eslint-enable */
+
+  await ProjectDB.close()
 }
 
 /**
@@ -90,6 +92,8 @@ export const exportProject = (projectName: string, Loading: any, loadingSetup: a
 
         // @ts-ignore
         await CurrentDB.dump(ws)
+  await CurrentDB.close()
+
       }
 
       Loading.hide()
@@ -159,6 +163,8 @@ export const importExistingProject = (vueRouter: any, Loading: any, loadingSetup
       const fileContents = fs.readFileSync(`${folderPath}/${file}`, { encoding: "utf8" })
       // @ts-ignore
       await CurrentDB.loadIt(fileContents)
+  await CurrentDB.close()
+
     }
 
     /*eslint-disable */
@@ -203,5 +209,7 @@ export const importExistingProject = (vueRouter: any, Loading: any, loadingSetup
 export const retrieveCurrentProjectName = async () => {
   const ProjectDB = new PouchDB("project-data")
   const projectData = await ProjectDB.allDocs({ include_docs: true })
+  await ProjectDB.close()
+
   return projectData?.rows[0]?.id
 }

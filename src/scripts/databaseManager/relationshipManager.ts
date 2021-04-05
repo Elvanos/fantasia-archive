@@ -52,6 +52,9 @@ export const single_changeRelationshipToAnotherObject = async (
       }
     }
   }
+
+  await BlueprintsDB.close()
+
   return updatedDocuments
 }
 
@@ -93,6 +96,8 @@ export const single_addRelationShipToAnotherObject = async (
 
   await PairedObjectDB.put(pairedDocument)
 
+  await PairedObjectDB.close()
+
   return pairedDocument
 }
 
@@ -110,6 +115,8 @@ export const single_removeRelationShipFromAnotherObject = async (
   pairedDocument.extraFields[pairedFieldIndex].value = { value: "", addedValues: "" }
 
   await PairedObjectDB.put(pairedDocument)
+
+  await PairedObjectDB.close()
 
   return pairedDocument
 }
@@ -155,6 +162,8 @@ export const many_changeRelationshipToAnotherObject = async (
       }
     }
   }
+
+  await BlueprintsDB.close()
 
   return updatedDocuments
 }
@@ -210,6 +219,8 @@ export const many_addRelationShipToAnotherObject = async (
 
   await PairedObjectDB.put(pairedDocument)
 
+  await PairedObjectDB.close()
+
   return pairedDocument
 }
 
@@ -240,6 +251,8 @@ export const many_removeRelationShipFromAnotherObject = async (
   pairedDocument.extraFields[pairedFieldIndex].value.value = currentValues
 
   await PairedObjectDB.put(pairedDocument)
+
+  await PairedObjectDB.close()
 
   return pairedDocument
 }

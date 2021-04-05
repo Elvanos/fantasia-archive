@@ -341,6 +341,7 @@ export default class ExistingDocumentDialog extends DialogBase {
 
       // @ts-ignore
       this.SSET_addOpenedDocument(dataPass)
+      await CurrentObjectDB.close()
     }
   }
 

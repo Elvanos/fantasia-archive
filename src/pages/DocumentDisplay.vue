@@ -93,20 +93,20 @@
       <div
         :class="`col-${field.sizing} q-mb-md`"
         v-for="field in bluePrintData.extraFields"
-        :key="field.id"
-        v-show="determineFieldValue(field) || editMode"
+        :key="`${field.id}`"
+        v-show="hasValueFieldFilter(field) || editMode"
         >
 
           <Field_Break
           class="inputWrapper break"
-          v-if="field.type === 'break' && fieldLimiter(field.id)"
+          v-if="field.type === 'break' && categoryFieldFilter(field.id)"
           :inputDataBluePrint="field"
           :inputDataValue="retrieveFieldValue(currentData, field.id)"
           />
 
           <Field_Text
           class="inputWrapper"
-          v-if="field.type === 'text' && fieldLimiter(field.id)"
+          v-if="field.type === 'text' && categoryFieldFilter(field.id)"
           :inputDataBluePrint="field"
           :inputDataValue="retrieveFieldValue(currentData, field.id)"
           :isNew="currentData.isNew"
@@ -116,7 +116,7 @@
 
           <Field_Number
           class="inputWrapper"
-          v-if="field.type === 'number' && fieldLimiter(field.id)"
+          v-if="field.type === 'number' && categoryFieldFilter(field.id)"
           :inputDataBluePrint="field"
           :inputDataValue="retrieveFieldValue(currentData, field.id)"
           :isNew="currentData.isNew"
@@ -126,7 +126,7 @@
 
           <Field_Switch
           class="inputWrapper"
-          v-if="field.type === 'switch' && fieldLimiter(field.id)"
+          v-if="field.type === 'switch' && categoryFieldFilter(field.id)"
           :inputDataBluePrint="field"
           :inputDataValue="retrieveFieldValue(currentData, field.id)"
           :isNew="currentData.isNew"
@@ -136,7 +136,7 @@
 
           <Field_ColorPicker
           class="inputWrapper"
-          v-if="field.type === 'colorPicker' && fieldLimiter(field.id)"
+          v-if="field.type === 'colorPicker' && categoryFieldFilter(field.id)"
           :inputDataBluePrint="field"
           :inputDataValue="retrieveFieldValue(currentData, field.id)"
           :isNew="currentData.isNew"
@@ -146,7 +146,7 @@
 
           <Field_List
           class="inputWrapper"
-          v-if="field.type === 'list' && fieldLimiter(field.id)"
+          v-if="field.type === 'list' && categoryFieldFilter(field.id)"
           :inputDataBluePrint="field"
           :inputDataValue="retrieveFieldValue(currentData, field.id)"
           :isNew="currentData.isNew"
@@ -156,7 +156,7 @@
 
           <Field_SingleSelect
           class="inputWrapper"
-          v-if="field.type === 'singleSelect' && fieldLimiter(field.id)"
+          v-if="field.type === 'singleSelect' && categoryFieldFilter(field.id)"
           :inputDataBluePrint="field"
           :inputDataValue="retrieveFieldValue(currentData, field.id)"
           :isNew="currentData.isNew"
@@ -166,7 +166,7 @@
 
           <Field_MultiSelect
           class="inputWrapper"
-          v-if="field.type === 'multiSelect' && fieldLimiter(field.id)"
+          v-if="field.type === 'multiSelect' && categoryFieldFilter(field.id)"
           :inputDataBluePrint="field"
           :inputDataValue="retrieveFieldValue(currentData, field.id)"
           :isNew="currentData.isNew"
@@ -176,7 +176,7 @@
 
           <Field_SingleRelationship
           class="inputWrapper"
-          v-if="(field.type === 'singleToNoneRelationship' || field.type === 'singleToSingleRelationship' || field.type === 'singleToManyRelationship') && fieldLimiter(field.id)"
+          v-if="(field.type === 'singleToNoneRelationship' || field.type === 'singleToSingleRelationship' || field.type === 'singleToManyRelationship') && categoryFieldFilter(field.id)"
           :inputDataBluePrint="field"
           :inputDataValue="retrieveFieldValue(currentData, field.id)"
           :isNew="currentData.isNew"
@@ -188,7 +188,7 @@
           <Field_MultiRelationship
           class="inputWrapper"
           v-if="(field.type === 'manyToNoneRelationship' || field.type ===
-          'manyToSingleRelationship' || field.type === 'manyToManyRelationship') && fieldLimiter(field.id)"
+          'manyToSingleRelationship' || field.type === 'manyToManyRelationship') && categoryFieldFilter(field.id)"
           :inputDataBluePrint="field"
           :inputDataValue="retrieveFieldValue(currentData, field.id)"
           :isNew="currentData.isNew"
@@ -199,7 +199,7 @@
 
           <Field_Wysiwyg
           class="inputWrapper"
-          v-if="field.type === 'wysiwyg' && fieldLimiter(field.id)"
+          v-if="field.type === 'wysiwyg' && categoryFieldFilter(field.id)"
           :inputDataBluePrint="field"
           :inputDataValue="(retrieveFieldValue(currentData, field.id)) ? retrieveFieldValue(currentData, field.id) : ''"
           :isNew="currentData.isNew"
@@ -210,7 +210,7 @@
 
           <Field_Tags
           class="inputWrapper"
-          v-if="field.type === 'tags' && fieldLimiter(field.id)"
+          v-if="field.type === 'tags' && categoryFieldFilter(field.id)"
           :inputDataBluePrint="field"
           :inputDataValue="retrieveFieldValue(currentData, field.id)"
           :isNew="currentData.isNew"
@@ -231,9 +231,9 @@ import { Component, Watch } from "vue-property-decorator"
 import BaseClass from "src/BaseClass"
 
 import { I_Blueprint, I_ExtraFields } from "src/interfaces/I_Blueprint"
-import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
 import PouchDB from "pouchdb"
 import { extend } from "quasar"
+import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
 
 import { saveDocument } from "src/scripts/databaseManager/documentManager"
 import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentCheck.vue"
@@ -271,6 +271,69 @@ import Field_Tags from "src/components/fields/Field_Tags.vue"
 })
 
 export default class PageDocumentDisplay extends BaseClass {
+  /****************************************************************/
+  // LOCAL SETTINGS
+  /****************************************************************/
+
+  /**
+   * React to changes on the options store
+   */
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    const options = this.SGET_options
+    this.disableDocumentControlBar = options.disableDocumentControlBar
+    this.isDarkMode = options.darkMode
+    this.hideEmptyFields = options.hideEmptyFields
+  }
+
+  /**
+   * Determines if the document control bar is show or hidden
+   */
+  disableDocumentControlBar = false
+
+  /**
+   * Determines if this should be showing in dark or light mode
+   */
+  isDarkMode = false
+
+  /**
+   * Determines if empty fields should be hidden
+   */
+  hideEmptyFields = false
+
+  /****************************************************************/
+  // BASIC DATA
+  /****************************************************************/
+
+  /**
+   * The current object type blueprint data
+   */
+  bluePrintData = false as unknown as I_Blueprint
+
+  /**
+   * Determines if the current document has active edits or not
+   */
+  hasEdits = false
+
+  /**
+   * Determines if the current document is in edit mode or not
+   */
+  editMode = false
+
+  /**
+   * Current raw data of the document
+   */
+  currentData = false as unknown as I_OpenedDocument
+
+  /**
+   * A direct dopy of "currentData" for the purposes of VUEX so they won't overlap via reference
+   */
+  localDataCopy = false as unknown as I_OpenedDocument
+
+  /****************************************************************/
+  // DOCUMENT FUNCTIONALITY
+  /****************************************************************/
+
   /**
    * Watches on changes of the route in order to load proper blueprint and object data
    */
@@ -284,8 +347,9 @@ export default class PageDocumentDisplay extends BaseClass {
     window.scrollTo({ top: 0, behavior: "auto" })
   }
 
-  hasEdits = false
-
+  /**
+   * Check if the current document has edits or not
+   */
   checkHasEdits () {
     const currentDocument = this.findRequestedOrActiveDocument()
 
@@ -312,18 +376,9 @@ export default class PageDocumentDisplay extends BaseClass {
     }
   }
 
-  disableDocumentControlBar = false
-  isDarkMode = false
-  hideEmptyFields = false
-
-  @Watch("SGET_options", { immediate: true, deep: true })
-  onSettingsChange () {
-    const options = this.SGET_options
-    this.disableDocumentControlBar = options.disableDocumentControlBar
-    this.isDarkMode = options.darkMode
-    this.hideEmptyFields = options.hideEmptyFields
-  }
-
+  /**
+   * Attemp to reload the current local content. If it doesn't exist, create a new one.
+   */
   async reloadLocalContent () {
     // Determine the type and retrieve the right blueprint
     this.bluePrintData = this.retrieveDocumentBlueprint()
@@ -350,7 +405,7 @@ export default class PageDocumentDisplay extends BaseClass {
     // Either create a new document or load existing one
     this.currentData = (retrievedObject) ? extend(true, [], retrievedObject) : this.createNewDocumentObject()
 
-    const objectFields = await this.checkObjectFields()
+    const objectFields = await this.mapNewObjectFields()
 
     if (!objectFields) {
       return
@@ -363,8 +418,12 @@ export default class PageDocumentDisplay extends BaseClass {
     // Attempts to add current document to list
     const dataPass = { doc: dataCopy, treeAction: false }
     this.SSET_addOpenedDocument(dataPass)
+    await CurrentObjectDB.close()
   }
 
+  /**
+   * React to a local field getting updated by updating it iun the store accordingly
+   */
   reactToFieldUpdate (inputData: string, field: I_ExtraFields) {
     // FIELD - Text
     if (field.type === "text") {
@@ -372,9 +431,8 @@ export default class PageDocumentDisplay extends BaseClass {
       const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
       this.currentData.extraFields[indexToUpdate].value = inputData
 
-      const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
-
-      const dataPass = { doc: dataCopy, treeAction: false }
+      this.localDataCopy = extend(true, {}, this.currentData)
+      const dataPass = { doc: this.localDataCopy, treeAction: false }
       this.SSET_updateOpenedDocument(dataPass)
     }
 
@@ -384,9 +442,8 @@ export default class PageDocumentDisplay extends BaseClass {
       const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
       this.currentData.extraFields[indexToUpdate].value = inputData
 
-      const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
-
-      const dataPass = { doc: dataCopy, treeAction: false }
+      this.localDataCopy = extend(true, {}, this.currentData)
+      const dataPass = { doc: this.localDataCopy, treeAction: false }
       this.SSET_updateOpenedDocument(dataPass)
     }
 
@@ -396,9 +453,8 @@ export default class PageDocumentDisplay extends BaseClass {
       const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
       this.currentData.extraFields[indexToUpdate].value = inputData
 
-      const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
-
-      const dataPass = { doc: dataCopy, treeAction: false }
+      this.localDataCopy = extend(true, {}, this.currentData)
+      const dataPass = { doc: this.localDataCopy, treeAction: false }
       this.SSET_updateOpenedDocument(dataPass)
 
       if (field.id === "categorySwitch") {
@@ -420,9 +476,8 @@ export default class PageDocumentDisplay extends BaseClass {
       const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
       this.currentData.extraFields[indexToUpdate].value = inputData
 
-      const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
-
-      const dataPass = { doc: dataCopy, treeAction: false }
+      this.localDataCopy = extend(true, {}, this.currentData)
+      const dataPass = { doc: this.localDataCopy, treeAction: false }
       this.SSET_updateOpenedDocument(dataPass)
     }
 
@@ -431,9 +486,9 @@ export default class PageDocumentDisplay extends BaseClass {
       this.currentData.hasEdits = true
       const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
       this.currentData.extraFields[indexToUpdate].value = inputData
-      const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
 
-      const dataPass = { doc: dataCopy, treeAction: false }
+      this.localDataCopy = extend(true, {}, this.currentData)
+      const dataPass = { doc: this.localDataCopy, treeAction: false }
       this.SSET_updateOpenedDocument(dataPass)
     }
 
@@ -443,9 +498,8 @@ export default class PageDocumentDisplay extends BaseClass {
       const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
       this.currentData.extraFields[indexToUpdate].value = inputData
 
-      const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
-
-      const dataPass = { doc: dataCopy, treeAction: false }
+      this.localDataCopy = extend(true, {}, this.currentData)
+      const dataPass = { doc: this.localDataCopy, treeAction: false }
       this.SSET_updateOpenedDocument(dataPass)
     }
 
@@ -455,9 +509,8 @@ export default class PageDocumentDisplay extends BaseClass {
       const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
       this.currentData.extraFields[indexToUpdate].value = inputData
 
-      const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
-
-      const dataPass = { doc: dataCopy, treeAction: false }
+      this.localDataCopy = extend(true, {}, this.currentData)
+      const dataPass = { doc: this.localDataCopy, treeAction: false }
       this.SSET_updateOpenedDocument(dataPass)
     }
 
@@ -467,9 +520,8 @@ export default class PageDocumentDisplay extends BaseClass {
       const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
       this.currentData.extraFields[indexToUpdate].value = inputData
 
-      const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
-
-      const dataPass = { doc: dataCopy, treeAction: false }
+      this.localDataCopy = extend(true, {}, this.currentData)
+      const dataPass = { doc: this.localDataCopy, treeAction: false }
 
       // @ts-ignore
       if (inputData.skipSave) {
@@ -486,10 +538,8 @@ export default class PageDocumentDisplay extends BaseClass {
       const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
       this.currentData.extraFields[indexToUpdate].value = inputData
 
-      const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
-
-      const dataPass = { doc: dataCopy, treeAction: false }
-
+      this.localDataCopy = extend(true, {}, this.currentData)
+      const dataPass = { doc: this.localDataCopy, treeAction: false }
       // @ts-ignore
       if (inputData.skipSave) {
         this.currentData.extraFields[indexToUpdate].value.skipSave = false
@@ -505,9 +555,8 @@ export default class PageDocumentDisplay extends BaseClass {
       const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
       this.currentData.extraFields[indexToUpdate].value = inputData
 
-      const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
-
-      const dataPass = { doc: dataCopy, treeAction: false }
+      this.localDataCopy = extend(true, {}, this.currentData)
+      const dataPass = { doc: this.localDataCopy, treeAction: false }
       this.SSET_updateOpenedDocument(dataPass)
     }
 
@@ -518,13 +567,15 @@ export default class PageDocumentDisplay extends BaseClass {
 
       this.currentData.extraFields[indexToUpdate].value = inputData
 
-      const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
-
-      const dataPass = { doc: dataCopy, treeAction: false }
+      this.localDataCopy = extend(true, {}, this.currentData)
+      const dataPass = { doc: this.localDataCopy, treeAction: false }
       this.SSET_updateOpenedDocument(dataPass)
     }
   }
 
+  /**
+   * Triggers the save action of the document; canceling local edit mode and comitting the document data to the store
+   */
   async triggerSaveDocument () {
     const currentDoc = this.currentData
 
@@ -557,15 +608,6 @@ export default class PageDocumentDisplay extends BaseClass {
     }
   }
 
-  editMode = false
-
-  currentData = false as unknown as I_OpenedDocument
-
-  /**
-   * The current object type blueprint data
-   */
-  bluePrintData = false as unknown as I_Blueprint
-
   /**
    * Retrieves the current document type blueprint
    */
@@ -574,7 +616,10 @@ export default class PageDocumentDisplay extends BaseClass {
     return this.SGET_blueprint(this.$route.params.type)
   }
 
-  async checkObjectFields () {
+  /**
+   * Map new object "name" and "parentDoc" fields if pre-filled
+   */
+  async mapNewObjectFields () {
     const currentExtraFields = (this.currentData && this.currentData.extraFields) ? this.currentData.extraFields : []
 
     const blueprint = this.retrieveDocumentBlueprint()
@@ -628,6 +673,7 @@ export default class PageDocumentDisplay extends BaseClass {
                 }
               }
             )
+            await CurrentObjectDB.close()
           }
           else {
             currentExtraFields.push({ id: field.id, value: "" })
@@ -644,7 +690,6 @@ export default class PageDocumentDisplay extends BaseClass {
 
   /**
    * Creates a new document object
-   * @return The created object
    */
   createNewDocumentObject () : I_OpenedDocument {
     this.editMode = true
@@ -662,15 +707,39 @@ export default class PageDocumentDisplay extends BaseClass {
     }
   }
 
-  fieldLimiter (currentFieldID: string) {
+  /**
+   * Check if field should be showing if the category setting is turned on
+   */
+  categoryFieldFilter (currentFieldID: string) {
     const isCategory = this.retrieveFieldValue(this.currentData, "categorySwitch")
 
     const ignoredList = ["breakBasic", "name", "documentColor", "parentDoc", "order", "categorySwitch", "tags"]
     return (!isCategory || ignoredList.includes(currentFieldID))
   }
 
+  /**
+   * Checks if the field in question
+   */
+  hasValueFieldFilter (field: any) {
+    if (!this.hideEmptyFields) {
+      return true
+    }
+
+    const value = this.retrieveFieldValue(this.currentData, field.id)
+
+    if (!value ||
+    (Array.isArray(value) && value.length === 0) ||
+    // @ts-ignore
+     (value?.value && value.value.length === 0) ||
+    // @ts-ignore
+     (value.value === null)) {
+      return false
+    }
+    return true
+  }
+
   /****************************************************************/
-  // Delete dialog
+  // DELETE DIALOG
   /****************************************************************/
 
   deleteObjectDialogTrigger: string | false = false
@@ -683,7 +752,7 @@ export default class PageDocumentDisplay extends BaseClass {
   }
 
   /****************************************************************/
-  // Add new document under parent
+  // ADD NEW DOCUMENT UNDER PARENT
   /****************************************************************/
   addNewUnderParent () {
     const currentDoc = this.findRequestedOrActiveDocument()
@@ -698,9 +767,12 @@ export default class PageDocumentDisplay extends BaseClass {
   }
 
   /****************************************************************/
-  // Toggle edit mode & Save document
+  // DOCUMENT ACTIONS
   /****************************************************************/
 
+  /**
+   * Turns onthe edit mode
+   */
   toggleEditMode () {
     const currentDoc = this.findRequestedOrActiveDocument()
     if (currentDoc && !currentDoc.editMode) {
@@ -711,6 +783,9 @@ export default class PageDocumentDisplay extends BaseClass {
     }
   }
 
+  /**
+   * Saves the current document
+   */
   async saveCurrentDocument () {
     if (document.activeElement) {
       (document.activeElement as HTMLElement).blur()
@@ -740,24 +815,6 @@ export default class PageDocumentDisplay extends BaseClass {
         this.SSET_updateOpenedDocument(dataPass)
       }
     }
-  }
-
-  determineFieldValue (field: any) {
-    if (!this.hideEmptyFields) {
-      return true
-    }
-
-    const value = this.retrieveFieldValue(this.currentData, field.id)
-
-    if (!value ||
-    (Array.isArray(value) && value.length === 0) ||
-    // @ts-ignore
-     (value?.value && value.value.length === 0) ||
-    // @ts-ignore
-     (value.value === null)) {
-      return false
-    }
-    return true
   }
 }
 </script>

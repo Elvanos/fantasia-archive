@@ -90,13 +90,16 @@ import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projec
   components: {
     importProjectCheckDialog,
     newProjectCheckDialog
-
   }
 })
 export default class WelcomeScreen extends BaseClass {
-  isDarkMode = false
-  hideWelcomeScreenSocials = false
+  /****************************************************************/
+  // LOCAL SETTINGS
+  /****************************************************************/
 
+  /**
+   * React to changes on the options store
+   */
   @Watch("SGET_options", { immediate: true, deep: true })
   onSettingsChange () {
     const options = this.SGET_options
@@ -104,10 +107,54 @@ export default class WelcomeScreen extends BaseClass {
     this.hideWelcomeScreenSocials = options.hideWelcomeScreenSocials
   }
 
-  projectExists: undefined | string | boolean = false
-  newProjectName = ""
-  newProjectDialog = false
+  /**
+   * Determines if the page should show in dark mode or not
+   */
+  isDarkMode = false
 
+  /**
+   * Determines if the welcome screen social links should show or not
+   */
+  hideWelcomeScreenSocials = false
+
+  /****************************************************************/
+  // BASIC DATA
+  /****************************************************************/
+
+  /**
+   * Determines if any project exists on the window
+   */
+  projectExists: undefined | string | boolean = false
+
+  /****************************************************************/
+  // COMPONENT FUNCTIONALITY
+  /****************************************************************/
+
+  /**
+   * Get project name upon creation
+   * For the purposes of this component, we only check if the project exists via this
+   */
+  async created () {
+    this.projectExists = await retrieveCurrentProjectName()
+  }
+
+  /**
+   * Open Discord invite link in thw default browser window
+   */
+  openDiscordInviteLink () {
+    shell.openExternal("https://discord.gg/JQDBvsN9Te").catch(e => console.log(e))
+  }
+
+  /**
+   * Open Patreon link in thw default browser window
+   */
+  openPatreonLink () {
+    shell.openExternal("https://www.patreon.com/elvanos").catch(e => console.log(e))
+  }
+
+  /****************************************************************/
+  // NEW PROJECT DIALOG
+  /****************************************************************/
   newProjectDialogTrigger: string | false = false
   newProjectDialogClose () {
     this.newProjectDialogTrigger = false
@@ -117,6 +164,9 @@ export default class WelcomeScreen extends BaseClass {
     this.newProjectDialogTrigger = this.generateUID()
   }
 
+  /****************************************************************/
+  // IMPORT PROJECT DIALOG
+  /****************************************************************/
   importProjectDialogTrigger: string | false = false
   importProjectDialogClose () {
     this.importProjectDialogTrigger = false
@@ -124,18 +174,6 @@ export default class WelcomeScreen extends BaseClass {
 
   importProjectAssignUID () {
     this.importProjectDialogTrigger = this.generateUID()
-  }
-
-  async created () {
-    this.projectExists = await retrieveCurrentProjectName()
-  }
-
-  openDiscordInviteLink () {
-    shell.openExternal("https://discord.gg/JQDBvsN9Te").catch(e => console.log(e))
-  }
-
-  openPatreonLink () {
-    shell.openExternal("https://www.patreon.com/elvanos").catch(e => console.log(e))
   }
 }
 </script>

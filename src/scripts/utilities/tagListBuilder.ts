@@ -20,6 +20,7 @@ export const tagListBuildFromBlueprints = async (blueprintList: I_Blueprint[]) =
 
     // @ts-ignore
     allTags = [...allTags, ...docsTagsArray] as unknown as string[]
+    await CurrentObjectDB.close()
   }
 
   // @ts-ignore

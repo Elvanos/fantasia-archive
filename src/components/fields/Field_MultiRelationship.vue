@@ -338,10 +338,10 @@ export default class Field_MultiRelationship extends FieldBase {
     if (this.inputDataBluePrint?.relationshipSettings && this.currentId.length > 0) {
       // Get a list of all objects connected to this field and remap them
       const CurrentObjectDB = new PouchDB(this.inputDataBluePrint.relationshipSettings.connectedObjectType)
-      const allDbObjects = (await CurrentObjectDB.allDocs({ include_docs: true })).rows.map(doc => doc.doc)
+      let allDbObjects = (await CurrentObjectDB.allDocs({ include_docs: true })).rows.map(doc => doc.doc)
 
       // Map all of the documents to something more digestible for the select
-      const allObjects = allDbObjects.map((doc) => {
+      let allObjects = allDbObjects.map((doc) => {
         const objectDoc = doc as unknown as I_ShortenedDocument
 
         const pairedField = (this.inputDataBluePrint?.relationshipSettings?.connectedField) || ""
@@ -377,7 +377,7 @@ export default class Field_MultiRelationship extends FieldBase {
       }) as unknown as I_ShortenedDocument[]
 
       // Filter out current object
-      const allObjectsWithoutCurrent: I_ShortenedDocument[] = allObjects.filter((obj) => obj._id !== this.currentId)
+      let allObjectsWithoutCurrent: I_ShortenedDocument[] = allObjects.filter((obj) => obj._id !== this.currentId)
 
       // Do a quick check on formatting of the current input (if something is wrong with it, set it as empty array)
       this.localInput = (Array.isArray(this.localInput)) ? this.localInput : []
@@ -409,8 +409,17 @@ export default class Field_MultiRelationship extends FieldBase {
         this.signalInput(true)
       }
 
+      await CurrentObjectDB.close()
+
       // Do a last set of filtering
       this.allDocumentsWithoutCurrent = allObjectsWithoutCurrent.filter((obj) => !obj.isCategory)
+
+      // @ts-ignore
+      allObjectsWithoutCurrent = null
+      // @ts-ignore
+      allObjects = null
+      // @ts-ignore
+      allDbObjects = null
     }
   }
 
@@ -432,6 +441,7 @@ export default class Field_MultiRelationship extends FieldBase {
 
     // @ts-ignore
     this.SSET_addOpenedDocument(dataPass)
+    await CurrentObjectDB.close()
   }
 
   /**

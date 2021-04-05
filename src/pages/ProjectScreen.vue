@@ -124,15 +124,31 @@ import { tipsTricks } from "src/scripts/utilities/tipsTricks"
   }
 })
 export default class ProjectScreen extends BaseClass {
-  projectName = ""
+  /****************************************************************/
+  // LOCAL SETTINGS
+  /****************************************************************/
 
-  graphDataLoaded = false
-  graphDataShowing = false
+  /**
+   * React to changes on the options store
+   */
+  @Watch("SGET_options", { immediate: true, deep: true })
+  onSettingsChange () {
+    const options = this.SGET_options
+    this.hideTooltipsProject = options.hideTooltipsProject
+  }
 
-  allDocuments = 0
+  /**
+   * Determines if the project screen help hint should show or not
+   */
+  hideTooltipsProject = false
 
-  tipTrickMessage = ""
+  /****************************************************************/
+  // BASIC DATA & FUNCTIONALITY
+  /****************************************************************/
 
+  /**
+   * Setup of the page
+   */
   async created () {
     this.projectName = await retrieveCurrentProjectName()
     this.loadGraphData().catch(e => console.log(e))
@@ -141,14 +157,38 @@ export default class ProjectScreen extends BaseClass {
     this.tipTrickMessage = tipsTricks[Math.floor(Math.random() * tipsTricks.length)]
   }
 
-  hideTooltipsProject = false
+  /**
+   * Name of the current project
+   */
+  projectName = ""
 
-  @Watch("SGET_options", { immediate: true, deep: true })
-  onSettingsChange () {
-    const options = this.SGET_options
-    this.hideTooltipsProject = options.hideTooltipsProject
-  }
+  /**
+   * Loaded trivia message
+   */
+  tipTrickMessage = ""
 
+  /****************************************************************/
+  // GRAPH FUNCTIONALITY
+  /****************************************************************/
+
+  /**
+   * Amount of all documents
+   */
+  allDocuments = 0
+
+  /**
+   * Determines if the graph data finished loaded
+   */
+  graphDataLoaded = false
+
+  /**
+   * Determines if the graph is showing or not
+   */
+  graphDataShowing = false
+
+  /**
+   * Loads graph data
+   */
   async loadGraphData () {
     if (this.SGET_allBlueprints.length === 0) {
       await this.sleep(1000)
@@ -163,7 +203,7 @@ export default class ProjectScreen extends BaseClass {
     // Process all documents, build hieararchy out of the and sort them via name and custom order
     for (const blueprint of allBlueprings) {
       const CurrentObjectDB = new PouchDB(blueprint._id)
-      const allDocuments = await CurrentObjectDB.allDocs({ include_docs: true })
+      const allDocuments = await CurrentObjectDB.allDocs()
       const docCount = allDocuments.rows.length
 
       this.allDocuments = this.allDocuments + docCount
@@ -171,6 +211,7 @@ export default class ProjectScreen extends BaseClass {
       this.series[0].data.push(docCount)
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       this.chartOptions.xaxis.categories.push(blueprint.namePlural)
+      await CurrentObjectDB.close()
     }
     this.graphDataLoaded = true
 
@@ -178,13 +219,23 @@ export default class ProjectScreen extends BaseClass {
     this.graphDataShowing = true
   }
 
+  /**
+   * Graph series data
+   */
   series = [{
     name: "Documents",
     data: [] as number[]
   }]
 
+  /**
+   * Empty chart options
+   * This needs to load after load, otherwise the graph doesn't reload properly if the settings for dark/light mode change
+   */
   chartOptions = {} as any
 
+  /**
+   * Loads up proper chart options into the object
+   */
   populateChartOptions () {
     this.chartOptions = {
       colors: [colors.getBrand("primary")],
@@ -302,7 +353,7 @@ export default class ProjectScreen extends BaseClass {
   }
 
   /****************************************************************/
-  // New document dialog
+  // NEW DOCUMENT DIALOG
   /****************************************************************/
 
   newObjectDialogTrigger: string | false = false

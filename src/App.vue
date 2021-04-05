@@ -22,10 +22,15 @@ import { shell } from "electron"
   }
 })
 export default class App extends BaseClass {
-  created () {
-    window.addEventListener("auxclick", this.reactToMiddleClick)
-    window.addEventListener("click", this.openWysiwygLink)
+  /****************************************************************/
+  // APP START & END SETUP
+  /****************************************************************/
 
+  created () {
+    // Catch middle clicks
+    window.addEventListener("auxclick", this.reactToMiddleClick)
+
+    // Add a secondary blocker to prevent the middle-mouse button scrolling
     document.body.onmousedown = function (e) {
       if (e.button === 1) {
         e.preventDefault()
@@ -33,24 +38,45 @@ export default class App extends BaseClass {
       }
     }
 
+    // Catch normal clicks inside wysiwyg
+    window.addEventListener("click", this.openWysiwygLink)
+
+    // Load settings
     this.loadSettings().catch(e => console.log(e))
+
+    // React to keybind presses
     window.addEventListener("keydown", this.triggerKeyPush)
+
+    // Load the popup hint on start
     this.loadHintPopup()
   }
 
-  openWysiwygLink (event: MouseEvent) {
-    // @ts-ignore
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    if (event.target && event.target.tagName.toLowerCase() === "a" && event.target.closest(".fieldWysiwyg")) {
-      // @ts-ignore
-      shell.openExternal(event.target.href).catch(e => console.log(e))
-    }
+  destroyed () {
+    window.removeEventListener("auxclick", this.reactToMiddleClick)
+
+    this.deregisterCustomKeybinds()
+    this.deregisterDefaultKeybinds()
+    window.removeEventListener("keydown", this.triggerKeyPush)
   }
 
-  popupCheck = 0
+  /****************************************************************/
+  // START NOTIFICATION
+  /****************************************************************/
 
+  /**
+   * Model for the startup notification
+   */
   starupNotif = null as any
 
+  /**
+   * Notification checker
+   * Can go up to 3
+   */
+  popupCheck = 0
+
+  /**
+   * Show the actual popup
+   */
   loadHintPopup () {
     const options = this.SGET_options
 
@@ -79,6 +105,9 @@ export default class App extends BaseClass {
     })
   }
 
+  /**
+   * Hide the startup notification if the user changed the route before it disappeared
+   */
   @Watch("$route", { deep: true })
   onUrlChange () {
     if (typeof this.starupNotif === "function") {
@@ -87,6 +116,13 @@ export default class App extends BaseClass {
     }
   }
 
+  /****************************************************************/
+  // KEYBIND HANDLING
+  /****************************************************************/
+
+  /**
+   * React to keybind combinations being pushed and submit them to the store
+   */
   triggerKeyPush (e:any) {
     // console.log("")
     // console.log(`Key: ${e.key}`)
@@ -107,38 +143,65 @@ export default class App extends BaseClass {
     }
   }
 
-  destroyed () {
-    window.removeEventListener("auxclick", this.reactToMiddleClick)
-
-    this.deregisterCustomKeybinds()
-    this.deregisterDefaultKeybinds()
-    window.removeEventListener("keydown", this.triggerKeyPush)
-  }
-
-  reactToMiddleClick (e: {button: number, preventDefault: ()=> void}) {
-    if (e.button === 1) {
-      e.preventDefault()
-    }
-  }
-
+  /**
+   * Registers a default keybind into the store
+   */
   registerDefaultKeybinds () {
     defaultKeybinds.forEach(e => this.SSET_registerDefaultKeybind(e))
   }
 
+  /**
+   * Removes a default keybind from the store
+   */
   deregisterDefaultKeybinds () {
     defaultKeybinds.forEach(e => this.SSET_deregisterDefaultKeybind(e))
   }
 
+  /**
+   * Registers a custom keybind into the store
+   */
   registerCustomKeybinds () {
     setTimeout(() => {
       this.SGET_options.userKeybindList.forEach(e => this.SSET_registerUserKeybind(e))
     }, 1000)
   }
 
+  /**
+   * Removes a custom keybind from the store
+   */
   deregisterCustomKeybinds () {
     defaultKeybinds.forEach(e => this.SSET_deregisterUserKeybind(e))
   }
 
+  /****************************************************************/
+  // VARIOUS APP FUNCTIONALITY
+  /****************************************************************/
+
+  /**
+   * Open wysiwyg links in default browser window
+   */
+  openWysiwygLink (event: MouseEvent) {
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    if (event.target && event.target.tagName.toLowerCase() === "a" && event.target.closest(".fieldWysiwyg")) {
+      // @ts-ignore
+      shell.openExternal(event.target.href).catch(e => console.log(e))
+    }
+  }
+
+  /**
+   * React to middle mouse button clicks
+   */
+  reactToMiddleClick (e: {button: number, preventDefault: ()=> void}) {
+    if (e.button === 1) {
+      e.preventDefault()
+      return false
+    }
+  }
+
+  /**
+   * Load settings for the first time upon app load
+   */
   async loadSettings () {
     const SettingsDB = new PouchDB("fa-settings")
     const settingsData = await SettingsDB.allDocs({ include_docs: true })
@@ -150,8 +213,13 @@ export default class App extends BaseClass {
 
     this.registerDefaultKeybinds()
     this.registerCustomKeybinds()
+
+    await SettingsDB.close()
   }
 
+  /**
+   * Update dark/light mode across the app based on what is currently in the store
+   */
   @Watch("SGET_options", { deep: true })
   onSettingsChange () {
     const options = this.SGET_options

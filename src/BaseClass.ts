@@ -18,12 +18,42 @@ const Dialogs = namespace("dialogsModule")
 
 @Component
 export default class BaseClass extends Vue {
+  /****************************************************************/
+  // UTILITY FUNCTIONS
+  /****************************************************************/
+
+  /**
+   * Generates unique ID string
+   */
   generateUID () : string {
     return uid()
   }
 
+  /**
+   * Retrieves icon color for relationship searches
+   * If the current document has "activeTypeSearch" property, then return "primary" color instead
+   */
+  retrieveIconColor (document: I_ShortenedDocument): string {
+    // @ts-ignore
+    return (document.activeTypeSearch) ? colors.getBrand("primary") : document.color
+  }
+
+  /**
+   * Async wait for XY miliseconds
+   */
+  sleep (ms:number) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+  /**
+   * Strip all tags from a string
+   */
+  stripTags (input: string) {
+    return (input) ? input.replace(/<[^>]+>/g, "") : input
+  }
+
   /****************************************************************/
-  // Keybinds management
+  // KEYBINDS MANAGEMENT
   /****************************************************************/
 
   @Keybinds.Getter("getCurrentKeyBindData") SGET_getCurrentKeyBindData!: KeyManagementInterface
@@ -194,7 +224,7 @@ export default class BaseClass extends Vue {
   }
 
   /****************************************************************/
-  // Blueprint management
+  // BLUEPRINT MANAGEMENT
   /****************************************************************/
 
   @Blueprints.Getter("getAllBlueprints") SGET_allBlueprints !: I_Blueprint[]
@@ -237,7 +267,7 @@ export default class BaseClass extends Vue {
   }
 
   /****************************************************************/
-  // Option management
+  // OPTION MANAGEMENT
   /****************************************************************/
 
   @Options.Getter("getOptions") SGET_options!: OptionsStateInteface
@@ -245,7 +275,7 @@ export default class BaseClass extends Vue {
   @Options.Action("setOptions") SSET_options!: (input: OptionsStateInteface) => void
 
   /****************************************************************/
-  // Open documents management
+  // OPEN DOCUMENTS MANAGEMENT
   /****************************************************************/
 
   @OpenedDocuments.Getter("getAllDocuments") SGET_allOpenedDocuments !: {
@@ -276,6 +306,10 @@ export default class BaseClass extends Vue {
   @OpenedDocuments.Action("resetDocuments") SSET_resetDocuments!: () => void
   @OpenedDocuments.Action("resetRemoveIndex") SSET_resetRemoveIndex!: () => void
 
+  /**
+   * If provided with an document, finds it among the opened list
+   * Otherwise retireves the currently opened document based on the currently active route
+   */
   findRequestedOrActiveDocument (doc?: I_OpenedDocument) {
     if (doc) {
       return (this.SGET_allOpenedDocuments.docs.find(e => e.url === doc.url)) || false
@@ -373,8 +407,12 @@ export default class BaseClass extends Vue {
   }
 
   /****************************************************************/
-  // Document list management
+  // DOCUMENT LIST MANAGEMENT
   /****************************************************************/
+
+  /**
+   * Recursively retrieves a full hieararchical path from a full list
+   */
   getDocumentHieararchicalPath (document: I_OpenedDocument, list: I_OpenedDocument[]) {
     let hierarchicalString = ""
 
@@ -405,6 +443,9 @@ export default class BaseClass extends Vue {
     return hierarchicalString
   }
 
+  /**
+   * Retieves ALL documents
+   */
   async retrieveAllDocuments () {
     let allDocs = [] as I_ShortenedDocument[]
     for (const blueprint of this.SGET_allBlueprints) {
@@ -435,20 +476,9 @@ export default class BaseClass extends Vue {
 
       // @ts-ignore
       allDocs = [...allDocs, ...sortedDocuments]
+
+      await CurrentObjectDB.close()
     }
     return allDocs
-  }
-
-  retrieveIconColor (document: I_ShortenedDocument): string {
-    // @ts-ignore
-    return (document.activeTypeSearch) ? colors.getBrand("primary") : document.color
-  }
-
-  sleep (ms:number) {
-    return new Promise(resolve => setTimeout(resolve, ms))
-  }
-
-  stripTags (input: string) {
-    return (input) ? input.replace(/<[^>]+>/g, "") : input
   }
 }

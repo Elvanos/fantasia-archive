@@ -18,6 +18,7 @@ const actions: ActionTree<OptionsStateInteface, StateInterface> = {
 
     await SettingsDB.put(FASettings)
     state.commit("setOptions", input)
+    await SettingsDB.close()
   }
 }
 

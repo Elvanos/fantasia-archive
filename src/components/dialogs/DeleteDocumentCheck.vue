@@ -61,6 +61,7 @@ export default class DeleteDocumentCheckDialog extends DialogBase {
       this.dialogModel = true
       const CurrentObjectDB = new PouchDB(this.$route.params.type)
       this.currentDocument = await CurrentObjectDB.get(this.$route.params.id)
+      await CurrentObjectDB.close()
     }
   }
 
@@ -84,6 +85,7 @@ export default class DeleteDocumentCheckDialog extends DialogBase {
     this.SSET_setDialogState(false)
 
     this.SSET_removeOpenedDocument(dataPass)
+    await CurrentObjectDB.close()
   }
 }
 </script>

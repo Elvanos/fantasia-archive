@@ -37,9 +37,6 @@ export default class AppHeader extends BaseClass {
 </script>
 
 <style lang="scss" scoped>
-.appHeader {
-
-}
 
 .appHeaderInner {
   z-index: 999999;
