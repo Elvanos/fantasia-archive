@@ -21,7 +21,7 @@ export const currenciesBlueprint: I_Blueprint = {
     },
     {
       id: "documentColor",
-      name: "Text Color",
+      name: "Text color",
       type: "colorPicker",
       icon: "mdi-eyedropper",
       tooltip:
@@ -86,14 +86,14 @@ export const currenciesBlueprint: I_Blueprint = {
     },
     {
       id: "otherNames",
-      name: "Other names & Epithets",
+      name: "Other Names & Epithets",
       type: "list",
       icon: "mdi-book-plus",
       sizing: 6
     },
     {
       id: "traits",
-      name: "Defining features/traits",
+      name: "Defining Features/Traits",
       type: "list",
       icon: "fas fa-coins",
       sizing: 6
@@ -112,7 +112,7 @@ export const currenciesBlueprint: I_Blueprint = {
     },
     {
       id: "pairedLocations",
-      name: "Used in locations",
+      name: "Used in Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 4,
@@ -123,7 +123,7 @@ export const currenciesBlueprint: I_Blueprint = {
     },
     {
       id: "usedInPoliticalGroups",
-      name: "Used by political groups/ideologies",
+      name: "Used by Political groups/Ideologies",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 4,
@@ -134,7 +134,7 @@ export const currenciesBlueprint: I_Blueprint = {
     },
     {
       id: "usedByRaces",
-      name: "Used by races",
+      name: "Used by Races",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
       sizing: 4,

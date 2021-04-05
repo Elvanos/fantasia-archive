@@ -21,7 +21,7 @@ export const languagesBlueprint: I_Blueprint = {
     },
     {
       id: "documentColor",
-      name: "Text Color",
+      name: "Text color",
       type: "colorPicker",
       icon: "mdi-eyedropper",
       tooltip:
@@ -86,7 +86,7 @@ export const languagesBlueprint: I_Blueprint = {
     },
     {
       id: "otherNames",
-      name: "Other names & Epithets",
+      name: "Other Names & Epithets",
       type: "list",
       icon: "mdi-book-plus",
       sizing: 6
@@ -111,7 +111,7 @@ export const languagesBlueprint: I_Blueprint = {
     },
     {
       id: "predecessorLanguages",
-      name: "Predecessor languages",
+      name: "Predecessor Languages",
       type: "manyToManyRelationship",
       icon: "mdi-book-alphabet",
       sizing: 6,
@@ -122,7 +122,7 @@ export const languagesBlueprint: I_Blueprint = {
     },
     {
       id: "followingLanguages",
-      name: "Evolved into languages",
+      name: "Evolved into Languages",
       type: "manyToManyRelationship",
       icon: "mdi-book-alphabet",
       sizing: 6,
@@ -151,7 +151,7 @@ export const languagesBlueprint: I_Blueprint = {
     },
     {
       id: "pairedCharacter",
-      name: "Prominent speakers",
+      name: "Prominent Speakers",
       type: "manyToManyRelationship",
       icon: "mdi-account",
       sizing: 4,
@@ -162,7 +162,7 @@ export const languagesBlueprint: I_Blueprint = {
     },
     {
       id: "usedByRaces",
-      name: "Spoken by species/races",
+      name: "Spoken by Species/Races",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
       sizing: 4,
@@ -173,7 +173,7 @@ export const languagesBlueprint: I_Blueprint = {
     },
     {
       id: "pairedLocations",
-      name: "Spoken in locations",
+      name: "Spoken in Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 4,
@@ -184,7 +184,7 @@ export const languagesBlueprint: I_Blueprint = {
     },
     {
       id: "usedInPoliticalGroups",
-      name: "Spoken in political groups/ideologies",
+      name: "Spoken in Political groups/Ideologies",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
@@ -195,7 +195,7 @@ export const languagesBlueprint: I_Blueprint = {
     },
     {
       id: "usedInReligiousGroups",
-      name: "Spoken in religious groups/teachings",
+      name: "Spoken in Religious groups/Teachings",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 6,
@@ -206,7 +206,7 @@ export const languagesBlueprint: I_Blueprint = {
     },
     {
       id: "usedInMagicalGroups",
-      name: "Spoken in magical groups/institutions",
+      name: "Spoken in Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -217,7 +217,7 @@ export const languagesBlueprint: I_Blueprint = {
     },
     {
       id: "usedInTechGroups",
-      name: "Spoken in science/technology groups/institutions",
+      name: "Spoken in Science/Technology groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,

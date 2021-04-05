@@ -21,7 +21,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "documentColor",
-      name: "Text Color",
+      name: "Text color",
       type: "colorPicker",
       icon: "mdi-eyedropper",
       tooltip:
@@ -86,14 +86,14 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "otherNames",
-      name: "Other names & Epithets",
+      name: "Other Names & Epithets",
       type: "list",
       icon: "mdi-book-plus",
       sizing: 3
     },
     {
       id: "connectedLocations",
-      name: "Connected locations",
+      name: "Connected Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 3,
@@ -141,7 +141,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedLanguages",
-      name: "Local languages",
+      name: "Local Languages",
       type: "manyToManyRelationship",
       icon: "mdi-book-alphabet",
       sizing: 4,
@@ -152,7 +152,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedCurrencies",
-      name: "Local currencies",
+      name: "Local Currencies",
       type: "manyToManyRelationship",
       icon: "fas fa-coins",
       sizing: 4,
@@ -163,7 +163,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "traits",
-      name: "Unusual features/traits",
+      name: "Unusual features/Traits",
       type: "list",
       icon: "mdi-guy-fawkes-mask",
       sizing: 4
@@ -221,7 +221,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedCharacter",
-      name: "Other connected characters",
+      name: "Other connected Characters",
       type: "manyToManyRelationship",
       icon: "mdi-account",
       sizing: 6,
@@ -232,7 +232,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedRaces",
-      name: "Local races and species",
+      name: "Local Species/Races",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
       sizing: 6,
@@ -249,7 +249,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "governPolitical",
-      name: "Governing political groups/ideologies",
+      name: "Governing Political groups/Ideologies",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
@@ -260,7 +260,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedPolitical",
-      name: "Connected political groups/ideologies",
+      name: "Connected Political groups/Ideologies",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
@@ -271,7 +271,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "governReligious",
-      name: "Governing religious groups",
+      name: "Governing Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 6,
@@ -282,7 +282,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedReligious",
-      name: "Connected religious groups",
+      name: "Connected Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 6,
@@ -293,7 +293,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "governMagical",
-      name: "Governing magical groups",
+      name: "Governing Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -304,7 +304,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedMagical",
-      name: "Connected magical groups",
+      name: "Connected Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -315,7 +315,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "governTech",
-      name: "Governing tech/scientific groups",
+      name: "Governing Technological/Scientific groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
@@ -326,7 +326,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedTech",
-      name: "Connected tech/scientific groups",
+      name: "Connected Technological/Scientific groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
@@ -343,7 +343,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedEvent",
-      name: "Connected to events",
+      name: "Connected to Events",
       type: "manyToManyRelationship",
       icon: "mdi-calendar-text",
       sizing: 4,
@@ -354,7 +354,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedMyths",
-      name: "Connected to myths, legends and stories",
+      name: "Connected to Myths, legends and stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
       sizing: 4,
@@ -365,7 +365,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedItems",
-      name: "Connected to legendary items/artifacts",
+      name: "Connected to legendary Items",
       type: "manyToManyRelationship",
       icon: "mdi-sword-cross",
       sizing: 4,

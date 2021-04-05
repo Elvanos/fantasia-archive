@@ -1,5 +1,3 @@
-### ADD DOCS ABOUT BUGGY BUILD FILE
-
 - Unify "/" style capitals across document fields
 - Add "Document relevance" switch and integrate it into filters
 - Add "Show in search results" checkbox for relationship searches

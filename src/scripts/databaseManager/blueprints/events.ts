@@ -21,7 +21,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "documentColor",
-      name: "Text Color",
+      name: "Text color",
       type: "colorPicker",
       icon: "mdi-eyedropper",
       tooltip:
@@ -86,7 +86,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "otherNames",
-      name: "Other names & Epithets",
+      name: "Other Names & Epithets",
       type: "list",
       icon: "mdi-book-plus",
       sizing: 4
@@ -140,7 +140,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedCharacter",
-      name: "Prominent actors",
+      name: "Prominent Actors",
       type: "manyToManyRelationship",
       icon: "mdi-account",
       sizing: 6,
@@ -151,7 +151,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedRaces",
-      name: "Affected or involved species/races",
+      name: "Affected or involved Species/Races",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
       sizing: 6,
@@ -162,7 +162,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedLocations",
-      name: "Connected to locations",
+      name: "Connected to Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 6,
@@ -173,7 +173,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedEvents",
-      name: "Connected to other events",
+      name: "Connected to other Events",
       type: "manyToManyRelationship",
       icon: "mdi-calendar-text",
       sizing: 6,
@@ -184,7 +184,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedItems",
-      name: "Connected to items",
+      name: "Connected to Items",
       type: "manyToManyRelationship",
       icon: "mdi-sword-cross",
       sizing: 6,
@@ -195,7 +195,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedMyths",
-      name: "Connected to myths/legends",
+      name: "Connected to Myths/Legends",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
       sizing: 6,
@@ -218,7 +218,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedPolitical",
-      name: "Involved political groups",
+      name: "Involved Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
@@ -229,7 +229,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedReligious",
-      name: "Involved religious groups",
+      name: "Involved Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 6,
@@ -240,7 +240,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedMagical",
-      name: "Involved magical groups",
+      name: "Involved Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -251,7 +251,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedTech",
-      name: "Involved tech/scientific groups",
+      name: "Involved Technological/Scientific groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,

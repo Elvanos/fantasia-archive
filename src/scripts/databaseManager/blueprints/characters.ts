@@ -21,7 +21,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "documentColor",
-      name: "Text Color",
+      name: "Text color",
       type: "colorPicker",
       icon: "mdi-eyedropper",
       tooltip:
@@ -86,7 +86,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "otherNames",
-      name: "Other names & Epithets",
+      name: "Other Names & Epithets",
       type: "list",
       icon: "mdi-book-plus",
       sizing: 6
@@ -246,7 +246,7 @@ export const charactersBlueprint: I_Blueprint = {
       icon: "fas fa-fist-raised",
       sizing: 3,
       predefinedSelectValues: [
-
+        /*
         "0 - Civilian",
         "1 - Trainee / Athletic civilian",
         "2 - Trained soldier / Weak magic user",
@@ -263,7 +263,7 @@ export const charactersBlueprint: I_Blueprint = {
         "13 - World-shaping god / Powerful ascendant / Strong outerplanar entity",
         "14 - New transcendant / Genius ascendant / Powerful outerplanar entity",
         "15 - Established transcendant / Prodigy ascendant / Ancient outerplanar entity",
-        "16 & Above - Off the scale / Impossible to even categorize"
+        "16 & Above - Off the scale / Impossible to even categorize" */
       ]
     },
     {
@@ -274,7 +274,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "breakSkills",
-      name: "Skills and other features",
+      name: "Skills & Other features",
       type: "break",
       sizing: 12
     },
@@ -927,7 +927,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "traits",
-      name: "Unusual features/traits",
+      name: "Unusual Features/Traits",
       type: "list",
       icon: "mdi-guy-fawkes-mask",
       sizing: 6
@@ -967,7 +967,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedMagic",
-      name: "Known magic/spells",
+      name: "Known Magic/Spells",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -978,7 +978,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedTech",
-      name: "Known technologies/sciences",
+      name: "Known Technologies/Sciences",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
@@ -995,7 +995,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "parentsOfCharacter",
-      name: "Parents of character",
+      name: "Parents of the Character",
       type: "manyToManyRelationship",
       icon: "mdi-account",
       sizing: 4,
@@ -1006,7 +1006,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "childOfCharacter",
-      name: "Children of character",
+      name: "Children of the Character",
       type: "manyToManyRelationship",
       icon: "mdi-account",
       sizing: 4,
@@ -1017,7 +1017,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "relativesOfCharacter",
-      name: "Other relatives of character",
+      name: "Other relatives of the Character",
       type: "manyToManyRelationship",
       icon: "mdi-account",
       sizing: 4,
@@ -1061,13 +1061,13 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "breakPolitics",
-      name: "Ideologies, religions & politics",
+      name: "Ideologies, Religions & Politics",
       type: "break",
       sizing: 12
     },
     {
       id: "pairedConnectionPolGroup",
-      name: "Connected to political groups/ideologies",
+      name: "Connected to Political groups/Ideologies",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
@@ -1078,7 +1078,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedBelongingPolGroup",
-      name: "Member of political groups/ideologies",
+      name: "Member of Political groups/Ideologies",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
@@ -1089,7 +1089,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedAllyPolGroup",
-      name: "Ally of political groups/ideologies",
+      name: "Ally of Political groups/Ideologies",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
@@ -1100,7 +1100,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedEnemyPolGroup",
-      name: "Enemy of political groups/ideologies",
+      name: "Enemy of Political groups/Ideologies",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
@@ -1111,7 +1111,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectionRelGroup",
-      name: "Connected to religious groups/teachings",
+      name: "Connected to Religious groups/Teachings",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 6,
@@ -1122,7 +1122,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedBelongingRelGroup",
-      name: "Member of religious groups/teachings",
+      name: "Member of Religious groups/Teachings",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 6,
@@ -1133,7 +1133,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedAllyRelGroup",
-      name: "Ally of religious groups/teachings",
+      name: "Ally of Religious groups/Teachings",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 6,
@@ -1144,7 +1144,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedEnemyRelGroup",
-      name: "Enemy of religious groups/teachings",
+      name: "Enemy of Religious groups/Teachings",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 6,
@@ -1155,7 +1155,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectionMagicGroup",
-      name: "Connected to magical groups",
+      name: "Connected to Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -1166,7 +1166,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedBelongingMagicGroup",
-      name: "Member of magical groups",
+      name: "Member of Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -1177,7 +1177,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedAllyMagicGroup",
-      name: "Ally of magical groups",
+      name: "Ally of Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -1188,7 +1188,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedEnemyMagicGroup",
-      name: "Enemy of magical groups",
+      name: "Enemy of Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -1199,7 +1199,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectionTechGroup",
-      name: "Connected to scientific/technological groups",
+      name: "Connected to Scientific/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
@@ -1210,7 +1210,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedBelongingTechGroup",
-      name: "Member of scientific/technological groups",
+      name: "Member of Scientific/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
@@ -1221,7 +1221,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedAllyTechGroup",
-      name: "Ally of scientific/technological groups",
+      name: "Ally of Scientific/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
@@ -1232,7 +1232,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedEnemyTechGroup",
-      name: "Enemy of scientific/technological groups",
+      name: "Enemy of Scientific/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
@@ -1249,7 +1249,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedEvent",
-      name: "Took part in events",
+      name: "Took part in Events",
       type: "manyToManyRelationship",
       icon: "mdi-calendar-text",
       sizing: 6,
@@ -1260,7 +1260,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedPlaces",
-      name: "Connected to locations",
+      name: "Connected to Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 6,
@@ -1271,7 +1271,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedMyths",
-      name: "Connected to myths, legends and stories",
+      name: "Connected to Myths, legends and stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
       sizing: 6,
@@ -1282,7 +1282,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedItems",
-      name: "Connected to legendary items/artifacts",
+      name: "Connected to Legendary items/artifacts",
       type: "manyToManyRelationship",
       icon: "mdi-sword-cross",
       sizing: 6,

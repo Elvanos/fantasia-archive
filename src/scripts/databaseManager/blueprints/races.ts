@@ -21,7 +21,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "documentColor",
-      name: "Text Color",
+      name: "Text color",
       type: "colorPicker",
       icon: "mdi-eyedropper",
       tooltip:
@@ -86,14 +86,14 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "otherNames",
-      name: "Other names & Epithets",
+      name: "Other Names & Epithets",
       type: "list",
       icon: "mdi-book-plus",
       sizing: 6
     },
     {
       id: "relatedRaces",
-      name: "Related races",
+      name: "Related Species/Races",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
       sizing: 4,
@@ -230,7 +230,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "traits",
-      name: "Defining features/traits",
+      name: "Defining Features & Traits",
       type: "list",
       icon: "fas fa-dragon",
       sizing: 12
@@ -273,7 +273,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "commonNames",
-      name: "Common names among the race/species",
+      name: "Common names among the Race/Species",
       type: "list",
       icon: "fas fa-signature",
       sizing: 6,
@@ -290,7 +290,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "commonFamilyNames",
-      name: "Common family/clan names among the race/species",
+      name: "Common Family/Clan names among the Race/Species",
       type: "list",
       icon: "mdi-family-tree",
       sizing: 6,
@@ -320,7 +320,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "pairedCharacter",
-      name: "Characters of race",
+      name: "Characters of Race/Species",
       type: "manyToManyRelationship",
       icon: "mdi-account",
       sizing: 6,
@@ -331,7 +331,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedPlaces",
-      name: "Inhabited locations",
+      name: "Inhabited Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 6,
@@ -342,7 +342,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "localCurrencies",
-      name: "Commonly used currencies",
+      name: "Commonly used Currencies",
       type: "manyToManyRelationship",
       icon: "fas fa-coins",
       sizing: 6,
@@ -353,7 +353,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "localLanguages",
-      name: "Commonly spoken languages",
+      name: "Commonly spoken Languages",
       type: "manyToManyRelationship",
       icon: "mdi-book-alphabet",
       sizing: 6,
@@ -364,7 +364,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "commonInPoliticalGroups",
-      name: "Common in political groups/ideologies",
+      name: "Common in Political groups/Ideologies",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
@@ -375,7 +375,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "commonInReligiousGroups",
-      name: "Common in religious groups/teachings",
+      name: "Common in Religious groups/Teachings",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 6,
@@ -386,7 +386,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "commonInMagicGroups",
-      name: "Common in magical groups/teachings",
+      name: "Common in Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -397,7 +397,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "commonInTechGroups",
-      name: "Common in science/technology groups/institutions",
+      name: "Common in Sciencific/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
@@ -415,7 +415,7 @@ export const racesBlueprint: I_Blueprint = {
 
     {
       id: "connectedEvents",
-      name: "Connected to important events",
+      name: "Connected to important Events",
       type: "manyToManyRelationship",
       icon: "mdi-calendar-text",
       sizing: 4,
@@ -426,7 +426,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedMyths",
-      name: "Connected to myths, legends and stories",
+      name: "Connected to Myths, legends and stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
       sizing: 4,
@@ -437,7 +437,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedItems",
-      name: "Connected to legendary items/artifacts",
+      name: "Connected to legendary Items",
       type: "manyToManyRelationship",
       icon: "mdi-sword-cross",
       sizing: 4,

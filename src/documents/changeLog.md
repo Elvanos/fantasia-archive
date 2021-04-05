@@ -12,7 +12,7 @@
 
 ### Bugfixes & Optimizations
 
-- Fixed a typo in `Type of being` field in the `Races/Species` document type
+- Fixed a typo in `Type of being` field in the `Species/Races` document type
 - Fixed a bug that was causing the relationship dropdowns sometimes not be clickable and instead caused dragging of the app window when shown over the top of the drag-bar at the top of the app
 - Updated advanced search guide with missing information about full-text search
 - Changes a small bug when the `New Object` dialog wasn't respecting option changes being done in the same session of the program being opened
@@ -29,6 +29,7 @@
 
 - Updated fullscreen editor looks to work more like a proper document editor
 - Made the app a bit more "snappy" by decreasing animation lengths when transitioning between documents
+- Updated `readme` file on how to properly compile the app since I made it OSS and all... kinda important
 
 ---
 

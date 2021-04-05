@@ -21,7 +21,7 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "documentColor",
-      name: "Text Color",
+      name: "Text color",
       type: "colorPicker",
       icon: "mdi-eyedropper",
       tooltip:
@@ -86,7 +86,7 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "otherNames",
-      name: "Other names & Epithets",
+      name: "Other Names & Epithets",
       type: "list",
       icon: "mdi-book-plus",
       sizing: 6
@@ -147,7 +147,7 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedItems",
-      name: "Connected to other items",
+      name: "Connected to other Items",
       type: "manyToManyRelationship",
       icon: "mdi-sword-cross",
       sizing: 6,
@@ -158,7 +158,7 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedMagic",
-      name: "Capable of utilizing spells/magic",
+      name: "Capable of utilizing Spells/Magic",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -169,7 +169,7 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedEvents",
-      name: "Involved in events",
+      name: "Involved in Events",
       type: "manyToManyRelationship",
       icon: "mdi-calendar-text",
       sizing: 6,
@@ -180,7 +180,7 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedMyths",
-      name: "Involved in myths/legends",
+      name: "Involved in Myths, legends and stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
       sizing: 6,
@@ -197,7 +197,7 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "traditions",
-      name: "Connected traditions & customs to the item",
+      name: "Traditions & customs connected to the item",
       type: "wysiwyg",
       sizing: 12
     },
@@ -209,7 +209,7 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedCharacter",
-      name: "Connected to characters",
+      name: "Connected to Characters",
       type: "manyToManyRelationship",
       icon: "mdi-account",
       sizing: 4,
@@ -220,7 +220,7 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedLocations",
-      name: "Connected to locations",
+      name: "Connected to Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 4,
@@ -231,7 +231,7 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedRaces",
-      name: "Connected to species/races",
+      name: "Connected to Species/Races",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
       sizing: 4,
@@ -242,7 +242,7 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedPolGroups",
-      name: "Connected to political groups/ideologies",
+      name: "Connected to Political groups/Ideologies",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
@@ -253,7 +253,7 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedRelGroups",
-      name: "Connected to religious groups/teachings",
+      name: "Connected to Religious groups/Teachings",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 6,
@@ -264,7 +264,7 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedMagicGroups",
-      name: "Connected to magic/spells",
+      name: "Connected to Magic/Spells",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -275,7 +275,7 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedTechGroups",
-      name: "Connected to technology/science",
+      name: "Connected to Technology/Science",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
