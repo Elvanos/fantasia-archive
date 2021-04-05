@@ -13,8 +13,10 @@
 ### Bugfixes & Optimizations
 
 - Fixed a typo in `Type of being` field in the `Races/Species` document type
+- Fixed a bug that was causing the relationship dropdowns sometimes not be clickable and instead caused dragging of the app window when shown over the top of the drag-bar at the top of the app
 - Updated advanced search guide with missing information about full-text search
 - Changes a small bug when the `New Object` dialog wasn't respecting option changes being done in the same session of the program being opened
+- Fixed tag groups in hierarchical tree not respecting custom order and alphabetical order
 - Fixed a rather peculiar recuring bug that could cause the database to endlessly attempt to update a document while constantly throwing errors
 - Managed to fix or at least mitigate multiple memory-leaks across the app
 - Optimized multiple parts of the code to run smoother

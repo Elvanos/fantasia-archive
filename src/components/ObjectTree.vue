@@ -573,7 +573,7 @@ export default class ObjectTree extends BaseClass {
           categoryCount: categoryCount,
           isRoot: true,
           isTag: true,
-          children: tagDocs
+          children: this.sortDocuments(tagDocs)
         }
       })
 

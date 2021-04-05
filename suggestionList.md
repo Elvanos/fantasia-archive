@@ -1,6 +1,3 @@
-- Fix custom order sorting in tag groups
-- Add to "-webkit-app-region: no-drag;" ".q-position-engine"
-
 ### ADD DOCS ABOUT BUGGY BUILD FILE
 
 - Unify "/" style capitals across document fields

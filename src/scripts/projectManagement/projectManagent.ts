@@ -114,7 +114,6 @@ export const removeCurrentProject = async () => {
   /*eslint-disable */
     // @ts-ignore
     const allDBS = await indexedDB.databases()
-    console.log(allDBS)
 
     const DBnames: string[] = allDBS
     .filter((d: {name: string}) => d.name !== '_pouch_fa-settings')
