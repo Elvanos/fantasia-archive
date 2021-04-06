@@ -30,7 +30,7 @@ export const magicBlueprint: I_Blueprint = {
         `,
       sizing: 3,
       relationshipSettings: {
-        connectedObjectType: "characters"
+        connectedObjectType: "magic"
       }
     },
     {

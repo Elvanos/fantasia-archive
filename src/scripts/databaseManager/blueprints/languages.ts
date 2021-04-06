@@ -30,7 +30,7 @@ export const languagesBlueprint: I_Blueprint = {
         `,
       sizing: 3,
       relationshipSettings: {
-        connectedObjectType: "characters"
+        connectedObjectType: "languages"
       }
     },
     {

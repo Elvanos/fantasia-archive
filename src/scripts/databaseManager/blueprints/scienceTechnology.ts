@@ -30,7 +30,7 @@ export const techBlueprint: I_Blueprint = {
         `,
       sizing: 3,
       relationshipSettings: {
-        connectedObjectType: "characters"
+        connectedObjectType: "tech"
       }
     },
     {

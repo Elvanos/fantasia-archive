@@ -30,7 +30,7 @@ export const religionsBlueprint: I_Blueprint = {
         `,
       sizing: 3,
       relationshipSettings: {
-        connectedObjectType: "characters"
+        connectedObjectType: "religions"
       }
     },
     {

@@ -30,7 +30,7 @@ export const itemsBlueprint: I_Blueprint = {
         `,
       sizing: 3,
       relationshipSettings: {
-        connectedObjectType: "characters"
+        connectedObjectType: "items"
       }
     },
     {

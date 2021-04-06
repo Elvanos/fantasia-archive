@@ -30,7 +30,7 @@ export const politicalGroupsBlueprint: I_Blueprint = {
         `,
       sizing: 3,
       relationshipSettings: {
-        connectedObjectType: "characters"
+        connectedObjectType: "politicalGroups"
       }
     },
     {
