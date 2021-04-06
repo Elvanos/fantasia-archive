@@ -34,7 +34,7 @@
           :key="document.type+document._id"
           :icon="(retrieveFieldValue(document,'categorySwitch') ? 'fas fa-folder-open' : document.icon)"
           :label="retrieveFieldValue(document,'name')"
-          :style="`color: ${retrieveFieldValue(document,'documentColor')};`"
+          :style="`color: ${retrieveFieldValue(document,'documentColor')}; background-color: ${retrieveFieldValue(document,'documentBackgroundColor')}; filter: ${(retrieveFieldValue(document,'minorSwitch') ? 'grayscale(100) brightness(0.7)' : '')}`"
           :class="[
             {'isBold':
               (

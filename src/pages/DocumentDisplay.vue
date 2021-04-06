@@ -713,7 +713,7 @@ export default class PageDocumentDisplay extends BaseClass {
   categoryFieldFilter (currentFieldID: string) {
     const isCategory = this.retrieveFieldValue(this.currentData, "categorySwitch")
 
-    const ignoredList = ["breakBasic", "name", "documentColor", "parentDoc", "order", "categorySwitch", "tags"]
+    const ignoredList = ["breakBasic", "name", "documentColor", "documentBackgroundColor", "parentDoc", "order", "categorySwitch", "minorSwitch", "tags"]
     return (!isCategory || ignoredList.includes(currentFieldID))
   }
 

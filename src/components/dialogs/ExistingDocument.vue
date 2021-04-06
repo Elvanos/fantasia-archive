@@ -14,9 +14,14 @@
         </q-card-section>
 
         <q-card-section class="column items-center">
-          <div class="q-mb-lg">
+          <div class="q-mb-md">
             <q-checkbox dark color="primary" v-model="includeCategories" label="Include categories in the list?" />
           </div>
+
+           <div class="q-mb-lg">
+            <q-checkbox dark color="primary" v-model="includeMinor" label="Include minor documents in the list?" />
+          </div>
+
            <q-select
               style="width: 400px;"
               ref="ref_existingDocument"
@@ -36,10 +41,11 @@
             >
               <template v-slot:option="{ itemProps, itemEvents, opt }">
                   <q-item
-                    :class="{'hasTextShadow': textShadow}"
+                    :class="{'hasTextShadow': textShadow, 'isMinor':opt.isMinor}"
                     v-bind="itemProps"
                     v-on="itemEvents"
-                    :style="`color: ${opt.color}`"
+                    :key="opt.id"
+                    :style="`color: ${opt.color}; background-color: ${opt.bgColor}`"
                   >
                     <q-item-section avatar>
                       <q-icon
@@ -202,10 +208,23 @@ export default class ExistingDocumentDialog extends DialogBase {
   includeCategories = true
 
   /**
+   * Model for pre-filtering via minor documents
+   */
+  includeMinor = false
+
+  /**
    * React to the category checkbox changes
    */
   @Watch("includeCategories")
-  reactToCheckboxChange () {
+  reactToCategoryCheckboxChange () {
+    this.preFilterDocuments()
+  }
+
+  /**
+   * React to the category checkbox changes
+   */
+  @Watch("includeMinor")
+  reactToMinorCheckboxChange () {
     this.preFilterDocuments()
   }
 
@@ -213,7 +232,9 @@ export default class ExistingDocumentDialog extends DialogBase {
    * Prefilter documents based on what is in the checkbox
    */
   preFilterDocuments () {
-    this.existingObjectPrefilteredList = this.existingObjectsFullList.filter(e => !((!this.includeCategories && e.isCategory)))
+    this.existingObjectPrefilteredList = this.existingObjectsFullList
+      .filter(e => !((!this.includeCategories && e.isCategory)))
+      .filter(e => !((!this.includeMinor && e.isMinor)))
   }
 
   /****************************************************************/

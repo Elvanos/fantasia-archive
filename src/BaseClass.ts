@@ -468,7 +468,9 @@ export default class BaseClass extends Vue {
           hierarchicalPath: this.getDocumentHieararchicalPath(doc, dbDocuments),
           tags: doc.extraFields.find(e => e.id === "tags")?.value,
           color: doc.extraFields.find(e => e.id === "documentColor")?.value,
-          isCategory: doc.extraFields.find(e => e.id === "categorySwitch")?.value
+          bgColor: doc.extraFields.find(e => e.id === "documentBackgroundColor")?.value,
+          isCategory: doc.extraFields.find(e => e.id === "categorySwitch")?.value,
+          isMinor: doc.extraFields.find(e => e.id === "minorSwitch")?.value
         } as unknown as I_ShortenedDocument
         formattedDocuments.push(pushValue)
       }

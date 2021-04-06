@@ -118,9 +118,11 @@
 
       <template v-slot:option="{ itemProps, itemEvents, opt }">
           <q-item
-            :class="{'hasTextShadow': textShadow}"
+            :class="{'hasTextShadow': textShadow, 'isMinor':opt.isMinor}"
             v-bind="itemProps"
             v-on="itemEvents"
+            :key="opt.id"
+            :style="`background-color: ${opt.bgColor}`"
           >
             <q-item-section avatar>
               <q-icon
@@ -242,7 +244,7 @@ export default class Field_SingleRelationship extends FieldBase {
 
     this.inputNote = (!this.inputDataValue?.addedValues) ? this.inputNote : this.inputDataValue.addedValues
 
-    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log(e))
+    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log())
   }
 
   /**
@@ -250,7 +252,7 @@ export default class Field_SingleRelationship extends FieldBase {
    */
   @Watch("inputDataBluePrint", { deep: true, immediate: true })
   reactToBlueprintChanges () {
-    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log(e))
+    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log())
   }
 
   /**
@@ -258,7 +260,7 @@ export default class Field_SingleRelationship extends FieldBase {
    */
   @Watch("currentId")
   reactToIDChanges () {
-    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log(e))
+    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log())
   }
 
   /**
@@ -370,7 +372,9 @@ export default class Field_SingleRelationship extends FieldBase {
           url: `/project/display-content/${objectDoc.type}/${objectDoc._id}`,
           label: objectDoc.extraFields.find(e => e.id === "name")?.value,
           color: objectDoc.extraFields.find(e => e.id === "documentColor")?.value,
+          bgColor: objectDoc.extraFields.find(e => e.id === "documentBackgroundColor")?.value,
           isCategory: objectDoc.extraFields.find(e => e.id === "categorySwitch")?.value,
+          isMinor: objectDoc.extraFields.find(e => e.id === "minorSwitch")?.value,
           pairedField: pairedField,
           tags: objectDoc.extraFields.find(e => e.id === "tags")?.value,
           // @ts-ignore
@@ -382,7 +386,7 @@ export default class Field_SingleRelationship extends FieldBase {
       const isBelongsUnder = (this.inputDataBluePrint.id === "parentDoc")
       const objectsWithoutCurrent: I_ShortenedDocument[] = (isBelongsUnder)
         ? allObjects.filter((obj) => obj._id !== this.currentId)
-        : allObjects.filter((obj) => obj._id !== this.currentId).filter((obj) => !obj.isCategory)
+        : allObjects.filter((obj) => obj._id !== this.currentId).filter((obj) => !obj.isCategory).filter((obj) => !obj.isMinor)
 
       // Proceed only if the local input is properly set up
       if (this.localInput._id) {

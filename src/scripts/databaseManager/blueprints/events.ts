@@ -31,6 +31,17 @@ export const eventsBlueprint: I_Blueprint = {
       sizing: 2
     },
     {
+      id: "documentBackgroundColor",
+      name: "Background color",
+      type: "colorPicker",
+      icon: "mdi-format-color-fill",
+      tooltip:
+        `This field allows for custom-coloring your document to any available HEX or RBG color.
+        <br>The selected color will show as a background both in the hierarchical tree on the left and in the top tabs.
+        `,
+      sizing: 2
+    },
+    {
       id: "parentDoc",
       name: "Belongs under",
       type: "singleToNoneRelationship",

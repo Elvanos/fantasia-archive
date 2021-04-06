@@ -1,23 +1,16 @@
-- Unify "/" style capitals across document fields
-- Add "Document relevance" switch and integrate it into filters
-- Add "Show in search results" checkbox for relationship searches
+- Add "is dead" or some similar switch to documents and show strike-through/etc on items in lists, tombstone icon or overlay crossed out icon
+
 - Add "Related notes"
 - Add "Predecessors", "Successors", "Date of start", "Date of end" and "How long it lasted" fields to locations and all other groups
 - Save scroll distance when switching tabs (consider some auto-scroll when opening edit mode)
-- Fix lag on opening Quick-search popup
 - Mass tag rename
 - Add advanced search capabilities to the hierarchical tree
-- Add "is dead" or some similar switch to documents and show strike-through/etc on items in lists, tombstone icon or overlay crossed out icon
-- Custom icons/images to documents
-- Add colored backgrounds to documents (along with already existing colored texts)
 - "Save all" keybind and "Save all and exit" option on the exiting
 - Add support for dates in "custom order"... reee
-- Add cogwheels (loading) for the relationship fields when opening/closing since it takes a while on some PCs
 - Add safeguard to escape closing of settings only after something actually got modified
 - Add hover/on-demand document preview to relationships
 - Floating notes corkboard
 
-- Considering multiple "belongs under" category listing
 - Add intelligent responsive design to the left tree and document body (maybe button to pull the left bar in and out?)
 - Context menu: Expand all
 - Context menu: Collapse all

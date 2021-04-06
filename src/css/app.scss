@@ -181,6 +181,10 @@ a {
 }
 
 .q-item {
+  &.isMinor {
+    filter: grayscale(100) brightness(0.7);
+  }
+
   &.hasTextShadow {
     $shadowColorOutline: #000;
     $shadowColorSurround: #000;

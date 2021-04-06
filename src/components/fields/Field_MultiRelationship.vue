@@ -120,9 +120,11 @@
       </template>
       <template v-slot:option="{ itemProps, itemEvents, opt }">
         <q-item
-          :class="{'hasTextShadow': textShadow}"
+          :class="{'hasTextShadow': textShadow, 'isMinor':opt.isMinor}"
           v-bind="itemProps"
           v-on="itemEvents"
+          :key="opt.id"
+          :style="`background-color: ${opt.bgColor}`"
         >
            <q-item-section avatar>
             <q-icon
@@ -242,7 +244,7 @@ export default class Field_MultiRelationship extends FieldBase {
 
     this.checkNotes()
 
-    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log(e))
+    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log())
   }
 
   /**
@@ -250,7 +252,7 @@ export default class Field_MultiRelationship extends FieldBase {
    */
   @Watch("inputDataBluePrint", { deep: true, immediate: true })
   reactToBlueprintChanges () {
-    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log(e))
+    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log())
   }
 
   /**
@@ -258,7 +260,7 @@ export default class Field_MultiRelationship extends FieldBase {
    */
   @Watch("currentId")
   reactToIDChanges () {
-    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log(e))
+    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log())
   }
 
   /**
@@ -367,7 +369,9 @@ export default class Field_MultiRelationship extends FieldBase {
           url: `/project/display-content/${objectDoc.type}/${objectDoc._id}`,
           label: objectDoc.extraFields.find(e => e.id === "name")?.value,
           isCategory: objectDoc.extraFields.find(e => e.id === "categorySwitch")?.value,
+          isMinor: objectDoc.extraFields.find(e => e.id === "minorSwitch")?.value,
           color: objectDoc.extraFields.find(e => e.id === "documentColor")?.value,
+          bgColor: objectDoc.extraFields.find(e => e.id === "documentBackgroundColor")?.value,
           pairedField: pairedField,
           tags: objectDoc.extraFields.find(e => e.id === "tags")?.value,
           // @ts-ignore
@@ -412,7 +416,9 @@ export default class Field_MultiRelationship extends FieldBase {
       await CurrentObjectDB.close()
 
       // Do a last set of filtering
-      this.allDocumentsWithoutCurrent = allObjectsWithoutCurrent.filter((obj) => !obj.isCategory)
+      this.allDocumentsWithoutCurrent = allObjectsWithoutCurrent
+        .filter((obj) => !obj.isCategory)
+        .filter((obj) => !obj.isMinor)
 
       // @ts-ignore
       allObjectsWithoutCurrent = null

@@ -31,6 +31,17 @@ export const charactersBlueprint: I_Blueprint = {
       sizing: 2
     },
     {
+      id: "documentBackgroundColor",
+      name: "Background color",
+      type: "colorPicker",
+      icon: "mdi-format-color-fill",
+      tooltip:
+        `This field allows for custom-coloring your document to any available HEX or RBG color.
+        <br>The selected color will show as a background both in the hierarchical tree on the left and in the top tabs.
+        `,
+      sizing: 2
+    },
+    {
       id: "parentDoc",
       name: "Belongs under",
       type: "singleToNoneRelationship",
@@ -55,6 +66,19 @@ export const charactersBlueprint: I_Blueprint = {
         <br>This allows for extra "padding" between the items in case a new one needs to be added in the middle without needing to redo the custom order on all documents.
         `,
       sizing: 2
+    },
+    {
+      id: "minorSwitch",
+      name: "Is a minor document",
+      type: "switch",
+      icon: "mdi-magnify-minus-outline",
+      tooltip:
+        `This setting allows for setting the current document to minor document mode.
+        <br>
+        A document with minor document mode toggled on will not show in any other relationship searches.<br>
+        The idea behind this setting is to allow for creation of documents that will not clutter the search, but could be theoretically relevant in some very specific cases to the story (eg: distant relatives of a character).
+        `,
+      sizing: 3
     },
     {
       id: "categorySwitch",

@@ -49,12 +49,15 @@
       no-results-label="Nothing matches your request"
       >
       <template v-slot:default-header="prop">
-        <div class="row items-center col-grow"
-        @click.stop.prevent="processNodeClick(prop.node)"
-        @click.stop.prevent.middle="processNodeLabelMiddleClick(prop.node)"
+        <div
+          class="row items-center col-grow documentWrapper"
+          :class="{'isMinor': prop.node.isMinor}"
+          :style="`background-color: ${prop.node.bgColor};`"
+          @click.stop.prevent="processNodeClick(prop.node)"
+          @click.stop.prevent.middle="processNodeLabelMiddleClick(prop.node)"
         >
           <div class="documentLabel"
-            :style="`color: ${prop.node.color}`"
+            :style="`color: ${prop.node.color};`"
            >
           <q-icon
             :style="`color: ${determineNodeColor(prop.node)}; width: 22px !important;`"
@@ -458,17 +461,22 @@ export default class ObjectTree extends BaseClass {
 
           const parentDocID = doc.extraFields.find(e => e.id === "parentDoc")?.value.value as unknown as {_id: string}
           const color = doc.extraFields.find(e => e.id === "documentColor")?.value as unknown as string
-          const isCategory = doc.extraFields.find(e => e.id === "categorySwitch")?.value as unknown as string
+          const bgColor = doc.extraFields.find(e => e.id === "documentBackgroundColor")?.value as unknown as string
+
+          const isCategory = doc.extraFields.find(e => e.id === "categorySwitch")?.value as unknown as boolean
+          const isMinor = doc.extraFields.find(e => e.id === "minorSwitch")?.value as unknown as boolean
 
           return {
             label: doc.extraFields.find(e => e.id === "name")?.value,
             icon: (isCategory) ? "fas fa-folder-open" : doc.icon,
             isCategory: !!(isCategory),
+            isMinor: isMinor,
             sticker: doc.extraFields.find(e => e.id === "order")?.value,
             parentDoc: (parentDocID) ? parentDocID._id : false,
             handler: this.openExistingDocumentRoute,
             expandable: true,
             color: color,
+            bgColor: bgColor,
             type: doc.type,
             children: [],
             hasEdits: false,
@@ -886,6 +894,14 @@ export default class ObjectTree extends BaseClass {
       > .q-focus-helper {
         opacity: 0.22 !important;
       }
+    }
+  }
+
+  .documentWrapper {
+    border-radius: 3px;
+
+    &.isMinor {
+      filter: grayscale(100) brightness(0.7);
     }
   }
 

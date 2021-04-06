@@ -7,7 +7,7 @@
 
 ### Known issues
 
-- When creating a brand new project, Fantasia Archive sometimes doesn't load the default categories in the left hierarchical tree. A temporary workaround before the issue is fixed is restarting the program - the project stays intact, can be normally edited no data loss occurs.
+- When creating a brand new project, Fantasia Archive sometimes doesn't load the default categories in the left hierarchical tree. A temporary workaround before the issue is fixed is restarting the program - the project stays intact, can be normally edited and no data loss occurs.
 - Some users report that dialog (popups) don't function the very first time you start FA. This is solved by restarting the application. The bug doesn't seem to appear again once FA has been started at least once before.
 
 ### Bugfixes & Optimizations
@@ -24,10 +24,13 @@
 ### New features
 
 - Added a dedicated button that opens the connected documents straight from the little chips in relationship fields while in edit mode
+- Added support for background color for documents
+- Added support for "Minor document" mode switch for better organization of documents
 
 ### QoL adjustments
 
 - Updated fullscreen editor looks to work more like a proper document editor
+- Updated the Advanced search guide with new additions and added one new Trivia popup text concerning it
 - Made the app a bit more "snappy" by decreasing animation lengths when transitioning between documents
 - Updated `readme` file on how to properly compile the app since I made it OSS and all... kinda important
 
@@ -37,7 +40,7 @@
 
 ### Known issues
 
-- When creating a brand new project, Fantasia Archive sometimes doesn't load the default categories in the left hierarchical tree. A temporary workaround before the issue is fixed is restarting the program - the project stays intact, can be normally edited no data loss occurs.
+- When creating a brand new project, Fantasia Archive sometimes doesn't load the default categories in the left hierarchical tree. A temporary workaround before the issue is fixed is restarting the program - the project stays intact, can be normally edited and no data loss occurs.
 
 ### Bugfixes
 
@@ -116,7 +119,7 @@
 
 ### Known issues
 
-- When creating a brand new project, Fantasia Archive sometimes doesn't load the default categories in the left hierarchical tree. A temporary workaround before the issue is fixed is restarting the program - the project stays intact, can be normally edited no data loss occurs.
+- When creating a brand new project, Fantasia Archive sometimes doesn't load the default categories in the left hierarchical tree. A temporary workaround before the issue is fixed is restarting the program - the project stays intact, can be normally edited and no data loss occurs.
 
 ### Bugfixes
 

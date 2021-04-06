@@ -25,6 +25,7 @@ export interface I_ShortenedDocument{
   _id: string
   hierarchicalPath?: string
   isCategory?: boolean
+  isMinor?: boolean
   parentDoc: string | false
   children: I_ShortenedDocument[]
   extraFields: I_ExtraDocumentFields[]
