@@ -6,6 +6,7 @@ export interface I_FieldRelationship{
   _id: string
   pairedField: string
   isCategory: boolean
+  isDead: boolean
 }
 
 export interface I_RelationshipPair {

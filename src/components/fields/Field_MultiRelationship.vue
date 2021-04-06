@@ -46,7 +46,12 @@
           @click.middle="openNewTab(single)"
           >
             <span class="text-weight-medium">
-              {{stripTags(single.label)}}
+              <span class="isDeadIndicator" v-if="single.isDead">
+                †
+              </span>
+              <span :class="{'isDead': single.isDead}">
+                  {{stripTags(single.label)}}
+              </span>
             </span>
             <span class="inline-block q-ml-xs text-italic connectionNote">
               {{retrieveNoteText(single._id)}}
@@ -101,6 +106,9 @@
           text-color="dark"
           class="text-bold"
         >
+          <template v-if="scope.opt.isDead">
+            †
+          </template>
           {{ stripTags(scope.opt.label) }}
            <q-btn
             round
@@ -135,7 +143,13 @@
           <q-item-section>
             <q-item-label
             :style="`color: ${opt.color}`"
-             v-html="opt.label" ></q-item-label>
+            >
+              <span class="isDeadIndicator" v-if="opt.isDead">
+                †
+              </span>
+              <span :class="{'isDead': opt.isDead}" v-html="opt.label">
+              </span>
+            </q-item-label>
             <q-item-label caption class="text-cultured" v-html="opt.hierarchicalPath"></q-item-label>
             <q-item-label caption class="text-cultured" v-if="opt.tags">
               <q-chip
@@ -370,6 +384,7 @@ export default class Field_MultiRelationship extends FieldBase {
           label: objectDoc.extraFields.find(e => e.id === "name")?.value,
           isCategory: objectDoc.extraFields.find(e => e.id === "categorySwitch")?.value,
           isMinor: objectDoc.extraFields.find(e => e.id === "minorSwitch")?.value,
+          isDead: objectDoc.extraFields.find(e => e.id === "deadSwitch")?.value,
           color: objectDoc.extraFields.find(e => e.id === "documentColor")?.value,
           bgColor: objectDoc.extraFields.find(e => e.id === "documentBackgroundColor")?.value,
           pairedField: pairedField,
@@ -401,8 +416,13 @@ export default class Field_MultiRelationship extends FieldBase {
           else {
             const matchedFieldContent = allObjectsWithoutCurrent.find(e => e._id === s._id)
 
-            if (matchedFieldContent && this.localInput[index].label !== matchedFieldContent.label) {
+            if (matchedFieldContent && (
+              this.localInput[index].label !== matchedFieldContent.label ||
+               this.localInput[index]?.isDead !== matchedFieldContent.extraFields.find(e => e.id === "deadSwitch")?.value)
+            ) {
               this.localInput[index].label = matchedFieldContent.label
+              this.localInput[index].isDead = matchedFieldContent.extraFields.find(e => e.id === "deadSwitch")?.value
+
               needsRefresh = true
             }
           }

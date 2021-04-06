@@ -54,7 +54,13 @@
                         />
                     </q-item-section>
                     <q-item-section>
-                      <q-item-label v-html="opt.label" ></q-item-label>
+                      <q-item-label>
+                        <span class="isDeadIndicator" v-if="opt.isDead">
+                          †
+                        </span>
+                        <span :class="{'isDead': opt.isDead}" v-html="opt.label">
+                        </span>
+                      </q-item-label>
                       <q-item-label caption class="text-cultured" v-html="opt.hierarchicalPath"></q-item-label>
                       <q-item-label caption class="text-cultured" v-if="opt.tags">
                         <q-chip

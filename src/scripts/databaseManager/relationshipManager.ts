@@ -91,7 +91,9 @@ export const single_addRelationShipToAnotherObject = async (
     type: currentDocument.type,
     url: `/project/display-content/${currentDocument.type}/${currentDocument._id}`,
     label: currentDocument.extraFields.find(e => e.id === "name")?.value,
-    pairedField: field.id
+    pairedField: field.id,
+    isCategory: currentDocument.extraFields.find(e => e.id === "categorySwitch")?.value,
+    isDead: currentDocument.extraFields.find(e => e.id === "deadSwitch")?.value
   }
 
   await PairedObjectDB.put(pairedDocument)
@@ -200,7 +202,8 @@ export const many_addRelationShipToAnotherObject = async (
     url: `/project/display-content/${currentDocument.type}/${currentDocument._id}`,
     label: currentDocument.extraFields.find(e => e.id === "name")?.value,
     pairedField: field.id,
-    isCategory: currentDocument.extraFields.find(e => e.id === "categorySwitch")?.value
+    isCategory: currentDocument.extraFields.find(e => e.id === "categorySwitch")?.value,
+    isDead: currentDocument.extraFields.find(e => e.id === "deadSwitch")?.value
   }
 
   pairedFieldValue = (Array.isArray(pairedFieldValue)) ? pairedFieldValue : []

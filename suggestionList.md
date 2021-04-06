@@ -1,5 +1,3 @@
-- Add "is dead" or some similar switch to documents and show strike-through/etc on items in lists, tombstone icon or overlay crossed out icon
-
 - Add "Related notes"
 - Add "Predecessors", "Successors", "Date of start", "Date of end" and "How long it lasted" fields to locations and all other groups
 - Save scroll distance when switching tabs (consider some auto-scroll when opening edit mode)

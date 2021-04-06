@@ -20,16 +20,20 @@
 - Fixed a rather peculiar recuring bug that could cause the database to endlessly attempt to update a document while constantly throwing errors
 - Managed to fix or at least mitigate multiple memory-leaks across the app
 - Optimized multiple parts of the code to run smoother
+- Fixed wrong icons in some fields in some document types
 
 ### New features
 
 - Added a dedicated button that opens the connected documents straight from the little chips in relationship fields while in edit mode
 - Added support for background color for documents
-- Added support for "Minor document" mode switch for better organization of documents
+- Added support for "Minor document" mode switch for better organization and visual representation of documents
+- Added support for "Dead/Gone/Destroyed" mode switch for better organization and visual representation of documents
 
 ### QoL adjustments
 
 - Updated fullscreen editor looks to work more like a proper document editor
+- Reordered the basic document settings inside the app and separated them from the document content
+- Adjusted maximum width of switch fields to make them look like spaggeti
 - Updated the Advanced search guide with new additions and added one new Trivia popup text concerning it
 - Made the app a bit more "snappy" by decreasing animation lengths when transitioning between documents
 - Updated `readme` file on how to properly compile the app since I made it OSS and all... kinda important

@@ -470,7 +470,9 @@ export default class BaseClass extends Vue {
           color: doc.extraFields.find(e => e.id === "documentColor")?.value,
           bgColor: doc.extraFields.find(e => e.id === "documentBackgroundColor")?.value,
           isCategory: doc.extraFields.find(e => e.id === "categorySwitch")?.value,
-          isMinor: doc.extraFields.find(e => e.id === "minorSwitch")?.value
+          isMinor: doc.extraFields.find(e => e.id === "minorSwitch")?.value,
+          isDead: doc.extraFields.find(e => e.id === "deadSwitch")?.value
+
         } as unknown as I_ShortenedDocument
         formattedDocuments.push(pushValue)
       }

@@ -438,6 +438,8 @@ export default class DocumentControl extends BaseClass {
     }
   }
 
+  documentsCopy = null as unknown as I_OpenedDocument[]
+
   async saveCurrentDocument () {
     if (document.activeElement) {
       (document.activeElement as HTMLElement).blur()
@@ -447,14 +449,14 @@ export default class DocumentControl extends BaseClass {
 
     const allDocuments = this.SGET_allOpenedDocuments
 
-    const docCopy: I_OpenedDocument[] = extend(true, [], allDocuments.docs)
+    this.documentsCopy = extend(true, [], allDocuments.docs)
 
     if (currentDoc) {
       // @ts-ignore
       const savedDocument: {
         documentCopy: I_OpenedDocument,
         allOpenedDocuments: I_OpenedDocument[]
-      } = await saveDocument(currentDoc, docCopy)
+      } = await saveDocument(currentDoc, this.documentsCopy)
 
       // Update the opened document
       const dataPass = { doc: savedDocument.documentCopy, treeAction: true }

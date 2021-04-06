@@ -11,7 +11,7 @@ export const saveDocument = async (document: I_OpenedDocument, allOpenedDocument
   const BlueprintsDB = new PouchDB("blueprints")
   const currentBlueprint: {extraFields: I_ExtraFields[]} = await BlueprintsDB.get(document.type)
 
-  const CurrentObjectDB = new PouchDB(document.type)
+  let CurrentObjectDB = new PouchDB(document.type)
 
   let currentDocument = false as unknown as I_OpenedDocument
   try {
@@ -97,8 +97,17 @@ export const saveDocument = async (document: I_OpenedDocument, allOpenedDocument
   documentCopy.editMode = false
 
   // Save the document
-  await CurrentObjectDB.put(documentCopy)
+  try {
+    await CurrentObjectDB.put(documentCopy)
+  }
+  // This exists here as a backup in case the databases closes the connection from elsewhere in the meantime
+  catch (error) {
+    await CurrentObjectDB.close()
+    CurrentObjectDB = new PouchDB(document.type)
+    await CurrentObjectDB.put(documentCopy)
+  }
 
+  await BlueprintsDB.close()
   await CurrentObjectDB.close()
 
   return { documentCopy, allOpenedDocuments }

@@ -33,7 +33,6 @@
           :to="`/project/display-content/${document.type}/${document._id}`"
           :key="document.type+document._id"
           :icon="(retrieveFieldValue(document,'categorySwitch') ? 'fas fa-folder-open' : document.icon)"
-          :label="retrieveFieldValue(document,'name')"
           :style="`color: ${retrieveFieldValue(document,'documentColor')}; background-color: ${retrieveFieldValue(document,'documentBackgroundColor')}; filter: ${(retrieveFieldValue(document,'minorSwitch') ? 'grayscale(100) brightness(0.7)' : '')}`"
           :class="[
             {'isBold':
@@ -41,14 +40,26 @@
                 retrieveFieldValue(document,'documentColor') !== '#ffffff' &&
                 retrieveFieldValue(document,'documentColor') !== '#fff'
               ) &&
-              retrieveFieldValue(document,'documentColor') !== ''}]"
+              retrieveFieldValue(document,'documentColor') !== ''
+              }]"
           :alert="document.hasEdits"
           alert-icon="mdi-feather"
           @click.prevent.middle="tryCloseTab(document)"
           >
+            <span class="isDeadIndicator" v-if="retrieveFieldValue(document,'deadSwitch')">
+              †
+            </span>
+            <div
+              class="q-tab__label"
+             :class="{'isDead': retrieveFieldValue(document,'deadSwitch')}">
+             {{retrieveFieldValue(document,'name')}}
+            </div>
             <q-tooltip
               :delay="700"
             >
+              <span class="isDeadIndicator" v-if="retrieveFieldValue(document,'deadSwitch')">
+              †
+              </span>
               {{retrieveFieldValue(document,'name')}}
               <br>
               <span class="text-caption">Middle mouse button to close</span>

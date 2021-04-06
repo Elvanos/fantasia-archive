@@ -43,7 +43,12 @@
           @click.middle="openNewTab(localInput)"
           >
           <span class="text-weight-medium">
-           {{stripTags(localInput.label)}}
+            <span class="isDeadIndicator" v-if="localInput.isDead">
+              †
+            </span>
+            <span :class="{'isDead': localInput.isDead}">
+                {{stripTags(localInput.label)}}
+            </span>
           </span>
           <span class="inline-block q-ml-xs text-italic connectionNote">
             {{retrieveNoteText()}}
@@ -98,6 +103,9 @@
           text-color="dark"
           class="text-bold"
         >
+          <template v-if="scope.opt.isDead">
+            †
+          </template>
           {{ stripTags(scope.opt.label) }}
           <q-btn
             round
@@ -132,8 +140,14 @@
             </q-item-section>
             <q-item-section>
               <q-item-label
-              :style="`color: ${opt.color}`"
-               v-html="opt.label" ></q-item-label>
+                :style="`color: ${opt.color}`"
+                >
+                <span class="isDeadIndicator" v-if="opt.isDead">
+                  †
+                </span>
+                <span :class="{'isDead': opt.isDead}" v-html="opt.label">
+                </span>
+              </q-item-label>
               <q-item-label caption class="text-cultured" v-html="opt.hierarchicalPath"></q-item-label>
               <q-item-label caption class="text-cultured" v-if="opt.tags">
                 <q-chip
@@ -375,6 +389,7 @@ export default class Field_SingleRelationship extends FieldBase {
           bgColor: objectDoc.extraFields.find(e => e.id === "documentBackgroundColor")?.value,
           isCategory: objectDoc.extraFields.find(e => e.id === "categorySwitch")?.value,
           isMinor: objectDoc.extraFields.find(e => e.id === "minorSwitch")?.value,
+          isDead: objectDoc.extraFields.find(e => e.id === "deadSwitch")?.value,
           pairedField: pairedField,
           tags: objectDoc.extraFields.find(e => e.id === "tags")?.value,
           // @ts-ignore
@@ -399,8 +414,13 @@ export default class Field_SingleRelationship extends FieldBase {
         // If the object does exist, make sure we have the newest available name by reasigning the label if it is different. Then trigger a silent update
         else {
           const matchedFieldContent = objectsWithoutCurrent.find(e => e._id === this.localInput._id)
-          if (matchedFieldContent && this.localInput.label !== matchedFieldContent.label) {
+          if (matchedFieldContent && (
+            this.localInput.label !== matchedFieldContent.label ||
+              this.localInput?.isDead !== matchedFieldContent.extraFields.find(e => e.id === "deadSwitch")?.value)
+          ) {
             this.localInput.label = matchedFieldContent.label
+            this.localInput.isDead = matchedFieldContent.extraFields.find(e => e.id === "deadSwitch")?.value
+
             this.signalInput(true)
           }
         }

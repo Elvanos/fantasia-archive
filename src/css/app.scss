@@ -203,6 +203,16 @@ a {
   }
 }
 
+.isDeadIndicator {
+  margin-right: 5px;
+  font-weight: 600;
+}
+
+.isDead {
+  text-decoration: line-through;
+  text-decoration-color: #fff;
+}
+
 .q-icon::after,
 .q-icon::before {
   backface-visibility: hidden;
@@ -223,6 +233,7 @@ a {
 
 .q-toggle__inner {
   width: 100%;
+  max-width: 150px;
 }
 
 .q-toggle__thumb {

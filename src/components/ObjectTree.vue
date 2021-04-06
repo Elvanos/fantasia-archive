@@ -51,7 +51,7 @@
       <template v-slot:default-header="prop">
         <div
           class="row items-center col-grow documentWrapper"
-          :class="{'isMinor': prop.node.isMinor}"
+          :class="{'isMinor': prop.node.isMinor, 'isDeadTree': prop.node.isDead}"
           :style="`background-color: ${prop.node.bgColor};`"
           @click.stop.prevent="processNodeClick(prop.node)"
           @click.stop.prevent.middle="processNodeLabelMiddleClick(prop.node)"
@@ -64,7 +64,11 @@
             :size="(prop.node.icon.includes('fas')? '16px': '21px')"
             :name="prop.node.icon"
             class="q-mr-sm self-center" />
-            {{ prop.node.label }}
+            <span v-if="prop.node.isDead" class="documentLabel__isDeadMarker">†</span>
+            <span class="documentLabel__content">
+              {{ prop.node.label }}
+            </span>
+
             <span
               class="text-grey-5 text-weight-medium q-ml-xs"
               v-if="(prop.node.isRoot || prop.node.isTag) && !disableDocumentCounts">
@@ -465,12 +469,14 @@ export default class ObjectTree extends BaseClass {
 
           const isCategory = doc.extraFields.find(e => e.id === "categorySwitch")?.value as unknown as boolean
           const isMinor = doc.extraFields.find(e => e.id === "minorSwitch")?.value as unknown as boolean
+          const isDead = doc.extraFields.find(e => e.id === "deadSwitch")?.value as unknown as boolean
 
           return {
             label: doc.extraFields.find(e => e.id === "name")?.value,
             icon: (isCategory) ? "fas fa-folder-open" : doc.icon,
             isCategory: !!(isCategory),
             isMinor: isMinor,
+            isDead: isDead,
             sticker: doc.extraFields.find(e => e.id === "order")?.value,
             parentDoc: (parentDocID) ? parentDocID._id : false,
             handler: this.openExistingDocumentRoute,
@@ -902,6 +908,18 @@ export default class ObjectTree extends BaseClass {
 
     &.isMinor {
       filter: grayscale(100) brightness(0.7);
+    }
+
+    &.isDeadTree {
+      .documentLabel__content {
+        text-decoration: line-through;
+        text-decoration-color: #fff;
+      }
+
+      .documentLabel__isDeadMarker {
+        margin-right: 5px;
+        font-weight: 600;
+      }
     }
   }
 
