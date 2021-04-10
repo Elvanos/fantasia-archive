@@ -147,6 +147,7 @@ export default class App extends BaseClass {
    * Registers a default keybind into the store
    */
   registerDefaultKeybinds () {
+    // @ts-ignore
     defaultKeybinds.forEach(e => this.SSET_registerDefaultKeybind(e))
   }
 
@@ -154,6 +155,7 @@ export default class App extends BaseClass {
    * Removes a default keybind from the store
    */
   deregisterDefaultKeybinds () {
+    // @ts-ignore
     defaultKeybinds.forEach(e => this.SSET_deregisterDefaultKeybind(e))
   }
 
@@ -170,6 +172,7 @@ export default class App extends BaseClass {
    * Removes a custom keybind from the store
    */
   deregisterCustomKeybinds () {
+    // @ts-ignore
     defaultKeybinds.forEach(e => this.SSET_deregisterUserKeybind(e))
   }
 
