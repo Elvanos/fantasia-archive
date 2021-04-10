@@ -28,6 +28,7 @@
           v-close-popup />
           <q-btn
             outline
+            :disable="!retrieveFieldValue(currentDocument, 'name')"
             label="Delete document"
             color="secondary"
             @click="deleteDocument()" />
@@ -38,7 +39,7 @@
 
 <script lang="ts">
 
-import { Component, Watch } from "vue-property-decorator"
+import { Component, Watch, Prop } from "vue-property-decorator"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
 import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
@@ -53,17 +54,33 @@ export default class DeleteDocumentCheckDialog extends DialogBase {
    */
   @Watch("dialogTrigger")
   async openDialog (val: string|false) {
-    if (val && this.SGET_allOpenedDocuments.docs.length > 0) {
+    if (val && (this.SGET_allOpenedDocuments.docs.length > 0 || (this.documentType.length > 0 && this.documentId.length > 0))) {
       if (this.SGET_getDialogsState) {
         return
       }
       this.SSET_setDialogState(true)
       this.dialogModel = true
-      const CurrentObjectDB = new PouchDB(this.$route.params.type)
-      this.currentDocument = await CurrentObjectDB.get(this.$route.params.id)
+
+      const documentType = (this.documentType.length > 0) ? this.documentType : this.$route.params.type
+      const documentID = (this.documentId.length > 0) ? this.documentId : this.$route.params.id
+
+      const CurrentObjectDB = new PouchDB(documentType)
+      this.currentDocument = await CurrentObjectDB.get(documentID)
       await CurrentObjectDB.close()
     }
   }
+
+  /**
+   * OPTIONAL
+   * Type of the document to delete
+   */
+  @Prop({ default: "" }) readonly documentType!: ""
+
+  /**
+   * OPTIONAL
+   * ID of the document to delete
+   */
+  @Prop({ default: "" }) readonly documentId!: ""
 
   /**
    * Current document for deletion
@@ -74,7 +91,8 @@ export default class DeleteDocumentCheckDialog extends DialogBase {
    * Delete the document
    */
   async deleteDocument () {
-    const CurrentObjectDB = new PouchDB(this.$route.params.type)
+    const documentType = (this.documentType.length > 0) ? this.documentType : this.$route.params.type
+    const CurrentObjectDB = new PouchDB(documentType)
 
     // @ts-ignore
     await CurrentObjectDB.remove(this.currentDocument)

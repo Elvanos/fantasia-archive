@@ -74,8 +74,11 @@ function createWindow () {
       })
     )
   }
-
-  menu.popup()
+  console.log(params.dictionarySuggestions)
+  console.log(params.misspelledWord)
+  if((params.dictionarySuggestions && params.dictionarySuggestions.length) || params.misspelledWord){
+    menu.popup()
+  }
 })
 }
 

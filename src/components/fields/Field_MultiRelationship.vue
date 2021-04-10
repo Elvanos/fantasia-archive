@@ -49,7 +49,7 @@
               <span class="isDeadIndicator" v-if="single.isDead">
                 †
               </span>
-              <span :class="{'isDead': single.isDead}">
+              <span :class="{'isDead': (single.isDead && !hideDeadCrossThrough)}">
                   {{stripTags(single.label)}}
               </span>
             </span>
@@ -147,7 +147,7 @@
               <span class="isDeadIndicator" v-if="opt.isDead">
                 †
               </span>
-              <span :class="{'isDead': opt.isDead}" v-html="opt.label">
+              <span :class="{'isDead': (opt.isDead && !hideDeadCrossThrough)}" v-html="opt.label">
               </span>
             </q-item-label>
             <q-item-label caption class="text-cultured" v-html="opt.hierarchicalPath"></q-item-label>

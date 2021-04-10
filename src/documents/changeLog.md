@@ -16,22 +16,61 @@
 - Fixed a bug that was causing the relationship dropdowns sometimes not be clickable and instead caused dragging of the app window when shown over the top of the drag-bar at the top of the app
 - Updated advanced search guide with missing information about full-text search
 - Changes a small bug when the `New Object` dialog wasn't respecting option changes being done in the same session of the program being opened
+- Fixed a bug that was sometimes showing improper values inside the user defined keybinds both in the key settings and the cheatsheet
 - Fixed tag groups in hierarchical tree not respecting custom order and alphabetical order
 - Fixed a rather peculiar recuring bug that could cause the database to endlessly attempt to update a document while constantly throwing errors
+- Fixed a bug that was causing an "Empty" checkbox popping up at irrelevant places on right click
 - Managed to fix or at least mitigate multiple memory-leaks across the app
 - Optimized multiple parts of the code to run smoother
 - Fixed wrong icons in some fields in some document types
+- Fixed a bug that was allowing for an attempted deletion of a document while the document data was still being retrieved. This resulted in an error that both made a mess of a UI and didn't delete the desider document
 
 ### New features
 
+- Added context menu support and multiple actions (right click) for top tabs and hierarchical tree
+  - New action for **Top Tabs**
+    - Copy name
+    - Copy text color
+    - Copy background color
+    - Create new document with this document as parent
+    - Copy this document
+    - Close this tab
+    - Close all tabs without changes except for this
+    - Close all tabs without changes
+    - Force close all tabs except for this
+    - Force close all tabs
+    - Delete document
+  - New action for **Hiearachical Tree**
+    - Add new document type: `DOCUMENT TYPE`
+      - Only available in the root-categories
+    - Expand all
+    - Collapse all
+    - Copy name
+    - Copy text color
+    - Copy background color
+    - Open document
+    - Create new document with this document as parent
+    - Copy this document
+    - Delete document
+- Added support for default empty keybinds
 - Added a dedicated button that opens the connected documents straight from the little chips in relationship fields while in edit mode
 - Added support for background color for documents
 - Added support for "Minor document" mode switch for better organization and visual representation of documents
 - Added support for "Dead/Gone/Destroyed" mode switch for better organization and visual representation of documents
+- Added option: Accessibility - Hide strike-through
+- Added option: Accessibility - Hide order numbers
+- Added functionality to copy existing documents along with all their contents
+- Added keybind: Close all tabs without changes except for this
+- Added keybind: Close all tabs without changes
+- Added keybind: Force close all tabs except for this
+- Added keybind: Force close all tabs
+- Added keybind: Copy active document
 
 ### QoL adjustments
 
+- Changed focusing of the hierarchy tree search input from CTRL + SHIFT + W to CTRL + SHIFT +T
 - Updated fullscreen editor looks to work more like a proper document editor
+- Unified icons for same actions across the app
 - Reordered the basic document settings inside the app and separated them from the document content
 - Adjusted maximum width of switch fields to make them look like spaggeti
 - Updated the Advanced search guide with new additions and added one new Trivia popup text concerning it

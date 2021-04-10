@@ -302,6 +302,11 @@ export default class BaseClass extends Vue {
     treeAction: boolean
   }) => void
 
+  @OpenedDocuments.Action("closeAllDocuments") SSET_closeAllDocuments!: () => void
+  @OpenedDocuments.Action("forceCloseAllDocuments") SSET_forceCloseAllDocuments!: () => void
+  @OpenedDocuments.Action("closeAllButCurrentDocuments") SSET_closeAllButCurrentDocuments!: (input: I_OpenedDocument) => void
+  @OpenedDocuments.Action("forceCloseAllButCurrentDocuments") SSET_forceCloseAllButCurrentDocuments!: (input: I_OpenedDocument) => void
+
   @OpenedDocuments.Action("triggerTreeAction") SSET_triggerTreeAction!: () => void
   @OpenedDocuments.Action("resetDocuments") SSET_resetDocuments!: () => void
   @OpenedDocuments.Action("resetRemoveIndex") SSET_resetRemoveIndex!: () => void

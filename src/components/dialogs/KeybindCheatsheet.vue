@@ -74,16 +74,17 @@ export default class KeybindCheatsheet extends DialogBase {
 
       // Remap the cheetcheet based on available input settings
       this.localCheatSheet = this.SGET_getCurrentKeyBindData.defaults.map((bind, index) => {
+        const userKb = this.SGET_getCurrentKeyBindData.userKeybinds.find(userKb => userKb.id === bind.id)
         const mappedKeybind = (
-          this.SGET_getCurrentKeyBindData.userKeybinds[index] &&
-          this.SGET_getCurrentKeyBindData.userKeybinds[index].which
+          userKb &&
+          userKb.which
         )
           // If user keybind
           ? {
-            altKey: this.SGET_getCurrentKeyBindData.userKeybinds[index].altKey,
-            ctrlKey: this.SGET_getCurrentKeyBindData.userKeybinds[index].ctrlKey,
-            shiftKey: this.SGET_getCurrentKeyBindData.userKeybinds[index].shiftKey,
-            which: this.SGET_getCurrentKeyBindData.userKeybinds[index].which,
+            altKey: userKb.altKey,
+            ctrlKey: userKb.ctrlKey,
+            shiftKey: userKb.shiftKey,
+            which: userKb.which,
             id: bind.id,
             tooltip: bind.tooltip,
             note: bind.note

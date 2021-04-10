@@ -36,6 +36,38 @@ const actions: ActionTree<OpenDocumentsStateInterface, StateInterface> = {
     }, 200)
   },
 
+  closeAllDocuments (state) {
+    state.commit("closeAllDocuments")
+
+    setTimeout(() => {
+      state.commit("resetTreeAction")
+    }, 200)
+  },
+
+  forceCloseAllDocuments (state) {
+    state.commit("forceCloseAllDocuments")
+
+    setTimeout(() => {
+      state.commit("resetTreeAction")
+    }, 200)
+  },
+
+  closeAllButCurrentDocuments (state, input) {
+    state.commit("closeAllButCurrentDocuments", input)
+
+    setTimeout(() => {
+      state.commit("resetTreeAction")
+    }, 200)
+  },
+
+  forceCloseAllButCurrentDocuments (state, input) {
+    state.commit("forceCloseAllButCurrentDocuments", input)
+
+    setTimeout(() => {
+      state.commit("resetTreeAction")
+    }, 200)
+  },
+
   triggerTreeAction (state) {
     state.commit("triggerTreeAction")
 

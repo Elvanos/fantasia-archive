@@ -74,6 +74,23 @@
         </q-btn>
 
         <q-btn
+          color="primary"
+          icon="mdi-content-copy"
+          @click="copyTargetDocument"
+          :outline="isDarkMode"
+          class="q-mr-md"
+          v-if="!currentData.isNew"
+        >
+          <q-tooltip
+            :delay="500"
+            anchor="bottom middle"
+            self="top middle"
+          >
+            Copy current document
+          </q-tooltip>
+        </q-btn>
+
+        <q-btn
           color="secondary"
           icon="mdi-text-box-remove-outline"
           :outline="isDarkMode"
@@ -234,6 +251,7 @@ import { I_Blueprint, I_ExtraFields } from "src/interfaces/I_Blueprint"
 import PouchDB from "pouchdb"
 import { extend } from "quasar"
 import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
+import { copyDocument } from "src/scripts/documentActions/copyDocument"
 
 import { saveDocument } from "src/scripts/databaseManager/documentManager"
 import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentCheck.vue"
@@ -764,6 +782,34 @@ export default class PageDocumentDisplay extends BaseClass {
       // @ts-ignore
       this.addNewObjectRoute(routeObject)
     }
+  }
+
+  /****************************************************************/
+  // `DOCUMENT COPY
+  /****************************************************************/
+  documentPass = null as unknown as I_OpenedDocument
+
+  copyTargetDocument () {
+    this.documentPass = extend(true, {}, this.findRequestedOrActiveDocument())
+
+    const newDocument = copyDocument(this.documentPass, this.generateUID())
+
+    const dataPass = {
+      doc: newDocument,
+      treeAction: false
+    }
+
+    // @ts-ignore
+    this.SSET_addOpenedDocument(dataPass)
+    this.$router.push({
+      path: newDocument.url
+    }).catch((e: {name: string}) => {
+      const errorName : string = e.name
+      if (errorName === "NavigationDuplicated") {
+        return
+      }
+      console.log(e)
+    })
   }
 
   /****************************************************************/

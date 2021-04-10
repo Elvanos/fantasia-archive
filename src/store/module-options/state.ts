@@ -3,6 +3,7 @@ export interface OptionsStateInteface {
   _rev?: string,
   darkMode: boolean
   textShadow: boolean
+  hideDeadCrossThrough: boolean
   doubleDashDocCount: boolean
   hideWelcomeScreenSocials: boolean
   noTags: boolean
@@ -23,6 +24,7 @@ export interface OptionsStateInteface {
   invertCategoryPosition: boolean
   hideTooltipsStart: boolean
   hideTooltipsProject: boolean
+  hideTreeOrderNumbers: boolean
 
   userKeybindList: any[]
   treeWidth?: number
@@ -33,6 +35,7 @@ function state (): OptionsStateInteface {
     _id: "settings",
     darkMode: false,
     textShadow: false,
+    hideDeadCrossThrough: false,
     doubleDashDocCount: false,
     hideWelcomeScreenSocials: false,
     noTags: false,
@@ -53,6 +56,7 @@ function state (): OptionsStateInteface {
     invertCategoryPosition: false,
     hideTooltipsStart: false,
     hideTooltipsProject: false,
+    hideTreeOrderNumbers: false,
     treeWidth: 374,
     userKeybindList: []
   }

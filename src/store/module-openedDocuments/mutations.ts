@@ -51,6 +51,30 @@ const mutation: MutationTree<OpenDocumentsStateInterface> = {
     state.documents.treeAction = true
   },
 
+  closeAllDocuments (state: OpenDocumentsStateInterface) {
+    state.documents.docs = state.documents.docs.filter(doc => doc.hasEdits)
+    state.documents.treeAction = true
+    state.documents.timestamp = uid()
+  },
+
+  forceCloseAllDocuments (state: OpenDocumentsStateInterface) {
+    state.documents.docs = []
+    state.documents.treeAction = true
+    state.documents.timestamp = uid()
+  },
+
+  closeAllButCurrentDocuments (state: OpenDocumentsStateInterface, input: I_OpenedDocument) {
+    state.documents.docs = state.documents.docs.filter(doc => doc.hasEdits || doc._id === input._id)
+    state.documents.treeAction = true
+    state.documents.timestamp = uid()
+  },
+
+  forceCloseAllButCurrentDocuments (state: OpenDocumentsStateInterface, input: I_OpenedDocument) {
+    state.documents.docs = state.documents.docs.filter(doc => doc._id === input._id)
+    state.documents.treeAction = true
+    state.documents.timestamp = uid()
+  },
+
   resetDocuments (state: OpenDocumentsStateInterface) {
     state.documents.docs = []
     state.documents.treeAction = true

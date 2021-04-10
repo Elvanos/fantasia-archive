@@ -101,6 +101,21 @@
                       />
                   </div>
 
+                   <div class="col-4 optionWrapper">
+                    <div class="optionTitle">
+                      Accessibility - Hide strike-through
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        This setting hides the strike through effect on dead/gone/destroyed documents in order to increase visibility.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.hideDeadCrossThrough"
+                      />
+                  </div>
+
                   <div class="col-4 optionWrapper">
                     <div class="optionTitle">
                       Hide Welcome screen social links
@@ -414,6 +429,21 @@
                       />
                   </div>
 
+                  <div class="col-4 optionWrapper">
+                    <div class="optionTitle">
+                      Hide order numbers
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        This option disabled showing of the custom order numbers left of the names.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.hideTreeOrderNumbers"
+                      />
+                  </div>
+
                 </div>
            </q-scroll-area>
           </q-tab-panel>
@@ -655,6 +685,7 @@ export default class ProgramSettings extends DialogBase {
     darkMode: false,
     textShadow: false,
     doubleDashDocCount: false,
+    hideDeadCrossThrough: false,
     tagsAtTop: false,
     noTags: false,
     compactTags: false,
@@ -674,6 +705,7 @@ export default class ProgramSettings extends DialogBase {
     hideWelcomeScreenSocials: false,
     hideTooltipsStart: false,
     hideTooltipsProject: false,
+    hideTreeOrderNumbers: false,
     userKeybindList: []
   }
 
@@ -895,7 +927,7 @@ export default class ProgramSettings extends DialogBase {
         id: keybind.id,
         editable: keybind.editable,
         defaultKeybind: keybind,
-        userKeybind: (this.options.userKeybindList[index]) || ""
+        userKeybind: (this.options.userKeybindList.find(userKb => userKb.id === keybind.id)) || ""
       }
     })
   }

@@ -58,7 +58,7 @@
                         <span class="isDeadIndicator" v-if="opt.isDead">
                           †
                         </span>
-                        <span :class="{'isDead': opt.isDead}" v-html="opt.label">
+                        <span :class="{'isDead': (opt.isDead && !hideDeadCrossThrough)}" v-html="opt.label">
                         </span>
                       </q-item-label>
                       <q-item-label caption class="text-cultured" v-html="opt.hierarchicalPath"></q-item-label>
@@ -82,7 +82,7 @@
                       dark
                       color="primary"
                       class="z-1 q-ml-md"
-                      icon="mdi-plus"
+                      icon="mdi-file-tree"
                       size="md"
                       @click.stop.prevent="addNewItemUnderSelected(opt)"
                       >
@@ -90,6 +90,24 @@
                         :delay="300"
                       >
                         Add a new document belonging under {{ stripTags(opt.label) }}
+                      </q-tooltip>
+                    </q-btn>
+                    <q-btn
+                      tabindex="-1"
+                      round
+                      flat
+                      dense
+                      dark
+                      color="accent"
+                      class="z-1 q-ml-sm"
+                      icon="mdi-content-copy"
+                      size="md"
+                      @click.stop.prevent="copyTargetDocument(opt)"
+                      >
+                      <q-tooltip
+                        :delay="300"
+                      >
+                        Make a copy of {{ stripTags(opt.label) }}
                       </q-tooltip>
                     </q-btn>
                   </q-item>
@@ -110,10 +128,11 @@
 <script lang="ts">
 
 import { Component, Watch } from "vue-property-decorator"
-import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
+import { I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
 import { extend } from "quasar"
 import PouchDB from "pouchdb"
+import { copyDocument } from "src/scripts/documentActions/copyDocument"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
@@ -164,7 +183,13 @@ export default class ExistingDocumentDialog extends DialogBase {
     this.disableCloseAftertSelectQuickSearch = this.SGET_options.disableCloseAftertSelectQuickSearch
     this.includeCategories = !this.SGET_options.disableQuickSearchCategoryPrecheck
     this.textShadow = this.SGET_options.textShadow
+    this.hideDeadCrossThrough = this.SGET_options.hideDeadCrossThrough
   }
+
+  /**
+   * Determines if the "dead" document type should have a cross-text decoration or not
+   */
+  hideDeadCrossThrough = false
 
   /**
    * Determines if the popup shouldnt close after a document is selected from the dropdown list
@@ -382,6 +407,31 @@ export default class ExistingDocumentDialog extends DialogBase {
     }
     // @ts-ignore
     this.addNewObjectRoute(routeObject)
+  }
+
+  documentPass = null as unknown as I_OpenedDocument
+
+  copyTargetDocument (currentDoc: I_OpenedDocument) {
+    this.documentPass = extend(true, {}, currentDoc)
+
+    const newDocument = copyDocument(this.documentPass, this.generateUID())
+
+    const dataPass = {
+      doc: newDocument,
+      treeAction: false
+    }
+
+    // @ts-ignore
+    this.SSET_addOpenedDocument(dataPass)
+    this.$router.push({
+      path: newDocument.url
+    }).catch((e: {name: string}) => {
+      const errorName : string = e.name
+      if (errorName === "NavigationDuplicated") {
+        return
+      }
+      console.log(e)
+    })
   }
 }
 </script>

@@ -8,6 +8,14 @@
       @trigger-dialog-close="closeDocumentCheckDialogClose"
     />
 
+    <!-- Delele document dialog -->
+    <deleteDocumentCheckDialog
+      :dialog-trigger="deleteObjectDialogTrigger"
+      :document-id="toDeleteID"
+      :document-type="toDeleteType"
+      @trigger-dialog-close="deleteObjectDialogClose"
+    />
+
     <q-tabs
       v-if="localDocuments.length > 0"
       :class="{'hasTextShadow': textShadow}"
@@ -33,7 +41,10 @@
           :to="`/project/display-content/${document.type}/${document._id}`"
           :key="document.type+document._id"
           :icon="(retrieveFieldValue(document,'categorySwitch') ? 'fas fa-folder-open' : document.icon)"
-          :style="`color: ${retrieveFieldValue(document,'documentColor')}; background-color: ${retrieveFieldValue(document,'documentBackgroundColor')}; filter: ${(retrieveFieldValue(document,'minorSwitch') ? 'grayscale(100) brightness(0.7)' : '')}`"
+          :style="`
+            color: ${retrieveFieldValue(document,'documentColor')};
+            background-color: ${retrieveFieldValue(document,'documentBackgroundColor')};
+            filter: ${(retrieveFieldValue(document,'minorSwitch') ? 'grayscale(100) brightness(0.7)' : '')}`"
           :class="[
             {'isBold':
               (
@@ -51,7 +62,7 @@
             </span>
             <div
               class="q-tab__label"
-             :class="{'isDead': retrieveFieldValue(document,'deadSwitch')}">
+             :class="{'isDead': (retrieveFieldValue(document,'deadSwitch') && !hideDeadCrossThrough)}">
              {{retrieveFieldValue(document,'name')}}
             </div>
             <q-tooltip
@@ -75,6 +86,86 @@
               style="color: #fff;"
               @click.stop.prevent="tryCloseTab(document)"
             />
+
+            <q-menu
+              touch-position
+              context-menu
+            >
+
+              <q-list class="bg-gunmetal-light">
+                <q-item clickable v-close-popup @click="copyName(document)">
+                  <q-item-section>Copy name</q-item-section>
+                  <q-item-section avatar>
+                    <q-icon name="mdi-text-recognition" />
+                  </q-item-section>
+                </q-item>
+                <q-item clickable v-close-popup @click="copyTextColor(document)">
+                  <q-item-section>Copy text color</q-item-section>
+                  <q-item-section avatar>
+                    <q-icon name="mdi-eyedropper" />
+                  </q-item-section>
+                </q-item>
+                <q-item clickable v-close-popup @click="copyBackgroundColor(document)">
+                  <q-item-section>Copy background color</q-item-section>
+                  <q-item-section avatar>
+                    <q-icon name="mdi-format-color-fill" />
+                  </q-item-section>
+                </q-item>
+                <q-separator />
+                <q-item v-if="!document.isNew" clickable v-close-popup @click="addNewUnderParent(document)">
+                  <q-item-section>Create new document with this document as parent</q-item-section>
+                  <q-item-section avatar>
+                    <q-icon name="mdi-file-tree" />
+                  </q-item-section>
+                </q-item>
+                <q-item clickable v-if="!document.isNew"  v-close-popup @click="copyTargetDocument(document)">
+                  <q-item-section>Copy this document</q-item-section>
+                  <q-item-section avatar>
+                    <q-icon name="mdi-content-copy" />
+                  </q-item-section>
+                </q-item>
+                <q-separator v-if="!document.isNew" />
+                <q-item clickable v-close-popup @click="tryCloseTab(document)">
+                  <q-item-section>Close this tab</q-item-section>
+                  <q-item-section avatar>
+                    <q-icon name="mdi-close" />
+                  </q-item-section>
+                </q-item>
+                 <q-item clickable v-close-popup @click="SSET_closeAllButCurrentDocuments(document)">
+                  <q-item-section>Close all tabs without changes except for this</q-item-section>
+                  <q-item-section avatar>
+                    <q-icon name="mdi-close-box-outline" />
+                  </q-item-section>
+                </q-item>
+                <q-item clickable v-close-popup @click="SSET_closeAllDocuments">
+                  <q-item-section>Close all tabs without changes</q-item-section>
+                  <q-item-section avatar>
+                    <q-icon name="mdi-close-box-multiple-outline" />
+                  </q-item-section>
+                </q-item>
+                <q-separator />
+                <q-item clickable v-close-popup @click="SSET_forceCloseAllButCurrentDocuments(document)">
+                  <q-item-section>Force close all tabs except for this</q-item-section>
+                  <q-item-section avatar class="text-secondary">
+                    <q-icon name="mdi-close-box" />
+                  </q-item-section>
+                </q-item>
+                <q-item clickable v-close-popup @click="SSET_forceCloseAllDocuments">
+                  <q-item-section>Force close all tabs</q-item-section>
+                  <q-item-section avatar class="text-secondary">
+                    <q-icon name="mdi-close-box-multiple" />
+                  </q-item-section>
+                </q-item>
+                <q-separator />
+                <q-item clickable v-close-popup @click="deleteTabDocument(document)">
+                  <q-item-section class="text-secondary"><b>Delete this document</b></q-item-section>
+                  <q-item-section avatar class="text-secondary">
+                    <q-icon name="mdi-text-box-remove-outline" />
+                  </q-item-section>
+                </q-item>
+              </q-list>
+
+            </q-menu>
         </q-route-tab>
 
       </transition-group>
@@ -89,12 +180,20 @@
 import BaseClass from "src/BaseClass"
 
 import { Component, Watch } from "vue-property-decorator"
+import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentCheck.vue"
 
 import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
 import closeDocumentCheckDialog from "src/components/dialogs/CloseDocumentCheck.vue"
+import { createNewWithParent } from "src/scripts/documentActions/createNewWithParent"
+import { copyDocumentName, copyDocumentTextColor, copyDocumentBackgroundColor } from "src/scripts/documentActions/uniqueFieldCopy"
+import { copyDocument } from "src/scripts/documentActions/copyDocument"
+import { extend } from "quasar"
 
 @Component({
-  components: { closeDocumentCheckDialog }
+  components: {
+    closeDocumentCheckDialog,
+    deleteDocumentCheckDialog
+  }
 })
 export default class TopTabs extends BaseClass {
   /****************************************************************/
@@ -107,12 +206,18 @@ export default class TopTabs extends BaseClass {
   textShadow = false
 
   /**
+   * Determines if the "dead" document type should have a cross-text decoration or not
+   */
+  hideDeadCrossThrough = false
+
+  /**
    * Watch changes on options
    */
   @Watch("SGET_options", { immediate: true, deep: true })
   onSettingsChange () {
     const options = this.SGET_options
     this.textShadow = options.textShadow
+    this.hideDeadCrossThrough = options.hideDeadCrossThrough
   }
 
   /****************************************************************/
@@ -137,6 +242,28 @@ export default class TopTabs extends BaseClass {
     // Previous tab
     if (this.determineKeyBind("previousTab") && this.localDocuments.length > 0 && !this.SGET_getDialogsState) {
       this.goToPreviousTab()
+    }
+
+    // Close all tabs without changes except for this - CTRL + ALT + SHIFT + W
+    if (this.determineKeyBind("closeAllTabsWithoutChangesButThis") && this.localDocuments.length > 0 && !this.SGET_getDialogsState) {
+      const currentDoc = this.findRequestedOrActiveDocument() as I_OpenedDocument
+      this.SSET_closeAllButCurrentDocuments(currentDoc)
+    }
+
+    // Close all tabs without changes - CTRL + SHIFT + W
+    if (this.determineKeyBind("closeAllTabsWithoutChanges") && this.localDocuments.length > 0 && !this.SGET_getDialogsState) {
+      this.SSET_closeAllDocuments()
+    }
+
+    // Force close all tabs except for this - NONE
+    if (this.determineKeyBind("forceCloseAllTabsButThis") && this.localDocuments.length > 0 && !this.SGET_getDialogsState) {
+      const currentDoc = this.findRequestedOrActiveDocument() as I_OpenedDocument
+      this.SSET_forceCloseAllButCurrentDocuments(currentDoc)
+    }
+
+    // Force close all tabs - NONE
+    if (this.determineKeyBind("forceCloseAllTabs") && this.localDocuments.length > 0 && !this.SGET_getDialogsState) {
+      this.SSET_forceCloseAllDocuments()
     }
   }
 
@@ -232,6 +359,58 @@ export default class TopTabs extends BaseClass {
   }
 
   /****************************************************************/
+  // Document field copying
+  /****************************************************************/
+
+  copyName (currentDoc: I_OpenedDocument) {
+    copyDocumentName(currentDoc)
+  }
+
+  copyTextColor (currentDoc: I_OpenedDocument) {
+    copyDocumentTextColor(currentDoc)
+  }
+
+  copyBackgroundColor (currentDoc: I_OpenedDocument) {
+    copyDocumentBackgroundColor(currentDoc)
+  }
+
+  /****************************************************************/
+  // Document copy
+  /****************************************************************/
+
+  documentPass = null as unknown as I_OpenedDocument
+
+  copyTargetDocument (currentDoc: I_OpenedDocument) {
+    this.documentPass = extend(true, {}, currentDoc)
+
+    const newDocument = copyDocument(this.documentPass, this.generateUID())
+
+    const dataPass = {
+      doc: newDocument,
+      treeAction: false
+    }
+
+    // @ts-ignore
+    this.SSET_addOpenedDocument(dataPass)
+    this.$router.push({
+      path: newDocument.url
+    }).catch((e: {name: string}) => {
+      const errorName : string = e.name
+      if (errorName === "NavigationDuplicated") {
+        return
+      }
+      console.log(e)
+    })
+  }
+
+  /****************************************************************/
+  // Add new document under parent
+  /****************************************************************/
+  addNewUnderParent (currentDoc: I_OpenedDocument) {
+    createNewWithParent(currentDoc, this)
+  }
+
+  /****************************************************************/
   // Close document dialog
   /****************************************************************/
 
@@ -242,6 +421,28 @@ export default class TopTabs extends BaseClass {
 
   closeDocumentCheckDialogAssignUID () {
     this.closeDocumentCheckDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
+  // Delete dialog
+  /****************************************************************/
+
+  deleteObjectDialogTrigger: string | false = false
+  deleteObjectDialogClose () {
+    this.deleteObjectDialogTrigger = false
+  }
+
+  deleteObjectAssignUID () {
+    this.deleteObjectDialogTrigger = this.generateUID()
+  }
+
+  toDeleteID = ""
+  toDeleteType = ""
+
+  deleteTabDocument (targetDocument: I_OpenedDocument) {
+    this.toDeleteID = targetDocument._id
+    this.toDeleteType = targetDocument.type
+    this.deleteObjectAssignUID()
   }
 }
 </script>

@@ -44,7 +44,13 @@ export default class FieldBase extends BaseClass {
     this.isDarkMode = this.SGET_options.darkMode
     this.disableDocumentToolTips = this.SGET_options.disableDocumentToolTips
     this.textShadow = this.SGET_options.textShadow
+    this.hideDeadCrossThrough = this.SGET_options.hideDeadCrossThrough
   }
+
+  /**
+   * Determines if the "dead" document type should have a cross-text decoration or not
+   */
+  hideDeadCrossThrough = false
 
   /**
    * Determines if the text has shadows or not

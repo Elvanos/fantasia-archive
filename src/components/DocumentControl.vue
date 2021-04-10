@@ -197,6 +197,23 @@
             </q-tooltip>
           </q-btn>
 
+          <q-btn
+            icon="mdi-content-copy"
+            color="primary"
+            outline
+            @click="copyTargetDocument"
+            v-if="!currentlyNew && SGET_allOpenedDocuments.docs.length > 0"
+          >
+            <q-tooltip
+              :delay="500"
+              max-width="500px"
+              anchor="bottom left"
+              self="top middle"
+            >
+             Copy current document
+            </q-tooltip>
+          </q-btn>
+
           <q-separator vertical inset color="accent"
             v-if="!currentlyNew && SGET_allOpenedDocuments.docs.length > 0"
           />
@@ -240,6 +257,8 @@ import tipsTricksTriviaDialog from "src/components/dialogs/TipsTricksTrivia.vue"
 import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
 import { extend, Loading, QSpinnerGears } from "quasar"
 import { saveDocument } from "src/scripts/databaseManager/documentManager"
+import { createNewWithParent } from "src/scripts/documentActions/createNewWithParent"
+import { copyDocument } from "src/scripts/documentActions/copyDocument"
 
 import { retrieveCurrentProjectName, exportProject } from "src/scripts/projectManagement/projectManagent"
 
@@ -310,6 +329,12 @@ export default class DocumentControl extends BaseClass {
     if (this.determineKeyBind("addUnderParent") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState) {
       await this.sleep(100)
       this.addNewUnderParent()
+    }
+
+    // Add new under parent - CTRL + ALT + C
+    if (this.determineKeyBind("copyDocument") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState) {
+      await this.sleep(100)
+      this.copyTargetDocument()
     }
   }
 
@@ -414,15 +439,36 @@ export default class DocumentControl extends BaseClass {
   // Add new document under parent
   /****************************************************************/
   addNewUnderParent () {
-    const currentDoc = this.findRequestedOrActiveDocument()
-    if (currentDoc) {
-      const routeObject = {
-        _id: currentDoc.type,
-        parent: currentDoc._id
-      }
-      // @ts-ignore
-      this.addNewObjectRoute(routeObject)
+    const currentDoc = this.findRequestedOrActiveDocument() as I_OpenedDocument
+    createNewWithParent(currentDoc, this)
+  }
+
+  /****************************************************************/
+  // Document copy
+  /****************************************************************/
+  documentPass = null as unknown as I_OpenedDocument
+
+  copyTargetDocument () {
+    this.documentPass = extend(true, {}, this.findRequestedOrActiveDocument())
+
+    const newDocument = copyDocument(this.documentPass, this.generateUID())
+
+    const dataPass = {
+      doc: newDocument,
+      treeAction: false
     }
+
+    // @ts-ignore
+    this.SSET_addOpenedDocument(dataPass)
+    this.$router.push({
+      path: newDocument.url
+    }).catch((e: {name: string}) => {
+      const errorName : string = e.name
+      if (errorName === "NavigationDuplicated") {
+        return
+      }
+      console.log(e)
+    })
   }
 
   /****************************************************************/

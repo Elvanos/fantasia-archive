@@ -1,6 +1,15 @@
 <template>
 
   <span>
+
+    <!-- Delele document dialog -->
+    <deleteDocumentCheckDialog
+      :dialog-trigger="deleteObjectDialogTrigger"
+      :document-id="toDeleteID"
+      :document-type="toDeleteType"
+      @trigger-dialog-close="deleteObjectDialogClose"
+    />
+
     <div
       class="treeSearchWrapper"
       :class="{'fullWidth': disableDocumentControlBar}"
@@ -65,7 +74,7 @@
             :name="prop.node.icon"
             class="q-mr-sm self-center" />
             <span v-if="prop.node.isDead" class="documentLabel__isDeadMarker">†</span>
-            <span class="documentLabel__content">
+            <span :class="{'documentLabel__content': !hideDeadCrossThrough}">
               {{ prop.node.label }}
             </span>
 
@@ -86,7 +95,7 @@
             <q-badge
               class="treeBadge"
               :class="{'noChilden': prop.node.children.length === 0}"
-              v-if="prop.node.sticker"
+              v-if="prop.node.sticker && !hideTreeOrderNumbers"
               color="primary"
               outline
               floating
@@ -125,7 +134,7 @@
                 dense
                 color="dark"
                 class="z-1 q-ml-sm treeButton treeButton--add"
-                icon="mdi-plus"
+                icon="mdi-file-tree"
                 size="10px"
                 @click.stop.prevent="processNodeNewDocumentButton(prop.node)"
                 >
@@ -136,6 +145,89 @@
                 </q-tooltip>
               </q-btn>
             </div>
+            <q-menu
+              touch-position
+              context-menu
+            >
+
+              <q-list class="bg-gunmetal-light" v-if="!prop.node.isTag">
+
+                <template v-if="prop.node.isRoot || prop.node.children.length > 0">
+                  <q-item clickable v-close-popup @click="recursivelyExpandNodeDownwards(prop.node.key)">
+                    <q-item-section>Expand all</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-expand-all-outline" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup @click="collapseAllNodesForce(prop.node)">
+                    <q-item-section>Collapse all</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-collapse-all-outline" />
+                    </q-item-section>
+                  </q-item>
+                </template>
+
+                <template v-if="prop.node.isRoot">
+                  <q-separator />
+                  <q-item clickable v-close-popup @click="addNewObjectRoute(prop.node)">
+                    <q-item-section>Add new document of type: {{prop.node.label}}</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-plus" />
+                    </q-item-section>
+                  </q-item>
+                </template>
+
+                <template v-if="!prop.node.isRoot">
+                  <q-separator />
+                  <q-item clickable v-close-popup @click="copyName(prop.node)">
+                    <q-item-section>Copy name</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-text-recognition" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup @click="copyTextColor(prop.node)">
+                    <q-item-section>Copy text color</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-eyedropper" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup @click="copyBackgroundColor(prop.node)">
+                    <q-item-section>Copy background color</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-format-color-fill" />
+                    </q-item-section>
+                  </q-item>
+                  <q-separator />
+                    <q-item clickable v-close-popup @click="openExistingDocumentRoute(prop.node)">
+                    <q-item-section>Open document</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-pencil" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup @click="addNewUnderParent(prop.node)">
+                    <q-item-section>Create new document with this document as parent</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-file-tree" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup @click="copyTargetDocument(prop.node)">
+                    <q-item-section>Copy this document</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-content-copy" />
+                    </q-item-section>
+                  </q-item>
+                  <q-separator />
+                  <q-item clickable v-close-popup @click="deleteTabDocument(prop.node)">
+                    <q-item-section class="text-secondary"><b>Delete this document</b></q-item-section>
+                    <q-item-section avatar class="text-secondary">
+                      <q-icon name="mdi-text-box-remove-outline" />
+                    </q-item-section>
+                  </q-item>
+                </template>
+
+              </q-list>
+
+            </q-menu>
         </div>
         </div>
 
@@ -175,15 +267,20 @@ import { Component, Watch } from "vue-property-decorator"
 import BaseClass from "src/BaseClass"
 import { I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import PouchDB from "pouchdb"
+import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentCheck.vue"
+
 import { engageBlueprints, retrieveAllBlueprints } from "src/scripts/databaseManager/blueprintManager"
 // import { cleanDatabases } from "src/scripts/databaseManager/cleaner"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
 import { extend, colors } from "quasar"
 import { tagListBuildFromBlueprints } from "src/scripts/utilities/tagListBuilder"
 import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
+import { createNewWithParent } from "src/scripts/documentActions/createNewWithParent"
+import { copyDocumentName, copyDocumentTextColor, copyDocumentBackgroundColor } from "src/scripts/documentActions/uniqueFieldCopy"
+import { copyDocument } from "src/scripts/documentActions/copyDocument"
 
 @Component({
-  components: { }
+  components: { deleteDocumentCheckDialog }
 })
 export default class ObjectTree extends BaseClass {
   /****************************************************************/
@@ -234,6 +331,8 @@ export default class ObjectTree extends BaseClass {
   compactDocumentCount = false
   invertCategoryPosition = false
   doubleDashDocCount = false
+  hideDeadCrossThrough = false
+  hideTreeOrderNumbers = false
 
   @Watch("SGET_options", { immediate: true, deep: true })
   onSettingsChange () {
@@ -250,6 +349,9 @@ export default class ObjectTree extends BaseClass {
     this.compactDocumentCount = options.compactDocumentCount
     this.invertCategoryPosition = options.invertCategoryPosition
     this.doubleDashDocCount = options.doubleDashDocCount
+    this.hideDeadCrossThrough = options.hideDeadCrossThrough
+    this.hideTreeOrderNumbers = options.hideTreeOrderNumbers
+
     this.buildCurrentObjectTree().catch((e) => {
       console.log(e)
     })
@@ -696,11 +798,11 @@ export default class ObjectTree extends BaseClass {
     newDocsSnapshot = null
 
     expandIDs.forEach(s => {
-      this.recursivelyExpandNode(s)
+      this.recursivelyExpandNodeUpwards(s)
     })
   }
 
-  recursivelyExpandNode (nodeID: string) {
+  recursivelyExpandNodeUpwards (nodeID: string) {
     const treeDOM = this.$refs.tree as unknown as {
       setExpanded: (key:string, state: boolean)=> void
       getNodeByKey: (key:string)=> void
@@ -716,7 +818,37 @@ export default class ObjectTree extends BaseClass {
 
     // Dig into the upper hierarchy
     if (currentTreeNode?.parentDoc) {
-      this.recursivelyExpandNode(currentTreeNode.parentDoc)
+      this.recursivelyExpandNodeUpwards(currentTreeNode.parentDoc)
+    }
+    // If we are at the top of the tree, expand the top category
+    else if (currentTreeNode?.type) {
+      // @ts-ignore
+      this.expandedTreeNodes = [...new Set([
+        ...this.expandedTreeNodes,
+        currentTreeNode.type
+      ])]
+    }
+  }
+
+  recursivelyExpandNodeDownwards (nodeID: string) {
+    const treeDOM = this.$refs.tree as unknown as {
+      setExpanded: (key:string, state: boolean)=> void
+      getNodeByKey: (key:string)=> void
+    }
+
+    // @ts-ignore
+    this.expandedTreeNodes = [...new Set([
+      ...this.expandedTreeNodes,
+      nodeID
+    ])]
+
+    const currentTreeNode = (treeDOM.getNodeByKey(nodeID)) as unknown as {children: any[], type: string}
+
+    // Dig into the upper hierarchy
+    if (currentTreeNode?.children && currentTreeNode?.children.length > 0) {
+      for (const child of currentTreeNode.children) {
+        this.recursivelyExpandNodeDownwards(child.key)
+      }
     }
     // If we are at the top of the tree, expand the top category
     else if (currentTreeNode?.type) {
@@ -805,6 +937,19 @@ export default class ObjectTree extends BaseClass {
     }
   }
 
+  collapseAllNodesForce (node: {key: string, children: []}) {
+    if (node.children) {
+      for (const child of node.children) {
+        if (this.expandedTreeNodes.includes(node.key)) {
+          this.collapseAllNodesForce(child)
+        }
+      }
+    }
+    if (this.expandedTreeNodes.includes(node.key)) {
+      this.expandedTreeNodes = this.expandedTreeNodes.filter(n => n !== node.key)
+    }
+  }
+
   determineCatyegoryString (node: {
     documentCount: string
     categoryCount: string
@@ -823,6 +968,80 @@ export default class ObjectTree extends BaseClass {
     else {
       return `(<span class="docCount">${node.documentCount}</span>&nbsp;|${extraDivider}&nbsp;<span class="catCount">${node.categoryCount}</span>)`
     }
+  }
+
+  /****************************************************************/
+  // Document field copying
+  /****************************************************************/
+
+  copyName (currentDoc: I_OpenedDocument) {
+    copyDocumentName(currentDoc)
+  }
+
+  copyTextColor (currentDoc: I_OpenedDocument) {
+    copyDocumentTextColor(currentDoc)
+  }
+
+  copyBackgroundColor (currentDoc: I_OpenedDocument) {
+    copyDocumentBackgroundColor(currentDoc)
+  }
+
+  /****************************************************************/
+  // Document copy
+  /****************************************************************/
+
+  documentPass = null as unknown as I_OpenedDocument
+
+  copyTargetDocument (currentDoc: I_OpenedDocument) {
+    this.documentPass = extend(true, {}, currentDoc)
+
+    const newDocument = copyDocument(this.documentPass, this.generateUID())
+
+    const dataPass = {
+      doc: newDocument,
+      treeAction: false
+    }
+
+    // @ts-ignore
+    this.SSET_addOpenedDocument(dataPass)
+    this.$router.push({
+      path: newDocument.url
+    }).catch((e: {name: string}) => {
+      const errorName : string = e.name
+      if (errorName === "NavigationDuplicated") {
+        return
+      }
+      console.log(e)
+    })
+  }
+
+  /****************************************************************/
+  // Add new document under parent
+  /****************************************************************/
+  addNewUnderParent (currentDoc: I_OpenedDocument) {
+    createNewWithParent(currentDoc, this)
+  }
+
+  /****************************************************************/
+  // Delete dialog
+  /****************************************************************/
+
+  deleteObjectDialogTrigger: string | false = false
+  deleteObjectDialogClose () {
+    this.deleteObjectDialogTrigger = false
+  }
+
+  deleteObjectAssignUID () {
+    this.deleteObjectDialogTrigger = this.generateUID()
+  }
+
+  toDeleteID = ""
+  toDeleteType = ""
+
+  deleteTabDocument (targetDocument: I_OpenedDocument) {
+    this.toDeleteID = targetDocument._id
+    this.toDeleteType = targetDocument.type
+    this.deleteObjectAssignUID()
   }
 }
 </script>

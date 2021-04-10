@@ -1,37 +1,36 @@
-- Add "Related notes"
-- Add "Predecessors", "Successors", "Date of start", "Date of end" and "How long it lasted" fields to locations and all other groups
+- Switch field: Template (sigh... maybe???)
+
 - Save scroll distance when switching tabs (consider some auto-scroll when opening edit mode)
 - Mass tag rename
+
+- Add "Related notes"
+- Add "Predecessors", "Successors", "Date of start", "Date of end" and "How long it lasted" fields to locations and all other groups
+
 - Add advanced search capabilities to the hierarchical tree
+
 - "Save all" keybind and "Save all and exit" option on the exiting
-- Add support for dates in "custom order"... reee
-- Add safeguard to escape closing of settings only after something actually got modified
+
 - Add hover/on-demand document preview to relationships
 - Floating notes corkboard
 - Export for MD/PDF
 
 - Add intelligent responsive design to the left tree and document body (maybe button to pull the left bar in and out?)
-- Context menu: Expand all
-- Context menu: Collapse all
-- Context menu: Copy color (text and BG)
-- Context menu: Duplicate
-- Context menu: Copy name
-- Context menu: Delete
-- Context menu: Edit/Open
-- Context menu: Create new doc with parent of THIS
-- Context menu: Pin tab
-- Context menu: Unpin tab
-
-- Pinned tabs (save through program closing)
 
 - Add "Open all search matches" button in the Quick-search that opens a new page with a list of items
-- Custom order document types
-- Option: Retain opened tabs and their edited contents through sessions
-- Option: Single tab option coupled with pinned tabs
-- Option: Periodical backup (how many, how often, include files or not)
 
 ### Project settings
 
+- Custom order document types
+- Pinned tabs (save through program closing)
+- Option: Periodical backup (how many, how often, include files or not)
+- Add Colors, Renaming and Hiding to default document types per project settings
+- Option: Retain opened tabs and their edited contents through sessions
+- Option: Single tab option coupled with pinned tabs
+- Add safeguard to escape closing of settings only after something actually got modified
+- Context menu: Pin tab
+- Context menu: Unpin tab
+
+- Add support for dates in "custom order"... reee
 - Tag management (coloring)
 
 - Simple data imports (maybe?)
@@ -40,7 +39,7 @@
 
 - Add on-the-fly generation of non-existent 2-way relationships
 
-- Automatic thumnail generation AND re-checking based on date
+- Automatic thumbnail generation AND re-checking based on date
 
 - Option: Custom background for project
 - Check fonts offered in the WYSIWYG and add new
@@ -55,5 +54,6 @@
 - Allow/Disallow default document types
 - Timeline/Calendar support
 - AFMG support
+- Better color pasting to documents via context menu
 - Add printing support
 - Add % bar graphs in tree (pinned in #general, idea by popoto)

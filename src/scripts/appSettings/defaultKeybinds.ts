@@ -55,12 +55,12 @@ export const defaultKeybinds = [
     tooltip: "Focus search field in the left hierarchical tree"
   },
 
-  // Clear input in the left tree search - CTRL + SHIFT + W
+  // Clear input in the left tree search - CTRL + SHIFT + T
   {
     altKey: false,
     ctrlKey: true,
     shiftKey: true,
-    which: 87,
+    which: 84,
     editable: true,
     id: "clearInputHierarchicalTree",
     tooltip: "Clear any input in the search field in the left hierarchical tree"
@@ -75,6 +75,50 @@ export const defaultKeybinds = [
     editable: true,
     id: "closeTab",
     tooltip: "Close active document"
+  },
+
+  // Close all tabs without changes except for this - CTRL + ALT + SHIFT + W
+  {
+    altKey: true,
+    ctrlKey: true,
+    shiftKey: true,
+    which: 87,
+    editable: true,
+    id: "closeAllTabsWithoutChangesButThis",
+    tooltip: "Close all tabs without changes except for this"
+  },
+
+  // Close all tabs without changes - CTRL + SHIFT + W
+  {
+    altKey: false,
+    ctrlKey: true,
+    shiftKey: true,
+    which: 87,
+    editable: true,
+    id: "closeAllTabsWithoutChanges",
+    tooltip: "Close all tabs without changes"
+  },
+
+  // Force close all tabs except for this - NONE
+  {
+    altKey: false,
+    ctrlKey: false,
+    shiftKey: false,
+    which: false,
+    editable: true,
+    id: "forceCloseAllTabsButThis",
+    tooltip: "Force close all tabs except for this"
+  },
+
+  // Force close all tabs - NONE
+  {
+    altKey: false,
+    ctrlKey: false,
+    shiftKey: false,
+    which: false,
+    editable: true,
+    id: "forceCloseAllTabs",
+    tooltip: "Force close all tabs"
   },
 
   // Next tab - ALT + RIGHT ARROW
@@ -121,7 +165,7 @@ export const defaultKeybinds = [
     tooltip: "Edit active document"
   },
 
-  // Edit document - CTRL + SHIFT + N
+  // Add a new document with current as parent - CTRL + SHIFT + N
   {
     altKey: false,
     ctrlKey: true,
@@ -130,6 +174,17 @@ export const defaultKeybinds = [
     editable: true,
     id: "addUnderParent",
     tooltip: "Add a new document with the currently opened one as the parent"
+  },
+
+  // Copy document - CTRL + ALT + C
+  {
+    altKey: true,
+    ctrlKey: true,
+    shiftKey: false,
+    which: 67,
+    editable: true,
+    id: "copyDocument",
+    tooltip: "Copy active document"
   },
 
   // Delete document - CTRL + D
