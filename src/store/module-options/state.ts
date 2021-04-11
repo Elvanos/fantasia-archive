@@ -2,6 +2,7 @@ export interface OptionsStateInteface {
   _id: string,
   _rev?: string,
   darkMode: boolean
+  preventAutoScroll: boolean
   textShadow: boolean
   hideDeadCrossThrough: boolean
   doubleDashDocCount: boolean
@@ -25,6 +26,11 @@ export interface OptionsStateInteface {
   hideTooltipsStart: boolean
   hideTooltipsProject: boolean
   hideTreeOrderNumbers: boolean
+  hideTreeExtraIcons: boolean
+  hideTreeIconAddUnder: boolean
+  hideTreeIconEdit: boolean
+  hideTreeIconView: boolean
+  hidePlushes: boolean
 
   userKeybindList: any[]
   treeWidth?: number
@@ -34,10 +40,12 @@ function state (): OptionsStateInteface {
   return {
     _id: "settings",
     darkMode: false,
+    preventAutoScroll: false,
     textShadow: false,
     hideDeadCrossThrough: false,
     doubleDashDocCount: false,
     hideWelcomeScreenSocials: false,
+    hidePlushes: false,
     noTags: false,
     tagsAtTop: false,
     compactTags: false,
@@ -57,6 +65,10 @@ function state (): OptionsStateInteface {
     hideTooltipsStart: false,
     hideTooltipsProject: false,
     hideTreeOrderNumbers: false,
+    hideTreeExtraIcons: false,
+    hideTreeIconAddUnder: false,
+    hideTreeIconEdit: false,
+    hideTreeIconView: false,
     treeWidth: 374,
     userKeybindList: []
   }

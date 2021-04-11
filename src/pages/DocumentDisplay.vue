@@ -302,7 +302,13 @@ export default class PageDocumentDisplay extends BaseClass {
     this.disableDocumentControlBar = options.disableDocumentControlBar
     this.isDarkMode = options.darkMode
     this.hideEmptyFields = options.hideEmptyFields
+    this.preventAutoScroll = options.preventAutoScroll
   }
+
+  /**
+  * Determines if the documents will recall their scroll distances and auto-scroll on switching ot not.
+  */
+  preventAutoScroll = false
 
   /**
    * Determines if the document control bar is show or hidden
@@ -357,12 +363,48 @@ export default class PageDocumentDisplay extends BaseClass {
    */
   @Watch("$route", { immediate: true, deep: true })
   async onUrlChange () {
+    window.removeEventListener("scroll", this.watchPageScroll)
+    window.removeEventListener("scroll", this.watchPageScroll)
+    window.removeEventListener("scroll", this.watchPageScroll)
+
     await this.sleep(50)
+    const doc = this.findRequestedOrActiveDocument() as I_OpenedDocument
     window.scrollTo({ top: 0, behavior: "auto" })
 
     await this.reloadLocalContent().catch(e => console.log(e))
 
-    window.scrollTo({ top: 0, behavior: "auto" })
+    const scrollTop = (doc.scrollDistance && !this.preventAutoScroll) ? doc.scrollDistance : 0
+
+    window.scrollTo({ top: scrollTop, behavior: "auto" })
+
+    window.removeEventListener("scroll", this.watchPageScroll)
+    window.removeEventListener("scroll", this.watchPageScroll)
+    window.removeEventListener("scroll", this.watchPageScroll)
+
+    window.addEventListener("scroll", this.watchPageScroll)
+  }
+
+  decounceScrollTimer = false as any
+  watchPageScroll () {
+    if (this.preventAutoScroll) {
+      return
+    }
+
+    if (this.decounceScrollTimer) {
+      window.clearTimeout(this.decounceScrollTimer)
+    }
+
+    this.decounceScrollTimer = window.setTimeout(() => {
+      const currentScroll = window.scrollY
+
+      const dataCopy: I_OpenedDocument = extend(true, {}, this.findRequestedOrActiveDocument())
+
+      dataCopy.scrollDistance = currentScroll
+
+      // Attempts to add current document to list
+      const dataPass = { doc: dataCopy, treeAction: false }
+      this.SSET_updateOpenedDocument(dataPass)
+    }, 200)
   }
 
   /**
@@ -430,6 +472,10 @@ export default class PageDocumentDisplay extends BaseClass {
     }
 
     this.currentData.extraFields = objectFields
+
+    if (this.$route.query?.editMode) {
+      this.editMode = true
+    }
 
     const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)
 
@@ -732,7 +778,7 @@ export default class PageDocumentDisplay extends BaseClass {
     const isCategory = this.retrieveFieldValue(this.currentData, "categorySwitch")
 
     const ignoredList = ["breakDocumentSettings", "name", "documentColor", "documentBackgroundColor", "parentDoc", "order", "categorySwitch", "minorSwitch", "deadSwitch", "tags"]
-    return (!isCategory || ignoredList.includes(currentFieldID))
+    return (((!isCategory && currentFieldID !== "categoryDescription") || ignoredList.includes(currentFieldID)) || (isCategory && currentFieldID === "categoryDescription"))
   }
 
   /**

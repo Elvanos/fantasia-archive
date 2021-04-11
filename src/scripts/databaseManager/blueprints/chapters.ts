@@ -121,12 +121,18 @@ export const chaptersBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
+      id: "categoryDescription",
+      name: "Category description",
+      type: "wysiwyg",
+      icon: "mdi-folder-edit-outline",
+      sizing: 12
+    },
+    {
       id: "breakBasic",
       name: "Basic information",
       type: "break",
       sizing: 12
     },
-
     {
       id: "content",
       name: "Chapter content",

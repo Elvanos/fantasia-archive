@@ -14,8 +14,17 @@
         <h2 class="mainProjectTitle"> {{projectName}}</h2>
       </div>
       <div class="hintWrapper" v-if="!hideTooltipsProject && allDocuments > 0">
-        <div>
-            <q-icon name="mdi-help" size="30px" class="q-mr-md" />
+
+        <div v-if="hidePlushes">
+          <q-icon name="mdi-help" size="30px" class="q-mr-md" />
+        </div>
+
+        <div class="mascotWrapper" v-if="!hidePlushes">
+          <q-img
+          :src="plusheForm"
+          style="max-width: 135px; height: 100%;"
+          contain
+        />
         </div>
         <div>
           <div class="text-subtitle1 text-dark text-bold text-left">
@@ -117,6 +126,7 @@ import PouchDB from "pouchdb"
 import newDocumentDialog from "src/components/dialogs/NewDocument.vue"
 import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
 import { tipsTricks } from "src/scripts/utilities/tipsTricks"
+import { summonAllPlusheForms } from "src/scripts/utilities/plusheMascot"
 
 @Component({
   components: {
@@ -135,7 +145,13 @@ export default class ProjectScreen extends BaseClass {
   onSettingsChange () {
     const options = this.SGET_options
     this.hideTooltipsProject = options.hideTooltipsProject
+    this.hidePlushes = options.hidePlushes
   }
+
+  /**
+   * Hides the mascot... nooo :(
+   */
+  hidePlushes = false
 
   /**
    * Determines if the project screen help hint should show or not
@@ -155,6 +171,7 @@ export default class ProjectScreen extends BaseClass {
     Loading.hide()
 
     this.tipTrickMessage = tipsTricks[Math.floor(Math.random() * tipsTricks.length)]
+    this.plusheForm = summonAllPlusheForms[Math.floor(Math.random() * summonAllPlusheForms.length)]
   }
 
   /**
@@ -166,6 +183,11 @@ export default class ProjectScreen extends BaseClass {
    * Loaded trivia message
    */
   tipTrickMessage = ""
+
+  /**
+   * Current form the majestic Fantasia desided to take this fine day!
+   */
+  plusheForm = ""
 
   /****************************************************************/
   // GRAPH FUNCTIONALITY
@@ -368,6 +390,13 @@ export default class ProjectScreen extends BaseClass {
 </script>
 
 <style lang="scss">
+
+.mascotWrapper {
+  height: 135px;
+  width: 135px;
+  margin-right: 30px;
+  flex-shrink: 0;
+}
 
 .hintWrapper {
   max-width: 950px;

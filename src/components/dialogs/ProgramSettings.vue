@@ -21,7 +21,11 @@
           style="width: 100%;"
 
         >
-          <q-tab name="uiSettings" label="Visuals & Functionality" />
+          <q-tab name="uiSettings" label="Visuals & Accessibility" />
+          <q-tab name="docSettings" label="Document view/edit" />
+          <q-tab name="popupSettings" label="Popup dialogs" />
+          <q-tab name="treeSettings" label="Hierarchical tree" />
+
           <q-separator dark />
 
           <q-tab name="keybinds" label="Keybinds" />
@@ -52,7 +56,13 @@
 
                   <div class="col-12">
                     <div class="text-h6">
-                      Program looks & Accessibility
+                      Visuals & Accessibility
+                    </div>
+                  </div>
+
+                   <div class="col-12">
+                    <div class="text-bold q-mt-xl">
+                      Visuals
                     </div>
                   </div>
 
@@ -69,6 +79,12 @@
                       <q-toggle
                         v-model="options.darkMode"
                       />
+                  </div>
+
+                  <div class="col-12">
+                    <div class="text-bold q-mt-xl">
+                      Accessibility
+                    </div>
                   </div>
 
                    <div class="col-4 optionWrapper">
@@ -116,6 +132,12 @@
                       />
                   </div>
 
+                  <div class="col-12">
+                    <div class="text-bold q-mt-xl">
+                      Application extras
+                    </div>
+                  </div>
+
                   <div class="col-4 optionWrapper">
                     <div class="optionTitle">
                       Hide Welcome screen social links
@@ -161,13 +183,48 @@
                       />
                   </div>
 
+                  <div class="col-4 optionWrapper">
+                    <div class="optionTitle">
+                      Hide Fantasia mascot
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Hides the amazingly adorable and awesome Fantasia, the tiny arcane dragon.
+                        <br>
+                        How could you! :(
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.hidePlushes"
+                      />
+                  </div>
+
+                </div>
+           </q-scroll-area>
+          </q-tab-panel>
+
+          <q-tab-panel name="docSettings" dark class="q-pt-sm">
+             <q-scroll-area
+              class="programSettingsScrollArea"
+              visible
+              dark
+              :thumb-style="thumbStyle"
+              >
+                <div class="row justify-start">
                   <div class="col-12">
-                    <div class="text-h6 q-mt-lg">
-                      Document view settings
+                    <div class="text-h6">
+                      Document view/edit
                     </div>
                   </div>
 
-                  <div class="col-3 optionWrapper">
+                   <div class="col-12">
+                    <div class="text-bold q-mt-xl">
+                      Document control bar
+                    </div>
+                  </div>
+
+                  <div class="col-4 optionWrapper">
                     <div class="optionTitle">
                       Disable document control bar
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -184,7 +241,7 @@
                       />
                   </div>
 
-                  <div class="col-3 optionWrapper">
+                  <div class="col-4 optionWrapper">
                     <div class="optionTitle">
                       Disable document guides
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -199,7 +256,13 @@
                       />
                   </div>
 
-                  <div class="col-3 optionWrapper">
+                  <div class="col-12">
+                    <div class="text-bold q-mt-xl">
+                      Document body
+                    </div>
+                  </div>
+
+                  <div class="col-4 optionWrapper">
                     <div class="optionTitle">
                       Disable document tooltips
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -214,7 +277,7 @@
                       />
                   </div>
 
-                  <div class="col-3 optionWrapper">
+                  <div class="col-4 optionWrapper">
                     <div class="optionTitle">
                       Hide empty fields
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -231,9 +294,63 @@
                       />
                   </div>
 
+                  <div class="col-4 optionWrapper">
+                    <div class="optionTitle">
+                      Prevent auto-scrolling
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Determines if the documents will recall their scroll distances and auto-scroll on switching ot not.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.preventAutoScroll"
+                      />
+                  </div>
+                </div>
+           </q-scroll-area>
+
+          </q-tab-panel>
+
+          <q-tab-panel name="popupSettings" dark class="q-pt-sm">
+             <q-scroll-area
+              class="programSettingsScrollArea"
+              visible
+              dark
+              :thumb-style="thumbStyle"
+              >
+                <div class="row justify-start">
                   <div class="col-12">
-                    <div class="text-h6 q-mt-lg">
-                      Quick-search & Quick-add popups
+                    <div class="text-h6">
+                      Popup dialogs
+                    </div>
+                  </div>
+
+                   <div class="col-12">
+                    <div class="text-bold q-mt-xl">
+                      Universal dialog settings
+                    </div>
+                  </div>
+
+                   <div class="col-4 optionWrapper">
+                    <div class="optionTitle">
+                      Close quick popups with same key
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        This allows for closing of the quick-search and quick-add popups with the same key combination that was used to open them to begin with.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.allowQuickPopupSameKeyClose"
+                      />
+                  </div>
+
+                   <div class="col-12">
+                    <div class="text-bold q-mt-xl">
+                      Quick-Seach dialog
                     </div>
                   </div>
 
@@ -271,24 +388,78 @@
                       />
                   </div>
 
+                </div>
+           </q-scroll-area>
+          </q-tab-panel>
+
+          <q-tab-panel name="treeSettings" dark class="q-pt-sm">
+            <q-scroll-area
+              class="programSettingsScrollArea"
+              visible
+              dark
+              :thumb-style="thumbStyle"
+              >
+                <div class="row justify-start">
+                  <div class="col-12">
+                    <div class="text-h6">
+                      Hierarchical tree
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <div class="text-bold q-mt-xl">
+                      Tag settings
+                    </div>
+                  </div>
+
                   <div class="col-4 optionWrapper">
                     <div class="optionTitle">
-                      Close quick popups with same key
+                      Hide tags in tree
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
                       <q-tooltip :delay="500">
-                        This allows for closing of the quick-search and quick-add popups with the same key combination that was used to open them to begin with.
+                        Determines if the tags show in the hierarchical tree at all
                       </q-tooltip>
                     </q-icon>
                     </div>
 
-                      <q-toggle
-                        v-model="options.allowQuickPopupSameKeyClose"
+                    <q-toggle
+                      v-model="options.noTags"
+                    />
+                  </div>
+
+                  <div class="col-4 optionWrapper">
+                    <div class="optionTitle">
+                      Top tags in tree
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Show tags at the top of the hierarchical tree
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                    <q-toggle
+                      v-model="options.tagsAtTop"
+                    />
+                  </div>
+
+                  <div class="col-4 optionWrapper">
+                    <div class="optionTitle">
+                      Compact tags
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Determine if the tags should be shown as individual categories or they should show as one big category with each tag as a subcategory.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                    <q-toggle
+                      v-model="options.compactTags"
                       />
                   </div>
 
-                  <div class="col-12">
-                    <div class="text-h6 q-mt-lg">
-                      Hierarchy tree
+                   <div class="col-12">
+                    <div class="text-bold q-mt-xl">
+                      Tree behavior
                     </div>
                   </div>
 
@@ -339,6 +510,12 @@
                       />
                   </div>
 
+                  <div class="col-12">
+                    <div class="text-bold q-mt-xl">
+                      Information display settings
+                    </div>
+                  </div>
+
                   <div class="col-4 optionWrapper">
                     <div class="optionTitle">
                       Hide document count entirely
@@ -386,51 +563,6 @@
 
                   <div class="col-4 optionWrapper">
                     <div class="optionTitle">
-                      Hide tags in tree
-                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
-                      <q-tooltip :delay="500">
-                        Determines if the tags show in the hierarchical tree at all
-                      </q-tooltip>
-                    </q-icon>
-                    </div>
-
-                    <q-toggle
-                      v-model="options.noTags"
-                    />
-                  </div>
-
-                  <div class="col-4 optionWrapper">
-                    <div class="optionTitle">
-                      Top tags in tree
-                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
-                      <q-tooltip :delay="500">
-                        Show tags at the top of the hierarchical tree
-                      </q-tooltip>
-                    </q-icon>
-                    </div>
-
-                    <q-toggle
-                      v-model="options.tagsAtTop"
-                    />
-                  </div>
-
-                  <div class="col-4 optionWrapper">
-                    <div class="optionTitle">
-                      Compact tags
-                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
-                      <q-tooltip :delay="500">
-                        Determine if the tags should be shown as individual categories or they should show as one big category with each tag as a subcategory.
-                      </q-tooltip>
-                    </q-icon>
-                    </div>
-
-                    <q-toggle
-                      v-model="options.compactTags"
-                      />
-                  </div>
-
-                  <div class="col-4 optionWrapper">
-                    <div class="optionTitle">
                       Hide order numbers
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
                       <q-tooltip :delay="500">
@@ -444,8 +576,75 @@
                       />
                   </div>
 
+                   <div class="col-12">
+                    <div class="text-bold q-mt-xl">
+                      Icon settings
+                    </div>
+                  </div>
+
+                   <div class="col-4 optionWrapper">
+                    <div class="optionTitle">
+                      Hide extra icons
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        This option hides icons that are normally shown for convinience, but don't actually add any functiuonality.
+                        <br>
+                        For example the "Open document" icon next to document with no children nodes that can just as well opened with a normal left click instead of clicking on the icon.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.hideTreeExtraIcons"
+                      />
+                  </div>
+
+                   <div class="col-4 optionWrapper">
+                    <div class="optionTitle">
+                      Hide "Add under" icon
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        This option hides the "Add a new document belonging under XY" icon.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.hideTreeIconAddUnder"
+                      />
+                  </div>
+
+                   <div class="col-4 optionWrapper">
+                    <div class="optionTitle">
+                      Hide "Edit" icon
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        This option hides the "Edit XY" icon.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.hideTreeIconEdit"
+                      />
+                  </div>
+
+                   <div class="col-4 optionWrapper">
+                    <div class="optionTitle">
+                      Hide "Open" icon
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        This option hides the "Open XY" icon.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.hideTreeIconView"
+                      />
+                  </div>
                 </div>
-           </q-scroll-area>
+            </q-scroll-area>
           </q-tab-panel>
 
           <q-tab-panel name="keybinds" dark>
@@ -683,9 +882,11 @@ export default class ProgramSettings extends DialogBase {
   options: OptionsStateInteface = {
     _id: "settings",
     darkMode: false,
+    preventAutoScroll: false,
     textShadow: false,
     doubleDashDocCount: false,
     hideDeadCrossThrough: false,
+    hidePlushes: false,
     tagsAtTop: false,
     noTags: false,
     compactTags: false,
@@ -706,6 +907,10 @@ export default class ProgramSettings extends DialogBase {
     hideTooltipsStart: false,
     hideTooltipsProject: false,
     hideTreeOrderNumbers: false,
+    hideTreeExtraIcons: false,
+    hideTreeIconAddUnder: false,
+    hideTreeIconEdit: false,
+    hideTreeIconView: false,
     userKeybindList: []
   }
 

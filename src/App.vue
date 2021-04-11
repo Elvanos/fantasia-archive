@@ -15,6 +15,7 @@ import { OptionsStateInteface } from "./store/module-options/state"
 import { colors } from "quasar"
 import { tipsTricks } from "src/scripts/utilities/tipsTricks"
 import { shell } from "electron"
+import { summonAllPlusheForms } from "src/scripts/utilities/plusheMascot"
 
 @Component({
   components: {
@@ -94,12 +95,14 @@ export default class App extends BaseClass {
     }
 
     const messageToShow = tipsTricks[Math.floor(Math.random() * tipsTricks.length)]
-
+    const plusheForm = summonAllPlusheForms[Math.floor(Math.random() * summonAllPlusheForms.length)]
     this.starupNotif = this.$q.notify({
+
       timeout: 15000,
-      icon: "mdi-help",
-      type: "info",
+      icon: (this.hidePlushes) ? "mdi-help" : undefined,
+      color: "info",
       message: "Did you know?",
+      avatar: (!this.hidePlushes) ? plusheForm : undefined,
       caption: messageToShow,
       actions: [{ icon: "mdi-close", color: "white" }]
     })
@@ -226,6 +229,8 @@ export default class App extends BaseClass {
   @Watch("SGET_options", { deep: true })
   onSettingsChange () {
     const options = this.SGET_options
+
+    this.hidePlushes = options.hidePlushes
     this.$q.dark.set(options.darkMode)
     if (options.darkMode) {
       colors.setBrand("dark", "#1b333e")
@@ -236,5 +241,10 @@ export default class App extends BaseClass {
       colors.setBrand("primary", "#e8bb50")
     }
   }
+
+  /**
+   * Hides the mascot... nooo :(
+   */
+  hidePlushes = false
 }
 </script>

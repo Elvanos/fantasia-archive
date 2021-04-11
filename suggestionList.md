@@ -1,6 +1,5 @@
 - Switch field: Template (sigh... maybe???)
 
-- Save scroll distance when switching tabs (consider some auto-scroll when opening edit mode)
 - Mass tag rename
 
 - Add "Related notes"
@@ -17,6 +16,7 @@
 - Add intelligent responsive design to the left tree and document body (maybe button to pull the left bar in and out?)
 
 - Add "Open all search matches" button in the Quick-search that opens a new page with a list of items
+- Allow showing of document types under tags
 
 ### Project settings
 

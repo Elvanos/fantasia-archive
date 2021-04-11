@@ -19,5 +19,6 @@ export const tipsTricks: string[] = [
   "Don't hesitate to add as many sub-categories as you want. You can always move stuff around later and reorganize your project structure.",
   "Tags are a very powerful feature that allow you to add semi-categories to the project tree and create additional search parameters to aid navigation.",
   "There is a roadmap of planned features on Patreon! If you are curious about what will eventually come, feel free to read it.",
-  "DISCLAIMER: No magical creatures were harmed during the making of this software."
+  "DISCLAIMER: No magical creatures were harmed during the making of this software.",
+  "The adorable little arcane dragon you might have seen while using the app is called Fantasia and she is the official mascot of FA!"
 ]

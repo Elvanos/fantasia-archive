@@ -13,6 +13,7 @@ export interface I_OpenedDocument{
   hasEdits: boolean
   isNew: boolean
   url: string
+  scrollDistance?: number
   extraFields: I_ExtraDocumentFields[]
 }
 

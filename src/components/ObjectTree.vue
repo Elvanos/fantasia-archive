@@ -110,7 +110,25 @@
             <div class="treeButtonGroup">
               <q-btn
                 tabindex="-1"
-                v-if="prop.node.children && prop.node.children.length > 0 && !prop.node.isRoot && !prop.node.isTag"
+                v-if="((prop.node.children && prop.node.children.length > 0) || !hideTreeExtraIcons) && !prop.node.isRoot && !prop.node.isTag && !hideTreeIconView && !prop.node.specialLabel"
+                round
+                flat
+                dense
+                color="dark"
+                class="z-1 q-ml-sm treeButton treeButton--edit"
+                icon="mdi-book-open-page-variant-outline"
+                size="10px"
+                @click.stop.prevent="openExistingDocumentRoute(prop.node)"
+              >
+                <q-tooltip
+                  :delay="300"
+                >
+                Open {{ prop.node.label }}
+                </q-tooltip>
+              </q-btn>
+              <q-btn
+                tabindex="-1"
+                v-if="!prop.node.isRoot && !prop.node.isTag && !hideTreeIconEdit && !prop.node.specialLabel"
                 round
                 flat
                 dense
@@ -118,17 +136,17 @@
                 class="z-1 q-ml-sm treeButton treeButton--edit"
                 icon="mdi-pencil"
                 size="10px"
-                @click.stop.prevent="openExistingDocumentRoute(prop.node)"
+                @click.stop.prevent="openExistingDocumentRouteWithEdit(prop.node)"
               >
                 <q-tooltip
                   :delay="300"
                 >
-                Open/Edit {{ prop.node.label }}
+                Edit {{ prop.node.label }}
                 </q-tooltip>
               </q-btn>
               <q-btn
                 tabindex="-1"
-                v-if="(!prop.node.specialLabel && !prop.node.isRoot) && !prop.node.isTag"
+                v-if="!prop.node.specialLabel && !prop.node.isRoot && !prop.node.isTag && !hideTreeIconAddUnder"
                 round
                 flat
                 dense
@@ -154,13 +172,13 @@
 
                 <template v-if="prop.node.isRoot || prop.node.children.length > 0">
                   <q-item clickable v-close-popup @click="recursivelyExpandNodeDownwards(prop.node.key)">
-                    <q-item-section>Expand all</q-item-section>
+                    <q-item-section>Expand all under this node</q-item-section>
                     <q-item-section avatar>
                       <q-icon name="mdi-expand-all-outline" />
                     </q-item-section>
                   </q-item>
                   <q-item clickable v-close-popup @click="collapseAllNodesForce(prop.node)">
-                    <q-item-section>Collapse all</q-item-section>
+                    <q-item-section>Collapse all under this node</q-item-section>
                     <q-item-section avatar>
                       <q-icon name="mdi-collapse-all-outline" />
                     </q-item-section>
@@ -200,6 +218,12 @@
                   <q-separator />
                     <q-item clickable v-close-popup @click="openExistingDocumentRoute(prop.node)">
                     <q-item-section>Open document</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-book-open-page-variant-outline" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup @click="openExistingDocumentRouteWithEdit(prop.node)">
+                    <q-item-section>Edit document</q-item-section>
                     <q-item-section avatar>
                       <q-icon name="mdi-pencil" />
                     </q-item-section>
@@ -333,6 +357,10 @@ export default class ObjectTree extends BaseClass {
   doubleDashDocCount = false
   hideDeadCrossThrough = false
   hideTreeOrderNumbers = false
+  hideTreeExtraIcons = false
+  hideTreeIconAddUnder = false
+  hideTreeIconEdit = false
+  hideTreeIconView = false
 
   @Watch("SGET_options", { immediate: true, deep: true })
   onSettingsChange () {
@@ -351,7 +379,10 @@ export default class ObjectTree extends BaseClass {
     this.doubleDashDocCount = options.doubleDashDocCount
     this.hideDeadCrossThrough = options.hideDeadCrossThrough
     this.hideTreeOrderNumbers = options.hideTreeOrderNumbers
-
+    this.hideTreeExtraIcons = options.hideTreeExtraIcons
+    this.hideTreeIconAddUnder = options.hideTreeIconAddUnder
+    this.hideTreeIconEdit = options.hideTreeIconEdit
+    this.hideTreeIconView = options.hideTreeIconView
     this.buildCurrentObjectTree().catch((e) => {
       console.log(e)
     })

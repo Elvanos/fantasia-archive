@@ -43,22 +43,34 @@
   - New action for **Hiearachical Tree**
     - Add new document type: `DOCUMENT TYPE`
       - Only available in the root-categories
-    - Expand all
-    - Collapse all
+    - Expand all under this nodd
+    - Collapse all under this node
     - Copy name
     - Copy text color
     - Copy background color
     - Open document
+    - Edit document
     - Create new document with this document as parent
     - Copy this document
     - Delete document
+- Added a special description field for categories that become visible only when the document is switches to the category mode
+- Added Fantasia mascot in the app! ^_^
+- Different document tabs now keep scroll distance and resume wherever you left them at
 - Added support for default empty keybinds
 - Added a dedicated button that opens the connected documents straight from the little chips in relationship fields while in edit mode
 - Added support for background color for documents
 - Added support for "Minor document" mode switch for better organization and visual representation of documents
 - Added support for "Dead/Gone/Destroyed" mode switch for better organization and visual representation of documents
+- Added trivia concerning Fantasia mascot
+- Added support for direct opening of documents in edit mode from the hierarchy tree without needing to open the document in view mode first
+- Added option: Hide Fantasia mascot
 - Added option: Accessibility - Hide strike-through
 - Added option: Accessibility - Hide order numbers
+- Added option: Hide extra icons
+- Added option: Hide "Add under" icon
+- Added option: Hide "Edit" icon
+- Added option: Hide "Open" icon
+- Added option: Prevent auto-scrolling
 - Added functionality to copy existing documents along with all their contents
 - Added keybind: Close all tabs without changes except for this
 - Added keybind: Close all tabs without changes
@@ -71,6 +83,7 @@
 - Changed focusing of the hierarchy tree search input from CTRL + SHIFT + W to CTRL + SHIFT +T
 - Updated fullscreen editor looks to work more like a proper document editor
 - Unified icons for same actions across the app
+- Program settings have been separated into multiple tabs and sub-groups in order to be actually possible to navigate effectively
 - Reordered the basic document settings inside the app and separated them from the document content
 - Adjusted maximum width of switch fields to make them look like spaggeti
 - Updated the Advanced search guide with new additions and added one new Trivia popup text concerning it

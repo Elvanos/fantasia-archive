@@ -96,6 +96,10 @@ export const saveDocument = async (document: I_OpenedDocument, allOpenedDocument
   documentCopy.hasEdits = false
   documentCopy.editMode = false
 
+  if (documentCopy.scrollDistance) {
+    delete (documentCopy.scrollDistance)
+  }
+
   // Save the document
   try {
     await CurrentObjectDB.put(documentCopy)

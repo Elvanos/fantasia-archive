@@ -256,6 +256,23 @@ export default class BaseClass extends Vue {
    * Open a new route for an already existing object
    * @param existingObject An already existing object passed in
    */
+  openExistingDocumentRouteWithEdit (existingObject:I_OpenedDocument | I_FieldRelationship) {
+    this.$router.push({
+      path: existingObject.url,
+      query: { editMode: "editMode" }
+    }).catch((e: {name: string}) => {
+      const errorName : string = e.name
+      if (errorName === "NavigationDuplicated") {
+        return
+      }
+      console.log(e)
+    })
+  }
+
+  /**
+   * Open a new route for an already existing object
+   * @param existingObject An already existing object passed in
+   */
   openExistingDocumentRoute (existingObject:I_OpenedDocument | I_FieldRelationship) {
     this.$router.push({ path: existingObject.url }).catch((e: {name: string}) => {
       const errorName : string = e.name

@@ -112,7 +112,7 @@ a {
 }
 
 .q-notification.bg-info {
-  max-width: 500px;
+  max-width: 550px;
   border: 2px solid var(--q-color-dark);
   color: var(--q-color-dark);
 
@@ -200,6 +200,21 @@ a {
       1px -1px 0 $shadowColorOutline,
       -1px 1px 0 $shadowColorOutline,
       1px 1px 0 $shadowColorOutline;
+  }
+}
+
+.q-notification__avatar {
+  height: 135px;
+  width: 135px;
+  margin-right: 30px;
+  flex-shrink: 0;
+  border-radius: 0;
+  margin-top: 15px;
+  margin-bottom: 15px;
+
+  img {
+    width: auto !important;
+    object-fit: contain;
   }
 }
 
