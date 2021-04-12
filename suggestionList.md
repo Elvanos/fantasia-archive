@@ -1,17 +1,26 @@
 - Switch field: Template (sigh... maybe???)
 
 - Mass tag rename
+- Add category for diseases/curses/etc
+
+## THE GM BATCH
 
 - Add "Related notes"
+- Floating notes corkboard
+- Add hover/on-demand document preview to relationships
+
+- Export for MD/PDF
+- Selective export per field basis
+- Export templates
+- DM only fields
+
+## THE GM BATCH END
+
 - Add "Predecessors", "Successors", "Date of start", "Date of end" and "How long it lasted" fields to locations and all other groups
 
 - Add advanced search capabilities to the hierarchical tree
 
 - "Save all" keybind and "Save all and exit" option on the exiting
-
-- Add hover/on-demand document preview to relationships
-- Floating notes corkboard
-- Export for MD/PDF
 
 - Add intelligent responsive design to the left tree and document body (maybe button to pull the left bar in and out?)
 

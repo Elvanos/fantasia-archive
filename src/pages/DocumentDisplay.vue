@@ -1013,11 +1013,13 @@ body.body--dark {
         border: none;
       }
 
+      .relationshipChipNewTab,
       .q-field__input,
       .q-icon,
       .q-field__native span {
         color: $darkModeText !important;
 
+        .q-icon,
         &.q-chip__icon--remove {
           color: #000 !important;
         }

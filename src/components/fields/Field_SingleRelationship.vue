@@ -70,6 +70,63 @@
             </q-tooltip>
           </q-btn>
         </q-item-section>
+         <q-menu
+              touch-position
+              context-menu
+              auto-close
+              separate-close-popup
+            >
+
+              <q-list class="bg-gunmetal-light">
+
+                <template>
+                  <q-item clickable  @click="copyName(fixGetCorrectDocument(localInput))">
+                    <q-item-section>Copy name</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-text-recognition" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="copyTextColor(fixGetCorrectDocument(localInput))">
+                    <q-item-section>Copy text color</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-eyedropper" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="copyBackgroundColor(fixGetCorrectDocument(localInput))">
+                    <q-item-section>Copy background color</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-format-color-fill" />
+                    </q-item-section>
+                  </q-item>
+                  <q-separator />
+                    <q-item clickable @click="openExistingInput(fixGetCorrectDocument(localInput))">
+                    <q-item-section>Open document</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-book-open-page-variant-outline" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="editExistingInput(fixGetCorrectDocument(localInput))">
+                    <q-item-section>Edit document</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-pencil" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="addNewUnderParent(fixGetCorrectDocument(localInput))">
+                    <q-item-section>Create new document with this document as parent</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon color="primary" name="mdi-file-tree" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="copyTargetDocument(fixGetCorrectDocument(localInput))">
+                    <q-item-section>Copy this document</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon color="primary" name="mdi-content-copy" />
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-list>
+
+            </q-menu>
       </q-item>
     </q-list>
 
@@ -111,7 +168,7 @@
             round
             dense
             flat
-            class="z-max"
+            class="z-max relationshipChipNewTab"
             style="color: #000 !important;"
             size="sm"
             icon="mdi-open-in-new"
@@ -121,6 +178,63 @@
               Open in new tab without leaving this one
             </q-tooltip>
           </q-btn>
+           <q-menu
+              touch-position
+              context-menu
+              auto-close
+              separate-close-popup
+            >
+
+              <q-list class="bg-gunmetal-light">
+
+                <template>
+                  <q-item clickable @click="copyName(fixGetCorrectDocument(scope.opt))">
+                    <q-item-section>Copy name</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-text-recognition" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="copyTextColor(fixGetCorrectDocument(scope.opt))">
+                    <q-item-section>Copy text color</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-eyedropper" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="copyBackgroundColor(fixGetCorrectDocument(scope.opt))">
+                    <q-item-section>Copy background color</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-format-color-fill" />
+                    </q-item-section>
+                  </q-item>
+                  <q-separator />
+                    <q-item clickable @click="openExistingInput(fixGetCorrectDocument(scope.opt))">
+                    <q-item-section>Open document</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-book-open-page-variant-outline" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="editExistingInput(fixGetCorrectDocument(scope.opt))">
+                    <q-item-section>Edit document</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-pencil" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="addNewUnderParent(fixGetCorrectDocument(scope.opt))">
+                    <q-item-section>Create new document with this document as parent</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon color="primary" name="mdi-file-tree" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="copyTargetDocument(fixGetCorrectDocument(scope.opt))">
+                    <q-item-section>Copy this document</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon color="primary" name="mdi-content-copy" />
+                    </q-item-section>
+                  </q-item>
+                </template>
+              </q-list>
+
+            </q-menu>
         </q-chip>
         </template>
 
@@ -164,6 +278,65 @@
             <q-tooltip v-if='opt.disable'>
               This option is unavailable for selection as it is already paired to another.
             </q-tooltip>
+
+            <q-menu
+              touch-position
+              context-menu
+              auto-close
+              separate-close-popup
+            >
+
+              <q-list class="bg-gunmetal-light">
+
+                <template>
+                  <q-item clickable  @click="copyName(opt)">
+                    <q-item-section>Copy name</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-text-recognition" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="copyTextColor(opt)">
+                    <q-item-section>Copy text color</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-eyedropper" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="copyBackgroundColor(opt)">
+                    <q-item-section>Copy background color</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-format-color-fill" />
+                    </q-item-section>
+                  </q-item>
+                  <q-separator />
+                    <q-item clickable @click="openExistingInput(opt)">
+                    <q-item-section>Open document</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-book-open-page-variant-outline" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="editExistingInput(opt)">
+                    <q-item-section>Edit document</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-pencil" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="addNewUnderParent(opt)">
+                    <q-item-section>Create new document with this document as parent</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon color="primary" name="mdi-file-tree" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="copyTargetDocument(opt)">
+                    <q-item-section>Copy this document</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon color="primary" name="mdi-content-copy" />
+                    </q-item-section>
+                  </q-item>
+                </template>
+
+              </q-list>
+
+            </q-menu>
           </q-item>
         </template>
     </q-select>
@@ -207,8 +380,11 @@ import PouchDB from "pouchdb"
 import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
 import { extend } from "quasar"
 
-import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
+import { I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { I_FieldRelationship, I_RelationshipPairSingle } from "src/interfaces/I_FieldRelationship"
+import { createNewWithParent } from "src/scripts/documentActions/createNewWithParent"
+import { copyDocumentName, copyDocumentTextColor, copyDocumentBackgroundColor } from "src/scripts/documentActions/uniqueFieldCopy"
+import { copyDocument } from "src/scripts/documentActions/copyDocument"
 
 @Component({
   components: { }
@@ -469,6 +645,86 @@ export default class Field_SingleRelationship extends FieldBase {
       addedValues: this.inputNote,
       skipSave: (skipSave)
     }
+  }
+
+  /****************************************************************/
+  // TRIGGER ACTIONS
+  /****************************************************************/
+
+  docToFind = null as unknown as I_OpenedDocument
+
+  fixGetCorrectDocument (e: I_OpenedDocument | I_FieldRelationship) {
+    this.docToFind = (this.allDocumentsWithoutCurrent.find(doc => doc._id === e._id)) as unknown as I_OpenedDocument
+    return this.docToFind
+  }
+
+  /**
+   * Opened the existing input
+   */
+  openExistingInput (e: I_OpenedDocument) {
+    // @ts-ignore
+    e = (Array.isArray(e)) ? e[0] : e
+    this.openExistingDocumentRoute(e)
+  }
+
+  /**
+   * Opened the existing input in two modes
+   * Either as a focus with closure of the dialog.
+   * Or as a background tab without closing of the dialog.
+   */
+  editExistingInput (e: I_OpenedDocument) {
+    // @ts-ignore
+    e = (Array.isArray(e)) ? e[0] : e
+    this.openExistingDocumentRouteWithEdit(e)
+  }
+
+  documentPass = null as unknown as I_OpenedDocument
+
+  /****************************************************************/
+  // Add new document under parent
+  /****************************************************************/
+  addNewUnderParent (currentDoc: I_OpenedDocument) {
+    createNewWithParent(currentDoc, this)
+  }
+
+  /****************************************************************/
+  // Document field copying
+  /****************************************************************/
+
+  copyName (currentDoc: I_OpenedDocument) {
+    console.log(currentDoc)
+    copyDocumentName(currentDoc)
+  }
+
+  copyTextColor (currentDoc: I_OpenedDocument) {
+    copyDocumentTextColor(currentDoc)
+  }
+
+  copyBackgroundColor (currentDoc: I_OpenedDocument) {
+    copyDocumentBackgroundColor(currentDoc)
+  }
+
+  copyTargetDocument (currentDoc: I_OpenedDocument) {
+    this.documentPass = extend(true, {}, currentDoc)
+
+    const newDocument = copyDocument(this.documentPass, this.generateUID())
+
+    const dataPass = {
+      doc: newDocument,
+      treeAction: false
+    }
+
+    // @ts-ignore
+    this.SSET_addOpenedDocument(dataPass)
+    this.$router.push({
+      path: newDocument.url
+    }).catch((e: {name: string}) => {
+      const errorName : string = e.name
+      if (errorName === "NavigationDuplicated") {
+        return
+      }
+      console.log(e)
+    })
   }
 }
 </script>

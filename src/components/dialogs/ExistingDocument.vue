@@ -80,16 +80,16 @@
                       flat
                       dense
                       dark
-                      color="primary"
-                      class="z-1 q-ml-md"
-                      icon="mdi-file-tree"
-                      size="md"
-                      @click.stop.prevent="addNewItemUnderSelected(opt)"
+                      color="accent"
+                      class="z-1 q-ml-sm self-center"
+                      icon="mdi-pencil"
+                      size="sm"
+                      @click.stop.prevent="editExistingInput(opt)"
                       >
                       <q-tooltip
                         :delay="300"
                       >
-                        Add a new document belonging under {{ stripTags(opt.label) }}
+                        Edit {{ stripTags(opt.label) }}
                       </q-tooltip>
                     </q-btn>
                     <q-btn
@@ -98,18 +98,99 @@
                       flat
                       dense
                       dark
-                      color="accent"
-                      class="z-1 q-ml-sm"
+                      color="primary"
+                      class="z-1 q-ml-sm self-center"
                       icon="mdi-content-copy"
-                      size="md"
+                      size="sm"
                       @click.stop.prevent="copyTargetDocument(opt)"
                       >
                       <q-tooltip
                         :delay="300"
                       >
                         Make a copy of {{ stripTags(opt.label) }}
+                        <br>
+                        This action will always close the popup.
+                    </q-tooltip>
+                    </q-btn>
+                    <q-btn
+                      tabindex="-1"
+                      round
+                      flat
+                      dense
+                      dark
+                      color="primary"
+                      class="z-1 q-ml-sm self-center"
+                      icon="mdi-file-tree"
+                      size="sm"
+                      @click.stop.prevent="addNewUnderParent(opt)"
+                      >
+                      <q-tooltip
+                        :delay="300"
+                      >
+                        Add a new document belonging under {{ stripTags(opt.label) }}
+                        <br>
+                        This action will always close the popup.
                       </q-tooltip>
                     </q-btn>
+
+            <q-menu
+              touch-position
+              context-menu
+              auto-close
+              separate-close-popup
+            >
+
+              <q-list class="bg-gunmetal-light">
+
+                <template>
+                  <q-item clickable  @click="copyName(opt)">
+                    <q-item-section>Copy name</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-text-recognition" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="copyTextColor(opt)">
+                    <q-item-section>Copy text color</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-eyedropper" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="copyBackgroundColor(opt)">
+                    <q-item-section>Copy background color</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-format-color-fill" />
+                    </q-item-section>
+                  </q-item>
+                  <q-separator />
+                    <q-item clickable @click="openExistingInput(opt)">
+                    <q-item-section>Open document</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-book-open-page-variant-outline" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="editExistingInput(opt)">
+                    <q-item-section>Edit document</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-pencil" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="addNewUnderParent(opt)">
+                    <q-item-section>Create new document with this document as parent</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon color="primary" name="mdi-file-tree" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable @click="copyTargetDocument(opt)">
+                    <q-item-section>Copy this document</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon color="primary" name="mdi-content-copy" />
+                    </q-item-section>
+                  </q-item>
+                </template>
+
+              </q-list>
+
+            </q-menu>
                   </q-item>
                 </template>
             </q-select>
@@ -132,6 +213,9 @@ import { I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDo
 import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
 import { extend } from "quasar"
 import PouchDB from "pouchdb"
+
+import { createNewWithParent } from "src/scripts/documentActions/createNewWithParent"
+import { copyDocumentName, copyDocumentTextColor, copyDocumentBackgroundColor } from "src/scripts/documentActions/uniqueFieldCopy"
 import { copyDocument } from "src/scripts/documentActions/copyDocument"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
@@ -369,12 +453,14 @@ export default class ExistingDocumentDialog extends DialogBase {
    * Either as a focus with closure of the dialog.
    * Or as a background tab without closing of the dialog.
    */
-  async openExistingInput (e: I_ShortenedDocument[]) {
+  async openExistingInput (e: I_ShortenedDocument) {
+    // @ts-ignore
+    e = (Array.isArray(e)) ? e[0] : e
     // Open document and close dialog
     if (!this.disableCloseAftertSelectQuickSearch) {
       this.dialogModel = false
       // @ts-ignore
-      this.openExistingDocumentRoute(e[0])
+      this.openExistingDocumentRoute(e)
       this.existingDocumentModel = []
     }
     // Open document and DO NOT close the dialog
@@ -382,9 +468,9 @@ export default class ExistingDocumentDialog extends DialogBase {
       // @ts-ignore
       this.existingDocumentModel = []
 
-      const CurrentObjectDB = new PouchDB(e[0].type)
+      const CurrentObjectDB = new PouchDB(e.type)
       // @ts-ignore
-      const retrievedObject = await CurrentObjectDB.get(e[0].id)
+      const retrievedObject = await CurrentObjectDB.get(e.id)
 
       const dataPass = {
         doc: retrievedObject,
@@ -398,18 +484,74 @@ export default class ExistingDocumentDialog extends DialogBase {
   }
 
   /**
-   * Add new item under whatever document this was called from
+   * Opened the existing input in two modes
+   * Either as a focus with closure of the dialog.
+   * Or as a background tab without closing of the dialog.
    */
-  addNewItemUnderSelected (parent: any) {
-    const routeObject = {
-      _id: parent.type,
-      parent: parent.id
-    }
+  async editExistingInput (e: I_ShortenedDocument) {
     // @ts-ignore
-    this.addNewObjectRoute(routeObject)
+    e = (Array.isArray(e)) ? e[0] : e
+    // Open document and close dialog
+    if (!this.disableCloseAftertSelectQuickSearch) {
+      this.dialogModel = false
+      // @ts-ignore
+      this.openExistingDocumentRouteWithEdit(e)
+      this.existingDocumentModel = []
+    }
+    // Open document and DO NOT close the dialog
+    else {
+      // @ts-ignore
+      this.existingDocumentModel = []
+
+      const CurrentObjectDB = new PouchDB(e.type)
+      // @ts-ignore
+      const retrievedObject = await CurrentObjectDB.get(e.id)
+
+      // @ts-ignore
+      retrievedObject.hasEdits = true
+
+      const dataPass = {
+        doc: retrievedObject,
+        treeAction: false
+      }
+
+      // @ts-ignore
+      this.SSET_addOpenedDocument(dataPass)
+      await CurrentObjectDB.close()
+    }
   }
 
   documentPass = null as unknown as I_OpenedDocument
+
+  /****************************************************************/
+  // Add new document under parent
+  /****************************************************************/
+  addNewUnderParent (currentDoc: I_OpenedDocument) {
+    createNewWithParent(currentDoc, this)
+    this.dialogModel = false
+  }
+
+  /****************************************************************/
+  // Document field copying
+  /****************************************************************/
+
+  copyName (currentDoc: I_OpenedDocument) {
+    copyDocumentName(currentDoc)
+
+    this.dialogModel = false
+  }
+
+  copyTextColor (currentDoc: I_OpenedDocument) {
+    copyDocumentTextColor(currentDoc)
+
+    this.dialogModel = false
+  }
+
+  copyBackgroundColor (currentDoc: I_OpenedDocument) {
+    copyDocumentBackgroundColor(currentDoc)
+
+    this.dialogModel = false
+  }
 
   copyTargetDocument (currentDoc: I_OpenedDocument) {
     this.documentPass = extend(true, {}, currentDoc)
@@ -432,6 +574,8 @@ export default class ExistingDocumentDialog extends DialogBase {
       }
       console.log(e)
     })
+
+    this.dialogModel = false
   }
 }
 </script>

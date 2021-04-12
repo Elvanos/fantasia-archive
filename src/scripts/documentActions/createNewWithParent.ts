@@ -7,7 +7,8 @@ export const createNewWithParent = (currentDoc: I_OpenedDocument, callingCompone
   if (currentDoc) {
     const routeObject = {
       _id: currentDoc.type,
-      parent: currentDoc._id
+      // @ts-ignore
+      parent: (currentDoc._id) || currentDoc.id
     }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     callingComponent.addNewObjectRoute(routeObject)
