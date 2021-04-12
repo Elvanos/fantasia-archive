@@ -17,13 +17,13 @@ npm install
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 
 ```bash
-npm dev
+npm run dev
 ```
 
 ### Build the app for production
 
 ```bash
-npm build
+npm run build
 ```
 
 ### New object files go into
