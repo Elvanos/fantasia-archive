@@ -4,6 +4,7 @@
 
 - Mass tag rename
 - Add category for diseases/curses/etc
+- Add category for Guilds/other groups
 
 ## THE GM BATCH
 

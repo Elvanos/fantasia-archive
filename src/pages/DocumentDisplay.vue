@@ -475,6 +475,10 @@ export default class PageDocumentDisplay extends BaseClass {
 
     if (this.$route.query?.editMode) {
       this.editMode = true
+      this.currentData.editMode = true
+      const query = Object.assign({}, this.$route.query)
+      delete query.editMode
+      this.$router.replace({ query }).catch(e => console.log(e))
     }
 
     const dataCopy: I_OpenedDocument = extend(true, {}, this.currentData)

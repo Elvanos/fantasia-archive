@@ -2,6 +2,21 @@
   <div id="q-app">
     <appWindowButtons />
     <router-view />
+     <q-window
+      v-model="visible"
+      no-resize
+      title="Advanced Search Cheatsheet"
+      :height="460"
+      :width="425"
+      :actions="['close']"
+      content-class="bg-gunmetal-light accent advSearchWindow"
+    >
+      <div class="q-pa-md fit">
+        <q-markdown no-heading-anchor-links>
+          {{$t('documents.advancedSearchCheatSheet')}}
+        </q-markdown>
+      </div>
+    </q-window>
   </div>
 </template>
 
@@ -23,6 +38,7 @@ import { summonAllPlusheForms } from "src/scripts/utilities/plusheMascot"
   }
 })
 export default class App extends BaseClass {
+  visible = true
   /****************************************************************/
   // APP START & END SETUP
   /****************************************************************/

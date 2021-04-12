@@ -35,6 +35,7 @@ html {
 body {
   background-color: rgba($primary, 0.02);
   overflow-y: scroll;
+  overflow-x: hidden;
   color: darken($dark, 12.5);
 
   /* WebKit/Blink Browsers */
@@ -109,6 +110,23 @@ a {
 
 .q-notification__caption {
   opacity: 1;
+}
+
+.q-window {
+  -webkit-app-region: no-drag;
+  border: none !important;
+}
+
+.advSearchWindow {
+  .q-markdown {
+    & > ul {
+      margin-top: 0;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+  }
 }
 
 .q-notification.bg-info {
