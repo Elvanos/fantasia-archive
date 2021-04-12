@@ -52,6 +52,9 @@ Except for the advanced search functionality, Fantasia Archive also offers insta
   - `$` - Symbol for document type search
   - `#` - Symbol for tag search
   - `>` - Symbol for hierarchical path search
+  - `^` - Symbol for switch search (limited values below)
+    - `^d` - Displays only documents with `Is Dead/Gone/Destroyed` ticked on
+    - `^m` - Displays only documents with `Is a minor document` ticked on that are normally invisible and filtered out
 
 ## Full-search filtering
 
@@ -79,6 +82,6 @@ This feature is meant mostly for those in need of full-scale search that can cra
 - **A list of fields/field types the full-search doesn't work with:**
   - The `Break` field type (these are the big titles present throughout the document)
   - The `Tags` field type (this one is covered with a more sophisticated tag filter)
-  - The `Switch` field type (this one doesn't contain any text values to even filter)
+  - The `Switch` field type (this one doesn't contain any text values to even filter and is partially covered by the switch search option)
   - The `Name` field (this one is the main concern of the search and the normal search is far more advanced for searching through this one)
   - The `Belongs under` field (this one is covered by a much more advanced hierarchical path search)

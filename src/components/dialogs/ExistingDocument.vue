@@ -18,10 +18,6 @@
             <q-checkbox dark color="primary" v-model="includeCategories" label="Include categories in the list?" />
           </div>
 
-           <div class="q-mb-lg">
-            <q-checkbox dark color="primary" v-model="includeMinor" label="Include minor documents in the list?" />
-          </div>
-
            <q-select
               style="width: 400px;"
               ref="ref_existingDocument"
@@ -323,23 +319,10 @@ export default class ExistingDocumentDialog extends DialogBase {
   includeCategories = true
 
   /**
-   * Model for pre-filtering via minor documents
-   */
-  includeMinor = false
-
-  /**
    * React to the category checkbox changes
    */
   @Watch("includeCategories")
   reactToCategoryCheckboxChange () {
-    this.preFilterDocuments()
-  }
-
-  /**
-   * React to the category checkbox changes
-   */
-  @Watch("includeMinor")
-  reactToMinorCheckboxChange () {
     this.preFilterDocuments()
   }
 
@@ -349,7 +332,6 @@ export default class ExistingDocumentDialog extends DialogBase {
   preFilterDocuments () {
     this.existingObjectPrefilteredList = this.existingObjectsFullList
       .filter(e => !((!this.includeCategories && e.isCategory)))
-      .filter(e => !((!this.includeMinor && e.isMinor)))
   }
 
   /****************************************************************/
@@ -425,7 +407,7 @@ export default class ExistingDocumentDialog extends DialogBase {
   filterExistingSelect (val: string, update: (e: () => void) => void) {
     if (val === "") {
       update(() => {
-        this.filteredExistingInput = this.existingObjectPrefilteredList
+        this.filteredExistingInput = this.existingObjectPrefilteredList.filter((obj) => !obj.isMinor)
         if (this.$refs.ref_existingDocument && this.filteredExistingInput.length > 0) {
           this.refocusSelect().catch(e => console.log(e))
         }

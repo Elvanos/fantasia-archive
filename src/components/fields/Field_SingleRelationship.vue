@@ -504,7 +504,7 @@ export default class Field_SingleRelationship extends FieldBase {
   filterSelect (val: string, update: (e: () => void) => void) {
     if (val === "") {
       update(() => {
-        this.filterList = this.allDocumentsWithoutCurrent
+        this.filterList = this.allDocumentsWithoutCurrent.filter((obj) => !obj.isMinor)
 
         if (this.$refs[`singleRelationshipField${this.inputDataBluePrint.id}`] && this.filterList.length > 0) {
           this.refocusSelect().catch(e => console.log(e))
@@ -577,7 +577,7 @@ export default class Field_SingleRelationship extends FieldBase {
       const isBelongsUnder = (this.inputDataBluePrint.id === "parentDoc")
       const objectsWithoutCurrent: I_ShortenedDocument[] = (isBelongsUnder)
         ? allObjects.filter((obj) => obj._id !== this.currentId)
-        : allObjects.filter((obj) => obj._id !== this.currentId).filter((obj) => !obj.isCategory).filter((obj) => !obj.isMinor)
+        : allObjects.filter((obj) => obj._id !== this.currentId).filter((obj) => !obj.isCategory)
 
       // Proceed only if the local input is properly set up
       if (this.localInput._id) {

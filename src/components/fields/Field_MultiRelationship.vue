@@ -500,7 +500,7 @@ export default class Field_MultiRelationship extends FieldBase {
   filterSelect (val: string, update: (e: () => void) => void) {
     if (val === "") {
       update(() => {
-        this.filterList = this.allDocumentsWithoutCurrent
+        this.filterList = this.allDocumentsWithoutCurrent.filter((obj) => !obj.isMinor)
         if (this.$refs[`multiRelationshipField${this.inputDataBluePrint.id}`] && this.filterList.length > 0) {
           this.refocusSelect().catch(e => console.log(e))
         }
@@ -613,7 +613,6 @@ export default class Field_MultiRelationship extends FieldBase {
       // Do a last set of filtering
       this.allDocumentsWithoutCurrent = allObjectsWithoutCurrent
         .filter((obj) => !obj.isCategory)
-        .filter((obj) => !obj.isMinor)
 
       // @ts-ignore
       allObjectsWithoutCurrent = null

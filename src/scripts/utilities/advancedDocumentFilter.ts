@@ -43,12 +43,15 @@ export const advancedDocumentFilter = (inputString: string, currentDocumentList:
   let categorySeach = false as unknown as string
   let tagSearch = false as unknown as string
   let typeSeach = false as unknown as string
+  let switchSearch = false as unknown as string
+
   let fieldSearch = false as unknown as string
 
   const categorySeachIndex = searchWordList.findIndex(w => w.charAt(0) === ">")
   const tagSearchIndex = searchWordList.findIndex(w => w.charAt(0) === "#")
   const typeSeachIndex = searchWordList.findIndex(w => w.charAt(0) === "$")
   const fieldSearchIndex = searchWordList.findIndex(w => w.charAt(0) === "%")
+  const switchSeachIndex = searchWordList.findIndex(w => w.charAt(0) === "^")
 
   if (categorySeachIndex >= 0) {
     categorySeach = searchWordList[categorySeachIndex].substring(1)
@@ -61,6 +64,11 @@ export const advancedDocumentFilter = (inputString: string, currentDocumentList:
   if (typeSeachIndex >= 0) {
     typeSeach = searchWordList[typeSeachIndex].substring(1)
     searchWordList[typeSeachIndex] = ""
+  }
+
+  if (switchSeachIndex >= 0) {
+    switchSearch = searchWordList[switchSeachIndex].substring(1)
+    searchWordList[switchSeachIndex] = ""
   }
 
   if (fieldSearchIndex >= 0) {
@@ -264,6 +272,44 @@ export const advancedDocumentFilter = (inputString: string, currentDocumentList:
       doc.activeTypeSearch = true
 
       return (stringPath.includes(typeSeach))
+    })
+  }
+
+  /****************************************************************/
+  // Switch filter
+  /****************************************************************/
+
+  if (switchSearch) {
+    currentDocumentList = currentDocumentList.filter(doc => {
+      let foundSwitch = false
+
+      if (switchSearch === "d") {
+        const field = doc.extraFields.find(e => e.id === "deadSwitch")
+        if (field && field.value === true) {
+          foundSwitch = true
+        }
+      }
+
+      if (switchSearch === "m") {
+        const field = doc.extraFields.find(e => e.id === "minorSwitch")
+        if (field && field.value === true) {
+          foundSwitch = true
+        }
+      }
+
+      return foundSwitch
+    })
+  }
+  // Automatically filter out minor documents otherwise
+  else {
+    currentDocumentList = currentDocumentList.filter(doc => {
+      let isntMinor = true
+      const field = doc.extraFields.find(e => e.id === "minorSwitch")
+      if (field && field.value === true) {
+        isntMinor = false
+      }
+
+      return isntMinor
     })
   }
 

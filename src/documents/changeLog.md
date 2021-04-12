@@ -27,8 +27,8 @@
 
 ### New features
 
-- Added context menu support and multiple actions (right click) for top tabs and hierarchical tree
-  - New action for **Top Tabs**
+- Added context menu support and multiple actions (right click) for top tabs, hierarchical tree and relationships across whole app
+  - New actions for **Top Tabs**
     - Copy name
     - Copy text color
     - Copy background color
@@ -40,7 +40,7 @@
     - Force close all tabs except for this
     - Force close all tabs
     - Delete document
-  - New action for **Hiearachical Tree**
+  - New actions for **Hiearachical Tree**
     - Add new document type: `DOCUMENT TYPE`
       - Only available in the root-categories
     - Expand all under this nodd
@@ -53,7 +53,19 @@
     - Create new document with this document as parent
     - Copy this document
     - Delete document
+  - New actions for **Relationships**
+    - Copy name
+    - Copy text color
+    - Copy background color
+    - Open document
+    - Edit document
+    - Create new document with this document as parent
+    - Copy this document
 - Added a special description field for categories that become visible only when the document is switches to the category mode
+- Added filtering via switch value for `Is a minor document` and `Is Dead/Gone/Destroyed` switch
+  - Dead is visible in the lists by default, but can be used to narrow down the search
+  - Minor is NOT visible in the lists by default, but can be inluded using this option
+  - Instructions on how to trigger by this additions can be found in the `Advanced Search Guide` help menu
 - Added Fantasia mascot in the app! ^_^
 - Different document tabs now keep scroll distance and resume wherever you left them at
 - Added support for default empty keybinds
