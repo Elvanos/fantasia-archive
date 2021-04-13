@@ -2,15 +2,17 @@
   "name": "fantasiaarchive",
   "version": "0.1.5",
   "description": "A database manager for world building",
-  "productName": "Fantasia archive",
+  "productName": "fantasiaarchive",
   "author": "Elvanos <elvanos66@gmail.com>",
   "license": "GNU GENERAL PUBLIC LICENSE",
+  "main": "src-electron/main-process/electron-main.js",
   "private": true,
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev -m electron",
-    "build": "quasar build -m electron"
+    "build": "quasar build -m electron",
+    "make": "electron-forge make"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
@@ -18,6 +20,7 @@
     "apexcharts": "^3.26.0",
     "axios": "^0.18.1",
     "core-js": "^3.6.5",
+    "electron-compile": "^6.4.4",
     "katex": "^0.12.0",
     "lodash": "^4.17.20",
     "mermaid": "^8.8.4",
@@ -51,9 +54,12 @@
     "devtron": "^1.4.0",
     "electron": "^9.4.0",
     "electron-builder": "^22.9.1",
+    "electron-compilers": "^5.9.0",
     "electron-debug": "^3.2.0",
     "electron-devtools-installer": "^3.1.1",
+    "electron-forge": "^5.2.4",
     "electron-packager": "^14.2.1",
+    "electron-prebuilt-compile": "8.2.0",
     "eslint": "^6.8.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-loader": "^3.0.3",
@@ -80,5 +86,38 @@
     "node": ">= 10.18.1",
     "npm": ">= 6.13.4",
     "yarn": ">= 1.21.1"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "executableName": "fantasiaarchive"
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "executableName": "fantasiaarchive"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {
+            "executableName": "fantasiaarchive"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {
+            "executableName": "fantasiaarchive"
+          }
+        }
+      ]
+    }
   }
 }
