@@ -1,9 +1,5 @@
 
-- Add advanced search cheat sheet to existing docs popup and in relationship searches in some way
-- Switch field: Template (sigh... maybe???)
-
 - Mass tag rename
-- Add category for diseases/curses/etc
 - Add category for Guilds/other groups
 
 ## THE GM BATCH
@@ -29,6 +25,8 @@
 
 - Add "Open all search matches" button in the Quick-search that opens a new page with a list of items
 - Allow showing of document types under tags
+- Add description tabs
+- Add category for diseases/curses/etc
 
 ### Project settings
 

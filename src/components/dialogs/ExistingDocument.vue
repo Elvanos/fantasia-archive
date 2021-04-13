@@ -35,6 +35,14 @@
               @filter="filterExistingSelect"
               @input="openExistingInput"
             >
+              <template v-slot:append>
+                <q-btn round dense flat icon="mdi-help-rhombus" @click.stop.prevent="SSET_setAdvSearchWindowVisible"
+                >
+                  <q-tooltip :delay="500">
+                    Open search cheatsheet
+                  </q-tooltip>
+                </q-btn>
+              </template>
               <template v-slot:option="{ itemProps, itemEvents, opt }">
                   <q-item
                     :class="{'hasTextShadow': textShadow, 'isMinor':opt.isMinor}"

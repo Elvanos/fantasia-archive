@@ -3,13 +3,15 @@
     <appWindowButtons />
     <router-view />
      <q-window
-      v-model="visible"
+      v-model="advSearchWindowVisible"
       no-resize
       title="Advanced Search Cheatsheet"
       :height="460"
       :width="425"
+      :start-x="50"
+      :start-y="150"
       :actions="['close']"
-      content-class="bg-gunmetal-light accent advSearchWindow"
+      content-class="bg-gunmetal-light text-accent advSearchWindow"
     >
       <div class="q-pa-md fit">
         <q-markdown no-heading-anchor-links>
@@ -38,7 +40,6 @@ import { summonAllPlusheForms } from "src/scripts/utilities/plusheMascot"
   }
 })
 export default class App extends BaseClass {
-  visible = true
   /****************************************************************/
   // APP START & END SETUP
   /****************************************************************/
@@ -262,5 +263,12 @@ export default class App extends BaseClass {
    * Hides the mascot... nooo :(
    */
   hidePlushes = false
+
+  @Watch("SGET_getAdvSearchWindowVisible")
+  onAdvSearchWindowOpen () {
+    this.advSearchWindowVisible = true
+  }
+
+  advSearchWindowVisible = false
 }
 </script>

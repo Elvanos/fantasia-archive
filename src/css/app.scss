@@ -32,10 +32,19 @@ html {
   background-color: #fff;
 }
 
+html body {
+  &.q-body--prevent-scroll {
+    overflow-y: hidden;
+    position: relative !important;
+    padding-right: 5px;
+  }
+}
+
 body {
   background-color: rgba($primary, 0.02);
   overflow-y: scroll;
   overflow-x: hidden;
+  top: 0 !important;
   color: darken($dark, 12.5);
 
   /* WebKit/Blink Browsers */
@@ -115,6 +124,7 @@ a {
 .q-window {
   -webkit-app-region: no-drag;
   border: none !important;
+  z-index: 99999 !important;
 }
 
 .advSearchWindow {
@@ -347,6 +357,7 @@ a {
 .q-position-engine {
   overflow-y: auto !important;
   -webkit-app-region: no-drag;
+  z-index: 999999;
 }
 
 .text-underline {

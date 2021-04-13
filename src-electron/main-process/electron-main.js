@@ -1,4 +1,5 @@
 import { app, BrowserWindow, nativeTheme, Menu, MenuItem, shell } from 'electron'
+app.commandLine.appendSwitch('disable-software-rasterizer', 'true')
 
 try {
   if (process.platform === 'win32' && nativeTheme.shouldUseDarkColors === true) {
@@ -17,7 +18,6 @@ if (process.env.PROD) {
 let mainWindow
 
 function createWindow () {
-  app.commandLine.appendSwitch('disable-software-rasterizer', 'true')
   /**
    * Initial window options
    */

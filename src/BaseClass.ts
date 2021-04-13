@@ -15,6 +15,7 @@ const OpenedDocuments = namespace("openedDocumentsModule")
 const Keybinds = namespace("keybindsModule")
 const Options = namespace("optionsModule")
 const Dialogs = namespace("dialogsModule")
+const FloatingWindows = namespace("floatingWindowsModule")
 
 @Component
 export default class BaseClass extends Vue {
@@ -51,6 +52,13 @@ export default class BaseClass extends Vue {
   stripTags (input: string) {
     return (input) ? input.replace(/<[^>]+>/g, "") : input
   }
+
+  /****************************************************************/
+  // FLOATING WINDOWS
+  /****************************************************************/
+
+  @FloatingWindows.Getter("getAdvSearchWindowVisible") SGET_getAdvSearchWindowVisible!: string
+  @FloatingWindows.Mutation("setAdvSearchWindowVisible") SSET_setAdvSearchWindowVisible!: () => void
 
   /****************************************************************/
   // KEYBINDS MANAGEMENT

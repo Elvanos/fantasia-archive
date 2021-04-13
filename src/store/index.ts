@@ -10,6 +10,7 @@ import openedDocumentsModule from "./module-openedDocuments"
 import keybindsModule from "./module-keybinds"
 import dialogsModule from "./module-dialogs"
 import optionsModule from "./module-options"
+import floatingWindowsModule from "./module-floatingWindows"
 
 /*
  * If not building with SSR mode, you can
@@ -32,7 +33,8 @@ export default store(function ({ Vue }) {
       openedDocumentsModule,
       keybindsModule,
       dialogsModule,
-      optionsModule
+      optionsModule,
+      floatingWindowsModule
       // example
     },
 

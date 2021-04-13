@@ -153,6 +153,14 @@
       @filter="filterSelect"
       @input="signalInput(false)"
     >
+    <template v-slot:append>
+        <q-btn round dense flat icon="mdi-help-rhombus" @click.stop.prevent="SSET_setAdvSearchWindowVisible"
+        >
+          <q-tooltip :delay="500">
+            Open search cheatsheet
+          </q-tooltip>
+        </q-btn>
+      </template>
       <template v-slot:selected-item="scope">
         <q-chip
           removable

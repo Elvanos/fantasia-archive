@@ -92,7 +92,7 @@ export const exportProject = (projectName: string, Loading: any, loadingSetup: a
 
         // @ts-ignore
         await CurrentDB.dump(ws)
-  await CurrentDB.close()
+        await CurrentDB.close()
 
       }
 
@@ -162,7 +162,7 @@ export const importExistingProject = (vueRouter: any, Loading: any, loadingSetup
       const fileContents = fs.readFileSync(`${folderPath}/${file}`, { encoding: "utf8" })
       // @ts-ignore
       await CurrentDB.loadIt(fileContents)
-  await CurrentDB.close()
+      await CurrentDB.close()
 
     }
 

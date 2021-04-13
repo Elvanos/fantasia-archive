@@ -6,8 +6,8 @@
   - `#` - Tag
   - `>` - Hierarchical path
   - `^` - Switch
-    - `^d` - `Is Dead/Gone/Destroyed`
-    - `^m` - `Is a minor document`
+    - `^d` - Is Dead/Gone/Destroyed
+    - `^m` - Is a minor document
 - Full search
   - `%` - Beginning of the full-search
   - `:` - Division between the field-name and field value
