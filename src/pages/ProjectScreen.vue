@@ -1,5 +1,11 @@
 <template>
-  <q-page class="column items-center justify-center">
+  <q-page
+  class="column items-center justify-center no-wrap"
+  :class="{
+    'q-pb-xl q-pl-xl q-pr-xl': disableDocumentControlBar,
+    'q-pa-xl': !disableDocumentControlBar,
+    }"
+  >
 
       <!-- New document dialog -->
       <newDocumentDialog
@@ -37,7 +43,7 @@
 
       </div>
 
-      <div>
+      <div class="documentGraphParent">
         <q-card
           dark
           class="documentGraphWrapper"
@@ -146,12 +152,18 @@ export default class ProjectScreen extends BaseClass {
     const options = this.SGET_options
     this.hideTooltipsProject = options.hideTooltipsProject
     this.hidePlushes = options.hidePlushes
+    this.disableDocumentControlBar = options.disableDocumentControlBar
   }
 
   /**
    * Hides the mascot... nooo :(
    */
   hidePlushes = false
+
+  /**
+   * Determines if the document control bar is show or hidden
+   */
+  disableDocumentControlBar = false
 
   /**
    * Determines if the project screen help hint should show or not
@@ -399,11 +411,11 @@ export default class ProjectScreen extends BaseClass {
 }
 
 .hintWrapper {
-  max-width: 950px;
+  max-width: calc(100% - 110px);
+  width: 950px;
   display: flex;
   align-items: center;
   padding: 15px 20px;
-  width: 100%;
   background-color: lighten(#d7ac47, 35);
   border-radius: 5px;
   margin-bottom: 30px;
@@ -442,12 +454,20 @@ body.body--dark {
   }
 }
 
-.documentGraphWrapper {
-  min-width: 950px;
+.documentGraphParent {
   min-height: 500px;
   max-height: 500px;
-  max-width: 950px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: calc(100% - 110px);
+  width: 950px;
+}
+
+.documentGraphWrapper {
+  min-height: 500px;
+  max-height: 500px;
   overflow: hidden;
+  width: 950px;
 }
 
 .docCountLabel {
@@ -460,7 +480,7 @@ body.body--dark {
 <style scoped lang="scss">
 
 .mainProjectSubTitle {
-  margin-top: 0;
+  margin-top: 40px;
   margin-bottom: 0;
   opacity: 0.8;
 }

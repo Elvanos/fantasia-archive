@@ -67,3 +67,4 @@
 - Better color pasting to documents via context menu
 - Add printing support
 - Add % bar graphs in tree (pinned in #general, idea by popoto)
+- Consider linking fields (names) to other documents for auto-updates

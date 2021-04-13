@@ -108,11 +108,16 @@
       </div>
 
       <div
-        :class="`col-${field.sizing} q-mb-md`"
         v-for="field in bluePrintData.extraFields"
         :key="`${field.id}`"
         v-show="hasValueFieldFilter(field) || editMode"
-        >
+        :class="`
+          col-12
+          col-md-${determineSize_MD(field)}
+          col-lg-${determineSize_LG(field)}
+          col-xl-${determineSize_XL(field)}
+          q-mb-md
+        `">
 
           <Field_Break
           class="inputWrapper break"
@@ -813,6 +818,40 @@ export default class PageDocumentDisplay extends BaseClass {
   }
 
   /****************************************************************/
+  // RESPONSIVE COLLUMN STYLES
+  /****************************************************************/
+
+  determineSize_MD (field: I_ExtraFields) {
+    if (field.type === "break") {
+      return 12
+    }
+    if (field.sizing <= 6) {
+      return 6
+    }
+
+    return field.sizing
+  }
+
+  determineSize_LG (field: I_ExtraFields) {
+    if (field.type === "break") {
+      return 12
+    }
+
+    if (field.sizing <= 4) {
+      return 4
+    }
+
+    return field.sizing
+  }
+
+  determineSize_XL (field: I_ExtraFields) {
+    if (field.type === "break") {
+      return 12
+    }
+    return field.sizing
+  }
+
+  /****************************************************************/
   // DELETE DIALOG
   /****************************************************************/
 
@@ -841,7 +880,7 @@ export default class PageDocumentDisplay extends BaseClass {
   }
 
   /****************************************************************/
-  // `DOCUMENT COPY
+  // DOCUMENT COPY
   /****************************************************************/
   documentPass = null as unknown as I_OpenedDocument
 

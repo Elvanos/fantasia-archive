@@ -149,8 +149,8 @@ module.exports = configure(function (ctx) {
       workboxPluginMode: "GenerateSW", // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: "Fantasia archive",
-        short_name: "Fantasia archive",
+        name: "Fantasia Archive",
+        short_name: "Fantasia Archive",
         description: "A database manager for world building",
         display: "standalone",
         orientation: "portrait",

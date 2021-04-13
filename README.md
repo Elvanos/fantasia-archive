@@ -1,4 +1,4 @@
-# Fantasia archive (fantasiaarchive)
+# Fantasia Archive (fantasiaarchive)
 
 A database manager for world building
 
@@ -23,14 +23,16 @@ npm install
 
 ** Prep for build
 Due to issues with this package being written in somewhat older version of nodeJS, the script will fizzle out upon building due to wrong version of `.d.ts` file in one of the included NPM packages.
-  - The proper replacement file can be found in `_typeFix/index.d.ts`
-  - The faulty file can be found in `node_modules\builder-util\node_modules\@types\fs-extra\index.d.ts`
-  - To fix this issue, simply copy the contents of the proper replacement over the buggy faulty file (or just replace its contents)
-  - Once this is done, the build should run as normal without any issues
+
+- The proper replacement file can be found in `_typeFix/index.d.ts`
+- The faulty file can be found in `node_modules\builder-util\node_modules\@types\fs-extra\index.d.ts`
+- To fix this issue, simply copy the contents of the proper replacement over the buggy faulty file (or just replace its contents)
+- Once this is done, the build should run as normal without any issues
 
 ## Optional: Start the app in development mode (hot-code reloading, error reporting, etc.)
 
 If you don't know what's going on, skip this step.
+
 ```bash
 npm run dev
 ```

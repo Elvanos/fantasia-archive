@@ -66,7 +66,7 @@
                     </div>
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Dark mode
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -87,7 +87,7 @@
                     </div>
                   </div>
 
-                   <div class="col-4 optionWrapper">
+                   <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Accessibility - Text shadow
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -102,7 +102,7 @@
                       />
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Accessibility - Pronounced count divider
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -117,7 +117,7 @@
                       />
                   </div>
 
-                   <div class="col-4 optionWrapper">
+                   <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Accessibility - Hide strike-through
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -138,7 +138,7 @@
                     </div>
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Hide Welcome screen social links
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -153,7 +153,7 @@
                       />
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Hide tips popup on start screen
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -168,7 +168,7 @@
                       />
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Hide tips on project screen
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -183,7 +183,7 @@
                       />
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Hide Fantasia mascot
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -224,7 +224,7 @@
                     </div>
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Disable document control bar
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -241,7 +241,7 @@
                       />
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Disable document guides
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -262,7 +262,7 @@
                     </div>
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Disable document tooltips
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -277,7 +277,7 @@
                       />
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Hide empty fields
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -294,7 +294,7 @@
                       />
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Prevent auto-scrolling
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -333,7 +333,7 @@
                     </div>
                   </div>
 
-                   <div class="col-4 optionWrapper">
+                   <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Close quick popups with same key
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -354,7 +354,7 @@
                     </div>
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Stop quick-search close after selection
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -371,7 +371,7 @@
                       />
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Don't precheck category filter
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -412,7 +412,7 @@
                     </div>
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Hide tags in tree
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -427,7 +427,7 @@
                     />
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Top tags in tree
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -442,7 +442,7 @@
                     />
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Compact tags
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -463,7 +463,7 @@
                     </div>
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Stop sublevel collapse in tree
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -478,7 +478,7 @@
                       />
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Hide project name in tree
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -493,7 +493,7 @@
                       />
                   </div>
 
-                   <div class="col-4 optionWrapper">
+                   <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Invert tree custom order sorting
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -516,7 +516,7 @@
                     </div>
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Hide document count entirely
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -531,7 +531,7 @@
                       />
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Hide category count
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -546,7 +546,7 @@
                       />
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Invert category position
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -561,12 +561,12 @@
                       />
                   </div>
 
-                  <div class="col-4 optionWrapper">
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Hide order numbers
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
                       <q-tooltip :delay="500">
-                        This option disabled showing of the custom order numbers left of the names.
+                        This option hides the custom order numbers left of the names.
                       </q-tooltip>
                     </q-icon>
                     </div>
@@ -582,7 +582,7 @@
                     </div>
                   </div>
 
-                   <div class="col-4 optionWrapper">
+                   <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Hide extra icons
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -599,7 +599,7 @@
                       />
                   </div>
 
-                   <div class="col-4 optionWrapper">
+                   <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Hide "Add under" icon
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -614,7 +614,7 @@
                       />
                   </div>
 
-                   <div class="col-4 optionWrapper">
+                   <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Hide "Edit" icon
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -629,7 +629,7 @@
                       />
                   </div>
 
-                   <div class="col-4 optionWrapper">
+                   <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Hide "Open" icon
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -1265,10 +1265,10 @@ body.body--dark {
     margin-top: 16px;
     margin-bottom: 8px;
     font-weight: 500;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
     display: flex;
-    flex-wrap: wrap;
+    width: calc(100% - 45px);
     margin-left: 10px;
   }
 
