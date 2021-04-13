@@ -13,6 +13,7 @@
 ### Bugfixes & Optimizations
 
 - Fixed a typo in `Type of being` field in the `Species/Races` document type
+- Fixed even more random types I don't even recall T_T
 - Fixed a bug that was causing the relationship dropdowns sometimes not be clickable and instead caused dragging of the app window when shown over the top of the drag-bar at the top of the app
 - Updated advanced search guide with missing information about full-text search
 - Changes a small bug when the `New Object` dialog wasn't respecting option changes being done in the same session of the program being opened
@@ -62,8 +63,10 @@
     - Create new document with this document as parent
     - Copy this document
 - Added a special description field for categories that become visible only when the document is switches to the category mode
-- Added filtering via switch value for `Is a minor document` and `Is Dead/Gone/Destroyed` switch
+- Added a floating popup windows for quick cheatsheet for Advanced Search guide that can be summoned from each relationship search anywhere in the app
+- Added filtering via switch value for `Is a minor document`, `Is finished` and `Is Dead/Gone/Destroyed` switch
   - Dead is visible in the lists by default, but can be used to narrow down the search
+  - Finished is visible in the lists by default, but can be used to narrow down the search
   - Minor is NOT visible in the lists by default, but can be inluded using this option
   - Instructions on how to trigger by this additions can be found in the `Advanced Search Guide` help menu
 - Added Fantasia mascot in the app! ^_^
@@ -73,6 +76,8 @@
 - Added support for background color for documents
 - Added support for "Minor document" mode switch for better organization and visual representation of documents
 - Added support for "Dead/Gone/Destroyed" mode switch for better organization and visual representation of documents
+- Added support for "Finished" mode switch for better organization and visual representation of documents
+  - This is essentially an individual setting for "Hide empty fields" options setting on per-document basis
 - Added trivia concerning Fantasia mascot
 - Added support for direct opening of documents in edit mode from the hierarchy tree without needing to open the document in view mode first
 - Added option: Hide Fantasia mascot

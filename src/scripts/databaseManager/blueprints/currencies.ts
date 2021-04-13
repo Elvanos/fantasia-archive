@@ -42,7 +42,7 @@ export const currenciesBlueprint: I_Blueprint = {
         `This field allows for custom-coloring your document to any available HEX or RBG color.
         <br>The selected color will show on the icon and name of the document both in the hierarchical tree on the left and in the top tabs.
         `,
-      sizing: 3
+      sizing: 2
     },
     {
       id: "documentBackgroundColor",
@@ -53,7 +53,19 @@ export const currenciesBlueprint: I_Blueprint = {
         `This field allows for custom-coloring your document to any available HEX or RBG color.
         <br>The selected color will show as a background both in the hierarchical tree on the left and in the top tabs.
         `,
-      sizing: 3
+      sizing: 2
+    },
+    {
+      id: "finishedSwitch",
+      name: "Is finished",
+      type: "switch",
+      icon: "mdi-check-bold",
+      tooltip:
+        `This setting allows for setting the current document to finished document mode.
+        <br>
+        A document with finished document mode toggled on will not show any un-filled fields in view mode and will function as if "Hide empty fields" was turned on in the settings.      
+        `,
+      sizing: 2
     },
     {
       id: "minorSwitch",

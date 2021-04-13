@@ -11,6 +11,7 @@ export interface I_OpenedDocument{
   type: string
   icon: string
   hasEdits: boolean
+  isFinished: boolean
   isNew: boolean
   url: string
   scrollDistance?: number

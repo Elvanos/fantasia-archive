@@ -6,7 +6,7 @@
       v-model="advSearchWindowVisible"
       no-resize
       title="Advanced Search Cheatsheet"
-      :height="460"
+      :height="480"
       :width="425"
       :start-x="50"
       :start-y="150"

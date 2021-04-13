@@ -297,6 +297,13 @@ export const advancedDocumentFilter = (inputString: string, currentDocumentList:
         }
       }
 
+      if (switchSearch === "f") {
+        const field = doc.extraFields.find(e => e.id === "finishedSwitch")
+        if (field && field.value === true) {
+          foundSwitch = true
+        }
+      }
+
       return foundSwitch
     })
   }

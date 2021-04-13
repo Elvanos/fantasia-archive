@@ -4,7 +4,7 @@
   :class="{
     'q-pb-xl q-pl-xl q-pr-xl': disableDocumentControlBar,
     'q-pa-xl': !disableDocumentControlBar,
-    'hiddenFields': hideEmptyFields
+    'hiddenFields': (hideEmptyFields || retrieveFieldValue(currentData, 'finishedSwitch'))
     }"
   v-if="bluePrintData"
   >
@@ -769,6 +769,7 @@ export default class PageDocumentDisplay extends BaseClass {
       icon: this.bluePrintData.icon,
       editMode: true,
       isNew: true,
+      isFinished: false,
       hasEdits: false,
       url: `/project/display-content/${this.bluePrintData._id}/${uniqueID}`,
       extraFields: []
@@ -781,15 +782,20 @@ export default class PageDocumentDisplay extends BaseClass {
   categoryFieldFilter (currentFieldID: string) {
     const isCategory = this.retrieveFieldValue(this.currentData, "categorySwitch")
 
-    const ignoredList = ["breakDocumentSettings", "name", "documentColor", "documentBackgroundColor", "parentDoc", "order", "categorySwitch", "minorSwitch", "deadSwitch", "tags"]
-    return (((!isCategory && currentFieldID !== "categoryDescription") || ignoredList.includes(currentFieldID)) || (isCategory && currentFieldID === "categoryDescription"))
+    const ignoredList = ["breakDocumentSettings", "name", "documentColor", "documentBackgroundColor", "parentDoc", "order", "categorySwitch", "minorSwitch", "deadSwitch", "finishedSwitch", "tags"]
+    return (
+      (
+        (!isCategory && currentFieldID !== "categoryDescription") ||
+        ignoredList.includes(currentFieldID)
+      ) || (isCategory && currentFieldID === "categoryDescription")
+    )
   }
 
   /**
    * Checks if the field in question
    */
   hasValueFieldFilter (field: any) {
-    if (!this.hideEmptyFields) {
+    if (!this.hideEmptyFields && !this.retrieveFieldValue(this.currentData, "finishedSwitch")) {
       return true
     }
 

@@ -7,6 +7,7 @@
   - `>` - Hierarchical path
   - `^` - Switch
     - `^d` - Is Dead/Gone/Destroyed
+    - `^f` - Is finished
     - `^m` - Is a minor document
 - Full search
   - `%` - Beginning of the full-search
