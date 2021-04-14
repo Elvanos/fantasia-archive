@@ -1,10 +1,10 @@
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
-export const itemsBlueprint: I_Blueprint = {
-  _id: "items",
-  order: 9,
-  namePlural: "Items",
-  nameSingular: "Item",
-  icon: "mdi-sword-cross",
+export const guildsBlueprint: I_Blueprint = {
+  _id: "guilds",
+  order: 14,
+  namePlural: "Organizations/Other groups",
+  nameSingular: "Organizations/Other group",
+  icon: "mdi-account-group",
   extraFields: [
     {
       id: "breakDocumentSettings",
@@ -16,7 +16,7 @@ export const itemsBlueprint: I_Blueprint = {
       id: "name",
       name: "Name",
       type: "text",
-      icon: "mdi-sword-cross",
+      icon: "mdi-account-group",
       sizing: 3
     },
     {
@@ -30,7 +30,7 @@ export const itemsBlueprint: I_Blueprint = {
         `,
       sizing: 3,
       relationshipSettings: {
-        connectedObjectType: "items"
+        connectedObjectType: "guilds"
       }
     },
     {
@@ -153,101 +153,87 @@ export const itemsBlueprint: I_Blueprint = {
       sizing: 6
     },
     {
-      id: "features",
-      name: "Prominent features",
-      type: "list",
-      icon: "mdi-sword-cross",
-      sizing: 6,
-      predefinedListExtras: {
-        affix: "Note",
-        extraSelectValueList: [
-        ]
+      id: "headquarters",
+      name: "Headquarters",
+      type: "singleToNoneRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "locations"
       }
     },
     {
-      id: "strength",
-      name: "Strength change",
+      id: "population",
+      name: "Member count",
       type: "text",
-      icon: "fas fa-dumbbell",
+      icon: "mdi-account-group",
       sizing: 2
     },
     {
-      id: "constitution",
-      name: "Constitution change",
-      type: "text",
-      icon: "mdi-shield",
-      sizing: 2
-    },
-    {
-      id: "dexterity",
-      name: "Dexterity change",
-      type: "text",
-      icon: "mdi-run-fast",
-      sizing: 2
-    },
-    {
-      id: "intellect",
-      name: "Intellect change",
-      type: "text",
-      icon: "mdi-brain",
-      sizing: 2
-    },
-    {
-      id: "wisdom",
-      name: "Wisdom/Willpower change",
-      type: "text",
-      icon: "fas fa-yin-yang",
-      sizing: 2
-    },
-    {
-      id: "charisma",
-      name: "Charisma change",
-      type: "text",
-      icon: "mdi-drama-masks",
-      sizing: 2
-    },
-    {
-      id: "pairedItems",
-      name: "Connected to other Items",
-      type: "manyToManyRelationship",
-      icon: "mdi-sword-cross",
+      id: "leaders",
+      name: "Leading Figures",
+      type: "manyToNoneRelationship",
+      icon: "mdi-crown",
       sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "items",
-        connectedField: "pairedItems"
+        connectedObjectType: "characters"
       }
     },
     {
-      id: "pairedMagic",
-      name: "Capable of utilizing Spells/Magic",
-      type: "manyToManyRelationship",
-      icon: "fas fa-hat-wizard",
+      id: "groupType",
+      name: "Type of group",
+      type: "multiSelect",
+      icon: "fas fa-industry",
       sizing: 6,
+      predefinedSelectValues: [
+        "Guild",
+        "Trade group",
+        "Company",
+        "Mercenary group",
+        "Security group",
+        "Military group",
+        "Economical group",
+        "Civil group",
+        "Crimimal group",
+        "Academic group",
+        "Faction",
+        "Charity",
+        "Spy/Underground network",
+        "Secret society",
+        "Other"
+      ]
+    },
+    {
+      id: "localCurrencies",
+      name: "Used Currencies",
+      type: "manyToManyRelationship",
+      icon: "fas fa-coins",
+      sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "magic",
-        connectedField: "pairedItems"
+        connectedObjectType: "currencies",
+        connectedField: "usedInOtherGroups"
       }
     },
     {
-      id: "pairedEvents",
-      name: "Involved in Events",
+      id: "localLanguages",
+      name: "Used Languages",
       type: "manyToManyRelationship",
-      icon: "mdi-calendar-text",
-      sizing: 6,
+      icon: "mdi-book-alphabet",
+      sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "events",
-        connectedField: "pairedItems"
+        connectedObjectType: "languages",
+        connectedField: "usedInOtherGroups"
       }
     },
     {
-      id: "pairedMyths",
-      name: "Involved in Myths, legends and stories",
+      id: "connectedRaces",
+      name: "Common Species/Races",
       type: "manyToManyRelationship",
-      icon: "fas fa-journal-whills",
-      sizing: 6,
+      icon: "fas fa-dragon",
+      sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "myths",
-        connectedField: "pairedItems"
+        connectedObjectType: "races",
+        connectedField: "commonInOtherGroups"
       }
     },
     {
@@ -258,93 +244,15 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "traditions",
-      name: "Traditions & customs connected to the item",
+      name: "Traditions & Customs",
       type: "wysiwyg",
       sizing: 12
     },
     {
       id: "breakRelasionships",
-      name: "Involved with characters and groups/institutions",
+      name: "Diplomatic relationships & Influences",
       type: "break",
       sizing: 12
-    },
-    {
-      id: "pairedConnectedCharacter",
-      name: "Connected to Characters",
-      type: "manyToManyRelationship",
-      icon: "mdi-account",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "characters",
-        connectedField: "pairedConnectedItems"
-      }
-    },
-    {
-      id: "pairedConnectedLocations",
-      name: "Connected to Locations",
-      type: "manyToManyRelationship",
-      icon: "mdi-map-marker-radius",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "locations",
-        connectedField: "pairedConnectedItems"
-      }
-    },
-    {
-      id: "pairedConnectedRaces",
-      name: "Connected to Species/Races",
-      type: "manyToManyRelationship",
-      icon: "fas fa-dragon",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "races",
-        connectedField: "pairedConnectedItems"
-      }
-    },
-    {
-      id: "pairedConnectedPolGroups",
-      name: "Connected to Political groups/Ideologies",
-      type: "manyToManyRelationship",
-      icon: "mdi-bank-outline",
-      sizing: 6,
-      relationshipSettings: {
-        connectedObjectType: "politicalGroups",
-        connectedField: "pairedConnectedItems"
-      }
-    },
-    {
-      id: "pairedConnectedRelGroups",
-      name: "Connected to Religious groups/Teachings",
-      type: "manyToManyRelationship",
-      icon: "fas fa-ankh",
-      sizing: 6,
-      relationshipSettings: {
-        connectedObjectType: "religions",
-        connectedField: "pairedConnectedItems"
-      }
-    },
-    {
-      id: "pairedConnectedMagicGroups",
-      name: "Connected to Magic/Spells",
-      type: "manyToManyRelationship",
-      icon: "fas fa-hat-wizard",
-      sizing: 6,
-      relationshipSettings: {
-        connectedObjectType: "magic",
-        connectedField: "pairedConnectedItems"
-      }
-    },
-    {
-      id: "pairedConnectedTechGroups",
-      name: "Connected to Technology/Science",
-      type: "manyToManyRelationship",
-      icon: "fas fa-wrench",
-      sizing: 6,
-      relationshipSettings: {
-        connectedObjectType: "tech",
-        connectedField: "pairedConnectedItems"
-      }
     }
-
   ]
 }

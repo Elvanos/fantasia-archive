@@ -1,9 +1,9 @@
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const magicBlueprint: I_Blueprint = {
   _id: "magic",
-  order: 13,
-  namePlural: "Magic/Spells",
-  nameSingular: "Magic/Spell",
+  order: 12,
+  namePlural: "Spells/Magical groups",
+  nameSingular: "Spell/Magical group",
   icon: "fas fa-hat-wizard",
   extraFields: [
     {

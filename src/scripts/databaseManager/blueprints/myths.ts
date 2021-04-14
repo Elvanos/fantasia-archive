@@ -1,7 +1,7 @@
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const mythsBlueprint: I_Blueprint = {
   _id: "myths",
-  order: 7,
+  order: 6,
   namePlural: "Myths/Legends/Stories",
   nameSingular: "Myth/Legend/Story",
   icon: "fas fa-journal-whills",

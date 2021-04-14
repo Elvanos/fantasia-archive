@@ -1,7 +1,7 @@
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const languagesBlueprint: I_Blueprint = {
   _id: "languages",
-  order: 9,
+  order: 8,
   namePlural: "Languages",
   nameSingular: "Language",
   icon: "mdi-book-alphabet",
@@ -251,6 +251,17 @@ export const languagesBlueprint: I_Blueprint = {
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
+        connectedField: "localLanguages"
+      }
+    },
+    {
+      id: "usedInOtherGroups",
+      name: "Used by Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
         connectedField: "localLanguages"
       }
     },

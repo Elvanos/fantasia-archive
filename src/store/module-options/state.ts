@@ -3,6 +3,7 @@ export interface OptionsStateInteface {
   _rev?: string,
   darkMode: boolean
   preventAutoScroll: boolean
+  hideAdvSearchCheatsheetButton: boolean
   textShadow: boolean
   hideDeadCrossThrough: boolean
   doubleDashDocCount: boolean
@@ -41,6 +42,7 @@ function state (): OptionsStateInteface {
     _id: "settings",
     darkMode: false,
     preventAutoScroll: false,
+    hideAdvSearchCheatsheetButton: false,
     textShadow: false,
     hideDeadCrossThrough: false,
     doubleDashDocCount: false,

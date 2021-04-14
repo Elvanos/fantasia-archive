@@ -1,7 +1,7 @@
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const currenciesBlueprint: I_Blueprint = {
   _id: "currencies",
-  order: 8,
+  order: 7,
   namePlural: "Currencies",
   nameSingular: "Currency",
   icon: "fas fa-coins",
@@ -176,7 +176,7 @@ export const currenciesBlueprint: I_Blueprint = {
       name: "Used in Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "locations",
         connectedField: "pairedCurrencies"
@@ -187,9 +187,20 @@ export const currenciesBlueprint: I_Blueprint = {
       name: "Used by Political groups/Ideologies",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
+        connectedField: "localCurrencies"
+      }
+    },
+    {
+      id: "usedInOtherGroups",
+      name: "Used by Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
         connectedField: "localCurrencies"
       }
     },
@@ -198,7 +209,7 @@ export const currenciesBlueprint: I_Blueprint = {
       name: "Used by Races",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "races",
         connectedField: "localCurrencies"

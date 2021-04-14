@@ -10,7 +10,7 @@ export const tagListBuildFromBlueprints = async (blueprintList: I_Blueprint[]) =
   for (const blueprint of blueprintList) {
     const CurrentObjectDB = new PouchDB(blueprint._id)
 
-    const dbDocuments = await CurrentObjectDB.allDocs({ include_docs: true })
+    let dbDocuments = await CurrentObjectDB.allDocs({ include_docs: true })
     const docsTagsArray = dbDocuments.rows.map(singleDocument => {
       const doc = singleDocument.doc as unknown as I_ShortenedDocument
       const tags: string[] = doc.extraFields.find(e => e.id === "tags")?.value
@@ -20,6 +20,8 @@ export const tagListBuildFromBlueprints = async (blueprintList: I_Blueprint[]) =
 
     // @ts-ignore
     allTags = [...allTags, ...docsTagsArray] as unknown as string[]
+    // @ts-ignore
+    dbDocuments = null
     await CurrentObjectDB.close()
   }
 

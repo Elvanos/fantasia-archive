@@ -1,9 +1,9 @@
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const racesBlueprint: I_Blueprint = {
   _id: "races",
-  order: 11,
-  namePlural: "Species/Races",
-  nameSingular: "Species/Race",
+  order: 10,
+  namePlural: "Species/Races/Flora/Fauna",
+  nameSingular: "Species/Race/Flora/Fauna",
   icon: "fas fa-dragon",
   extraFields: [
     {
@@ -227,7 +227,7 @@ export const racesBlueprint: I_Blueprint = {
         "Mushroom",
         "Plant",
         "Reptile",
-        "Sprititual",
+        "Spiritual",
         "Virus",
         "Other"
       ]
@@ -431,6 +431,17 @@ export const racesBlueprint: I_Blueprint = {
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
+        connectedField: "connectedRaces"
+      }
+    },
+    {
+      id: "commonInOtherGroups",
+      name: "Common in Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
         connectedField: "connectedRaces"
       }
     },

@@ -64,6 +64,7 @@
     - Copy this document
 - Added a special description field for categories that become visible only when the document is switches to the category mode
 - Added a floating popup windows for quick cheatsheet for Advanced Search guide that can be summoned from each relationship search anywhere in the app
+- Added and reworded a few trivia lines
 - Added filtering via switch value for `Is a minor document`, `Is finished` and `Is Dead/Gone/Destroyed` switch
   - Dead is visible in the lists by default, but can be used to narrow down the search
   - Finished is visible in the lists by default, but can be used to narrow down the search
@@ -87,6 +88,7 @@
 - Added option: Hide "Add under" icon
 - Added option: Hide "Edit" icon
 - Added option: Hide "Open" icon
+- Added option: Hide relationships help button
 - Added option: Prevent auto-scrolling
 - Added functionality to copy existing documents along with all their contents
 - Added keybind: Close all tabs without changes except for this
@@ -100,7 +102,9 @@
 - Changed focusing of the hierarchy tree search input from CTRL + SHIFT + W to CTRL + SHIFT +T
 - Updated fullscreen editor looks to work more like a proper document editor
 - Unified icons for same actions across the app
+- Added responsive layout to the app to adjust based on the size of the window
 - Program settings have been separated into multiple tabs and sub-groups in order to be actually possible to navigate effectively
+- Setting now remember which tab the user last closed them on in the same session of the app
 - Reordered the basic document settings inside the app and separated them from the document content
 - Adjusted maximum width of switch fields to make them look like spaggeti
 - Updated the Advanced search guide with new additions and added one new Trivia popup text concerning it

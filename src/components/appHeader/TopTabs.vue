@@ -145,13 +145,13 @@
                 </q-item>
                 <q-separator />
                 <q-item clickable v-close-popup @click="SSET_forceCloseAllButCurrentDocuments(document)">
-                  <q-item-section>Force close all tabs except for this</q-item-section>
+                  <q-item-section class="text-secondary">Force close all tabs except for this</q-item-section>
                   <q-item-section avatar class="text-secondary">
                     <q-icon name="mdi-close-box" />
                   </q-item-section>
                 </q-item>
                 <q-item clickable v-close-popup @click="SSET_forceCloseAllDocuments">
-                  <q-item-section>Force close all tabs</q-item-section>
+                  <q-item-section class="text-secondary">Force close all tabs</q-item-section>
                   <q-item-section avatar class="text-secondary">
                     <q-icon name="mdi-close-box-multiple" />
                   </q-item-section>

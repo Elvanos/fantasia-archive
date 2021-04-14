@@ -149,7 +149,7 @@
       @input="signalInput(false)"
     >
       <template v-slot:append>
-        <q-btn round dense flat icon="mdi-help-rhombus" @click.stop.prevent="SSET_setAdvSearchWindowVisible"
+        <q-btn round dense flat v-slot:append v-if="!hideAdvSearchCheatsheetButton" icon="mdi-help-rhombus" @click.stop.prevent="SSET_setAdvSearchWindowVisible"
         >
           <q-tooltip :delay="500">
             Open search cheatsheet

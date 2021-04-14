@@ -1,9 +1,9 @@
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const religionsBlueprint: I_Blueprint = {
   _id: "religions",
-  order: 14,
-  namePlural: "Religions/Teachings",
-  nameSingular: "Religion/Teaching",
+  order: 13,
+  namePlural: "Teachings/Religious groups",
+  nameSingular: "Teaching/Religious group",
   icon: "fas fa-ankh",
   extraFields: [
     {

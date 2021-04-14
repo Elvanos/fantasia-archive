@@ -17,6 +17,7 @@ import { mythsBlueprint } from "src/scripts/databaseManager/blueprints/myths"
 import { magicBlueprint } from "src/scripts/databaseManager/blueprints/magic"
 import { techBlueprint } from "src/scripts/databaseManager/blueprints/scienceTechnology"
 import { itemsBlueprint } from "src/scripts/databaseManager/blueprints/items"
+import { guildsBlueprint } from "src/scripts/databaseManager/blueprints/guilds"
 
 /**
  * Loads all the blueprints and processes them apropriatelly
@@ -41,7 +42,8 @@ export const engageBlueprints = async () => {
     mythsBlueprint,
     magicBlueprint,
     techBlueprint,
-    itemsBlueprint
+    itemsBlueprint,
+    guildsBlueprint
   ]
 
   /**

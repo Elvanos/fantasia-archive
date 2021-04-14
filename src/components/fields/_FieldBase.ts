@@ -45,7 +45,13 @@ export default class FieldBase extends BaseClass {
     this.disableDocumentToolTips = this.SGET_options.disableDocumentToolTips
     this.textShadow = this.SGET_options.textShadow
     this.hideDeadCrossThrough = this.SGET_options.hideDeadCrossThrough
+    this.hideAdvSearchCheatsheetButton = this.SGET_options.hideAdvSearchCheatsheetButton
   }
+
+  /**
+   * Hides the advanced search cheatsheet help button in relationship type fields.
+   */
+  hideAdvSearchCheatsheetButton = false
 
   /**
    * Determines if the "dead" document type should have a cross-text decoration or not
