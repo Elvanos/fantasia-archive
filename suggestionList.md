@@ -1,6 +1,4 @@
 
-- Add "Related notes"
-
 ## THE GM BATCH
 
 - Floating notes corkboard
@@ -11,6 +9,8 @@
 - Templates for exports
 
 ## THE GM BATCH END
+
+- Add dropdown of all opened document for tab context menu (submenu)
 
 - Mass tag rename/deletion (done via document saving!)
 - Context menu for tags

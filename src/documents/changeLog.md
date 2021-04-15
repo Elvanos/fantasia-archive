@@ -64,6 +64,7 @@
     - Create new document with this document as parent
     - Copy this document
 - Added a special description field for categories that become visible only when the document is switches to the category mode
+- Added a new 2-way relationship field `Connected to Lore notes/Other notes` to every single document type across the whole document
 - Added a whole new category "Organizations/Other groups" and connected it to other document types
 - Added a floating popup windows for quick cheatsheet for Advanced Search guide that can be summoned from each relationship search anywhere in the app
 - Added and reworded a few trivia lines
