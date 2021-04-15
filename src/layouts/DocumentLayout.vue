@@ -141,6 +141,11 @@ export default class DocumentLayout extends BaseClass {
 </script>
 
 <style lang="scss">
+
+.sideWrapper{
+  height: calc(100% - 40px) !important;
+}
+
 .q-layout {
   outline: none !important;
 }
