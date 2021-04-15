@@ -9,10 +9,11 @@
 
 - When creating a brand new project, Fantasia Archive sometimes doesn't load the default categories in the left hierarchical tree. A temporary workaround before the issue is fixed is restarting the program - the project stays intact, can be normally edited and no data loss occurs.
 - Some users report that dialog (popups) don't function the very first time you start FA. This is solved by restarting the application. The bug doesn't seem to appear again once FA has been started at least once before.
+- Overusing Tags currently causes app crashes on some PCs. If you suffer from this issue, reduce the amount of tags in your project below 10.
 
 ### Bugfixes & Optimizations
 
-- Fixed a typo in `Type of being` field in the `Species/Races` document type
+- Fixed a typo in `Type of being` field in the `Species/Races/Flora/Faunas` document type
 - Fixed even more random types I don't even recall T_T
 - Fixed a bug that was causing the relationship dropdowns sometimes not be clickable and instead caused dragging of the app window when shown over the top of the drag-bar at the top of the app
 - Updated advanced search guide with missing information about full-text search
@@ -63,6 +64,7 @@
     - Create new document with this document as parent
     - Copy this document
 - Added a special description field for categories that become visible only when the document is switches to the category mode
+- Added a whole new category "Organizations/Other groups" and connected it to other document types
 - Added a floating popup windows for quick cheatsheet for Advanced Search guide that can be summoned from each relationship search anywhere in the app
 - Added and reworded a few trivia lines
 - Added filtering via switch value for `Is a minor document`, `Is finished` and `Is Dead/Gone/Destroyed` switch
@@ -99,6 +101,7 @@
 
 ### QoL adjustments
 
+- Unified and modified a lot of the root category names/descriptions
 - Changed focusing of the hierarchy tree search input from CTRL + SHIFT + W to CTRL + SHIFT +T
 - Updated fullscreen editor looks to work more like a proper document editor
 - Unified icons for same actions across the app
@@ -136,7 +139,7 @@
 - Reworded and fixed typos in the Single and Multi relationship field tooltips
 - Fixed horizontal scrollbar looks and functionality
 - Fixed a bug that was causing keybinds to register and affect the UI even if a popup was opened over it
-- Fixed typos of "Sentience" instead of "Sapience" in some of the "Race/Species" document type fiels
+- Fixed typos of "Sentience" instead of "Sapience" in some of the "Species/Races/Flora/Fauna" document type fiels
 
 ### New features
 
@@ -340,8 +343,8 @@
 - Renamed "Lore notes" to "Other/Notes" for more intuitive usage
 - Renamed "Other names" to "Other names & Epithets" across all document types
 - Renamed "Power level" to "Combat rating" in "Characters" document type
-- Renamed "Level of sentience" to "Level of sapience" in "Species/Races" document type
-- Added "Oldest known" and "Average adulthood" fields to the "Species/Races" document type
+- Renamed "Level of sentience" to "Level of sapience" in "Species/Races/Flora/Faunas" document type
+- Added "Oldest known" and "Average adulthood" fields to the "Species/Races/Flora/Faunas" document type
 - Added "Continent" and "Landmass" to prefilled options to the "Location type" field in the "Locations" document type
 - Added "Ethnicity" field in "Characters" document type
 - Added "Titles" field in "Characters" document type

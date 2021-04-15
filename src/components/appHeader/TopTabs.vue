@@ -92,7 +92,7 @@
               context-menu
             >
 
-              <q-list class="bg-gunmetal-light">
+              <q-list class="bg-gunmetal-light text-accent">
                 <q-item clickable v-close-popup @click="copyName(document)">
                   <q-item-section>Copy name</q-item-section>
                   <q-item-section avatar>

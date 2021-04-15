@@ -3,7 +3,7 @@ export const racesBlueprint: I_Blueprint = {
   _id: "races",
   order: 10,
   namePlural: "Species/Races/Flora/Fauna",
-  nameSingular: "Species/Race/Flora/Fauna",
+  nameSingular: "Species/Races/Flora/Fauna",
   icon: "fas fa-dragon",
   extraFields: [
     {
@@ -154,7 +154,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "relatedRaces",
-      name: "Related Species/Races",
+      name: "Related Species/Races/Flora/Faunas",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
       sizing: 4,
@@ -334,7 +334,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "commonNames",
-      name: "Common names among the Race/Species",
+      name: "Common names among the Species/Races/Flora/Fauna",
       type: "list",
       icon: "fas fa-signature",
       sizing: 6,
@@ -351,7 +351,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "commonFamilyNames",
-      name: "Common Family/Clan names among the Race/Species",
+      name: "Common Family/Clan names among the Species/Races/Flora/Fauna",
       type: "list",
       icon: "mdi-family-tree",
       sizing: 6,
@@ -381,10 +381,10 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "pairedCharacter",
-      name: "Characters of Race/Species",
+      name: "Characters of Species/Races/Flora/Fauna",
       type: "manyToManyRelationship",
       icon: "mdi-account",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedRace"
@@ -395,7 +395,7 @@ export const racesBlueprint: I_Blueprint = {
       name: "Inhabited Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "locations",
         connectedField: "pairedConnectedRaces"
@@ -406,7 +406,7 @@ export const racesBlueprint: I_Blueprint = {
       name: "Commonly used Currencies",
       type: "manyToManyRelationship",
       icon: "fas fa-coins",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "currencies",
         connectedField: "usedByRaces"
@@ -417,7 +417,7 @@ export const racesBlueprint: I_Blueprint = {
       name: "Commonly spoken Languages",
       type: "manyToManyRelationship",
       icon: "mdi-book-alphabet",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "languages",
         connectedField: "usedByRaces"
@@ -425,10 +425,10 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "commonInPoliticalGroups",
-      name: "Common in Political groups/Ideologies",
+      name: "Common in Ideologies/Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
         connectedField: "connectedRaces"
@@ -439,7 +439,7 @@ export const racesBlueprint: I_Blueprint = {
       name: "Common in Organizations/Other groups",
       type: "manyToManyRelationship",
       icon: "mdi-account-group",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "guilds",
         connectedField: "connectedRaces"
@@ -447,10 +447,10 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "commonInReligiousGroups",
-      name: "Common in Religious groups/Teachings",
+      name: "Common in Teachings/Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "religions",
         connectedField: "connectedRaces"
@@ -461,7 +461,7 @@ export const racesBlueprint: I_Blueprint = {
       name: "Common in Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "magic",
         connectedField: "connectedRaces"
@@ -472,7 +472,7 @@ export const racesBlueprint: I_Blueprint = {
       name: "Common in Sciencific/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "tech",
         connectedField: "connectedRaces"
@@ -515,6 +515,23 @@ export const racesBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "items",
+        connectedField: "pairedConnectedRaces"
+      }
+    },
+    {
+      id: "breakNotes",
+      name: "Notes",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedNotes",
+      name: "Connected to Lore notes/Other notes",
+      type: "manyToManyRelationship",
+      icon: "mdi-script-text-outline",
+      sizing: 12,
+      relationshipSettings: {
+        connectedObjectType: "loreNotes",
         connectedField: "pairedConnectedRaces"
       }
     }

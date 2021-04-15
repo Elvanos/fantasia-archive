@@ -168,7 +168,7 @@
               context-menu
             >
 
-              <q-list class="bg-gunmetal-light" v-if="!prop.node.isTag">
+              <q-list class="bg-gunmetal-light text-accent" v-if="!prop.node.isTag">
 
                 <template v-if="prop.node.isRoot || prop.node.children.length > 0">
                   <q-item clickable v-close-popup @click="recursivelyExpandNodeDownwards(prop.node.key)">

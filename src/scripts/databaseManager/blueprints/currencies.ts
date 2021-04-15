@@ -183,8 +183,19 @@ export const currenciesBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "usedByRaces",
+      name: "Used by Races",
+      type: "manyToManyRelationship",
+      icon: "fas fa-dragon",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "races",
+        connectedField: "localCurrencies"
+      }
+    },
+    {
       id: "usedInPoliticalGroups",
-      name: "Used by Political groups/Ideologies",
+      name: "Used by Ideologies/Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
@@ -205,15 +216,22 @@ export const currenciesBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "usedByRaces",
-      name: "Used by Races",
+      id: "breakNotes",
+      name: "Notes",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedNotes",
+      name: "Connected to Lore notes/Other notes",
       type: "manyToManyRelationship",
-      icon: "fas fa-dragon",
-      sizing: 6,
+      icon: "mdi-script-text-outline",
+      sizing: 12,
       relationshipSettings: {
-        connectedObjectType: "races",
+        connectedObjectType: "loreNotes",
         connectedField: "localCurrencies"
       }
     }
+
   ]
 }

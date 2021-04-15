@@ -144,7 +144,7 @@
               separate-close-popup
             >
 
-              <q-list class="bg-gunmetal-light">
+              <q-list class="bg-gunmetal-light text-accent">
 
                 <template>
                   <q-item clickable  @click="copyName(opt)">

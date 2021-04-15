@@ -260,7 +260,7 @@ export const magicBlueprint: I_Blueprint = {
     },
     {
       id: "connectedRaces",
-      name: "Common Species/Races among the practitioners",
+      name: "Common Species/Races/Flora/Faunas among the practitioners",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
       sizing: 6,
@@ -399,7 +399,7 @@ export const magicBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedReligiousGroups",
-      name: "Connected Religious groups/Teachings",
+      name: "Connected Teachings/Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 4,
@@ -410,7 +410,7 @@ export const magicBlueprint: I_Blueprint = {
     },
     {
       id: "pairedAllyReligiousGroups",
-      name: "Allied Religious groups/Teachings",
+      name: "Allied Teachings/Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 4,
@@ -421,7 +421,7 @@ export const magicBlueprint: I_Blueprint = {
     },
     {
       id: "pairedEnemyReligiousGroups",
-      name: "Enemy Religious groups/Teachings",
+      name: "Enemy Teachings/Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 4,
@@ -432,7 +432,7 @@ export const magicBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedMagicalGroups",
-      name: "Connected Magical groups/Teachings",
+      name: "Connected Spells/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 4,
@@ -443,7 +443,7 @@ export const magicBlueprint: I_Blueprint = {
     },
     {
       id: "pairedAllyMagicalGroups",
-      name: "Allied Magical groups/Teachings",
+      name: "Allied Spells/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 4,
@@ -454,7 +454,7 @@ export const magicBlueprint: I_Blueprint = {
     },
     {
       id: "pairedEnemyMagicalGroups",
-      name: "Enemy Magical groups/Teachings",
+      name: "Enemy Spells/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 4,
@@ -463,10 +463,42 @@ export const magicBlueprint: I_Blueprint = {
         connectedField: "pairedEnemyMagicalGroups"
       }
     },
-
+    {
+      id: "pairedConnectedOtherGroups",
+      name: "Connected Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "pairedConnectedMagicalGroups"
+      }
+    },
+    {
+      id: "pairedAllyOtherGroups",
+      name: "Allied Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "pairedAllyMagicalGroups"
+      }
+    },
+    {
+      id: "pairedEnemyOtherGroups",
+      name: "Enemy Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "pairedEnemyMagicalGroups"
+      }
+    },
     {
       id: "pairedConnectedTechGroups",
-      name: "Connected Scientific/Technological groups",
+      name: "Connected Sciences/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 4,
@@ -477,7 +509,7 @@ export const magicBlueprint: I_Blueprint = {
     },
     {
       id: "pairedAllyTechGroups",
-      name: "Allied Scientific/Technological groups",
+      name: "Allied Sciences/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 4,
@@ -488,7 +520,7 @@ export const magicBlueprint: I_Blueprint = {
     },
     {
       id: "pairedEnemyTechGroups",
-      name: "Enemy Scientific/Technological groups",
+      name: "Enemy Sciences/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 4,
@@ -533,6 +565,23 @@ export const magicBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "items",
+        connectedField: "pairedConnectedMagicGroups"
+      }
+    },
+    {
+      id: "breakNotes",
+      name: "Notes",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedNotes",
+      name: "Connected to Lore notes/Other notes",
+      type: "manyToManyRelationship",
+      icon: "mdi-script-text-outline",
+      sizing: 12,
+      relationshipSettings: {
+        connectedObjectType: "loreNotes",
         connectedField: "pairedConnectedMagicGroups"
       }
     }

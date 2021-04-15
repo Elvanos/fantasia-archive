@@ -227,7 +227,7 @@ export const religionsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedRaces",
-      name: "Common Species/Races",
+      name: "Common Species/Races/Flora/Faunas",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
       sizing: 6,
@@ -322,7 +322,7 @@ export const religionsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedPolGroups",
-      name: "Connected Political groups/Ideologies",
+      name: "Connected Ideologies/Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 4,
@@ -333,7 +333,7 @@ export const religionsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedAllyPolGroups",
-      name: "Allied Political groups/Ideologies",
+      name: "Allied Ideologies/Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 4,
@@ -344,7 +344,7 @@ export const religionsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedEnemyPolGroups",
-      name: "Enemy Political groups/Ideologies",
+      name: "Enemy Ideologies/Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 4,
@@ -353,9 +353,43 @@ export const religionsBlueprint: I_Blueprint = {
         connectedField: "pairedEnemyReligiousGroups"
       }
     },
+
+    {
+      id: "pairedConnectedOtherGroups",
+      name: "Connected Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "pairedConnectedReligiousGroups"
+      }
+    },
+    {
+      id: "pairedAllyOtherGroups",
+      name: "Allied Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "pairedAllyReligiousGroups"
+      }
+    },
+    {
+      id: "pairedEnemyOtherGroups",
+      name: "Enemy Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "pairedEnemyReligiousGroups"
+      }
+    },
     {
       id: "pairedConnectedReligiousGroups",
-      name: "Connected Religious groups/Teachings",
+      name: "Connected Teachings/Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 4,
@@ -366,7 +400,7 @@ export const religionsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedAllyReligoiusGroups",
-      name: "Allied Religious groups/Teachings",
+      name: "Allied Teachings/Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 4,
@@ -377,7 +411,7 @@ export const religionsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedEnemyReligiousGroups",
-      name: "Enemy Religious groups/Teachings",
+      name: "Enemy Teachings/Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 4,
@@ -421,7 +455,7 @@ export const religionsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedTechGroups",
-      name: "Connected Scientific/Technological groups",
+      name: "Connected Sciences/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 4,
@@ -432,7 +466,7 @@ export const religionsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedAllyTechGroups",
-      name: "Allied Scientific/Technological groups",
+      name: "Allied Sciences/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 4,
@@ -443,7 +477,7 @@ export const religionsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedEnemyTechGroups",
-      name: "Enemy Scientific/Technological groups",
+      name: "Enemy Sciences/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 4,
@@ -488,6 +522,23 @@ export const religionsBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "items",
+        connectedField: "pairedConnectedRelGroups"
+      }
+    },
+    {
+      id: "breakNotes",
+      name: "Notes",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedNotes",
+      name: "Connected to Lore notes/Other notes",
+      type: "manyToManyRelationship",
+      icon: "mdi-script-text-outline",
+      sizing: 12,
+      relationshipSettings: {
+        connectedObjectType: "loreNotes",
         connectedField: "pairedConnectedRelGroups"
       }
     }

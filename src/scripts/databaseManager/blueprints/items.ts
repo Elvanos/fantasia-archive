@@ -292,7 +292,7 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedRaces",
-      name: "Connected to Species/Races",
+      name: "Connected to Species/Races/Flora/Faunas",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
       sizing: 4,
@@ -303,7 +303,7 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedPolGroups",
-      name: "Connected to Political groups/Ideologies",
+      name: "Connected to Ideologies/Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
@@ -313,11 +313,22 @@ export const itemsBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "pairedConnectedOtherGroups",
+      name: "Connected to Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "pairedConnectedItems"
+      }
+    },
+    {
       id: "pairedConnectedRelGroups",
-      name: "Connected to Religious groups/Teachings",
+      name: "Connected to Teachings/Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "religions",
         connectedField: "pairedConnectedItems"
@@ -328,7 +339,7 @@ export const itemsBlueprint: I_Blueprint = {
       name: "Connected to Magic/Spells",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "magic",
         connectedField: "pairedConnectedItems"
@@ -339,12 +350,28 @@ export const itemsBlueprint: I_Blueprint = {
       name: "Connected to Technology/Science",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "tech",
         connectedField: "pairedConnectedItems"
       }
+    },
+    {
+      id: "breakNotes",
+      name: "Notes",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedNotes",
+      name: "Connected to Lore notes/Other notes",
+      type: "manyToManyRelationship",
+      icon: "mdi-script-text-outline",
+      sizing: 12,
+      relationshipSettings: {
+        connectedObjectType: "loreNotes",
+        connectedField: "pairedConnectedItems"
+      }
     }
-
   ]
 }

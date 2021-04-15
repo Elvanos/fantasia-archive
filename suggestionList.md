@@ -1,5 +1,4 @@
 
-- Add category for Guilds/other groups
 - Add "Related notes"
 
 ## THE GM BATCH
@@ -17,6 +16,8 @@
 - Context menu for tags
   - Collapse/expand all top level "tags" mega-category
   - Add new document type under tag
+  - Delete tag (unsets for all docs)
+  - Rename tag (resaves all docs with new tag)
 
 - Add "Predecessors", "Successors", "Date of start", "Date of end" and "How long it lasted" fields to locations and all other groups
 

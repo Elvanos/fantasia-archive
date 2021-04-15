@@ -158,6 +158,178 @@ export const loreNotesBlueprint: I_Blueprint = {
       type: "wysiwyg",
       icon: "mdi-book-open-variant",
       sizing: 12
+    },
+
+    {
+      id: "breakRelated",
+      name: "Connections",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedChapters",
+      name: "Connected to Chapters",
+      type: "manyToManyRelationship",
+      icon: "mdi-file-outline",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "chapters",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+    {
+      id: "pairedConnectedNote",
+      name: "Connected to Lore notes/Other notes",
+      type: "manyToManyRelationship",
+      icon: "mdi-script-text-outline",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "loreNotes",
+        connectedField: "pairedConnectedNote"
+      }
+    },
+    {
+      id: "pairedConnectedCharacter",
+      name: "Connected to Characters",
+      type: "manyToManyRelationship",
+      icon: "mdi-account",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+    {
+      id: "pairedConnectedLocation",
+      name: "Connected to Locations/Geography",
+      type: "manyToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+    {
+      id: "pairedConnectedEvents",
+      name: "Connected to Events",
+      type: "manyToManyRelationship",
+      icon: "mdi-calendar-text",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "events",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+    {
+      id: "pairedConnectedPolGroups",
+      name: "Connected to Ideologies/Political groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-bank-outline",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "politicalGroups",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+    {
+      id: "pairedConnectedOtherGroups",
+      name: "Connected to Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+    {
+      id: "pairedConnectedRelGroups",
+      name: "Connected to Teachings/Religious groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-ankh",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "religions",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+    {
+      id: "pairedConnectedMagicGroups",
+      name: "Connected to Spells/Magical groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-hat-wizard",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "magic",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+    {
+      id: "pairedConnectedTechGroups",
+      name: "Connected to Sciences/Technological groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-wrench",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "tech",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+    {
+      id: "pairedConnectedRaces",
+      name: "Connected to Species/Races/Flora/Fauna",
+      type: "manyToManyRelationship",
+      icon: "fas fa-dragon",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "races",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+    {
+      id: "pairedConnectedItems",
+      name: "Connected to Items",
+      type: "manyToManyRelationship",
+      icon: "mdi-sword-cross",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "items",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+    {
+      id: "localLanguages",
+      name: "Connected to Languages",
+      type: "manyToManyRelationship",
+      icon: "mdi-book-alphabet",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "languages",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+    {
+      id: "localCurrencies",
+      name: "Connected to Currencies",
+      type: "manyToManyRelationship",
+      icon: "fas fa-coins",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "currencies",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+    {
+      id: "pairedConnectedMyths",
+      name: "Connected to Myths/Legends/Stories",
+      type: "manyToManyRelationship",
+      icon: "fas fa-journal-whills",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "myths",
+        connectedField: "pairedConnectedNotes"
+      }
     }
   ]
 }
