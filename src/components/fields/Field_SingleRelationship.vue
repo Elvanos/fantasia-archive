@@ -77,7 +77,7 @@
               separate-close-popup
             >
 
-              <q-list class="bg-gunmetal-light">
+              <q-list class="bg-gunmetal-light text-accent">
 
                 <template>
                   <q-item clickable  @click="copyName(fixGetCorrectDocument(localInput))">
@@ -98,7 +98,7 @@
                       <q-icon name="mdi-format-color-fill" />
                     </q-item-section>
                   </q-item>
-                  <q-separator />
+                  <q-separator dark />
                     <q-item clickable @click="openExistingInput(fixGetCorrectDocument(localInput))">
                     <q-item-section>Open document</q-item-section>
                     <q-item-section avatar>
@@ -149,7 +149,7 @@
       @input="signalInput(false)"
     >
       <template v-slot:append>
-        <q-btn round dense flat icon="mdi-help-rhombus" @click.stop.prevent="SSET_setAdvSearchWindowVisible"
+        <q-btn round dense flat v-slot:append v-if="!hideAdvSearchCheatsheetButton" icon="mdi-help-rhombus" @click.stop.prevent="SSET_setAdvSearchWindowVisible"
         >
           <q-tooltip :delay="500">
             Open search cheatsheet
@@ -193,7 +193,7 @@
               separate-close-popup
             >
 
-              <q-list class="bg-gunmetal-light">
+              <q-list class="bg-gunmetal-light text-accent">
 
                 <template>
                   <q-item clickable @click="copyName(fixGetCorrectDocument(scope.opt))">
@@ -214,7 +214,7 @@
                       <q-icon name="mdi-format-color-fill" />
                     </q-item-section>
                   </q-item>
-                  <q-separator />
+                  <q-separator dark />
                     <q-item clickable @click="openExistingInput(fixGetCorrectDocument(scope.opt))">
                     <q-item-section>Open document</q-item-section>
                     <q-item-section avatar>
@@ -294,7 +294,7 @@
               separate-close-popup
             >
 
-              <q-list class="bg-gunmetal-light">
+              <q-list class="bg-gunmetal-light text-accent">
 
                 <template>
                   <q-item clickable  @click="copyName(opt)">
@@ -315,7 +315,7 @@
                       <q-icon name="mdi-format-color-fill" />
                     </q-item-section>
                   </q-item>
-                  <q-separator />
+                  <q-separator dark />
                     <q-item clickable @click="openExistingInput(opt)">
                     <q-item-section>Open document</q-item-section>
                     <q-item-section avatar>

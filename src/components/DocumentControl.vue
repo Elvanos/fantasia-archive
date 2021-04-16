@@ -164,10 +164,27 @@
           </q-btn>
 
           <q-btn
+            icon="mdi-content-save-edit"
+            :color="(!hasEdits) ? 'teal-14' : 'primary'"
+            outline
+            @click="saveCurrentDocument(true)"
+            v-if="!currentyEditable && SGET_allOpenedDocuments.docs.length > 0"
+          >
+            <q-tooltip
+              :delay="500"
+              anchor="bottom left"
+              self="top middle"
+            >
+             Save document without exiting edit mode
+            </q-tooltip>
+
+          </q-btn>
+
+          <q-btn
             icon="mdi-content-save"
             :color="(!hasEdits) ? 'teal-14' : 'primary'"
             outline
-            @click="saveCurrentDocument"
+            @click="saveCurrentDocument(false)"
             v-if="!currentyEditable && SGET_allOpenedDocuments.docs.length > 0"
           >
             <q-tooltip
@@ -322,7 +339,12 @@ export default class DocumentControl extends BaseClass {
 
     // Save document - CTRL + S
     if (this.determineKeyBind("saveDocument") && !this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState) {
-      this.saveCurrentDocument().catch(e => console.log(e))
+      this.saveCurrentDocument(false).catch(e => console.log(e))
+    }
+
+    // Save document without exiting edit mode - CTRL + ALT + S
+    if (this.determineKeyBind("saveDocumentNoExit") && !this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState) {
+      this.saveCurrentDocument(true).catch(e => console.log(e))
     }
 
     // Add new under parent - CTRL + SHIFT + N
@@ -486,8 +508,8 @@ export default class DocumentControl extends BaseClass {
 
   documentsCopy = null as unknown as I_OpenedDocument[]
 
-  async saveCurrentDocument () {
-    if (document.activeElement) {
+  async saveCurrentDocument (editMode: boolean) {
+    if (document.activeElement && editMode === false) {
       (document.activeElement as HTMLElement).blur()
     }
 
@@ -502,7 +524,7 @@ export default class DocumentControl extends BaseClass {
       const savedDocument: {
         documentCopy: I_OpenedDocument,
         allOpenedDocuments: I_OpenedDocument[]
-      } = await saveDocument(currentDoc, this.documentsCopy)
+      } = await saveDocument(currentDoc, this.documentsCopy, editMode)
 
       // Update the opened document
       const dataPass = { doc: savedDocument.documentCopy, treeAction: true }
@@ -514,6 +536,12 @@ export default class DocumentControl extends BaseClass {
         const dataPass = { doc: doc, treeAction: true }
         this.SSET_updateOpenedDocument(dataPass)
       }
+
+      this.$q.notify({
+        group: false,
+        type: "positive",
+        message: "Document successfully saved"
+      })
     }
   }
 

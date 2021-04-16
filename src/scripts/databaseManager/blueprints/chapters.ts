@@ -146,6 +146,17 @@ export const chaptersBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
+      id: "pairedConnectedNotes",
+      name: "Connected to Lore notes/Other notes",
+      type: "manyToManyRelationship",
+      icon: "mdi-script-text-outline",
+      sizing: 12,
+      relationshipSettings: {
+        connectedObjectType: "loreNotes",
+        connectedField: "pairedConnectedChapters"
+      }
+    },
+    {
       id: "content",
       name: "Chapter content",
       type: "wysiwyg",

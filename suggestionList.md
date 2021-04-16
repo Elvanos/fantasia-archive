@@ -1,9 +1,4 @@
 
-- Add intelligent responsive design to the left tree and document body (maybe button to pull the left bar in and out?)
-
-- Add category for Guilds/other groups
-- Add "Related notes"
-
 ## THE GM BATCH
 
 - Floating notes corkboard
@@ -15,7 +10,17 @@
 
 ## THE GM BATCH END
 
-- Mass tag rename
+- Add HTML webcolor cheatsheet in floating window (look for JSON of them somewhere?)
+- Word count for editor fields
+
+- Add dropdown of all opened document for tab context menu (submenu)
+
+- Mass tag rename/deletion (done via document saving!)
+- Context menu for tags
+  - Collapse/expand all top level "tags" mega-category
+  - Add new document type under tag
+  - Delete tag (unsets for all docs)
+  - Rename tag (resaves all docs with new tag)
 
 - Add "Predecessors", "Successors", "Date of start", "Date of end" and "How long it lasted" fields to locations and all other groups
 
@@ -27,6 +32,8 @@
 - Allow showing of document types under tags
 - Add description tabs
 - Add category for diseases/curses/etc
+- Add button to pull the left tree in and out
+- Add support for individual document order hiding inside the hierarchical tree for each document
 
 ### Project settings
 
@@ -46,6 +53,7 @@
 - Simple data imports (maybe?)
 
 - Dynamic table field
+- Settings search
 
 - Add on-the-fly generation of non-existent 2-way relationships
 

@@ -168,7 +168,7 @@
               context-menu
             >
 
-              <q-list class="bg-gunmetal-light" v-if="!prop.node.isTag">
+              <q-list class="bg-gunmetal-light text-accent" v-if="!prop.node.isTag">
 
                 <template v-if="prop.node.isRoot || prop.node.children.length > 0">
                   <q-item clickable v-close-popup @click="recursivelyExpandNodeDownwards(prop.node.key)">
@@ -186,7 +186,7 @@
                 </template>
 
                 <template v-if="prop.node.isRoot">
-                  <q-separator />
+                  <q-separator dark />
                   <q-item clickable v-close-popup @click="addNewObjectRoute(prop.node)">
                     <q-item-section>Add new document of type: {{prop.node.label}}</q-item-section>
                     <q-item-section avatar>
@@ -196,7 +196,7 @@
                 </template>
 
                 <template v-if="!prop.node.isRoot">
-                  <q-separator />
+                  <q-separator dark />
                   <q-item clickable v-close-popup @click="copyName(prop.node)">
                     <q-item-section>Copy name</q-item-section>
                     <q-item-section avatar>
@@ -215,7 +215,7 @@
                       <q-icon name="mdi-format-color-fill" />
                     </q-item-section>
                   </q-item>
-                  <q-separator />
+                  <q-separator dark />
                     <q-item clickable v-close-popup @click="openExistingDocumentRoute(prop.node)">
                     <q-item-section>Open document</q-item-section>
                     <q-item-section avatar>
@@ -240,7 +240,7 @@
                       <q-icon name="mdi-content-copy" />
                     </q-item-section>
                   </q-item>
-                  <q-separator />
+                  <q-separator dark />
                   <q-item clickable v-close-popup @click="deleteTabDocument(prop.node)">
                     <q-item-section class="text-secondary"><b>Delete this document</b></q-item-section>
                     <q-item-section avatar class="text-secondary">

@@ -212,7 +212,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedRaces",
-      name: "Affected or involved Species/Races",
+      name: "Affected or involved Species/Races/Flora/Faunas",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
       sizing: 6,
@@ -289,11 +289,22 @@ export const eventsBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "connectedOtherGroups",
+      name: "Involved Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "connectedEvents"
+      }
+    },
+    {
       id: "connectedReligious",
       name: "Involved Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "religions",
         connectedField: "connectedEvents"
@@ -304,7 +315,7 @@ export const eventsBlueprint: I_Blueprint = {
       name: "Involved Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "magic",
         connectedField: "connectedEvents"
@@ -315,10 +326,27 @@ export const eventsBlueprint: I_Blueprint = {
       name: "Involved Technological/Scientific groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "tech",
         connectedField: "connectedEvents"
+      }
+    },
+    {
+      id: "breakNotes",
+      name: "Notes",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedNotes",
+      name: "Connected to Lore notes/Other notes",
+      type: "manyToManyRelationship",
+      icon: "mdi-script-text-outline",
+      sizing: 12,
+      relationshipSettings: {
+        connectedObjectType: "loreNotes",
+        connectedField: "pairedConnectedEvents"
       }
     }
   ]

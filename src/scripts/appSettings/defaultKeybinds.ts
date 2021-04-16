@@ -143,15 +143,26 @@ export const defaultKeybinds = [
     tooltip: "Previous tab"
   },
 
-  // Save document - CTRL + S
+  // Save document - CTRL + ALT + S
   {
-    altKey: false,
+    altKey: true,
     ctrlKey: true,
     shiftKey: false,
     which: 83,
     editable: true,
     id: "saveDocument",
     tooltip: "Save active document"
+  },
+
+  // Save document without exiting edit mode - CTRL + S
+  {
+    altKey: false,
+    ctrlKey: true,
+    shiftKey: false,
+    which: 83,
+    editable: true,
+    id: "saveDocumentNoExit",
+    tooltip: "Save document without exiting edit mode"
   },
 
   // Edit document - CTRL + E
@@ -196,6 +207,17 @@ export const defaultKeybinds = [
     editable: true,
     id: "deleteDocument",
     tooltip: "Delete active document"
+  },
+
+  // Toggle the Advanced search cheatsheet - NONE
+  {
+    altKey: false,
+    ctrlKey: false,
+    shiftKey: false,
+    which: false,
+    editable: true,
+    id: "toggleAdvSearchCheatsheet",
+    tooltip: "Toggle the Advanced search cheatsheet"
   },
 
   // Next focus - Tab

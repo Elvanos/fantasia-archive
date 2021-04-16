@@ -1,7 +1,7 @@
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const currenciesBlueprint: I_Blueprint = {
   _id: "currencies",
-  order: 8,
+  order: 7,
   namePlural: "Currencies",
   nameSingular: "Currency",
   icon: "fas fa-coins",
@@ -176,21 +176,10 @@ export const currenciesBlueprint: I_Blueprint = {
       name: "Used in Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "locations",
         connectedField: "pairedCurrencies"
-      }
-    },
-    {
-      id: "usedInPoliticalGroups",
-      name: "Used by Political groups/Ideologies",
-      type: "manyToManyRelationship",
-      icon: "mdi-bank-outline",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "politicalGroups",
-        connectedField: "localCurrencies"
       }
     },
     {
@@ -198,11 +187,51 @@ export const currenciesBlueprint: I_Blueprint = {
       name: "Used by Races",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "races",
         connectedField: "localCurrencies"
       }
+    },
+    {
+      id: "usedInPoliticalGroups",
+      name: "Used by Ideologies/Political groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-bank-outline",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "politicalGroups",
+        connectedField: "localCurrencies"
+      }
+    },
+    {
+      id: "usedInOtherGroups",
+      name: "Used by Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "localCurrencies"
+      }
+    },
+    {
+      id: "breakNotes",
+      name: "Notes",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedNotes",
+      name: "Connected to Lore notes/Other notes",
+      type: "manyToManyRelationship",
+      icon: "mdi-script-text-outline",
+      sizing: 12,
+      relationshipSettings: {
+        connectedObjectType: "loreNotes",
+        connectedField: "localCurrencies"
+      }
     }
+
   ]
 }

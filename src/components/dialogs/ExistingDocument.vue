@@ -35,7 +35,7 @@
               @filter="filterExistingSelect"
               @input="openExistingInput"
             >
-              <template v-slot:append>
+              <template v-slot:append v-if="!hideAdvSearchCheatsheetButton">
                 <q-btn round dense flat icon="mdi-help-rhombus" @click.stop.prevent="SSET_setAdvSearchWindowVisible"
                 >
                   <q-tooltip :delay="500">
@@ -144,7 +144,7 @@
               separate-close-popup
             >
 
-              <q-list class="bg-gunmetal-light">
+              <q-list class="bg-gunmetal-light text-accent">
 
                 <template>
                   <q-item clickable  @click="copyName(opt)">
@@ -165,7 +165,7 @@
                       <q-icon name="mdi-format-color-fill" />
                     </q-item-section>
                   </q-item>
-                  <q-separator />
+                  <q-separator dark />
                     <q-item clickable @click="openExistingInput(opt)">
                     <q-item-section>Open document</q-item-section>
                     <q-item-section avatar>
@@ -272,7 +272,13 @@ export default class ExistingDocumentDialog extends DialogBase {
     this.includeCategories = !this.SGET_options.disableQuickSearchCategoryPrecheck
     this.textShadow = this.SGET_options.textShadow
     this.hideDeadCrossThrough = this.SGET_options.hideDeadCrossThrough
+    this.hideAdvSearchCheatsheetButton = this.SGET_options.hideAdvSearchCheatsheetButton
   }
+
+  /**
+   * Hides the advanced search cheatsheet help button in relationship type fields.
+   */
+  hideAdvSearchCheatsheetButton = false
 
   /**
    * Determines if the "dead" document type should have a cross-text decoration or not

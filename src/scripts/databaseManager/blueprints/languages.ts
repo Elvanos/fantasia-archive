@@ -1,7 +1,7 @@
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const languagesBlueprint: I_Blueprint = {
   _id: "languages",
-  order: 9,
+  order: 8,
   namePlural: "Languages",
   nameSingular: "Language",
   icon: "mdi-book-alphabet",
@@ -223,7 +223,7 @@ export const languagesBlueprint: I_Blueprint = {
     },
     {
       id: "usedByRaces",
-      name: "Spoken by Species/Races",
+      name: "Spoken by Species/Races/Flora/Faunas",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
       sizing: 4,
@@ -245,7 +245,7 @@ export const languagesBlueprint: I_Blueprint = {
     },
     {
       id: "usedInPoliticalGroups",
-      name: "Spoken in Political groups/Ideologies",
+      name: "Spoken in Ideologies/Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
@@ -255,11 +255,22 @@ export const languagesBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "usedInOtherGroups",
+      name: "Used by Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "localLanguages"
+      }
+    },
+    {
       id: "usedInReligiousGroups",
-      name: "Spoken in Religious groups/Teachings",
+      name: "Spoken in Teachings/Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "religions",
         connectedField: "localLanguages"
@@ -270,7 +281,7 @@ export const languagesBlueprint: I_Blueprint = {
       name: "Spoken in Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "magic",
         connectedField: "localLanguages"
@@ -281,9 +292,26 @@ export const languagesBlueprint: I_Blueprint = {
       name: "Spoken in Science/Technology groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "tech",
+        connectedField: "localLanguages"
+      }
+    },
+    {
+      id: "breakNotes",
+      name: "Notes",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedNotes",
+      name: "Connected to Lore notes/Other notes",
+      type: "manyToManyRelationship",
+      icon: "mdi-script-text-outline",
+      sizing: 12,
+      relationshipSettings: {
+        connectedObjectType: "loreNotes",
         connectedField: "localLanguages"
       }
     }

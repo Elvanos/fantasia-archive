@@ -241,8 +241,9 @@ a {
   margin-bottom: 15px;
 
   img {
-    width: auto !important;
     object-fit: contain;
+    max-width: 100%;
+    max-height: 100%;
   }
 }
 
@@ -259,6 +260,10 @@ a {
 .q-icon::after,
 .q-icon::before {
   backface-visibility: hidden;
+}
+
+.grow-0 {
+  flex-grow: 0;
 }
 
 .q-notification__message {
@@ -358,6 +363,11 @@ a {
   overflow-y: auto !important;
   -webkit-app-region: no-drag;
   z-index: 999999;
+}
+
+.q-menu {
+  z-index: 99999999 !important;
+  background-color: $dark;
 }
 
 .text-underline {

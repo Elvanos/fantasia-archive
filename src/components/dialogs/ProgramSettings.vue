@@ -56,13 +56,13 @@
 
                   <div class="col-12">
                     <div class="text-h6">
-                      Visuals & Accessibility
+                      Visuals, App-wide functionality & Accessibility
                     </div>
                   </div>
 
                    <div class="col-12">
                     <div class="text-bold q-mt-xl">
-                      Visuals
+                      Visuals & App-wide functionality
                     </div>
                   </div>
 
@@ -78,6 +78,21 @@
 
                       <q-toggle
                         v-model="options.darkMode"
+                      />
+                  </div>
+
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
+                    <div class="optionTitle">
+                      Hide relationships help button
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Hides the advanced search cheatsheet help button in relationship type fields.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.hideAdvSearchCheatsheetButton"
                       />
                   </div>
 
@@ -825,7 +840,6 @@ export default class ProgramSettings extends DialogBase {
       }
       this.SSET_setDialogState(true)
       this.dialogModel = true
-      this.activeTab = "uiSettings"
       this.options = extend(true, {}, this.SGET_options)
       this.mapKeybinds()
     }
@@ -884,6 +898,7 @@ export default class ProgramSettings extends DialogBase {
     darkMode: false,
     preventAutoScroll: false,
     textShadow: false,
+    hideAdvSearchCheatsheetButton: false,
     doubleDashDocCount: false,
     hideDeadCrossThrough: false,
     hidePlushes: false,

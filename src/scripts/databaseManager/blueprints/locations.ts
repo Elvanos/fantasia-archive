@@ -2,8 +2,8 @@ import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const locationsBlueprint: I_Blueprint = {
   _id: "locations",
   order: 17,
-  namePlural: "Locations",
-  nameSingular: "Location",
+  namePlural: "Locations/Geography",
+  nameSingular: "Location/Geography",
   icon: "mdi-map-marker-radius",
   extraFields: [
     {
@@ -179,6 +179,7 @@ export const locationsBlueprint: I_Blueprint = {
         "Landmark",
         "Landmass",
         "Mountain",
+        "Planet",
         "Terrain formation",
         "Town",
         "Village",
@@ -293,7 +294,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedRaces",
-      name: "Local Species/Races",
+      name: "Local Species/Races/Flora/Faunas",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
       sizing: 6,
@@ -310,7 +311,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "governPolitical",
-      name: "Governing Political groups/Ideologies",
+      name: "Governing Ideologies/Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
@@ -321,7 +322,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedPolitical",
-      name: "Connected Political groups/Ideologies",
+      name: "Connected Ideologies/Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
@@ -330,6 +331,29 @@ export const locationsBlueprint: I_Blueprint = {
         connectedField: "connectedLocations"
       }
     },
+    {
+      id: "governOther",
+      name: "Governing Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "governLocations"
+      }
+    },
+    {
+      id: "connectedOther",
+      name: "Connected Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "connectedLocations"
+      }
+    },
+
     {
       id: "governReligious",
       name: "Governing Religious groups",
@@ -433,6 +457,23 @@ export const locationsBlueprint: I_Blueprint = {
       relationshipSettings: {
         connectedObjectType: "items",
         connectedField: "pairedConnectedLocations"
+      }
+    },
+    {
+      id: "breakNotes",
+      name: "Notes",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedNotes",
+      name: "Connected to Lore notes/Other notes",
+      type: "manyToManyRelationship",
+      icon: "mdi-script-text-outline",
+      sizing: 12,
+      relationshipSettings: {
+        connectedObjectType: "loreNotes",
+        connectedField: "pairedConnectedLocation"
       }
     }
 

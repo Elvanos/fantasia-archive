@@ -270,5 +270,17 @@ export default class App extends BaseClass {
   }
 
   advSearchWindowVisible = false
+
+  /****************************************************************/
+  // Local keybinds
+  /****************************************************************/
+
+  @Watch("SGET_getCurrentKeyBindData", { deep: true })
+  processKeyPush () {
+    // Toggle the Advanced search cheatsheet
+    if (this.determineKeyBind("toggleAdvSearchCheatsheet")) {
+      this.advSearchWindowVisible = !this.advSearchWindowVisible
+    }
+  }
 }
 </script>

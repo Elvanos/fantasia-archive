@@ -9,7 +9,7 @@ export const tipsTricks: string[] = [
   "FA has a Dark Mode that is no mere afterthought and is fully serviceable!",
   "Many parts of the app react to a middle-mouse click. For example, you can close document tabs or open hierarchical tree items with it directly!",
   "Any field in the document editing mode with the small dropdown arrow that is not a Relationship field allows for custom values! Just close the menu of predefined values with ESC, type your desired value and confirm with ENTER.",
-  "Fantasia Archive is free; no strings attached! If you ever want to support the project, drop me a penny or two on Patreon!",
+  "Fantasia Archive is free; no strings attached: No ads, no trackers, no crypto-mining happening on your PC and all your data is all yours!",
   "This software is actually a local website pretending to be a desktop application! Technology is crazy!",
   "If you ever need a good, offline map-making software, look at Wonderdraft and Dungeondraft by Megasploot!",
   "If these tips annoy you, there is a switch to turn them off in the program settings.",
@@ -20,5 +20,6 @@ export const tipsTricks: string[] = [
   "Tags are a very powerful feature that allow you to add semi-categories to the project tree and create additional search parameters to aid navigation.",
   "There is a roadmap of planned features on Patreon! If you are curious about what will eventually come, feel free to read it.",
   "DISCLAIMER: No magical creatures were harmed during the making of this software.",
-  "The adorable little arcane dragon you might have seen while using the app is called Fantasia and she is the official mascot of FA!"
+  "The adorable little arcane dragon you might have seen while using the app is called Fantasia and she is the official mascot of FA!",
+  "If you ever feel like sponsoring the development, there is Patreon. If you can't/don't want to; that is perfectly fine too - just have fun with the app and build something cool with it!"
 ]
