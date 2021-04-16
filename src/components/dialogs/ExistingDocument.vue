@@ -165,7 +165,7 @@
                       <q-icon name="mdi-format-color-fill" />
                     </q-item-section>
                   </q-item>
-                  <q-separator />
+                  <q-separator dark />
                     <q-item clickable @click="openExistingInput(opt)">
                     <q-item-section>Open document</q-item-section>
                     <q-item-section avatar>

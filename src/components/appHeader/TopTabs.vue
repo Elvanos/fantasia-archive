@@ -91,8 +91,38 @@
               touch-position
               context-menu
             >
-
               <q-list class="bg-gunmetal-light text-accent">
+                <q-item clickable>
+                  <q-item-section>All opened tabs</q-item-section>
+                  <q-item-section avatar>
+                    <q-icon name="keyboard_arrow_right" />
+                  </q-item-section>
+                  <q-menu anchor="top end" self="top start">
+                    <q-list class="bg-gunmetal text-accent">
+                      <q-item
+                        :to="`/project/display-content/${menuDoc.type}/${menuDoc._id}`"
+                        v-for="menuDoc in localDocuments"
+                        :key="menuDoc._id"
+                        clickable
+                        :style="`
+                          color: ${retrieveFieldValue(menuDoc,'documentColor')};
+                          background-color: ${retrieveFieldValue(menuDoc,'documentBackgroundColor')};
+                          filter: ${(retrieveFieldValue(menuDoc,'minorSwitch') ? 'grayscale(100) brightness(0.7)' : '')}`"
+                      >
+                       <q-item-section class="isDeadIndicator grow-0" v-if="retrieveFieldValue(menuDoc,'deadSwitch')">
+                          †
+                        </q-item-section>
+                        <q-item-section
+                          :class="{'isDead': (retrieveFieldValue(menuDoc,'deadSwitch') && !hideDeadCrossThrough)}"
+                        >{{retrieveFieldValue(menuDoc,'name')}}</q-item-section>
+                        <q-item-section avatar>
+                          <q-icon :name="(retrieveFieldValue(menuDoc,'categorySwitch') ? 'fas fa-folder-open' : menuDoc.icon)" />
+                        </q-item-section>
+                      </q-item>
+                    </q-list>
+                  </q-menu>
+                </q-item>
+                <q-separator dark />
                 <q-item clickable v-close-popup @click="copyName(document)">
                   <q-item-section>Copy name</q-item-section>
                   <q-item-section avatar>
@@ -111,7 +141,7 @@
                     <q-icon name="mdi-format-color-fill" />
                   </q-item-section>
                 </q-item>
-                <q-separator />
+                <q-separator dark />
                 <q-item v-if="!document.isNew" clickable v-close-popup @click="addNewUnderParent(document)">
                   <q-item-section>Create new document with this document as parent</q-item-section>
                   <q-item-section avatar>
@@ -143,20 +173,20 @@
                     <q-icon name="mdi-close-box-multiple-outline" />
                   </q-item-section>
                 </q-item>
-                <q-separator />
+                <q-separator dark />
                 <q-item clickable v-close-popup @click="SSET_forceCloseAllButCurrentDocuments(document)">
-                  <q-item-section class="text-secondary">Force close all tabs except for this</q-item-section>
+                  <q-item-section class="text-secondary"><b>Force close all tabs except for this</b></q-item-section>
                   <q-item-section avatar class="text-secondary">
                     <q-icon name="mdi-close-box" />
                   </q-item-section>
                 </q-item>
                 <q-item clickable v-close-popup @click="SSET_forceCloseAllDocuments">
-                  <q-item-section class="text-secondary">Force close all tabs</q-item-section>
+                  <q-item-section class="text-secondary"><b>Force close all tabs</b></q-item-section>
                   <q-item-section avatar class="text-secondary">
                     <q-icon name="mdi-close-box-multiple" />
                   </q-item-section>
                 </q-item>
-                <q-separator />
+                <q-separator dark />
                 <q-item clickable v-close-popup @click="deleteTabDocument(document)">
                   <q-item-section class="text-secondary"><b>Delete this document</b></q-item-section>
                   <q-item-section avatar class="text-secondary">

@@ -101,7 +101,7 @@
                       <q-icon name="mdi-format-color-fill" />
                     </q-item-section>
                   </q-item>
-                  <q-separator />
+                  <q-separator dark />
                     <q-item clickable @click="openExistingInput(fixGetCorrectDocument(single))">
                     <q-item-section>Open document</q-item-section>
                     <q-item-section avatar>
@@ -217,7 +217,7 @@
                       <q-icon name="mdi-format-color-fill" />
                     </q-item-section>
                   </q-item>
-                  <q-separator />
+                  <q-separator dark />
                     <q-item clickable @click="openExistingInput(fixGetCorrectDocument(scope.opt))">
                     <q-item-section>Open document</q-item-section>
                     <q-item-section avatar>
@@ -316,7 +316,7 @@
                       <q-icon name="mdi-format-color-fill" />
                     </q-item-section>
                   </q-item>
-                  <q-separator />
+                  <q-separator dark />
                     <q-item clickable @click="openExistingInput(opt)">
                     <q-item-section>Open document</q-item-section>
                     <q-item-section avatar>

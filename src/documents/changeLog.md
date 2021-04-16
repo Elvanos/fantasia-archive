@@ -26,11 +26,15 @@
 - Optimized multiple parts of the code to run smoother
 - Fixed wrong icons in some fields in some document types
 - Fixed a bug that was allowing for an attempted deletion of a document while the document data was still being retrieved. This resulted in an error that both made a mess of a UI and didn't delete the desider document
+- Fixed a bug in the scroll of the hierarchical tree that was causing it to not display last 1-2 items when scrolling down
+- Fixed a bug that was causing the hierarchical tree-resizing drag-bar to not scroll down with the rest of the page when viewing documents
 
 ### New features
 
 - Added context menu support and multiple actions (right click) for top tabs, hierarchical tree and relationships across whole app
   - New actions for **Top Tabs**
+    - All Opened Tabs
+      - A list of all opened tabs for quick navigation
     - Copy name
     - Copy text color
     - Copy background color
@@ -64,6 +68,7 @@
     - Create new document with this document as parent
     - Copy this document
 - Added a special description field for categories that become visible only when the document is switches to the category mode
+- Added an option and correnspoding buttons/keybinds to save without exiting edit mode
 - Added a new 2-way relationship field `Connected to Lore notes/Other notes` to every single document type across the whole document
 - Added a whole new category "Organizations/Other groups" and connected it to other document types
 - Added a floating popup windows for quick cheatsheet for Advanced Search guide that can be summoned from each relationship search anywhere in the app
@@ -99,9 +104,12 @@
 - Added keybind: Force close all tabs except for this
 - Added keybind: Force close all tabs
 - Added keybind: Copy active document
+- Added keybind: Toggle the Advanced search cheatsheet
+- Added keybind: Save document without exiting edit mode
 
 ### QoL adjustments
 
+- Added small popup notification upon succesfull save of a document
 - Unified and modified a lot of the root category names/descriptions
 - Changed focusing of the hierarchy tree search input from CTRL + SHIFT + W to CTRL + SHIFT +T
 - Updated fullscreen editor looks to work more like a proper document editor

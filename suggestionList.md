@@ -10,6 +10,8 @@
 
 ## THE GM BATCH END
 
+- Add HTML webcolor cheatsheet in floating window (look for JSON of them somewhere?)
+
 - Add dropdown of all opened document for tab context menu (submenu)
 
 - Mass tag rename/deletion (done via document saving!)

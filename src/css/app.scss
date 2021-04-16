@@ -262,6 +262,10 @@ a {
   backface-visibility: hidden;
 }
 
+.grow-0 {
+  flex-grow: 0;
+}
+
 .q-notification__message {
   font-size: 16px;
   font-weight: 500;
@@ -359,6 +363,11 @@ a {
   overflow-y: auto !important;
   -webkit-app-region: no-drag;
   z-index: 999999;
+}
+
+.q-menu {
+  z-index: 99999999 !important;
+  background-color: transparent;
 }
 
 .text-underline {

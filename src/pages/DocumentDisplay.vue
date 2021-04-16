@@ -23,9 +23,27 @@
        >
 
         <q-btn
+            icon="mdi-content-save-edit"
+            :color="(hasEdits) ? 'teal-14' : 'primary'"
+            :outline="isDarkMode"
+            class="q-mr-md"
+            @click="saveCurrentDocument(true)"
+            v-if="editMode"
+          >
+            <q-tooltip
+              :delay="500"
+              anchor="bottom left"
+              self="top middle"
+            >
+             Save document without exiting edit mode
+            </q-tooltip>
+
+          </q-btn>
+
+        <q-btn
           :color="(hasEdits) ? 'teal-14' : 'primary'"
           icon="mdi-content-save"
-          @click="saveCurrentDocument"
+          @click="saveCurrentDocument(false)"
           :outline="isDarkMode"
           class="q-mr-md"
           v-if="editMode"
@@ -647,41 +665,6 @@ export default class PageDocumentDisplay extends BaseClass {
   }
 
   /**
-   * Triggers the save action of the document; canceling local edit mode and comitting the document data to the store
-   */
-  async triggerSaveDocument () {
-    const currentDoc = this.currentData
-
-    const allDocuments = this.SGET_allOpenedDocuments
-
-    const docCopy: I_OpenedDocument[] = extend(true, [], allDocuments.docs)
-
-    if (currentDoc) {
-      // @ts-ignore
-      const savedDocument: {
-        documentCopy: I_OpenedDocument,
-        allOpenedDocuments: I_OpenedDocument[]
-      } = await saveDocument(currentDoc, docCopy)
-
-      // Update the opened document
-      const dataPass = { doc: savedDocument.documentCopy, treeAction: true }
-      this.SSET_updateOpenedDocument(dataPass)
-
-      // Update all others
-      for (const doc of savedDocument.allOpenedDocuments) {
-        // Update the opened document
-        const dataPass = { doc: doc, treeAction: true }
-        this.SSET_updateOpenedDocument(dataPass)
-      }
-
-      this.editMode = false
-      this.currentData.isNew = false
-      this.currentData.hasEdits = false
-      this.currentData.editMode = false
-    }
-  }
-
-  /**
    * Retrieves the current document type blueprint
    */
   retrieveDocumentBlueprint () : I_Blueprint {
@@ -927,8 +910,8 @@ export default class PageDocumentDisplay extends BaseClass {
   /**
    * Saves the current document
    */
-  async saveCurrentDocument () {
-    if (document.activeElement) {
+  async saveCurrentDocument (keepEditMode: boolean) {
+    if (document.activeElement && keepEditMode === false) {
       (document.activeElement as HTMLElement).blur()
     }
 
@@ -943,7 +926,7 @@ export default class PageDocumentDisplay extends BaseClass {
       const savedDocument: {
         documentCopy: I_OpenedDocument,
         allOpenedDocuments: I_OpenedDocument[]
-      } = await saveDocument(currentDoc, docCopy)
+      } = await saveDocument(currentDoc, docCopy, keepEditMode)
 
       // Update the opened document
       const dataPass = { doc: savedDocument.documentCopy, treeAction: true }
@@ -955,6 +938,12 @@ export default class PageDocumentDisplay extends BaseClass {
         const dataPass = { doc: doc, treeAction: true }
         this.SSET_updateOpenedDocument(dataPass)
       }
+
+      this.$q.notify({
+        group: false,
+        type: "positive",
+        message: "Document successfully saved"
+      })
     }
   }
 }

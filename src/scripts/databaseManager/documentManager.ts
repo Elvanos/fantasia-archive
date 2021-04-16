@@ -7,7 +7,7 @@ import PouchDB from "pouchdb"
 /**
  * Saves the given project and handles all the needed procedures
  */
-export const saveDocument = async (document: I_OpenedDocument, allOpenedDocuments: I_OpenedDocument[]) => {
+export const saveDocument = async (document: I_OpenedDocument, allOpenedDocuments: I_OpenedDocument[], editModeAfterSave: boolean) => {
   const BlueprintsDB = new PouchDB("blueprints")
   const currentBlueprint: {extraFields: I_ExtraFields[]} = await BlueprintsDB.get(document.type)
 
@@ -109,6 +109,9 @@ export const saveDocument = async (document: I_OpenedDocument, allOpenedDocument
     CurrentObjectDB = new PouchDB(document.type)
     await CurrentObjectDB.put(documentCopy)
   }
+
+  // Set edit mode for frontend
+  documentCopy.editMode = editModeAfterSave
 
   return { documentCopy, allOpenedDocuments }
 }

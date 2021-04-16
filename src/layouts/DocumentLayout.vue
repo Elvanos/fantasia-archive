@@ -142,7 +142,7 @@ export default class DocumentLayout extends BaseClass {
 
 <style lang="scss">
 
-.sideWrapper{
+.sideWrapper {
   height: calc(100% - 40px) !important;
 }
 
@@ -168,6 +168,7 @@ export default class DocumentLayout extends BaseClass {
     height: calc(100vh - 95px);
     bottom: 0;
     top: 95px;
+    position: sticky;
   }
 }
 
