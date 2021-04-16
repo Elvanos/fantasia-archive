@@ -9,36 +9,36 @@
 
 - When creating a brand new project, Fantasia Archive sometimes doesn't load the default categories in the left hierarchical tree. A temporary workaround before the issue is fixed is restarting the program - the project stays intact, can be normally edited and no data loss occurs.
 - Some users report that dialog (popups) don't function the very first time you start FA. This is solved by restarting the application. The bug doesn't seem to appear again once FA has been started at least once before.
-- Overusing Tags currently causes app crashes on some PCs. If you suffer from this issue, reduce the amount of tags in your project below 10.
+- Overusing Tags currently causes app crashes on some PCs. If you suffer from this issue, reduce the number of tags in your project below 10.
 
 ### Bugfixes & Optimizations
 
-- Fixed a typo in `Type of being` field in the `Species/Races/Flora/Faunas` document type
+- Fixed a typo in the `Type of being` field in the `Species/Races/Flora/Faunas` document type
 - Fixed even more random types I don't even recall T_T
-- Fixed a bug that was causing the relationship dropdowns sometimes not be clickable and instead caused dragging of the app window when shown over the top of the drag-bar at the top of the app
+- Fixed a bug that was causing the relationship dropdowns sometimes not to be clickable and instead caused dragging of the app window when shown over the top of the drag-bar at the top of the app
 - Updated advanced search guide with missing information about full-text search
 - Changes a small bug when the `New Object` dialog wasn't respecting option changes being done in the same session of the program being opened
-- Fixed a bug that was sometimes showing improper values inside the user defined keybinds both in the key settings and the cheatsheet
-- Fixed tag groups in hierarchical tree not respecting custom order and alphabetical order
-- Fixed a rather peculiar recuring bug that could cause the database to endlessly attempt to update a document while constantly throwing errors
-- Fixed a bug that was causing an "Empty" checkbox popping up at irrelevant places on right click
-- Managed to fix or at least mitigate multiple memory-leaks across the app
+- Fixed a bug that was sometimes showing improper values inside the user-defined keybinds both in the key settings and the cheatsheet
+- Fixed tag groups in the hierarchical tree not respecting custom order and alphabetical order
+- Fixed a rather peculiar recurring bug that could cause the database to endlessly attempt to update a document while constantly throwing errors
+- Fixed a bug that was causing an "Empty" checkbox popping up at irrelevant places on right-click
+- Managed to fix or at least mitigate multiple memory leaks across the app
 - Optimized multiple parts of the code to run smoother
 - Fixed wrong icons in some fields in some document types
-- Fixed a bug that was allowing for an attempted deletion of a document while the document data was still being retrieved. This resulted in an error that both made a mess of a UI and didn't delete the desider document
-- Fixed a bug in the scroll of the hierarchical tree that was causing it to not display last 1-2 items when scrolling down
+- Fixed a bug that was allowing for an attempted deletion of a document while the document data was still being retrieved. This resulted in an error that both made a mess of a UI and didn't delete the desired document
+- Fixed a bug in the scroll of the hierarchical tree that was causing it to not display the last 1-2 items when scrolling down
 - Fixed a bug that was causing the hierarchical tree-resizing drag-bar to not scroll down with the rest of the page when viewing documents
 
 ### New features
 
-- Added context menu support and multiple actions (right click) for top tabs, hierarchical tree and relationships across whole app
+- Added context menu support and multiple actions (right-click) for top tabs, hierarchical tree, and relationships across the whole app
   - New actions for **Top Tabs**
     - All Opened Tabs
       - A list of all opened tabs for quick navigation
     - Copy name
     - Copy text color
-    - Copy background color
-    - Create new document with this document as parent
+    - Copy background-color
+    - Create a new document with this document as a parent
     - Copy this document
     - Close this tab
     - Close all tabs without changes except for this
@@ -49,46 +49,46 @@
   - New actions for **Hiearachical Tree**
     - Add new document type: `DOCUMENT TYPE`
       - Only available in the root-categories
-    - Expand all under this nodd
+    - Expand all under this node
     - Collapse all under this node
     - Copy name
     - Copy text color
-    - Copy background color
+    - Copy background-color
     - Open document
     - Edit document
-    - Create new document with this document as parent
+    - Create a new document with this document as a parent
     - Copy this document
     - Delete document
   - New actions for **Relationships**
     - Copy name
     - Copy text color
-    - Copy background color
+    - Copy background-color
     - Open document
     - Edit document
-    - Create new document with this document as parent
+    - Create a new document with this document as a parent
     - Copy this document
-- Added a special description field for categories that become visible only when the document is switches to the category mode
-- Added an option and correnspoding buttons/keybinds to save without exiting edit mode
+- Added a special description field for categories that become visible only when the document is switched to the category mode
+- Added an option and corresponding buttons/keybinds to save without exiting edit mode
 - Added a new 2-way relationship field `Connected to Lore notes/Other notes` to every single document type across the whole document
 - Added a whole new category "Organizations/Other groups" and connected it to other document types
-- Added a floating popup windows for quick cheatsheet for Advanced Search guide that can be summoned from each relationship search anywhere in the app
+- Added a floating popup window for quick cheatsheet for Advanced Search guide that can be summoned from each relationship search anywhere in the app
 - Added and reworded a few trivia lines
 - Added filtering via switch value for `Is a minor document`, `Is finished` and `Is Dead/Gone/Destroyed` switch
-  - Dead is visible in the lists by default, but can be used to narrow down the search
+  - Dead is visible in the lists by default but can be used to narrow down the search
   - Finished is visible in the lists by default, but can be used to narrow down the search
-  - Minor is NOT visible in the lists by default, but can be inluded using this option
-  - Instructions on how to trigger by this additions can be found in the `Advanced Search Guide` help menu
+  - Minor is NOT visible in the lists by default but can be included using this option
+  - Instructions on how to trigger by these additions can be found in the `Advanced Search Guide` help menu
 - Added Fantasia mascot in the app! ^_^
 - Different document tabs now keep scroll distance and resume wherever you left them at
 - Added support for default empty keybinds
 - Added a dedicated button that opens the connected documents straight from the little chips in relationship fields while in edit mode
-- Added support for background color for documents
+- Added support for  background-color for documents
 - Added support for "Minor document" mode switch for better organization and visual representation of documents
 - Added support for "Dead/Gone/Destroyed" mode switch for better organization and visual representation of documents
 - Added support for "Finished" mode switch for better organization and visual representation of documents
-  - This is essentially an individual setting for "Hide empty fields" options setting on per-document basis
+  - This is essentially an individual setting for "Hide empty fields" options setting on a per-document basis
 - Added trivia concerning Fantasia mascot
-- Added support for direct opening of documents in edit mode from the hierarchy tree without needing to open the document in view mode first
+- Added support for the direct opening of documents in edit mode from the hierarchy tree without needing to open the document in view mode first
 - Added option: Hide Fantasia mascot
 - Added option: Accessibility - Hide strike-through
 - Added option: Accessibility - Hide order numbers
@@ -109,19 +109,21 @@
 
 ### QoL adjustments
 
-- Added small popup notification upon succesfull save of a document
+- Swapped default keybinds between `Save active document` and `Save document without exiting edit mode` for hopefully more intuitive usage (you can still switch it back as it was using custom keybinds if you wish!)
+- Added small popup notification upon successful save of a document
 - Unified and modified a lot of the root category names/descriptions
 - Changed focusing of the hierarchy tree search input from CTRL + SHIFT + W to CTRL + SHIFT +T
 - Updated fullscreen editor looks to work more like a proper document editor
-- Unified icons for same actions across the app
+- Unified icons for the same actions across the app
 - Added responsive layout to the app to adjust based on the size of the window
-- Program settings have been separated into multiple tabs and sub-groups in order to be actually possible to navigate effectively
+- Program settings have been separated into multiple tabs and sub-groups to be actually possible to navigate effectively
 - Setting now remember which tab the user last closed them on in the same session of the app
 - Reordered the basic document settings inside the app and separated them from the document content
-- Adjusted maximum width of switch fields to make them look like spaggeti
+- Adjusted maximum width of switch fields to make them look like spaghetti
 - Updated the Advanced search guide with new additions and added one new Trivia popup text concerning it
 - Made the app a bit more "snappy" by decreasing animation lengths when transitioning between documents
 - Updated `readme` file on how to properly compile the app since I made it OSS and all... kinda important
+- Added `license` file to the repo so anyone code-savy reading the repository wouldn't get confused
 
 ---
 

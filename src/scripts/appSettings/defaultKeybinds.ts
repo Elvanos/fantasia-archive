@@ -143,9 +143,9 @@ export const defaultKeybinds = [
     tooltip: "Previous tab"
   },
 
-  // Save document - CTRL + S
+  // Save document - CTRL + ALT + S
   {
-    altKey: false,
+    altKey: true,
     ctrlKey: true,
     shiftKey: false,
     which: 83,
@@ -154,9 +154,9 @@ export const defaultKeybinds = [
     tooltip: "Save active document"
   },
 
-  // Save document without exiting edit mode - CTRL + ALT + S
+  // Save document without exiting edit mode - CTRL + S
   {
-    altKey: true,
+    altKey: false,
     ctrlKey: true,
     shiftKey: false,
     which: 83,
