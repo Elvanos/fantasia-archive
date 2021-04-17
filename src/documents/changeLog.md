@@ -14,7 +14,8 @@
 ### Bugfixes & Optimizations
 
 - Fixed a typo in the `Type of being` field in the `Species/Races/Flora/Faunas` document type
-- Fixed even more random types I don't even recall T_T
+- Fixed even more random typos I don't even recall T_T
+- Fixed a bug in light mode that was coloring the `List` field type's addition atributes dropdown wrong
 - Fixed a bug that was causing the relationship dropdowns sometimes not to be clickable and instead caused dragging of the app window when shown over the top of the drag-bar at the top of the app
 - Updated advanced search guide with missing information about full-text search
 - Changes a small bug when the `New Object` dialog wasn't respecting option changes being done in the same session of the program being opened
@@ -28,6 +29,8 @@
 - Fixed a bug that was allowing for an attempted deletion of a document while the document data was still being retrieved. This resulted in an error that both made a mess of a UI and didn't delete the desired document
 - Fixed a bug in the scroll of the hierarchical tree that was causing it to not display the last 1-2 items when scrolling down
 - Fixed a bug that was causing the hierarchical tree-resizing drag-bar to not scroll down with the rest of the page when viewing documents
+- Fixed a typo in delete document confirmation dialog
+- Fixed a few typos in `Character` document type
 
 ### New features
 

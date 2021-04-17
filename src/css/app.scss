@@ -306,12 +306,14 @@ a {
 .singleRelashionshipSelect,
 .multiRelashionshipSelect,
 .existingDocumentSelect,
-.newDocumentSelect {
+.newDocumentSelect,
+.listAtributeSelect {
   &.q-field--dark .q-field__control::before {
     border: 1px solid rgba(0, 0, 0, 0.24);
   }
 
   .q-field__input,
+  .q-field__label,
   .q-icon,
   .q-field__native span {
     color: #000 !important;
@@ -321,6 +323,7 @@ a {
 .tagSelect,
 .singleSelect,
 .multiSelect,
+.listAtributeSelect,
 .singleRelashionshipSelect,
 .multiRelashionshipSelect {
   .q-chip {
@@ -368,6 +371,7 @@ a {
 .q-menu {
   z-index: 99999999 !important;
   background-color: $dark;
+  color: $accent;
 }
 
 .text-underline {

@@ -86,7 +86,7 @@ export const racesBlueprint: I_Blueprint = {
       type: "switch",
       icon: "mdi-skull-crossbones",
       tooltip:
-        `This setting allows for setting the current document to dead/gone/estroyed mode.
+        `This setting allows for setting the current document to dead/gone/destroyed mode.
         <br>
         A document with dead/gone/destroyed mode toggled on will have a crossed-over text modifier applied to it - showing that it is no longer a part of the current timeline.
         `,

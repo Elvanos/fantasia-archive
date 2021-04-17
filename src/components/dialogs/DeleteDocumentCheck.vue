@@ -10,7 +10,7 @@
 
          <q-card-section class="row justify-center q-mx-xl">
           <div>
-            The document will be delete <span class="text-bold text-secondary">FOREVER</span> with no way to retrieve it.
+            The document will be deleted <span class="text-bold text-secondary">FOREVER</span> with no way to retrieve it.
             <br>
             <span class="text-caption">(unless a previous export of the project exists from earlier time that cointains it)</span>
             <br>

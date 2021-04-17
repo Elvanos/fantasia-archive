@@ -12,8 +12,10 @@
 
 - Add HTML webcolor cheatsheet in floating window (look for JSON of them somewhere?)
 - Word count for editor fields
+- Add "Open app folder" to help menu
+- Try to get field titles to show in full-screen edit of text editor fields
 
-- Add dropdown of all opened document for tab context menu (submenu)
+- Consider reworking the save document mechanic (save doesnt close, open/exit edit mode instead)
 
 - Mass tag rename/deletion (done via document saving!)
 - Context menu for tags

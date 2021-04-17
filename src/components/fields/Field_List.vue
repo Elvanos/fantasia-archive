@@ -58,6 +58,7 @@
         <q-select
           style="width: 100%;"
           dense
+          class="listAtributeSelect"
           :options="localExtraInput"
           use-input
           :hide-dropdown-icon="!editMode"
@@ -67,6 +68,7 @@
           :readonly="!editMode"
           input-debounce="0"
           new-value-mode="add"
+          dark
           @input="signalInput"
           @keydown="signalInput"
           :label="(inputAffix) ? inputAffix : ''"

@@ -5,6 +5,7 @@
      <q-window
       v-model="advSearchWindowVisible"
       no-resize
+      dark
       title="Advanced Search Cheatsheet"
       :height="480"
       :width="425"

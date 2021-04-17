@@ -996,6 +996,14 @@ export default class PageDocumentDisplay extends BaseClass {
   }
 }
 
+body:not(.body--dark) {
+  .documentDisplay {
+    .isDead {
+      text-decoration-color: #000;
+    }
+  }
+}
+
 body.body--dark {
   .documentDisplay {
 
