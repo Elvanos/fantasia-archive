@@ -38,8 +38,7 @@ jobs:
       with:
         # Artifact name
         name: Linux_FA ${{ github.event.inputs.version }}
-        # A file, directory or wildcard pattern that describes what to upload
-        path: dist/electron/Packaged/*.AppImage
+        path: dist/electron/Packaged/
         
     - name: Upload MacOS Artifact
       if: ${{ matrix.os == 'macOS-latest' }}
@@ -47,8 +46,7 @@ jobs:
       with:
         # Artifact name
         name: Mac_FA ${{ github.event.inputs.version }}
-        # A file, directory or wildcard pattern that describes what to upload
-        path: dist/electron/Packaged/*.dmg
+        path: dist/electron/Packaged/
     
     - name: Upload Windows Artifact
       if: ${{ matrix.os == 'windows-latest' }}
@@ -56,6 +54,5 @@ jobs:
       with:
         # Artifact name
         name: Windows_FA ${{ github.event.inputs.version }}
-        # A file, directory or wildcard pattern that describes what to upload
-        path: dist/electron/Packaged/*.exe
+        path: dist/electron/Packaged/
     
