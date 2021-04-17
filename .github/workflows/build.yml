@@ -33,7 +33,7 @@ jobs:
         npm run build
     
     - name: Upload Linux Artifact
-      if: ${{ matrix.os }} == ubuntu-latest
+      if: ${{ matrix.os == ubuntu-latest }}
       uses: actions/upload-artifact@v2.2.3
       with:
         # Artifact name
@@ -42,20 +42,20 @@ jobs:
         path: dist/electron/Packaged/*.AppImage
         
     - name: Upload MacOS Artifact
-      if: ${{ matrix.os }} == macOS-latest
+      if: ${{ matrix.os == macOS-latest }}
       uses: actions/upload-artifact@v2.2.3
       with:
         # Artifact name
-        name: Linux_FA ${{ github.event.inputs.version }}
+        name: Mac_FA ${{ github.event.inputs.version }}
         # A file, directory or wildcard pattern that describes what to upload
         path: dist/electron/Packaged/*.dmg
     
     - name: Upload Windows Artifact
-      if: ${{ matrix.os }} == windows-latest
+      if: ${{ matrix.os == windows-latest }}
       uses: actions/upload-artifact@v2.2.3
       with:
         # Artifact name
-        name: Linux_FA ${{ github.event.inputs.version }}
+        name: Windows_FA ${{ github.event.inputs.version }}
         # A file, directory or wildcard pattern that describes what to upload
         path: dist/electron/Packaged/*.exe
     
