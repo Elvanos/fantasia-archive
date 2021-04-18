@@ -10,12 +10,15 @@
 
 ## THE GM BATCH END
 
+- Add option for project graph to filter out categories or show them separately
 - Add HTML webcolor cheatsheet in floating window (look for JSON of them somewhere?)
 - Word count for editor fields
 - Add "Open app folder" to help menu
 - Try to get field titles to show in full-screen edit of text editor fields
 
 - Consider reworking the save document mechanic (save doesnt close, open/exit edit mode instead)
+- Add color support (text and background) to view and edit mode of document display
+- Add a toggle option for it (default off)
 
 - Mass tag rename/deletion (done via document saving!)
 - Context menu for tags
@@ -53,10 +56,10 @@
 - Tag management (coloring)
 
 - Simple data imports (maybe?)
-
 - Dynamic table field
 - Settings search
 
+- Vanity project-wide word count (lol...)
 - Add on-the-fly generation of non-existent 2-way relationships
 
 - Automatic thumbnail generation AND re-checking based on date
