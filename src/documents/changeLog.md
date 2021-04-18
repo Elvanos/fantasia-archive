@@ -127,6 +127,7 @@
 - Made the app a bit more "snappy" by decreasing animation lengths when transitioning between documents
 - Updated `readme` file on how to properly compile the app since I made it OSS and all... kinda important
 - Added `license` file to the repo so anyone code-savy reading the repository wouldn't get confused
+- Modified displaying of `Skills` field on smaller displays in `Characters` document type to be actually usable
 
 ---
 

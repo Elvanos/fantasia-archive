@@ -39,7 +39,7 @@
       v-for="(singleInput,index) in localInput"
       :key="index"
     >
-      <div class="col">
+      <div class="col-sm-12 col-md">
         <q-input
           v-model="localInput[index].value"
           :class="`listField_input${index}_${inputDataBluePrint.id}`"

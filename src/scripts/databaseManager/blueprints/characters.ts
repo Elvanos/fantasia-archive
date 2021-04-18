@@ -997,7 +997,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Skills",
       type: "list",
       icon: "mdi-sword-cross",
-      sizing: 6,
+      sizing: 12,
       predefinedListExtras: {
         affix: "Level",
         extraSelectValueList: [
@@ -1019,7 +1019,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Languages",
       type: "manyToManyRelationship",
       icon: "mdi-book-alphabet",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "languages",
         connectedField: "pairedCharacter"
@@ -1030,7 +1030,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Known Magic/Spells",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "magic",
         connectedField: "pairedCharacter"
@@ -1041,7 +1041,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Known Technologies/Sciences",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "tech",
         connectedField: "pairedCharacter"

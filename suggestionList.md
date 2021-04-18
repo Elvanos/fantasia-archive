@@ -10,6 +10,8 @@
 
 ## THE GM BATCH END
 
+- Add reverse list field option (dropdown first, value in bracket)
+- Rework stats (via reverse list)
 - Add option for project graph to filter out categories or show them separately
 - Add HTML webcolor cheatsheet in floating window (look for JSON of them somewhere?)
 - Word count for editor fields
