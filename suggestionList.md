@@ -54,6 +54,7 @@
 - Context menu: Pin tab
 - Context menu: Unpin tab
 
+- Horizonatal fields (title AND value next to each other. Might need a designer)
 - Add support for dates in "custom order"... reee
 - Tag management (coloring)
 

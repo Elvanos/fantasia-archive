@@ -89,9 +89,11 @@ body {
     }
 
     .existingDocumentSelect,
-    .newDocumentSelect {
+    .newDocumentSelect,
+    .listAtributeSelect {
       .q-field__input,
       .q-icon,
+      .q-field__label,
       .q-field__native span {
         color: #d4d0c9 !important;
       }
