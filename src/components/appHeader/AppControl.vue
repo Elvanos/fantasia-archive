@@ -35,6 +35,12 @@
       @trigger-dialog-close="importProjectDialogClose"
     />
 
+    <!-- Merge project dialog -->
+    <mergeProjectCheckDialog
+      :dialog-trigger="mergeProjectDialogTrigger"
+      @trigger-dialog-close="mergeProjectDialogClose"
+    />
+
     <!-- New project dialog -->
     <newProjectCheckDialog
       :dialog-trigger="newProjectDialogTrigger"
@@ -194,6 +200,21 @@
               <q-item-section>Import existing project</q-item-section>
               <q-item-section avatar>
                 <q-icon name="mdi-package-variant" />
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              v-close-popup
+              clickable
+              active
+              active-class="bg-gunmetal-light text-cultured"
+              class="noHigh"
+              @click="mergeProjectAssignUID"
+              :disable="!projectExists"
+            >
+              <q-item-section>Merge another project into the current one</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-folder-plus-outline" />
               </q-item-section>
             </q-item>
 
@@ -384,6 +405,7 @@ import BaseClass from "src/BaseClass"
 import projectCloseCheckDialog from "src/components/dialogs/ProjectCloseCheck.vue"
 import keybindCheatsheetDialog from "src/components/dialogs/KeybindCheatsheet.vue"
 import importProjectCheckDialog from "src/components/dialogs/ImportProjectCheck.vue"
+import mergeProjectCheckDialog from "src/components/dialogs/MergeProjectCheck.vue"
 import newProjectCheckDialog from "src/components/dialogs/NewProjectCheck.vue"
 import aboutAppDialog from "src/components/dialogs/AboutApp.vue"
 import changeLogDialog from "src/components/dialogs/ChangeLog.vue"
@@ -405,6 +427,7 @@ import appLogo from "src/assets/appLogo.png"
     projectCloseCheckDialog,
     keybindCheatsheetDialog,
     importProjectCheckDialog,
+    mergeProjectCheckDialog,
     newProjectCheckDialog,
     aboutAppDialog,
     changeLogDialog,
@@ -542,6 +565,19 @@ export default class AppControl extends BaseClass {
 
   importProjectAssignUID () {
     this.importProjectDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
+  // Merge project dialog
+  /****************************************************************/
+
+  mergeProjectDialogTrigger: string | false = false
+  mergeProjectDialogClose () {
+    this.mergeProjectDialogTrigger = false
+  }
+
+  mergeProjectAssignUID () {
+    this.mergeProjectDialogTrigger = this.generateUID()
   }
 
   /****************************************************************/

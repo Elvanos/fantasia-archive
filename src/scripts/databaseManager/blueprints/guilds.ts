@@ -379,7 +379,7 @@ export const guildsBlueprint: I_Blueprint = {
       id: "pairedEnemyOtherGroups",
       name: "Enemy Organizations/Other groups",
       type: "manyToManyRelationship",
-      icon: "mdi-bank-outline",
+      icon: "mdi-account-group",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "guilds",
@@ -516,7 +516,7 @@ export const guildsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedItems",
-      name: "Connected to legendary Items",
+      name: "Connected to Items",
       type: "manyToManyRelationship",
       icon: "mdi-sword-cross",
       sizing: 4,

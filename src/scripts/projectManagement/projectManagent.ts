@@ -203,6 +203,78 @@ export const importExistingProject = (vueRouter: any, Loading: any, loadingSetup
 }
 
 /**
+ * Opens a dialog to let user pick whatever project they wish to open and lets them select a directory
+ * @param vueRouter The vue router object
+ */
+export const mergeExistingProject = (vueRouter: any, Loading: any, loadingSetup: any, quasar: any, vueInstance: any) => {
+  /*eslint-disable */
+  remote.dialog.showOpenDialog({
+    properties: ["openDirectory"]
+  }).then(async (result) => {
+    const folderPath = result.filePaths[0]
+
+    if (!folderPath) {
+      return
+    }
+
+    Loading.show(loadingSetup)
+
+    // @ts-ignore
+    PouchDB.plugin({
+      loadIt: load.load
+    })
+
+    let allFiles = fs.readdirSync(folderPath)
+    allFiles = allFiles.filter(file => file !== 'project-data.txt')
+
+    for (const file of allFiles) {
+      const currentDBName = path.parse(file).name
+      const CurrentDB = new PouchDB(currentDBName)
+
+      const fileContents = fs.readFileSync(`${folderPath}/${file}`, { encoding: "utf8" })
+      // @ts-ignore
+      await CurrentDB.loadIt(fileContents)
+      await CurrentDB.close()
+
+    }
+
+    /*eslint-disable */
+    // @ts-ignore
+    vueRouter.push({ path: "/" }).catch((e: {name: string}) => {
+      const errorName : string = e.name
+      if (errorName === "NavigationDuplicated") {
+        return
+      }
+      console.log(e)
+    })
+    /* eslint-enable */
+
+    await new Promise(resolve => setTimeout(resolve, 1000))
+
+    /*eslint-disable */
+    // @ts-ignore
+    vueRouter.push({ path: "/project" }).catch((e: {name: string}) => {
+      const errorName : string = e.name
+      if (errorName === "NavigationDuplicated") {
+        return
+      }
+      console.log(e)
+    })
+
+    quasar.notify({
+      type: 'positive',
+      message: `Project succesfully imported`
+    })
+
+    vueInstance.SSET_resetDocuments()
+    /* eslint-enable */
+  }).catch(err => {
+    console.log(err)
+  })
+  /* eslint-enable */
+}
+
+/**
  * Retrieves current project name
  */
 export const retrieveCurrentProjectName = async () => {

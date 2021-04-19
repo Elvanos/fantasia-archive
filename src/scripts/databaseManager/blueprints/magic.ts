@@ -398,6 +398,39 @@ export const magicBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "pairedConnectedOtherGroups",
+      name: "Connected Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "pairedConnectedMagicalGroups"
+      }
+    },
+    {
+      id: "pairedAllyOtherGroups",
+      name: "Allied Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "pairedAllyMagicalGroups"
+      }
+    },
+    {
+      id: "pairedEnemyOtherGroups",
+      name: "Enemy Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "pairedEnemyMagicalGroups"
+      }
+    },
+    {
       id: "pairedConnectedReligiousGroups",
       name: "Connected Teachings/Religious groups",
       type: "manyToManyRelationship",
@@ -464,39 +497,6 @@ export const magicBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "pairedConnectedOtherGroups",
-      name: "Connected Organizations/Other groups",
-      type: "manyToManyRelationship",
-      icon: "mdi-account-group",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "guilds",
-        connectedField: "pairedConnectedMagicalGroups"
-      }
-    },
-    {
-      id: "pairedAllyOtherGroups",
-      name: "Allied Organizations/Other groups",
-      type: "manyToManyRelationship",
-      icon: "mdi-account-group",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "guilds",
-        connectedField: "pairedAllyMagicalGroups"
-      }
-    },
-    {
-      id: "pairedEnemyOtherGroups",
-      name: "Enemy Organizations/Other groups",
-      type: "manyToManyRelationship",
-      icon: "mdi-account-group",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "guilds",
-        connectedField: "pairedEnemyMagicalGroups"
-      }
-    },
-    {
       id: "pairedConnectedTechGroups",
       name: "Connected Sciences/Technological groups",
       type: "manyToManyRelationship",
@@ -559,7 +559,7 @@ export const magicBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedItems",
-      name: "Connected to legendary Items",
+      name: "Connected to Items",
       type: "manyToManyRelationship",
       icon: "mdi-sword-cross",
       sizing: 4,

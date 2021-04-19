@@ -509,7 +509,7 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedItems",
-      name: "Connected to legendary Items",
+      name: "Connected to Items",
       type: "manyToManyRelationship",
       icon: "mdi-sword-cross",
       sizing: 4,

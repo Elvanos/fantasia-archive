@@ -179,7 +179,7 @@
             round
             dense
             flat
-            class="z-max relationshipChipNewTab"
+            class="z-15 relationshipChipNewTab"
             style="color: #000 !important;"
             size="sm"
             icon="mdi-open-in-new"
@@ -613,7 +613,7 @@ export default class Field_MultiRelationship extends FieldBase {
       })
 
       if (needsRefresh) {
-        this.signalInput(true)
+        this.signalInput(true).catch(e => console.log(e))
       }
 
       await CurrentObjectDB.close()
@@ -656,9 +656,12 @@ export default class Field_MultiRelationship extends FieldBase {
    * Signals the input change to the document body parent component
    */
   @Emit()
-  signalInput (skipSave?: boolean) {
+  async signalInput (skipSave?: boolean) {
+    await this.$nextTick()
+
     this.checkNotes()
     this.inputNotes = this.inputNotes.filter(single => this.localInput.find(e => single.pairedId === e._id))
+
     return {
       value: this.localInput,
       addedValues: this.inputNotes,
@@ -722,7 +725,6 @@ export default class Field_MultiRelationship extends FieldBase {
   /****************************************************************/
 
   copyName (currentDoc: I_OpenedDocument) {
-    console.log(currentDoc)
     copyDocumentName(currentDoc)
   }
 

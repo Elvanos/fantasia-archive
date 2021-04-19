@@ -38,6 +38,7 @@
 - Add "Open all search matches" button in the Quick-search that opens a new page with a list of items
 - Allow showing of document types under tags
 - Add description tabs
+- Add category for materials/resources OR adapt Items category
 - Add category for diseases/curses/etc
 - Add button to pull the left tree in and out
 - Add support for individual document order hiding inside the hierarchical tree for each document

@@ -348,7 +348,6 @@ export const techBlueprint: I_Blueprint = {
         connectedField: "pairedEnemyTechGroup"
       }
     },
-
     {
       id: "pairedConnectedPolGroups",
       name: "Connected Ideologies/Political groups",
@@ -382,7 +381,6 @@ export const techBlueprint: I_Blueprint = {
         connectedField: "pairedEnemyTechGroups"
       }
     },
-
     {
       id: "pairedConnectedOtherGroups",
       name: "Connected Organizations/Other groups",
@@ -416,7 +414,6 @@ export const techBlueprint: I_Blueprint = {
         connectedField: "pairedEnemyTechGroups"
       }
     },
-
     {
       id: "pairedConnectedReligiousGroups",
       name: "Connected Teachings/Religious groups",
@@ -546,7 +543,7 @@ export const techBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedItems",
-      name: "Connected to legendary Items",
+      name: "Connected to Items",
       type: "manyToManyRelationship",
       icon: "mdi-sword-cross",
       sizing: 4,

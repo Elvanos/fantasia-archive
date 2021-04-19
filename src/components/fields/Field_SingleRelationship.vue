@@ -176,7 +176,7 @@
             round
             dense
             flat
-            class="z-max relationshipChipNewTab"
+            class="z-15 relationshipChipNewTab"
             style="color: #000 !important;"
             size="sm"
             icon="mdi-open-in-new"

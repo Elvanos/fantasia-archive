@@ -5,7 +5,7 @@ import { Component, Vue } from "vue-property-decorator"
 import { namespace } from "vuex-class"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
 import { I_NewObjectTrigger } from "src/interfaces/I_NewObjectTrigger"
-import { uid, colors } from "quasar"
+import { uid, colors, extend } from "quasar"
 import { I_FieldRelationship } from "src/interfaces/I_FieldRelationship"
 import { I_KeyPressObject } from "src/interfaces/I_KeypressObject"
 import PouchDB from "pouchdb"
@@ -265,6 +265,16 @@ export default class BaseClass extends Vue {
    * @param existingObject An already existing object passed in
    */
   openExistingDocumentRouteWithEdit (existingObject:I_OpenedDocument | I_FieldRelationship) {
+    const currentDoc = this.findRequestedOrActiveDocument()
+
+    if (currentDoc && existingObject._id === currentDoc._id && !currentDoc.editMode) {
+      const dataCopy: I_OpenedDocument = extend(true, {}, currentDoc)
+      dataCopy.editMode = true
+      const dataPass = { doc: dataCopy, treeAction: false }
+      this.SSET_updateOpenedDocument(dataPass)
+      return
+    }
+
     this.$router.push({
       path: existingObject.url,
       query: { editMode: "editMode" }
