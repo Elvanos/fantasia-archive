@@ -158,6 +158,23 @@
 
             <q-separator dark />
 
+              <q-item
+              v-close-popup
+              clickable
+              active
+              active-class="bg-gunmetal-light text-cultured"
+              class="noHigh"
+              @click="toggleHierarchicalTree"
+              :disable="!projectExists || isFrontpage"
+            >
+              <q-item-section>Toggle hierarchical tree</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-page-layout-sidebar-left" />
+              </q-item-section>
+            </q-item>
+
+            <q-separator dark />
+
              <q-item
               v-close-popup
               clickable

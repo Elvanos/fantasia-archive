@@ -421,6 +421,27 @@
                     </div>
                   </div>
 
+                   <div class="col-12">
+                    <div class="text-bold q-mt-xl">
+                      Tree settings
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
+                    <div class="optionTitle">
+                      Hide hierarchical tree
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Determines if the tree shows at all or not.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                    <q-toggle
+                      v-model="options.hideHierarchyTree"
+                    />
+                  </div>
+
                   <div class="col-12">
                     <div class="text-bold q-mt-xl">
                       Tag settings
@@ -902,6 +923,7 @@ export default class ProgramSettings extends DialogBase {
     doubleDashDocCount: false,
     hideDeadCrossThrough: false,
     hidePlushes: false,
+    hideHierarchyTree: false,
     tagsAtTop: false,
     noTags: false,
     compactTags: false,

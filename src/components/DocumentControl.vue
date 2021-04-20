@@ -38,11 +38,20 @@
       @trigger-dialog-close="tipsTricksDialogClose"
     />
 
-    <q-page-sticky position="top-right" class="documentControl bg-dark" v-if="!disableDocumentControlBar">
+    <q-page-sticky position="top-right"
+      class="documentControl bg-dark"
+      :class="{'fullScreen': hideHierarchyTree}"
+      v-if="!disableDocumentControlBar"
+      >
 
-      <div class="documentControl__blocker"></div>
+      <div
+      class="documentControl__blocker"
+      ></div>
 
-      <div class="documentControl__wrapper">
+      <div
+      class="documentControl__wrapper"
+      :class="{'fullScreen': hideHierarchyTree}"
+      >
 
         <div class="documentControl__left">
 
@@ -108,6 +117,23 @@
               self="top middle"
             >
              Export current project
+            </q-tooltip>
+          </q-btn>
+
+          <q-separator vertical inset color="accent" />
+
+          <q-btn
+            icon="mdi-page-layout-sidebar-left"
+            color="primary"
+            outline
+            @click="toggleHierarchicalTree"
+          >
+            <q-tooltip
+              :delay="500"
+              anchor="bottom middle"
+              self="top middle"
+            >
+             Toggle hierarchical tree
             </q-tooltip>
           </q-btn>
 
@@ -301,7 +327,10 @@ export default class DocumentControl extends BaseClass {
     const options = this.SGET_options
     this.disableDocumentControlBar = options.disableDocumentControlBar
     this.disableDocumentControlBarGuides = options.disableDocumentControlBarGuides
+    this.hideHierarchyTree = options.hideHierarchyTree
   }
+
+  hideHierarchyTree = false
 
   async created () {
     this.projectName = await retrieveCurrentProjectName()
@@ -357,6 +386,12 @@ export default class DocumentControl extends BaseClass {
     if (this.determineKeyBind("copyDocument") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState) {
       await this.sleep(100)
       this.copyTargetDocument()
+    }
+
+    // Toggle hierarchical tree - CTRL + ALT + SHIFT + T
+    if (this.determineKeyBind("toggleHierarchicalTree")) {
+      // @ts-ignore
+      this.toggleHierarchicalTree()
     }
   }
 
@@ -605,6 +640,10 @@ export default class DocumentControl extends BaseClass {
   width: calc(100vw - 380px);
   margin-top: 2.5px;
 
+  &.fullScreen {
+    width: calc(100vw);
+  }
+
   &__blocker {
     position: absolute;
     top: -7.5px;
@@ -621,6 +660,10 @@ export default class DocumentControl extends BaseClass {
     display: flex;
     justify-content: space-between;
     position: relative;
+
+    &.fullScreen {
+      width: calc(100vw);
+    }
 
     &::after {
       content: " ";

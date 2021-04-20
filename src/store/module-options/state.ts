@@ -8,6 +8,7 @@ export interface OptionsStateInteface {
   hideDeadCrossThrough: boolean
   doubleDashDocCount: boolean
   hideWelcomeScreenSocials: boolean
+  hideHierarchyTree: boolean
   noTags: boolean
   tagsAtTop: boolean
   compactTags: boolean
@@ -48,6 +49,7 @@ function state (): OptionsStateInteface {
     doubleDashDocCount: false,
     hideWelcomeScreenSocials: false,
     hidePlushes: false,
+    hideHierarchyTree: false,
     noTags: false,
     tagsAtTop: false,
     compactTags: false,

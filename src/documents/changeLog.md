@@ -13,9 +13,9 @@
 
 ### Bugfixes & Optimizations
 
-- Fixed a bug of edit mode "Open in new window" buttons being on higher level than the document control bar and rendering over it
-- Fixed non-working edit button inthe hierarchical tree on already opened documents
-- Attempted to fixed ocasionally buggy functionality regarding known issues of the non-functional new project and importing/merging
+- Fixed a bug of edit mode "Open in new window" buttons being on a higher level than the document control bar and rendering over it
+- Fixed non-working edit button in the hierarchical tree on already opened documents
+- Attempted to fixed occasionally buggy functionality regarding known issues of the non-functional new project and importing/merging
 
 ### New features
 
@@ -24,10 +24,15 @@
 - Added a new `Cost in different Currencies` one-way relationship field to `Items` document type
 - Added a new `Connected to Currencies` two-way relationship field to `Items` document type
 - Added a new `Connected to Items` two-way relationship field to `Currencies` document type
+- Added a few pre-filled location types to `Location type` field in `Locations/Geography` document type
+- Added support for toggling of hierarchical tree on and off
+- Added option: Hide hierarchical tree
+- Added keybind: Toggle hierarchical tree
+- Added menu icon and document control bar icon for toggling of hierarchical tree
 
 ### QoL adjustments
 
-- Multiple small field name changes to unify meanings across app
+- Multiple small field name changes to unify meanings across the app
 - Unified ordering of connected groups in all document types
 
 ## 0.1.5

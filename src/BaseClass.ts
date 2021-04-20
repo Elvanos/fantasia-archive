@@ -309,6 +309,14 @@ export default class BaseClass extends Vue {
 
   @Options.Action("setOptions") SSET_options!: (input: OptionsStateInteface) => void
 
+  toggleHierarchicalTree (): void {
+    const optionsSnapshot: OptionsStateInteface = extend(true, {}, this.SGET_options)
+
+    optionsSnapshot.hideHierarchyTree = !optionsSnapshot.hideHierarchyTree
+
+    this.SSET_options(optionsSnapshot)
+  }
+
   /****************************************************************/
   // OPEN DOCUMENTS MANAGEMENT
   /****************************************************************/

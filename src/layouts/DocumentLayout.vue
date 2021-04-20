@@ -10,10 +10,12 @@
       emit-immediately
       :class="splitterClass"
       @input="onChange"
-      :limits="[374, Infinity]"
+      :limits="[limiterWidth, Infinity]"
       class="pageSplitter"
       >
-      <template #before>
+      <template
+        v-if="!hideHierarchyTree"
+       #before>
         <!-- Left drawer -->
         <q-drawer
           content-class="bg-dark text-cultured sideWrapper"
@@ -23,7 +25,9 @@
           :breakpoint="0"
           show-if-above
           >
-            <objectTree/>
+            <objectTree
+
+            />
         </q-drawer>
       </template>
       <template #after>
@@ -101,10 +105,21 @@ export default class DocumentLayout extends BaseClass {
   @Watch("SGET_options", { immediate: true, deep: true })
   onSettingsChange () {
     const options = this.SGET_options
-    if (options.treeWidth) {
+    this.hideHierarchyTree = options.hideHierarchyTree
+
+    if (options.treeWidth && !this.hideHierarchyTree) {
       this.splitterModel = options.treeWidth
     }
+    else {
+      this.splitterModel = 0
+    }
   }
+
+  get limiterWidth () {
+    return (!this.hideHierarchyTree) ? 374 : 0
+  }
+
+  hideHierarchyTree = false
 
   /****************************************************************/
   // OPTTION UPDATER

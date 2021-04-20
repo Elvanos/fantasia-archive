@@ -11,7 +11,7 @@
 
         <q-card-section class="row justify-center q-mx-xl">
           <div>
-            Please note that merging another project will cause <span class="text-bold text-secondary">IRREVERSIBLE CHANGES</span> to currently opened project.
+            Please note that merging another project will cause <span class="text-bold text-secondary">IRREVERSIBLE CHANGES</span> to the currently opened project.
             <br>
             If you haven't done so already, please export your current project first to prevent <span class="text-bold text-secondary">POSSIBLE COMPLICATIONS</span> concerning your current project data!
           </div>

@@ -22,6 +22,17 @@ export const defaultKeybinds = [
     tooltip: "Open Fantasia Archive options"
   },
 
+  // Toggle hierarchical tree - CTRL + ALT + SHIFT + T
+  {
+    altKey: true,
+    ctrlKey: true,
+    shiftKey: true,
+    which: 84,
+    editable: true,
+    id: "toggleHierarchicalTree",
+    tooltip: "Toggle hierarchical tree"
+  },
+
   // Quick new document - CTRL + N
   {
     altKey: false,
