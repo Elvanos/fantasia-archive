@@ -8,7 +8,7 @@
       v-model="splitterModel"
       unit="px"
       emit-immediately
-      :class="splitterClass"
+      :class="{splitterClass, 'splitterHidden': hideHierarchyTree}"
       @input="onChange"
       :limits="[limiterWidth, Infinity]"
       class="pageSplitter"
@@ -55,9 +55,11 @@ import BaseClass from "src/BaseClass"
 import objectTree from "src/components/ObjectTree.vue"
 import appHeader from "src/components/AppHeader.vue"
 import documentControl from "src/components/DocumentControl.vue"
+import { engageBlueprints, retrieveAllBlueprints } from "src/scripts/databaseManager/blueprintManager"
 
 import { extend } from "quasar"
 import { OptionsStateInteface } from "src/store/module-options/state"
+import { I_Blueprint } from "src/interfaces/I_Blueprint"
 
 @Component({
   components: {
@@ -86,6 +88,30 @@ export default class DocumentLayout extends BaseClass {
    */
   get splitterClass () {
     return !this.leftDrawerOpen ? "splitt" : ""
+  }
+
+  /**
+   * Load all blueprints and build the tree out of them
+   */
+  async created () {
+    // await cleanDatabases()
+    await this.processBluePrints()
+
+    // Unfuck the rendering by giving the app some time to load first
+    await this.$nextTick()
+  }
+
+  /**
+   * Processes all blueprints and redies the store for population of the app
+   */
+  async processBluePrints (): Promise<void> {
+    await engageBlueprints()
+
+    const allObjectBlueprints = (await retrieveAllBlueprints()).rows.map((blueprint) => {
+      return blueprint.doc
+    }) as I_Blueprint[]
+
+    this.SSET_allBlueprints(allObjectBlueprints)
   }
 
   /**
@@ -176,6 +202,12 @@ export default class DocumentLayout extends BaseClass {
   aside {
     height: calc(100% - 55px) !important;
     margin-top: 55px !important;
+  }
+
+  &.splitterHidden {
+    .q-splitter__separator {
+      display: none;
+    }
   }
 
   .q-splitter__separator {

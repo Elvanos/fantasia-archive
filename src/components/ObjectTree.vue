@@ -293,9 +293,6 @@ import { I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDo
 import PouchDB from "pouchdb"
 import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentCheck.vue"
 
-import { engageBlueprints, retrieveAllBlueprints } from "src/scripts/databaseManager/blueprintManager"
-// import { cleanDatabases } from "src/scripts/databaseManager/cleaner"
-import { I_Blueprint } from "src/interfaces/I_Blueprint"
 import { extend, colors } from "quasar"
 import { tagListBuildFromBlueprints } from "src/scripts/utilities/tagListBuilder"
 import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
@@ -335,9 +332,6 @@ export default class ObjectTree extends BaseClass {
    */
   async created () {
     this.projectName = await retrieveCurrentProjectName()
-
-    // await cleanDatabases()
-    await this.processBluePrints()
 
     // Unfuck the rendering by giving the app some time to load first
     await this.$nextTick()
@@ -400,19 +394,6 @@ export default class ObjectTree extends BaseClass {
     this.buildCurrentObjectTree().catch((e) => {
       console.log(e)
     })
-  }
-
-  /**
-   * Processes all blueprints and redies the store for population of the app
-   */
-  async processBluePrints (): Promise<void> {
-    await engageBlueprints()
-
-    const allObjectBlueprints = (await retrieveAllBlueprints()).rows.map((blueprint) => {
-      return blueprint.doc
-    }) as I_Blueprint[]
-
-    this.SSET_allBlueprints(allObjectBlueprints)
   }
 
   /****************************************************************/
