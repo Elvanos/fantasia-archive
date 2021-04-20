@@ -2,6 +2,7 @@
     <q-dialog
       v-model="dialogModel"
       @hide="triggerDialogClose"
+      no-route-dismiss
       >
       <q-card dark class="documentCloseDialog">
          <q-card-section class="row justify-center">

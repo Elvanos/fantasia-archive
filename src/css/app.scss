@@ -257,7 +257,7 @@ a {
 .isDead {
   text-decoration: line-through;
   text-decoration-color: #fff;
-}
+} 
 
 .q-icon::after,
 .q-icon::before {
@@ -266,6 +266,10 @@ a {
 
 .grow-0 {
   flex-grow: 0;
+}
+
+.grow-1 {
+  flex-grow: 1;
 }
 
 .q-notification__message {

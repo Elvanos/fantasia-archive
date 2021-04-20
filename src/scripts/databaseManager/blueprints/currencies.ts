@@ -160,6 +160,17 @@ export const currenciesBlueprint: I_Blueprint = {
       sizing: 6
     },
     {
+      id: "pairedItems",
+      name: "Connected to Items",
+      type: "manyToManyRelationship",
+      icon: "mdi-sword-cross",
+      sizing: 12,
+      relationshipSettings: {
+        connectedObjectType: "items",
+        connectedField: "pairedCurrencies"
+      }
+    },
+    {
       id: "description",
       name: "Description & History",
       type: "wysiwyg",

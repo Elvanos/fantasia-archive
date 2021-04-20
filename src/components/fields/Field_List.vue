@@ -39,9 +39,52 @@
       v-for="(singleInput,index) in localInput"
       :key="index"
     >
-      <div class="col-sm-12 col-md">
+      <div class="col-sm-12 col-md flex">
+        <q-btn
+          tabindex="-1"
+          round
+          flat
+          dense
+          :disable="index === 0"
+          icon="mdi-arrow-up-bold"
+          class="q-mr-xs self-center"
+          size="10px"
+          :color="(index !== 0) ? 'primary' : ''"
+          @click="moveItem(index, 'up')"
+        >
+          <q-tooltip
+            :delay="300"
+            anchor="center left"
+            self="center right"
+          >
+          Move the item one place up
+          </q-tooltip>
+        </q-btn>
+
+        <q-btn
+          tabindex="-1"
+          round
+          flat
+          dense
+          :disable="index === localInput.length - 1"
+          icon="mdi-arrow-down-bold"
+          class="q-mr-xs self-center"
+          size="10px"
+          :color="(index !== localInput.length - 1) ? 'primary' : ''"
+          @click="moveItem(index, 'down')"
+        >
+          <q-tooltip
+            :delay="300"
+            anchor="center left"
+            self="center right"
+          >
+          Move the item one place down
+          </q-tooltip>
+        </q-btn>
+
         <q-input
           v-model="localInput[index].value"
+          class="grow-1"
           :class="`listField_input${index}_${inputDataBluePrint.id}`"
           dense
           @keyup="signalInput"
@@ -199,6 +242,15 @@ export default class Field_List extends FieldBase {
     if (newInput) {
       newInput.focus()
     }
+
+    this.signalInput()
+  }
+
+  moveItem (index: number, direction: "up" | "down") {
+    const to = (direction === "up") ? index - 1 : index + 1
+    const from = index
+
+    this.localInput.splice(to, 0, this.localInput.splice(from, 1)[0])
 
     this.signalInput()
   }

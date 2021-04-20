@@ -18,6 +18,7 @@
 - Add "Open app folder" to help menu
 - Try to get field titles to show in full-screen edit of text editor fields
 
+- Consider adding some kind of "Follower name" to different group types
 - Consider reworking the save document mechanic (save doesnt close, open/exit edit mode instead)
 - Add color support (text and background) to view and edit mode of document display
 - Add a toggle option for it (default off)

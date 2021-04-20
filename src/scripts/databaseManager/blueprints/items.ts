@@ -251,6 +251,27 @@ export const itemsBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "priceInCurrencies",
+      name: "Cost in different Currencies",
+      type: "manyToNoneRelationship",
+      icon: "fas fa-coins",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "currencies"
+      }
+    },
+    {
+      id: "pairedCurrencies",
+      name: "Connected to Currencies",
+      type: "manyToManyRelationship",
+      icon: "fas fa-coins",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "currencies",
+        connectedField: "pairedItems"
+      }
+    },
+    {
       id: "description",
       name: "Description & History",
       type: "wysiwyg",

@@ -263,7 +263,7 @@ export const mergeExistingProject = (vueRouter: any, Loading: any, loadingSetup:
 
     quasar.notify({
       type: 'positive',
-      message: `Project succesfully imported`
+      message: `Data successfully merged into the project`
     })
 
     vueInstance.SSET_resetDocuments()

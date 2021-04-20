@@ -3,20 +3,27 @@
 
 ---
 
-## 0.1.6
+## 0.1.5a
 
 ### Known issues
 
-- When creating a brand new project, Fantasia Archive sometimes doesn't load the default categories in the left hierarchical tree. A temporary workaround before the issue is fixed is restarting the program - the project stays intact, can be normally edited and no data loss occurs.
-- Some users report that dialog (popups) don't function the very first time you start FA. This is solved by restarting the application. The bug doesn't seem to appear again once FA has been started at least once before.
+- POSSIBLY FIXED: When creating a brand new project, Fantasia Archive sometimes doesn't load the default categories in the left hierarchical tree. A temporary workaround before the issue is fixed is restarting the program - the project stays intact, can be normally edited and no data loss occurs.
+- POSSIBLY FIXED: Some users report that dialog (popups) don't function the very first time you start FA. This is solved by restarting the application. The bug doesn't seem to appear again once FA has been started at least once before.
 - Overusing Tags currently causes app crashes on some PCs. If you suffer from this issue, reduce the number of tags in your project below 10.
 
 ### Bugfixes & Optimizations
 
 - Fixed a bug of edit mode "Open in new window" buttons being on higher level than the document control bar and rendering over it
 - Fixed non-working edit button inthe hierarchical tree on already opened documents
+- Attempted to fixed ocasionally buggy functionality regarding known issues of the non-functional new project and importing/merging
 
 ### New features
+
+- Added project merge functionality to the app
+- Added arrows to move `List` field items up and down
+- Added a new `Cost in different Currencies` one-way relationship field to `Items` document type
+- Added a new `Connected to Currencies` two-way relationship field to `Items` document type
+- Added a new `Connected to Items` two-way relationship field to `Currencies` document type
 
 ### QoL adjustments
 
