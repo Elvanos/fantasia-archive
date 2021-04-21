@@ -1,4 +1,7 @@
 
+- Fix file name symbols for OSs in new project names
+- Add a way to view the project graph without closing all the documents
+
 ## THE GM BATCH
 
 - Floating notes corkboard

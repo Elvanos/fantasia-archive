@@ -3,6 +3,22 @@
 
 ---
 
+## 0.1.6
+
+### Known issues
+
+- POSSIBLY FIXED: When creating a brand new project, Fantasia Archive sometimes doesn't load the default categories in the left hierarchical tree. A temporary workaround before the issue is fixed is restarting the program - the project stays intact, can be normally edited and no data loss occurs.
+- POSSIBLY FIXED: Some users report that dialog (popups) don't function the very first time you start FA. This is solved by restarting the application. The bug doesn't seem to appear again once FA has been started at least once before.
+
+### Bugfixes & Optimizations
+
+- Fixed buttons for moving list items up and down also showing outside of edit mode
+- Fixed `Resume project` button working in instances where it shouldnt
+
+### New features
+
+### QoL adjustments
+
 ## 0.1.5a
 
 ### Known issues

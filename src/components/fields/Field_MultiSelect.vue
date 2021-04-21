@@ -70,7 +70,7 @@
 
     </q-select>
 
-    <table class="q-mt-sm">
+    <table class="q-mt-sm" v-if="editMode">
       <tr
         v-for="(single,index) in localInput"
         :key="index"

@@ -244,7 +244,7 @@
               active-class="bg-gunmetal-light text-cultured"
               class="noHigh"
               @click="navigateToProjectPage"
-              :disable="!projectExists || isProjectPage"
+              :disable="!projectExists || isProjectPage || SGET_allOpenedDocuments.docs.length > 0"
             >
               <q-item-section>Resume project</q-item-section>
               <q-item-section avatar>
