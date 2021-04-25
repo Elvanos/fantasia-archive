@@ -130,246 +130,247 @@
       </q-item>
     </q-list>
 
-  <div class="flex" v-if="editMode">
-    <q-select
-      class="singleRelashionshipSelect"
-      menu-anchor="bottom middle"
-      menu-self="top middle"
-      dark
-      style="flex-grow: 1;"
-      dense
-      :ref="`singleRelationshipField${inputDataBluePrint.id}`"
-      :options="filterList"
-      use-input
-      :outlined="!isDarkMode"
-      :filled="isDarkMode"
-      input-debounce="200"
-      v-model="localInput"
-      @filter="filterSelect"
-      @input="signalInput(false)"
-    >
-      <template v-slot:append>
-        <q-btn round dense flat v-slot:append v-if="!hideAdvSearchCheatsheetButton" icon="mdi-help-rhombus" @click.stop.prevent="SSET_setAdvSearchWindowVisible"
-        >
-          <q-tooltip :delay="500">
-            Open search cheatsheet
-          </q-tooltip>
-        </q-btn>
-      </template>
-      <template v-slot:selected-item="scope">
-        <q-chip
-          v-if="scope.opt.label && scope.opt.label.length > 0"
-          removable
-          dense
-          @click="openNewTab(scope.opt)"
-          @remove="scope.removeAtIndex(scope.index)"
-          :tabindex="scope.tabindex"
-          color="accent"
-          text-color="dark"
-          class="text-bold"
-        >
-          <template v-if="scope.opt.isDead">
-            †
-          </template>
-          {{ stripTags(scope.opt.label) }}
-          <q-btn
-            round
-            dense
-            flat
-            class="z-15 relationshipChipNewTab"
-            style="color: #000 !important;"
-            size="sm"
-            icon="mdi-open-in-new"
-            @click.stop.prevent="openNewTab(scope.opt)"
+    <div class="flex" v-if="editMode">
+      <q-select
+        class="singleRelashionshipSelect"
+        menu-anchor="bottom middle"
+        menu-self="top middle"
+        dark
+        style="flex-grow: 1;"
+        dense
+        :ref="`singleRelationshipField${inputDataBluePrint.id}`"
+        :options="filterList"
+        :option-disable="opt => Object(opt) === opt ? disabledIDList.includes(opt._id) : true"
+        use-input
+        :outlined="!isDarkMode"
+        :filled="isDarkMode"
+        input-debounce="200"
+        v-model="localInput"
+        @filter="filterSelect"
+        @input="processSelectInteraction"
+      >
+        <template v-slot:append>
+          <q-btn round dense flat v-slot:append v-if="!hideAdvSearchCheatsheetButton" icon="mdi-help-rhombus" @click.stop.prevent="SSET_setAdvSearchWindowVisible"
           >
-           <q-tooltip :delay="500">
-              Open in new tab without leaving this one
+            <q-tooltip :delay="500">
+              Open search cheatsheet
             </q-tooltip>
           </q-btn>
-           <q-menu
-              touch-position
-              context-menu
-              auto-close
-              separate-close-popup
-            >
-
-              <q-list class="bg-gunmetal-light text-accent">
-
-                <template>
-                  <q-item clickable @click="copyName(fixGetCorrectDocument(scope.opt))">
-                    <q-item-section>Copy name</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="mdi-text-recognition" />
-                    </q-item-section>
-                  </q-item>
-                  <q-item clickable @click="copyTextColor(fixGetCorrectDocument(scope.opt))">
-                    <q-item-section>Copy text color</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="mdi-eyedropper" />
-                    </q-item-section>
-                  </q-item>
-                  <q-item clickable @click="copyBackgroundColor(fixGetCorrectDocument(scope.opt))">
-                    <q-item-section>Copy background color</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="mdi-format-color-fill" />
-                    </q-item-section>
-                  </q-item>
-                  <q-separator dark />
-                    <q-item clickable @click="openExistingInput(fixGetCorrectDocument(scope.opt))">
-                    <q-item-section>Open document</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="mdi-book-open-page-variant-outline" />
-                    </q-item-section>
-                  </q-item>
-                  <q-item clickable @click="editExistingInput(fixGetCorrectDocument(scope.opt))">
-                    <q-item-section>Edit document</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="mdi-pencil" />
-                    </q-item-section>
-                  </q-item>
-                  <q-item clickable @click="addNewUnderParent(fixGetCorrectDocument(scope.opt))">
-                    <q-item-section>Create new document with this document as parent</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon color="primary" name="mdi-file-tree" />
-                    </q-item-section>
-                  </q-item>
-                  <q-item clickable @click="copyTargetDocument(fixGetCorrectDocument(scope.opt))">
-                    <q-item-section>Copy this document</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon color="primary" name="mdi-content-copy" />
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-list>
-
-            </q-menu>
-        </q-chip>
         </template>
-
-      <template v-slot:option="{ itemProps, itemEvents, opt }">
-          <q-item
-            :class="{'hasTextShadow': textShadow, 'isMinor':opt.isMinor}"
-            v-bind="itemProps"
-            v-on="itemEvents"
-            :key="opt.id"
-            :style="`background-color: ${opt.bgColor}`"
-          >
-            <q-item-section avatar>
-              <q-icon
-                :style="`color: ${retrieveIconColor(opt)}`"
-                :name="(opt.isCategory) ? 'fas fa-folder-open' : opt.icon"
-                />
-            </q-item-section>
-            <q-item-section>
-              <q-item-label
-                :style="`color: ${opt.color}`"
-                >
-                <span class="isDeadIndicator" v-if="opt.isDead">
-                  †
-                </span>
-                <span :class="{'isDead': (opt.isDead && !hideDeadCrossThrough)}" v-html="opt.label">
-                </span>
-              </q-item-label>
-              <q-item-label caption class="text-cultured" v-html="opt.hierarchicalPath"></q-item-label>
-              <q-item-label caption class="text-cultured" v-if="opt.tags">
-                <q-chip
-                v-for="(input,index) in opt.tags" :key="index"
-                outline
-                style="opacity: 0.8;"
-                size="12px"
-                class="text-cultured noBounce"
-                v-html="`${input}`"
-                >
-                </q-chip>
-              </q-item-label>
-            </q-item-section>
-            <q-tooltip v-if='opt.disable'>
-              This option is unavailable for selection as it is already paired to another.
-            </q-tooltip>
-
-            <q-menu
-              touch-position
-              context-menu
-              auto-close
-              separate-close-popup
-            >
-
-              <q-list class="bg-gunmetal-light text-accent">
-
-                <template>
-                  <q-item clickable  @click="copyName(opt)">
-                    <q-item-section>Copy name</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="mdi-text-recognition" />
-                    </q-item-section>
-                  </q-item>
-                  <q-item clickable @click="copyTextColor(opt)">
-                    <q-item-section>Copy text color</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="mdi-eyedropper" />
-                    </q-item-section>
-                  </q-item>
-                  <q-item clickable @click="copyBackgroundColor(opt)">
-                    <q-item-section>Copy background color</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="mdi-format-color-fill" />
-                    </q-item-section>
-                  </q-item>
-                  <q-separator dark />
-                    <q-item clickable @click="openExistingInput(opt)">
-                    <q-item-section>Open document</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="mdi-book-open-page-variant-outline" />
-                    </q-item-section>
-                  </q-item>
-                  <q-item clickable @click="editExistingInput(opt)">
-                    <q-item-section>Edit document</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="mdi-pencil" />
-                    </q-item-section>
-                  </q-item>
-                  <q-item clickable @click="addNewUnderParent(opt)">
-                    <q-item-section>Create new document with this document as parent</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon color="primary" name="mdi-file-tree" />
-                    </q-item-section>
-                  </q-item>
-                  <q-item clickable @click="copyTargetDocument(opt)">
-                    <q-item-section>Copy this document</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon color="primary" name="mdi-content-copy" />
-                    </q-item-section>
-                  </q-item>
-                </template>
-
-              </q-list>
-
-            </q-menu>
-          </q-item>
-        </template>
-    </q-select>
-
-     <table class="q-mt-sm" v-if="localInput && inputFieldID !== 'parentDoc'">
-      <tr>
-        <td>
-          {{stripTags(localInput.label)}}
-        </td>
-        <td>
-          <q-input
-            label="Note"
-            v-model="inputNote.value"
+        <template v-slot:selected-item="scope">
+          <q-chip
+            v-if="scope.opt.label && scope.opt.label.length > 0"
+            removable
             dense
-            @keyup="signalInput(false)"
-            :outlined="!isDarkMode"
-            :filled="isDarkMode"
+            @click="openNewTab(scope.opt)"
+            @remove="scope.removeAtIndex(scope.index)"
+            :tabindex="scope.tabindex"
+            color="accent"
+            text-color="dark"
+            class="text-bold"
+          >
+            <template v-if="scope.opt.isDead">
+              †
+            </template>
+            {{ stripTags(scope.opt.label) }}
+            <q-btn
+              round
+              dense
+              flat
+              class="z-15 relationshipChipNewTab"
+              style="color: #000 !important;"
+              size="sm"
+              icon="mdi-open-in-new"
+              @click.stop.prevent="openNewTab(scope.opt)"
             >
-          </q-input>
-        </td>
+            <q-tooltip :delay="500">
+                Open in new tab without leaving this one
+              </q-tooltip>
+            </q-btn>
+            <q-menu
+                touch-position
+                context-menu
+                auto-close
+                separate-close-popup
+              >
 
-      </tr>
-    </table>
+                <q-list class="bg-gunmetal-light text-accent">
 
-  </div>
+                  <template>
+                    <q-item clickable @click="copyName(fixGetCorrectDocument(scope.opt))">
+                      <q-item-section>Copy name</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-text-recognition" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable @click="copyTextColor(fixGetCorrectDocument(scope.opt))">
+                      <q-item-section>Copy text color</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-eyedropper" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable @click="copyBackgroundColor(fixGetCorrectDocument(scope.opt))">
+                      <q-item-section>Copy background color</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-format-color-fill" />
+                      </q-item-section>
+                    </q-item>
+                    <q-separator dark />
+                      <q-item clickable @click="openExistingInput(fixGetCorrectDocument(scope.opt))">
+                      <q-item-section>Open document</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-book-open-page-variant-outline" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable @click="editExistingInput(fixGetCorrectDocument(scope.opt))">
+                      <q-item-section>Edit document</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-pencil" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable @click="addNewUnderParent(fixGetCorrectDocument(scope.opt))">
+                      <q-item-section>Create new document with this document as parent</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon color="primary" name="mdi-file-tree" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable @click="copyTargetDocument(fixGetCorrectDocument(scope.opt))">
+                      <q-item-section>Copy this document</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon color="primary" name="mdi-content-copy" />
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-list>
+
+              </q-menu>
+          </q-chip>
+          </template>
+
+        <template v-slot:option="{ itemProps, itemEvents, opt }" >
+            <q-item
+              :class="{'hasTextShadow': textShadow, 'isMinor':opt.isMinor}"
+              v-bind="itemProps"
+              v-on="itemEvents"
+              :key="opt.id"
+              :style="`background-color: ${opt.bgColor}`"
+            >
+              <q-item-section avatar>
+                <q-icon
+                  :style="`color: ${retrieveIconColor(opt)}`"
+                  :name="(opt.isCategory) ? 'fas fa-folder-open' : opt.icon"
+                  />
+              </q-item-section>
+              <q-item-section>
+                <q-item-label
+                  :style="`color: ${opt.color}`"
+                  >
+                  <span class="isDeadIndicator" v-if="opt.isDead">
+                    †
+                  </span>
+                  <span :class="{'isDead': (opt.isDead && !hideDeadCrossThrough)}" v-html="opt.label">
+                  </span>
+                </q-item-label>
+                <q-item-label caption class="text-cultured" v-html="opt.hierarchicalPath"></q-item-label>
+                <q-item-label caption class="text-cultured" v-if="opt.tags">
+                  <q-chip
+                  v-for="(input,index) in opt.tags" :key="index"
+                  outline
+                  style="opacity: 0.8;"
+                  size="12px"
+                  class="text-cultured noBounce"
+                  v-html="`${input}`"
+                  >
+                  </q-chip>
+                </q-item-label>
+              </q-item-section>
+          <q-tooltip v-if='opt.disable'>
+            This option is unavailable for selection as it is already paired to another.
+          </q-tooltip>
+
+              <q-menu
+                touch-position
+                context-menu
+                auto-close
+                separate-close-popup
+              >
+
+                <q-list class="bg-gunmetal-light text-accent">
+
+                  <template>
+                    <q-item clickable  @click="copyName(opt)">
+                      <q-item-section>Copy name</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-text-recognition" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable @click="copyTextColor(opt)">
+                      <q-item-section>Copy text color</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-eyedropper" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable @click="copyBackgroundColor(opt)">
+                      <q-item-section>Copy background color</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-format-color-fill" />
+                      </q-item-section>
+                    </q-item>
+                    <q-separator dark />
+                      <q-item clickable @click="openExistingInput(opt)">
+                      <q-item-section>Open document</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-book-open-page-variant-outline" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable @click="editExistingInput(opt)">
+                      <q-item-section>Edit document</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-pencil" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable @click="addNewUnderParent(opt)">
+                      <q-item-section>Create new document with this document as parent</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon color="primary" name="mdi-file-tree" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable @click="copyTargetDocument(opt)">
+                      <q-item-section>Copy this document</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon color="primary" name="mdi-content-copy" />
+                      </q-item-section>
+                    </q-item>
+                  </template>
+
+                </q-list>
+
+              </q-menu>
+            </q-item>
+          </template>
+      </q-select>
+
+      <table class="q-mt-sm" v-if="localInput && inputFieldID !== 'parentDoc'">
+        <tr>
+          <td>
+            {{stripTags(localInput.label)}}
+          </td>
+          <td>
+            <q-input
+              label="Note"
+              v-model="inputNote.value"
+              dense
+              @keyup="signalInput"
+              :outlined="!isDarkMode"
+              :filled="isDarkMode"
+              >
+            </q-input>
+          </td>
+
+        </tr>
+      </table>
+
+    </div>
 
     <div class="separatorWrapper">
       <q-separator color="grey q-mt-md" />
@@ -384,7 +385,6 @@ import { Component, Emit, Prop, Watch } from "vue-property-decorator"
 
 import FieldBase from "src/components/fields/_FieldBase"
 
-import PouchDB from "pouchdb"
 import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
 import { extend } from "quasar"
 
@@ -442,7 +442,7 @@ export default class Field_SingleRelationship extends FieldBase {
 
     this.inputNote = (!this.inputDataValue?.addedValues) ? this.inputNote : this.inputDataValue.addedValues
 
-    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log())
+    this.reloadObjectListAndCheckIfValueExists()
   }
 
   /**
@@ -450,7 +450,7 @@ export default class Field_SingleRelationship extends FieldBase {
    */
   @Watch("inputDataBluePrint", { deep: true, immediate: true })
   reactToBlueprintChanges () {
-    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log())
+    this.reloadObjectListAndCheckIfValueExists()
   }
 
   /**
@@ -458,7 +458,7 @@ export default class Field_SingleRelationship extends FieldBase {
    */
   @Watch("currentId")
   reactToIDChanges () {
-    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log())
+    this.reloadObjectListAndCheckIfValueExists()
   }
 
   /**
@@ -485,7 +485,7 @@ export default class Field_SingleRelationship extends FieldBase {
   /**
    * A list of all retrieved documents without the current one
    */
-  allDocumentsWithoutCurrent: I_ShortenedDocument[] = []
+  allTypeDocuments: I_ShortenedDocument[] = []
 
   /**
    * A copy of the list for the filter feed
@@ -512,7 +512,8 @@ export default class Field_SingleRelationship extends FieldBase {
   filterSelect (val: string, update: (e: () => void) => void) {
     if (val === "") {
       update(() => {
-        this.filterList = this.allDocumentsWithoutCurrent.filter((obj) => !obj.isMinor)
+        this.filterList = this.allTypeDocuments
+          .filter((obj) => !obj.isMinor && obj._id !== this.currentId)
 
         if (this.$refs[`singleRelationshipField${this.inputDataBluePrint.id}`] && this.filterList.length > 0) {
           this.refocusSelect().catch(e => console.log(e))
@@ -523,9 +524,10 @@ export default class Field_SingleRelationship extends FieldBase {
 
     update(() => {
       const needle = val.toLowerCase()
-      this.filterList = extend(true, [], this.allDocumentsWithoutCurrent)
+      this.filterList = extend(true, [], this.allTypeDocuments)
       // @ts-ignore
       this.filterList = advancedDocumentFilter(needle, this.filterList, this.SGET_allBlueprints, this.filterList)
+        .filter((obj) => obj._id !== this.currentId)
 
       if (this.$refs[`singleRelationshipField${this.inputDataBluePrint.id}`] && this.filterList.length > 0) {
         this.refocusSelect().catch(e => console.log(e))
@@ -533,18 +535,22 @@ export default class Field_SingleRelationship extends FieldBase {
     })
   }
 
+  disabledIDList: string[] = []
+
   /**
    * Prepares the initial loading of the list for filtering and furhter use
    * Also remove the document itself from the list, checks if connected input fields even exist and altogether formats and clears the list
    */
-  async reloadObjectListAndCheckIfValueExists () {
+  reloadObjectListAndCheckIfValueExists () {
     if (this.inputDataBluePrint?.relationshipSettings && this.currentId.length > 0) {
-      // Get a list of all objects connected to this field and remap them
-      const CurrentObjectDB = new PouchDB(this.inputDataBluePrint.relationshipSettings.connectedObjectType)
-      let allDbObjects = (await CurrentObjectDB.allDocs({ include_docs: true })).rows.map(doc => doc.doc)
+      // If this is the "parentDoc" field, include categories, otherwise, filter them out from the list
+      const isBelongsUnder = (this.inputDataBluePrint.id === "parentDoc")
+      const allDbObjects = (isBelongsUnder)
+        ? this.SGET_allDocumentsByType(this.inputDataBluePrint.relationshipSettings.connectedObjectType)
+        : this.SGET_allDocumentsByTypeWithoutCategories(this.inputDataBluePrint.relationshipSettings.connectedObjectType)
 
       // Map all of the documents to something more digestible for the select
-      let allObjects = allDbObjects.map((doc) => {
+      allDbObjects.docs.forEach((doc) => {
         const objectDoc = doc as unknown as I_ShortenedDocument
 
         const pairedField = (this.inputDataBluePrint?.relationshipSettings?.connectedField) || ""
@@ -555,69 +561,45 @@ export default class Field_SingleRelationship extends FieldBase {
           const pairedFieldObject = objectDoc.extraFields.find(f => f.id === pairedField)
           const pairingType = this.inputDataBluePrint.type
 
-          if (pairedFieldObject !== undefined && typeof pairedFieldObject?.value !== "string" && pairedFieldObject?.value !== null && pairingType === "singleToSingleRelationship") {
-            isDisabled = true
+          if (pairedFieldObject !== undefined && typeof pairedFieldObject?.value !== "string" && pairedFieldObject?.value !== null && pairedFieldObject?.value?.value !== null && pairingType === "singleToSingleRelationship") {
+            const checkIfExists = allDbObjects.docs.find(f => f._id === pairedFieldObject?.value?.value?._id)
+
+            if (checkIfExists) {
+              isDisabled = true
+            }
           }
         }
 
-        return {
-          _id: objectDoc._id,
-          value: objectDoc._id,
-          type: objectDoc.type,
-          icon: objectDoc.icon,
-          disable: isDisabled,
-          extraFields: objectDoc.extraFields,
-          url: `/project/display-content/${objectDoc.type}/${objectDoc._id}`,
-          label: objectDoc.extraFields.find(e => e.id === "name")?.value,
-          color: objectDoc.extraFields.find(e => e.id === "documentColor")?.value,
-          bgColor: objectDoc.extraFields.find(e => e.id === "documentBackgroundColor")?.value,
-          isCategory: objectDoc.extraFields.find(e => e.id === "categorySwitch")?.value,
-          isMinor: objectDoc.extraFields.find(e => e.id === "minorSwitch")?.value,
-          isDead: objectDoc.extraFields.find(e => e.id === "deadSwitch")?.value,
-          pairedField: pairedField,
-          tags: objectDoc.extraFields.find(e => e.id === "tags")?.value,
-          // @ts-ignore
-          hierarchicalPath: this.getDocumentHieararchicalPath(objectDoc, allDbObjects)
+        if (isDisabled) {
+          this.disabledIDList = [...new Set([
+            ...this.disabledIDList,
+            doc._id
+          ])]
         }
-      }) as unknown as I_ShortenedDocument[]
-
-      // If this is the "parentDoc" field, include categories, otherwise, filter them out from the list
-      const isBelongsUnder = (this.inputDataBluePrint.id === "parentDoc")
-      const objectsWithoutCurrent: I_ShortenedDocument[] = (isBelongsUnder)
-        ? allObjects.filter((obj) => obj._id !== this.currentId)
-        : allObjects.filter((obj) => obj._id !== this.currentId).filter((obj) => !obj.isCategory)
+      })
 
       // Proceed only if the local input is properly set up
       if (this.localInput._id) {
-        // If the matched object doesn't exist in the object, assume it has been deleted or newer existed and silently emit a signal input which auto-updates the document
-        if (!objectsWithoutCurrent.find(e => e._id === this.localInput._id)) {
+        // If the matched object doesn't exist in the object, assume it has been deleted or never existed
+        if (!allDbObjects.docs.find(e => e._id === this.localInput._id)) {
           // @ts-ignore
           this.localInput = ""
-          this.signalInput(true)
         }
-        // If the object does exist, make sure we have the newest available name by reasigning the label if it is different. Then trigger a silent update
+        // If the object does exist, make sure we have the newest available name by reasigning the label if it is different
         else {
-          const matchedFieldContent = objectsWithoutCurrent.find(e => e._id === this.localInput._id)
+          const matchedFieldContent = allDbObjects.docs.find(e => e._id === this.localInput._id)
+
           if (matchedFieldContent && (
             this.localInput.label !== matchedFieldContent.label ||
               this.localInput?.isDead !== matchedFieldContent.extraFields.find(e => e.id === "deadSwitch")?.value)
           ) {
             this.localInput.label = matchedFieldContent.label
             this.localInput.isDead = matchedFieldContent.extraFields.find(e => e.id === "deadSwitch")?.value
-
-            this.signalInput(true)
           }
         }
       }
 
-      await CurrentObjectDB.close()
-
-      this.allDocumentsWithoutCurrent = objectsWithoutCurrent
-
-      // @ts-ignore
-      allObjects = null
-      // @ts-ignore
-      allDbObjects = null
+      this.allTypeDocuments = allDbObjects.docs
     }
   }
 
@@ -628,9 +610,8 @@ export default class Field_SingleRelationship extends FieldBase {
   /**
    * Opens a new tab from a connected rleationship
    */
-  async openNewTab (input: I_FieldRelationship) {
-    const CurrentObjectDB = new PouchDB(input.type)
-    const retrievedObject = await CurrentObjectDB.get(input._id)
+  openNewTab (input: I_FieldRelationship) {
+    const retrievedObject = (this.SGET_openedDocument(input._id)) || this.SGET_document(input._id)
 
     const dataPass = {
       doc: retrievedObject,
@@ -639,19 +620,41 @@ export default class Field_SingleRelationship extends FieldBase {
 
     // @ts-ignore
     this.SSET_addOpenedDocument(dataPass)
-    await CurrentObjectDB.close()
+  }
+
+  processSelectInteraction (input: null| I_ShortenedDocument) {
+    if (input) {
+      this.disabledIDList.push(input._id)
+    }
+    else {
+      const toRemoveIndex = this.disabledIDList.findIndex(id => id === this.inputDataValue.value._id)
+
+      if (toRemoveIndex) {
+        this.disabledIDList.splice(toRemoveIndex, 1)
+      }
+    }
+    this.signalInput()
   }
 
   /**
    * Signals the input change to the document body parent component
    */
   @Emit()
-  signalInput (skipSave?: boolean) {
+  signalInput () {
     this.inputNote = (this.localInput !== null) ? this.inputNote : { pairedId: "", value: "" }
+
+    const exportValue = (this.localInput && this.localInput._id)
+      ? {
+        _id: this.localInput._id,
+        type: this.localInput.type,
+        url: this.localInput.url,
+        pairedField: (this.inputDataBluePrint?.relationshipSettings?.connectedField) || ""
+      }
+      : null
+
     return {
-      value: this.localInput,
-      addedValues: this.inputNote,
-      skipSave: (skipSave)
+      value: exportValue,
+      addedValues: this.inputNote
     }
   }
 
@@ -662,7 +665,7 @@ export default class Field_SingleRelationship extends FieldBase {
   docToFind = null as unknown as I_OpenedDocument
 
   fixGetCorrectDocument (e: I_OpenedDocument | I_FieldRelationship) {
-    this.docToFind = (this.allDocumentsWithoutCurrent.find(doc => doc._id === e._id)) as unknown as I_OpenedDocument
+    this.docToFind = (this.allTypeDocuments.find(doc => doc._id === e._id)) as unknown as I_OpenedDocument
     return this.docToFind
   }
 
@@ -700,7 +703,6 @@ export default class Field_SingleRelationship extends FieldBase {
   /****************************************************************/
 
   copyName (currentDoc: I_OpenedDocument) {
-    console.log(currentDoc)
     copyDocumentName(currentDoc)
   }
 

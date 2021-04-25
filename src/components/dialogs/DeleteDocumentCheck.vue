@@ -42,7 +42,7 @@
 import { Component, Watch, Prop } from "vue-property-decorator"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
-import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
+import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import PouchDB from "pouchdb"
 
 @Component({
@@ -53,7 +53,7 @@ export default class DeleteDocumentCheckDialog extends DialogBase {
    * React to dialog opening request
    */
   @Watch("dialogTrigger")
-  async openDialog (val: string|false) {
+  openDialog (val: string|false) {
     if (val && (this.SGET_allOpenedDocuments.docs.length > 0 || (this.documentType.length > 0 && this.documentId.length > 0))) {
       if (this.SGET_getDialogsState) {
         return
@@ -61,12 +61,9 @@ export default class DeleteDocumentCheckDialog extends DialogBase {
       this.SSET_setDialogState(true)
       this.dialogModel = true
 
-      const documentType = (this.documentType.length > 0) ? this.documentType : this.$route.params.type
       const documentID = (this.documentId.length > 0) ? this.documentId : this.$route.params.id
 
-      const CurrentObjectDB = new PouchDB(documentType)
-      this.currentDocument = await CurrentObjectDB.get(documentID)
-      await CurrentObjectDB.close()
+      this.currentDocument = this.SGET_document(documentID)
     }
   }
 
@@ -85,25 +82,27 @@ export default class DeleteDocumentCheckDialog extends DialogBase {
   /**
    * Current document for deletion
    */
-  currentDocument = false as unknown as I_OpenedDocument
+  currentDocument = false as unknown as I_ShortenedDocument
 
   /**
    * Delete the document
    */
   async deleteDocument () {
     const documentType = (this.documentType.length > 0) ? this.documentType : this.$route.params.type
-    const CurrentObjectDB = new PouchDB(documentType)
+    window.FA_dbs[documentType] = new PouchDB(documentType)
 
-    // @ts-ignore
-    await CurrentObjectDB.remove(this.currentDocument)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    await window.FA_dbs[documentType].remove(this.currentDocument)
 
     const dataPass = { doc: this.currentDocument, treeAction: true }
 
     this.dialogModel = false
     this.SSET_setDialogState(false)
 
+    // @ts-ignore
     this.SSET_removeOpenedDocument(dataPass)
-    await CurrentObjectDB.close()
+    // @ts-ignore
+    this.SSET_removeDocument({ doc: this.mapShortDocument(this.currentDocument, this.SGET_allDocumentsByType(this.currentDocument.type)) })
   }
 }
 </script>

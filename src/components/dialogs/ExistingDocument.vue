@@ -216,7 +216,6 @@ import { Component, Watch } from "vue-property-decorator"
 import { I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
 import { extend } from "quasar"
-import PouchDB from "pouchdb"
 
 import { createNewWithParent } from "src/scripts/documentActions/createNewWithParent"
 import { copyDocumentName, copyDocumentTextColor, copyDocumentBackgroundColor } from "src/scripts/documentActions/uniqueFieldCopy"
@@ -373,13 +372,14 @@ export default class ExistingDocumentDialog extends DialogBase {
   async populateExistingObjectDialog () {
     this.allDocumentBluePrints = this.SGET_allBlueprints
 
-    this.existingObjectsFullList = await this.retrieveAllDocuments()
+    this.existingObjectsFullList = this.SGET_allDocuments.docs
     this.preFilterDocuments()
 
     await this.$nextTick()
 
     if (this.$refs.ref_existingDocument) {
       /*eslint-disable */
+      await this.sleep(100)
       // @ts-ignore 
       this.$refs.ref_existingDocument.focus()
       /* eslint-enable */
@@ -449,7 +449,7 @@ export default class ExistingDocumentDialog extends DialogBase {
    * Either as a focus with closure of the dialog.
    * Or as a background tab without closing of the dialog.
    */
-  async openExistingInput (e: I_ShortenedDocument) {
+  openExistingInput (e: I_ShortenedDocument) {
     // @ts-ignore
     e = (Array.isArray(e)) ? e[0] : e
     // Open document and close dialog
@@ -461,12 +461,11 @@ export default class ExistingDocumentDialog extends DialogBase {
     }
     // Open document and DO NOT close the dialog
     else {
-      // @ts-ignore
       this.existingDocumentModel = []
 
-      const CurrentObjectDB = new PouchDB(e.type)
-      // @ts-ignore
-      const retrievedObject = await CurrentObjectDB.get(e.id)
+      const retrievedObject = (this.SGET_openedDocument(e._id)) || this.SGET_document(e._id)
+
+      console.log(retrievedObject)
 
       const dataPass = {
         doc: retrievedObject,
@@ -475,7 +474,6 @@ export default class ExistingDocumentDialog extends DialogBase {
 
       // @ts-ignore
       this.SSET_addOpenedDocument(dataPass)
-      await CurrentObjectDB.close()
     }
   }
 
@@ -484,7 +482,7 @@ export default class ExistingDocumentDialog extends DialogBase {
    * Either as a focus with closure of the dialog.
    * Or as a background tab without closing of the dialog.
    */
-  async editExistingInput (e: I_ShortenedDocument) {
+  editExistingInput (e: I_ShortenedDocument) {
     // @ts-ignore
     e = (Array.isArray(e)) ? e[0] : e
     // Open document and close dialog
@@ -499,11 +497,8 @@ export default class ExistingDocumentDialog extends DialogBase {
       // @ts-ignore
       this.existingDocumentModel = []
 
-      const CurrentObjectDB = new PouchDB(e.type)
-      // @ts-ignore
-      const retrievedObject = await CurrentObjectDB.get(e.id)
+      const retrievedObject = (this.SGET_openedDocument(e._id)) || this.SGET_document(e._id)
 
-      // @ts-ignore
       retrievedObject.hasEdits = true
 
       const dataPass = {
@@ -513,7 +508,6 @@ export default class ExistingDocumentDialog extends DialogBase {
 
       // @ts-ignore
       this.SSET_addOpenedDocument(dataPass)
-      await CurrentObjectDB.close()
     }
   }
 

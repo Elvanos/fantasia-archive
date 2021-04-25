@@ -51,6 +51,7 @@
 
 import { Component, Watch } from "vue-property-decorator"
 import BaseClass from "src/BaseClass"
+import PouchDB from "pouchdb"
 
 import objectTree from "src/components/ObjectTree.vue"
 import appHeader from "src/components/AppHeader.vue"
@@ -60,6 +61,7 @@ import { engageBlueprints, retrieveAllBlueprints } from "src/scripts/databaseMan
 import { extend } from "quasar"
 import { OptionsStateInteface } from "src/store/module-options/state"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
+import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 
 @Component({
   components: {
@@ -69,6 +71,71 @@ import { I_Blueprint } from "src/interfaces/I_Blueprint"
   }
 })
 export default class DocumentLayout extends BaseClass {
+  /****************************************************************/
+  // PROJECT SETTINGS FIRST LOAD
+  /****************************************************************/
+
+  /**
+   * Load all blueprints and build the tree out of them
+   */
+  async created () {
+    if (this.SGET_allDocumentsFirstRunState) {
+      await this.processBluePrints()
+      this.establishAllDocumentDatabases()
+      await this.loadAllProjectDocuments()
+    }
+
+    // Unfuck the rendering by giving the app some time to load first
+    await this.$nextTick()
+  }
+
+  /**
+   * Processes all blueprints and redies the store for population of the app
+   */
+  async processBluePrints (): Promise<void> {
+    await engageBlueprints()
+
+    const allObjectBlueprints = (await retrieveAllBlueprints()).rows.map((blueprint) => {
+      return blueprint.doc
+    }) as I_Blueprint[]
+
+    this.SSET_allBlueprints(allObjectBlueprints)
+  }
+
+  establishAllDocumentDatabases () {
+    // @ts-ignore
+    window.FA_dbs = {}
+    for (const blueprint of this.SGET_allBlueprints) {
+      window.FA_dbs[blueprint._id] = new PouchDB(blueprint._id)
+    }
+  }
+
+  async loadAllProjectDocuments () {
+    for (const blueprint of this.SGET_allBlueprints) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      const dbRows = await window.FA_dbs[blueprint._id].allDocs({ include_docs: true })
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      // eslint-disable-next-line
+      const dbDocuments = dbRows.rows.map((d:any) => d.doc)
+      const formattedDocuments: I_ShortenedDocument[] = []
+
+      for (const singleDocument of dbDocuments) {
+        const doc = singleDocument as unknown as I_ShortenedDocument
+        const pushValue = this.mapShortDocument(doc, dbDocuments)
+        formattedDocuments.push(pushValue)
+      }
+
+      const sortedDocuments = formattedDocuments.sort((a, b) => a.label.localeCompare(b.label))
+      this.SSET_mapNewDocumentType({
+        id: blueprint._id,
+        docs: sortedDocuments
+      })
+    }
+
+    this.SSET_allDocumentsMarkAsNonFirstRun()
+  }
+
   /****************************************************************/
   // BASIC COMPONENT DATA
   /****************************************************************/
@@ -88,30 +155,6 @@ export default class DocumentLayout extends BaseClass {
    */
   get splitterClass () {
     return !this.leftDrawerOpen ? "splitt" : ""
-  }
-
-  /**
-   * Load all blueprints and build the tree out of them
-   */
-  async created () {
-    // await cleanDatabases()
-    await this.processBluePrints()
-
-    // Unfuck the rendering by giving the app some time to load first
-    await this.$nextTick()
-  }
-
-  /**
-   * Processes all blueprints and redies the store for population of the app
-   */
-  async processBluePrints (): Promise<void> {
-    await engageBlueprints()
-
-    const allObjectBlueprints = (await retrieveAllBlueprints()).rows.map((blueprint) => {
-      return blueprint.doc
-    }) as I_Blueprint[]
-
-    this.SSET_allBlueprints(allObjectBlueprints)
   }
 
   /**

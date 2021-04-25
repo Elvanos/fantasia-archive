@@ -1,5 +1,6 @@
 <template>
     <q-dialog
+      no-route-dismiss
       v-model="dialogModel"
       @hide="triggerDialogClose"
       >

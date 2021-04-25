@@ -8,9 +8,9 @@ import { I_NewObjectTrigger } from "src/interfaces/I_NewObjectTrigger"
 import { uid, colors, extend } from "quasar"
 import { I_FieldRelationship } from "src/interfaces/I_FieldRelationship"
 import { I_KeyPressObject } from "src/interfaces/I_KeypressObject"
-import PouchDB from "pouchdb"
 
 const Blueprints = namespace("blueprintsModule")
+const AllDocuments = namespace("allDocumentsModule")
 const OpenedDocuments = namespace("openedDocumentsModule")
 const Keybinds = namespace("keybindsModule")
 const Options = namespace("optionsModule")
@@ -318,6 +318,57 @@ export default class BaseClass extends Vue {
   }
 
   /****************************************************************/
+  // ALL DOCUMENTS MANAGEMENT
+  /****************************************************************/
+
+  @AllDocuments.Getter("getFirstRunState") SGET_allDocumentsFirstRunState!: boolean
+
+  @AllDocuments.Action("markAsNonFirstRun") SSET_allDocumentsMarkAsNonFirstRun!: () => void
+
+  @AllDocuments.Getter("getAllDocuments") SGET_allDocuments !: {
+    timestamp: string,
+    docs: I_ShortenedDocument[]
+  }
+
+  @AllDocuments.Getter("getAllDocumentsWithoutCategories") SGET_allDocumentsWithoutCategories !: {
+    timestamp: string,
+    docs: I_ShortenedDocument[]
+  }
+
+  @AllDocuments.Getter("getDocumentsByType") SGET_allDocumentsByType!: (documentTypeID: string) => {
+    timestamp: string,
+    id: string,
+    docs: I_ShortenedDocument[]
+  }
+
+  @AllDocuments.Getter("getDocumentsByTypeWithoutCategories") SGET_allDocumentsByTypeWithoutCategories!: (documentTypeID: string) => {
+    timestamp: string,
+    id: string,
+    docs: I_ShortenedDocument[]
+  }
+
+  @AllDocuments.Getter("getDocument") SGET_document!: (id: string) => I_ShortenedDocument
+
+  @AllDocuments.Action("addDocument") SSET_addDocument!: (input: {
+    doc: I_ShortenedDocument
+  }) => void
+
+  @AllDocuments.Action("updateDocument") SSET_updateDocument!: (input: {
+    doc: I_ShortenedDocument
+  }) => void
+
+  @AllDocuments.Action("removeDocument") SSET_removeDocument!: (input: {
+    doc: I_ShortenedDocument
+  }) => void
+
+  @AllDocuments.Action("mapNewDocumentType") SSET_mapNewDocumentType!: (input: {
+    id: string,
+    docs: I_ShortenedDocument[]
+  }) => void
+
+  @AllDocuments.Action("resetDocuments") SSET_resetAllDocuments!: () => void
+
+  /****************************************************************/
   // OPEN DOCUMENTS MANAGEMENT
   /****************************************************************/
 
@@ -372,7 +423,7 @@ export default class BaseClass extends Vue {
    * @param document - Document object that is expected to contain the field
    * @param fieldID - ID of the field to check
    */
-  retrieveFieldValue (document: I_OpenedDocument, fieldID: string) : string | number | [] | false | I_FieldRelationship {
+  retrieveFieldValue (document: I_OpenedDocument| I_ShortenedDocument, fieldID: string) : string | number | [] | false | I_FieldRelationship {
     const fieldData = document?.extraFields
 
     // Fizzle if field doesnt exist
@@ -491,46 +542,43 @@ export default class BaseClass extends Vue {
     return hierarchicalString
   }
 
-  /**
-   * Retieves ALL documents
-   */
-  async retrieveAllDocuments () {
-    let allDocs = [] as I_ShortenedDocument[]
-    for (const blueprint of this.SGET_allBlueprints) {
-      const CurrentObjectDB = new PouchDB(blueprint._id)
-
-      const dbRows = await CurrentObjectDB.allDocs({ include_docs: true })
-      const dbDocuments = dbRows.rows.map(d => d.doc)
-      const formattedDocuments: I_ShortenedDocument[] = []
-
-      for (const singleDocument of dbDocuments) {
-        const doc = singleDocument as unknown as I_ShortenedDocument
-        const pushValue = {
-          label: doc.extraFields.find(e => e.id === "name")?.value,
-          icon: doc.icon,
-          id: doc._id,
-          url: doc.url,
-          type: doc.type,
-          extraFields: doc.extraFields,
-          // @ts-ignore
-          hierarchicalPath: this.getDocumentHieararchicalPath(doc, dbDocuments),
-          tags: doc.extraFields.find(e => e.id === "tags")?.value,
-          color: doc.extraFields.find(e => e.id === "documentColor")?.value,
-          bgColor: doc.extraFields.find(e => e.id === "documentBackgroundColor")?.value,
-          isCategory: doc.extraFields.find(e => e.id === "categorySwitch")?.value,
-          isMinor: doc.extraFields.find(e => e.id === "minorSwitch")?.value,
-          isDead: doc.extraFields.find(e => e.id === "deadSwitch")?.value
-
-        } as unknown as I_ShortenedDocument
-        formattedDocuments.push(pushValue)
-      }
-      const sortedDocuments = formattedDocuments.sort((a, b) => a.label.localeCompare(b.label))
-
+  mapShortDocument (doc: I_ShortenedDocument, dbDocuments: I_OpenedDocument[]) : I_ShortenedDocument {
+    return {
+      label: doc.extraFields.find(e => e.id === "name")?.value,
+      icon: doc.icon,
       // @ts-ignore
-      allDocs = [...allDocs, ...sortedDocuments]
+      id: doc._id,
+      _id: doc._id,
+      url: doc.url,
+      type: doc.type,
+      extraFields: doc.extraFields,
+      hasEdits: false,
+      // @ts-ignore
+      hierarchicalPath: this.getDocumentHieararchicalPath(doc, dbDocuments),
+      tags: doc.extraFields.find(e => e.id === "tags")?.value,
+      color: doc.extraFields.find(e => e.id === "documentColor")?.value,
+      bgColor: doc.extraFields.find(e => e.id === "documentBackgroundColor")?.value,
+      isCategory: doc.extraFields.find(e => e.id === "categorySwitch")?.value,
+      isMinor: doc.extraFields.find(e => e.id === "minorSwitch")?.value,
+      isDead: doc.extraFields.find(e => e.id === "deadSwitch")?.value
 
-      await CurrentObjectDB.close()
     }
-    return allDocs
+  }
+
+  deepFreeze (object: object) {
+  // Retrieve the property names defined on object
+    const propNames = Object.getOwnPropertyNames(object)
+
+    // Freeze properties before freezing self
+
+    for (const name of propNames) {
+      const value = object[name]
+
+      if (value && typeof value === "object") {
+        this.deepFreeze(value)
+      }
+    }
+
+    return Object.freeze(object)
   }
 }

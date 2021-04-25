@@ -1,5 +1,5 @@
 import { single_changeRelationshipToAnotherObject, many_changeRelationshipToAnotherObject } from "src/scripts/databaseManager/relationshipManager"
-import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
+import { I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { I_ExtraFields } from "src/interfaces/I_Blueprint"
 import { extend } from "quasar"
 import PouchDB from "pouchdb"
@@ -7,17 +7,25 @@ import PouchDB from "pouchdb"
 /**
  * Saves the given project and handles all the needed procedures
  */
-export const saveDocument = async (document: I_OpenedDocument, allOpenedDocuments: I_OpenedDocument[], editModeAfterSave: boolean) => {
+export const saveDocument = async (
+  document: I_OpenedDocument,
+  allOpenedDocuments: I_OpenedDocument[],
+  allDocuments: I_ShortenedDocument[],
+  editModeAfterSave: boolean
+) => {
   const BlueprintsDB = new PouchDB("blueprints")
   const currentBlueprint: {extraFields: I_ExtraFields[]} = await BlueprintsDB.get(document.type)
-
-  let CurrentObjectDB = new PouchDB(document.type)
+  window.FA_dbs[document.type] = new PouchDB(document.type)
+  const CurrentObjectDB = window.FA_dbs[document.type]
 
   let currentDocument = false as unknown as I_OpenedDocument
   try {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     currentDocument = await CurrentObjectDB.get(document._id)
   }
-  catch (error) {}
+  catch (error) {
+    console.log(error)
+  }
 
   let documentCopy = {} as unknown as I_OpenedDocument
   if (currentDocument) {
@@ -30,7 +38,7 @@ export const saveDocument = async (document: I_OpenedDocument, allOpenedDocument
 
   allOpenedDocuments = allOpenedDocuments.filter(doc => doc._id !== document._id)
 
-  // Handle relatinship fields
+  // Handle relationship fields
   const single_relationshipTypes = ["singleToSingleRelationship", "singleToManyRelationship"]
   const single_allRelationshipFields = documentCopy.extraFields.filter(field => {
     const currentField = currentBlueprint.extraFields.find(e => e.id === field.id) as unknown as I_ExtraFields
@@ -48,18 +56,36 @@ export const saveDocument = async (document: I_OpenedDocument, allOpenedDocument
 
     const pairedFieldID = currentBlueprint.extraFields.find(e => e.id === field.id)?.relationshipSettings?.connectedField
 
-    const filteredDocuments = single_updatedDocuments.filter(doc => {
+    const filteredOpenedDocuments = single_updatedDocuments.filter(doc => {
       return allOpenedDocuments.find(subDoc => {
         return subDoc._id === doc._id
       })
     })
 
+    const filteredallDocuments = single_updatedDocuments.filter(doc => {
+      return allDocuments.find(subDoc => {
+        return subDoc._id === doc._id
+      })
+    })
+
     // Update the particular field in each currently opened document
-    filteredDocuments.forEach(doc => {
+    filteredOpenedDocuments.forEach(doc => {
       const toUpdateIndex = doc.extraFields.findIndex(e => e.id === pairedFieldID)
 
       if (toUpdateIndex) {
         const matchingDoc = allOpenedDocuments.find(subDoc => subDoc._id === doc._id)
+        if (matchingDoc) {
+          matchingDoc.extraFields[toUpdateIndex] = doc.extraFields[toUpdateIndex]
+        }
+      }
+    })
+
+    // Update the particular field in each all document
+    filteredallDocuments.forEach(doc => {
+      const toUpdateIndex = doc.extraFields.findIndex(e => e.id === pairedFieldID)
+
+      if (toUpdateIndex) {
+        const matchingDoc = allDocuments.find(subDoc => subDoc._id === doc._id)
         if (matchingDoc) {
           matchingDoc.extraFields[toUpdateIndex] = doc.extraFields[toUpdateIndex]
         }
@@ -90,6 +116,24 @@ export const saveDocument = async (document: I_OpenedDocument, allOpenedDocument
         }
       }
     })
+
+    const filteredallDocuments = many_updatedDocuments.filter(doc => {
+      return allDocuments.find(subDoc => {
+        return subDoc._id === doc._id
+      })
+    })
+
+    // Update the particular field in each all document
+    filteredallDocuments.forEach(doc => {
+      const toUpdateIndex = doc.extraFields.findIndex(e => e.id === pairedFieldID)
+
+      if (toUpdateIndex) {
+        const matchingDoc = allDocuments.find(subDoc => subDoc._id === doc._id)
+        if (matchingDoc) {
+          matchingDoc.extraFields[toUpdateIndex] = doc.extraFields[toUpdateIndex]
+        }
+      }
+    })
   }
 
   documentCopy.isNew = false
@@ -101,14 +145,8 @@ export const saveDocument = async (document: I_OpenedDocument, allOpenedDocument
   }
 
   // Save the document
-  try {
-    await CurrentObjectDB.put(documentCopy)
-  }
-  // This exists here as a backup in case the databases closes the connection from elsewhere in the meantime
-  catch (error) {
-    CurrentObjectDB = new PouchDB(document.type)
-    await CurrentObjectDB.put(documentCopy)
-  }
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  await CurrentObjectDB.put(documentCopy)
 
   // Set edit mode for frontend
   documentCopy.editMode = editModeAfterSave
@@ -120,25 +158,19 @@ export const addFieldToDocument = async (targetDocumentID: string, fieldID: stri
   const BlueprintsDB = new PouchDB("blueprints")
   const currentBlueprint: {extraFields: I_ExtraFields[], _id: string} = await BlueprintsDB.get(blueprintID)
 
-  // @ts-ignore
-  // const fieldBluePrint: I_ExtraFields = currentBlueprint.extraFields.find(e => e.id === fieldID)
-
-  const TargetObjectTypDB = new PouchDB(currentBlueprint._id)
-  const targetDocument: { extraFields: any[]} = await TargetObjectTypDB.get(targetDocumentID)
+  window.FA_dbs[currentBlueprint._id] = new PouchDB(currentBlueprint._id)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  const targetDocument: { extraFields: any[]} = await window.FA_dbs[currentBlueprint._id].get(targetDocumentID)
 
   const newField = {
     id: fieldID,
     value: ""
   }
 
-  // singleToNoneRelationship
-  // singleToManyRelationship
-  // singleToSingleRelationship
-  // manyToNoneRelationship
-  // manyToSingleRelationship
-  // manyToManyRelationship
-
   targetDocument.extraFields.push(newField)
 
-  await TargetObjectTypDB.put(targetDocument)
+  console.log(newField)
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  await window.FA_dbs[currentBlueprint._id].put(targetDocument)
 }

@@ -208,7 +208,7 @@ export const religionsBlueprint: I_Blueprint = {
         "Monotheism",
         "Naturalism",
         "Polytheism",
-        "Spritism",
+        "Spiritism",
         "Totemism",
         "Virtue teaching",
         "Other"

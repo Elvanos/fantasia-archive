@@ -26,6 +26,8 @@
               style="width: 400px;"
               label="New project name"
               v-model="newProjectName"
+              :error="isInvalid && newProjectName.length > 0"
+              :error-message="'Your project name contains invalid characters'"
             />
           </div>
 
@@ -47,7 +49,7 @@
           <q-btn
             flat
             label="Create new project"
-            :disable="newProjectName.length === 0"
+            :disable="isInvalid"
             color="primary"
             v-close-popup
             @click="createNewProject" />
@@ -100,6 +102,40 @@ export default class ImportProjectCheckDialog extends DialogBase {
    */
   newProjectName = ""
 
+  reservedCharacterList = [
+    "/",
+    ">",
+    "<",
+    "|",
+    ":",
+    "&",
+    "\\",
+    "-",
+    "[",
+    "]",
+    "{",
+    "}",
+    "*",
+    "?",
+    "'",
+    "\""
+  ]
+
+  get isInvalid () {
+    let isValid = true
+    if (this.newProjectName.length === 0) {
+      isValid = false
+    }
+
+    this.reservedCharacterList.forEach(char => {
+      if (this.newProjectName.includes(char)) {
+        isValid = false
+      }
+    })
+
+    return !isValid
+  }
+
   /**
    * Create new project
    */
@@ -136,9 +172,14 @@ export default class ImportProjectCheckDialog extends DialogBase {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
 .newProjectCheckDialog {
   min-width: 600px;
+
+  .q-field__messages {
+    font-weight: 600;
+    font-size: 14px;
+  }
 }
 </style>

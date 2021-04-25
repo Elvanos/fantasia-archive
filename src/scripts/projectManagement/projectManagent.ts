@@ -85,6 +85,10 @@ export const exportProject = (projectName: string, Loading: any, loadingSetup: a
       for (const db of DBnames) {
         const CurrentDB = new PouchDB(db)
 
+        if (!fs.existsSync(`${folderPath}`)) {
+          fs.mkdirSync(`${folderPath}`)
+        }
+
         if (!fs.existsSync(`${folderPath}/${projectName}`)) {
           fs.mkdirSync(`${folderPath}/${projectName}`)
         }
@@ -195,6 +199,7 @@ export const importExistingProject = (vueRouter: any, Loading: any, loadingSetup
     })
 
     vueInstance.SSET_resetDocuments()
+    vueInstance.SSET_resetAllDocuments()
     /* eslint-enable */
   }).catch(err => {
     console.log(err)
@@ -267,6 +272,8 @@ export const mergeExistingProject = (vueRouter: any, Loading: any, loadingSetup:
     })
 
     vueInstance.SSET_resetDocuments()
+    vueInstance.SSET_resetAllDocuments()
+
     /* eslint-enable */
   }).catch(err => {
     console.log(err)

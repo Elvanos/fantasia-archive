@@ -50,7 +50,7 @@
       no-connectors
       ref="tree"
       dark
-      :duration="200"
+      :duration="0"
       :filter="treeFilter"
       :selected.sync="selectedTreeNode"
       :expanded.sync="expandedTreeNodes"
@@ -81,7 +81,7 @@
             <span
               class="text-grey-5 text-weight-medium q-ml-xs"
               v-if="(prop.node.isRoot || prop.node.isTag) && !disableDocumentCounts">
-                <span v-html="determineCatyegoryString(prop.node)"/>
+                <span v-html="determineCategoryString(prop.node)"/>
                 <q-tooltip
                   :delay="500"
                 >
@@ -290,7 +290,6 @@ import { Component, Watch } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
 import { I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
-import PouchDB from "pouchdb"
 import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentCheck.vue"
 
 import { extend, colors } from "quasar"
@@ -377,23 +376,7 @@ export default class ObjectTree extends BaseClass {
     this.hideTreeIconAddUnder = options.hideTreeIconAddUnder
     this.hideTreeIconEdit = options.hideTreeIconEdit
     this.hideTreeIconView = options.hideTreeIconView
-    this.buildCurrentObjectTree().catch((e) => {
-      console.log(e)
-    })
-  }
-
-  /****************************************************************/
-  // BLUEPRINT MANAGEMENT
-  /****************************************************************/
-
-  /**
-   * In case any of the blueprints change, reload the whole tree
-   */
-  @Watch("SGET_allBlueprints", { deep: true })
-  reactToBluePrintRefresh () {
-    this.buildCurrentObjectTree().catch((e) => {
-      console.log(e)
-    })
+    this.buildCurrentObjectTree()
   }
 
   /****************************************************************/
@@ -417,9 +400,9 @@ export default class ObjectTree extends BaseClass {
    *
    */
   @Watch("SGET_allOpenedDocuments", { deep: true })
-  async reactToDocumentListChange (val: { treeAction: boolean, docs: I_OpenedDocument[]}) {
+  reactToDocumentListChange (val: { treeAction: boolean, docs: I_OpenedDocument[]}) {
     if (val.treeAction) {
-      await this.buildCurrentObjectTree()
+      this.buildCurrentObjectTree()
       this.buildTreeExpands(val?.docs)
       this.lastDocsSnapShot = extend(true, [], val.docs)
     }
@@ -429,6 +412,26 @@ export default class ObjectTree extends BaseClass {
   }
 
   lastDocsSnapShot:I_OpenedDocument[] = []
+
+  /**
+   *
+   */
+  @Watch("SGET_allDocuments", { deep: true })
+  reactToAllDocumentListChange (val: { docs: I_OpenedDocument[]}) {
+    if (!this.SGET_allDocumentsFirstRunState) {
+      this.buildCurrentObjectTree()
+    }
+  }
+
+  /**
+   *
+   */
+  @Watch("SGET_allDocumentsFirstRunState")
+  reactToFirstRunFinish (val: boolean) {
+    if (!val) {
+      this.buildCurrentObjectTree()
+    }
+  }
 
   /**
    * Generic wrapper for adding of new object types to the tree
@@ -562,52 +565,50 @@ export default class ObjectTree extends BaseClass {
   /**
    * Builds a brand new sparkling hearchy tree out of available data
    */
-  async buildCurrentObjectTree () {
+  buildCurrentObjectTree () {
     const allBlueprings = this.SGET_allBlueprints
     let treeObject: any[] = []
     let allTreeDocuments: I_ShortenedDocument[] = []
 
     // Process all documents, build hieararchy out of the and sort them via name and custom order
     for (const blueprint of allBlueprings) {
-      const CurrentObjectDB = new PouchDB(blueprint._id)
+      const allDocuments = this.SGET_allDocumentsByType(blueprint._id)
+      let allDocumentsRows: I_ShortenedDocument[] = []
 
-      const allDocuments = await CurrentObjectDB.allDocs({ include_docs: true })
+      if (allDocuments && allDocuments.docs) {
+        allDocumentsRows = allDocuments.docs
+          .map((doc) => {
+            const parentDocID = doc.extraFields.find(e => e.id === "parentDoc")?.value.value as unknown as {_id: string}
+            const color = doc.extraFields.find(e => e.id === "documentColor")?.value as unknown as string
+            const bgColor = doc.extraFields.find(e => e.id === "documentBackgroundColor")?.value as unknown as string
 
-      const allDocumentsRows = allDocuments.rows
-        .map((singleDocument) => {
-          const doc = singleDocument.doc as unknown as I_ShortenedDocument
+            const isCategory = doc.extraFields.find(e => e.id === "categorySwitch")?.value as unknown as boolean
+            const isMinor = doc.extraFields.find(e => e.id === "minorSwitch")?.value as unknown as boolean
+            const isDead = doc.extraFields.find(e => e.id === "deadSwitch")?.value as unknown as boolean
 
-          const parentDocID = doc.extraFields.find(e => e.id === "parentDoc")?.value.value as unknown as {_id: string}
-          const color = doc.extraFields.find(e => e.id === "documentColor")?.value as unknown as string
-          const bgColor = doc.extraFields.find(e => e.id === "documentBackgroundColor")?.value as unknown as string
-
-          const isCategory = doc.extraFields.find(e => e.id === "categorySwitch")?.value as unknown as boolean
-          const isMinor = doc.extraFields.find(e => e.id === "minorSwitch")?.value as unknown as boolean
-          const isDead = doc.extraFields.find(e => e.id === "deadSwitch")?.value as unknown as boolean
-
-          return {
-            label: doc.extraFields.find(e => e.id === "name")?.value,
-            icon: (isCategory) ? "fas fa-folder-open" : doc.icon,
-            isCategory: !!(isCategory),
-            isMinor: isMinor,
-            isDead: isDead,
-            sticker: doc.extraFields.find(e => e.id === "order")?.value,
-            parentDoc: (parentDocID) ? parentDocID._id : false,
-            handler: this.openExistingDocumentRoute,
-            expandable: true,
-            color: color,
-            bgColor: bgColor,
-            type: doc.type,
-            children: [],
-            hasEdits: false,
-            isNew: false,
-            url: doc.url,
-            extraFields: (doc?.extraFields) || [],
-            _id: singleDocument.id,
-            key: singleDocument.id
-          } as I_ShortenedDocument
-        })
-
+            return {
+              label: doc.extraFields.find(e => e.id === "name")?.value,
+              icon: (isCategory) ? "fas fa-folder-open" : doc.icon,
+              isCategory: !!(isCategory),
+              isMinor: isMinor,
+              isDead: isDead,
+              sticker: doc.extraFields.find(e => e.id === "order")?.value,
+              parentDoc: (parentDocID) ? parentDocID._id : false,
+              handler: this.openExistingDocumentRoute,
+              expandable: true,
+              color: color,
+              bgColor: bgColor,
+              type: doc.type,
+              children: [],
+              hasEdits: false,
+              isNew: false,
+              url: doc.url,
+              extraFields: (doc?.extraFields) || [],
+              _id: doc._id,
+              key: doc._id
+            } as I_ShortenedDocument
+          })
+      }
       const documentCount = allDocumentsRows.filter(e => !e.isCategory).length
       const categoryCount = allDocumentsRows.filter(e => e.isCategory).length
       const allCount = allDocumentsRows.length
@@ -645,8 +646,6 @@ export default class ObjectTree extends BaseClass {
       }
 
       treeObject.push(treeRow)
-
-      await CurrentObjectDB.close()
     }
 
     // Sort the top level of the blueprints
@@ -662,7 +661,7 @@ export default class ObjectTree extends BaseClass {
     })
 
     if (!this.noTags) {
-      const tagList = await tagListBuildFromBlueprints(this.SGET_allBlueprints)
+      const tagList = tagListBuildFromBlueprints(this.SGET_allDocuments.docs)
 
       let allTags = 0
       let allTagsCategories = 0
@@ -735,7 +734,17 @@ export default class ObjectTree extends BaseClass {
     }
 
     // Assign the finished object to the render model
-    this.hierarchicalTree = treeObject
+    treeObject.forEach(cat => this.recursivelyFreezeChildren(cat.children))
+    // @ts-ignore
+    this.hierarchicalTree = Object.freeze(treeObject)
+  }
+
+  recursivelyFreezeChildren (children: {children: []}) {
+    Object.freeze(children)
+    if (children.children) {
+      // @ts-ignore
+      this.recursivelyFreezeChildren(children.children)
+    }
   }
 
   processNodeNewDocumentButton (node: {
@@ -962,7 +971,7 @@ export default class ObjectTree extends BaseClass {
     }
   }
 
-  determineCatyegoryString (node: {
+  determineCategoryString (node: {
     documentCount: string
     categoryCount: string
   }) {

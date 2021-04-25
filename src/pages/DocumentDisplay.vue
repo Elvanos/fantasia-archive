@@ -271,9 +271,8 @@ import { Component, Watch } from "vue-property-decorator"
 import BaseClass from "src/BaseClass"
 
 import { I_Blueprint, I_ExtraFields } from "src/interfaces/I_Blueprint"
-import PouchDB from "pouchdb"
 import { extend } from "quasar"
-import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
+import { I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { copyDocument } from "src/scripts/documentActions/copyDocument"
 
 import { saveDocument } from "src/scripts/databaseManager/documentManager"
@@ -394,7 +393,7 @@ export default class PageDocumentDisplay extends BaseClass {
     const doc = this.findRequestedOrActiveDocument() as I_OpenedDocument
     window.scrollTo({ top: 0, behavior: "auto" })
 
-    await this.reloadLocalContent().catch(e => console.log(e))
+    this.reloadLocalContent()
 
     const scrollTop = (doc.scrollDistance && !this.preventAutoScroll) ? doc.scrollDistance : 0
 
@@ -455,46 +454,54 @@ export default class PageDocumentDisplay extends BaseClass {
 
     const matchingDoc = this.findRequestedOrActiveDocument()
     if (matchingDoc && matchingDoc._id === this.currentData._id && !matchingDoc.hasEdits) {
-      this.reloadLocalContent().catch(e => console.log(e))
+      this.reloadLocalContent()
     }
   }
 
   /**
    * Attemp to reload the current local content. If it doesn't exist, create a new one.
    */
-  async reloadLocalContent () {
+  reloadLocalContent () {
     // Determine the type and retrieve the right blueprint
     this.bluePrintData = this.retrieveDocumentBlueprint()
 
     // Check if the objects exists in a database
-    const CurrentObjectDB = new PouchDB(this.$route.params.type)
-    let retrievedObject = false as unknown as I_OpenedDocument
-    try {
-      retrievedObject = await CurrentObjectDB.get(this.$route.params.id)
+    let retrievedObject = false as unknown as I_OpenedDocument | I_ShortenedDocument
+
+    if (this.SGET_document(this.$route.params.id)) {
+      retrievedObject = this.SGET_document(this.$route.params.id)
     }
-    catch (error) {}
-    if (!retrievedObject) {
-      const snapshot: I_OpenedDocument[] = extend(true, [], this.SGET_allOpenedDocuments.docs)
-      retrievedObject = snapshot.find(s => this.$route.params.id === s._id) as unknown as I_OpenedDocument
-      if (retrievedObject?.isNew || retrievedObject?.editMode) {
-        this.editMode = true
-      }
-    }
-    else {
-      retrievedObject = (this.SGET_openedDocument(retrievedObject._id)) ? this.SGET_openedDocument(retrievedObject._id) : retrievedObject
-      this.editMode = (this.SGET_openedDocument(retrievedObject._id)?.hasEdits || this.SGET_openedDocument(retrievedObject._id)?.editMode)
+
+    if (this.SGET_openedDocument(this.$route.params.id)) {
+      retrievedObject = this.SGET_openedDocument(this.$route.params.id)
     }
 
     // Either create a new document or load existing one
     this.currentData = (retrievedObject) ? extend(true, [], retrievedObject) : this.createNewDocumentObject()
 
-    const objectFields = await this.mapNewObjectFields()
+    if (!this.currentData) {
+      this.$router.push({ path: "/project" }).catch((e: {name: string}) => {
+        if (e && e.name !== "NavigationDuplicated") {
+          console.log(e)
+        }
+      })
+      return
+    }
+
+    const objectFields = this.mapNewObjectFields()
 
     if (!objectFields) {
       return
     }
 
     this.currentData.extraFields = objectFields
+
+    if (this.currentData.editMode) {
+      this.editMode = true
+    }
+    else {
+      this.editMode = false
+    }
 
     if (this.$route.query?.editMode) {
       this.editMode = true
@@ -509,7 +516,6 @@ export default class PageDocumentDisplay extends BaseClass {
     // Attempts to add current document to list
     const dataPass = { doc: dataCopy, treeAction: false }
     this.SSET_addOpenedDocument(dataPass)
-    await CurrentObjectDB.close()
   }
 
   /**
@@ -614,12 +620,6 @@ export default class PageDocumentDisplay extends BaseClass {
       this.localDataCopy = extend(true, {}, this.currentData)
       const dataPass = { doc: this.localDataCopy, treeAction: false }
 
-      // @ts-ignore
-      if (inputData.skipSave) {
-        this.currentData.extraFields[indexToUpdate].value.skipSave = false
-        dataPass.doc.hasEdits = false
-      }
-
       this.SSET_updateOpenedDocument(dataPass)
     }
 
@@ -675,7 +675,7 @@ export default class PageDocumentDisplay extends BaseClass {
   /**
    * Map new object "name" and "parentDoc" fields if pre-filled
    */
-  async mapNewObjectFields () {
+  mapNewObjectFields () {
     const currentExtraFields = (this.currentData && this.currentData.extraFields) ? this.currentData.extraFields : []
 
     const blueprint = this.retrieveDocumentBlueprint()
@@ -701,11 +701,10 @@ export default class PageDocumentDisplay extends BaseClass {
         else if (field.id === "parentDoc") {
           if (this.$route.query?.parent) {
             // Check if the objects exists in a database
-            const CurrentObjectDB = new PouchDB(this.$route.params.type)
             const parentID = this.$route.query.parent as string
-            let retrievedObject = false as unknown as I_OpenedDocument
+            let retrievedObject = false as unknown as I_ShortenedDocument
             try {
-              retrievedObject = await CurrentObjectDB.get(parentID)
+              retrievedObject = this.SGET_document(parentID)
             }
             catch (error) {}
 
@@ -729,7 +728,6 @@ export default class PageDocumentDisplay extends BaseClass {
                 }
               }
             )
-            await CurrentObjectDB.close()
           }
           else {
             currentExtraFields.push({ id: field.id, value: "" })
@@ -749,6 +747,11 @@ export default class PageDocumentDisplay extends BaseClass {
    */
   createNewDocumentObject () : I_OpenedDocument {
     this.editMode = true
+
+    if (!this.$route.params.id || !this.bluePrintData) {
+      // @ts-ignore
+      return false
+    }
 
     const uniqueID = this.$route.params.id
     return {
@@ -919,24 +922,29 @@ export default class PageDocumentDisplay extends BaseClass {
 
     const allDocuments = this.SGET_allOpenedDocuments
 
-    const docCopy: I_OpenedDocument[] = extend(true, [], allDocuments.docs)
+    const openedDocumentsCopy: I_OpenedDocument[] = extend(true, [], allDocuments.docs)
 
     if (currentDoc) {
       // @ts-ignore
       const savedDocument: {
         documentCopy: I_OpenedDocument,
         allOpenedDocuments: I_OpenedDocument[]
-      } = await saveDocument(currentDoc, docCopy, keepEditMode)
+      } = await saveDocument(currentDoc, openedDocumentsCopy, this.SGET_allDocuments.docs, keepEditMode)
 
       // Update the opened document
       const dataPass = { doc: savedDocument.documentCopy, treeAction: true }
       this.SSET_updateOpenedDocument(dataPass)
+      // @ts-ignore
+      this.SSET_updateDocument({ doc: this.mapShortDocument(savedDocument.documentCopy, this.SGET_allDocumentsByType(savedDocument.documentCopy.type).docs) })
 
       // Update all others
       for (const doc of savedDocument.allOpenedDocuments) {
         // Update the opened document
         const dataPass = { doc: doc, treeAction: true }
         this.SSET_updateOpenedDocument(dataPass)
+
+        // @ts-ignored
+        this.SSET_updateDocument({ doc: this.mapShortDocument(doc, this.SGET_allDocumentsByType(doc.type).docs) })
       }
 
       this.$q.notify({

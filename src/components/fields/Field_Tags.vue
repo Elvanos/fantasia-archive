@@ -104,7 +104,7 @@ export default class Field_Tags extends FieldBase {
   @Watch("inputDataValue", { deep: true, immediate: true })
   reactToInputChanges () {
     this.localInput = (this.inputDataValue) ? this.inputDataValue : []
-    this.buildTagList().catch(e => console.log(e))
+    this.buildTagList()
   }
 
   /**
@@ -117,7 +117,7 @@ export default class Field_Tags extends FieldBase {
    */
   @Watch("inputDataBluePrint", { deep: true, immediate: true })
   reactToBlueprintChanges () {
-    this.buildTagList().catch(e => console.log(e))
+    this.buildTagList()
   }
 
   /**
@@ -213,8 +213,8 @@ export default class Field_Tags extends FieldBase {
   /**
    * Build a new tag list from all existing tags on all documents across the whole project
    */
-  async buildTagList () {
-    this.allTags = await tagListBuildFromBlueprints(this.SGET_allBlueprints)
+  buildTagList () {
+    this.allTags = tagListBuildFromBlueprints(this.SGET_allDocuments.docs)
   }
 }
 </script>

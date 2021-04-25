@@ -3,7 +3,7 @@
  * Toggles dev tools in the current window
  */
 export const tipsTricks: string[] = [
-  "It is possible to search through all documents and all of their fields at once using the following in either the Quick search popup or any of the relationship searches: \" %:whatever-you-need\"",
+  "It is possible to search through all documents and all of their fields at once using the following in either the Quick search popup or any of the relationship searches: \"%:whatever-you-need\"",
   "There is a whole list of really helpful keybinds that can make your use of FA a lot quicker and easier!",
   "The settings menu contains a whole assortment of both big and small tweaks to tailor the app to your needs!",
   "FA has a Dark Mode that is no mere afterthought and is fully serviceable!",

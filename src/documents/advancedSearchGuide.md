@@ -53,6 +53,7 @@ Except for the advanced search functionality, Fantasia Archive also offers insta
   - `#` - Symbol for tag search
   - `>` - Symbol for hierarchical path search
   - `^` - Symbol for switch search (limited values below)
+    - `^c` - Displays only documents with `Is a category` ticked on  
     - `^d` - Displays only documents with `Is Dead/Gone/Destroyed` ticked on
     - `^f` - Displays only documents with `Is finished` ticked on
     - `^m` - Displays only documents with `Is a minor document` ticked on that are normally invisible and filtered out

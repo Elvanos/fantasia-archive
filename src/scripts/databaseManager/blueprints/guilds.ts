@@ -194,7 +194,7 @@ export const guildsBlueprint: I_Blueprint = {
         "Military group",
         "Economical group",
         "Civil group",
-        "Crimimal group",
+        "Criminal group",
         "Academic group",
         "Faction",
         "Charity",

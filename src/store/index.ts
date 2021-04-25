@@ -7,6 +7,7 @@ import Vuex from "vuex"
 
 import blueprintsModule from "./module-blueprints"
 import openedDocumentsModule from "./module-openedDocuments"
+import allDocumentsModule from "./module-allDocuments"
 import keybindsModule from "./module-keybinds"
 import dialogsModule from "./module-dialogs"
 import optionsModule from "./module-options"
@@ -31,6 +32,7 @@ export default store(function ({ Vue }) {
     modules: {
       blueprintsModule,
       openedDocumentsModule,
+      allDocumentsModule,
       keybindsModule,
       dialogsModule,
       optionsModule,

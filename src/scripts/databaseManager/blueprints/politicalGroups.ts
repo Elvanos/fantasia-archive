@@ -204,6 +204,7 @@ export const politicalGroupsBlueprint: I_Blueprint = {
         "Oligarchy",
         "Patriarchy",
         "Republic",
+        "Socialism",
         "Technocracy",
         "Theocracy",
         "Theodemocracy",

@@ -7,10 +7,10 @@
       no-resize
       dark
       title="Advanced Search Cheatsheet"
-      :height="480"
+      :height="510"
       :width="425"
       :start-x="50"
-      :start-y="150"
+      :start-y="150" 
       :actions="['close']"
       content-class="bg-gunmetal-light text-accent advSearchWindow"
     >

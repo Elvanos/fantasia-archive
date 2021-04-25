@@ -178,7 +178,7 @@
             color="primary"
             outline
             @click="toggleEditMode"
-            v-if="currentyEditable && SGET_allOpenedDocuments.docs.length > 0"
+            v-if="currentyEditable && SGET_allOpenedDocuments.docs.length > 0  && this.$route.path !== '/project'"
           >
             <q-tooltip
               :delay="500"
@@ -194,7 +194,7 @@
             :color="(!hasEdits) ? 'teal-14' : 'primary'"
             outline
             @click="saveCurrentDocument(true)"
-            v-if="!currentyEditable && SGET_allOpenedDocuments.docs.length > 0"
+            v-if="!currentyEditable && SGET_allOpenedDocuments.docs.length > 0  && this.$route.path !== '/project'"
           >
             <q-tooltip
               :delay="500"
@@ -211,7 +211,7 @@
             :color="(!hasEdits) ? 'teal-14' : 'primary'"
             outline
             @click="saveCurrentDocument(false)"
-            v-if="!currentyEditable && SGET_allOpenedDocuments.docs.length > 0"
+            v-if="!currentyEditable && SGET_allOpenedDocuments.docs.length > 0  && this.$route.path !== '/project'"
           >
             <q-tooltip
               :delay="500"
@@ -228,7 +228,7 @@
             color="primary"
             outline
             @click="addNewUnderParent"
-            v-if="!currentlyNew && SGET_allOpenedDocuments.docs.length > 0"
+            v-if="!currentlyNew && SGET_allOpenedDocuments.docs.length > 0  && this.$route.path !== '/project'"
           >
             <q-tooltip
               :delay="500"
@@ -245,7 +245,7 @@
             color="primary"
             outline
             @click="copyTargetDocument"
-            v-if="!currentlyNew && SGET_allOpenedDocuments.docs.length > 0"
+            v-if="!currentlyNew && SGET_allOpenedDocuments.docs.length > 0 && this.$route.path !== '/project'"
           >
             <q-tooltip
               :delay="500"
@@ -258,7 +258,7 @@
           </q-btn>
 
           <q-separator vertical inset color="accent"
-            v-if="!currentlyNew && SGET_allOpenedDocuments.docs.length > 0"
+            v-if="!currentlyNew && SGET_allOpenedDocuments.docs.length > 0  && this.$route.path !== '/project'"
           />
 
           <q-btn
@@ -266,7 +266,7 @@
             color="secondary"
             outline
             @click="deleteObjectAssignUID"
-            v-if="!currentlyNew && SGET_allOpenedDocuments.docs.length > 0"
+            v-if="!currentlyNew && SGET_allOpenedDocuments.docs.length > 0  && this.$route.path !== '/project'"
           >
             <q-tooltip
               :delay="500"
@@ -357,33 +357,33 @@ export default class DocumentControl extends BaseClass {
     }
 
     // Delete dialog - CTRL + D
-    if (this.determineKeyBind("deleteDocument") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState) {
+    if (this.determineKeyBind("deleteDocument") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
       this.deleteObjectAssignUID()
     }
 
     // Edit document - CTRL + E
-    if (this.determineKeyBind("editDocument") && this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState) {
+    if (this.determineKeyBind("editDocument") && this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
       this.toggleEditMode()
     }
 
     // Save document - CTRL + S
-    if (this.determineKeyBind("saveDocument") && !this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState) {
+    if (this.determineKeyBind("saveDocument") && !this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
       this.saveCurrentDocument(false).catch(e => console.log(e))
     }
 
     // Save document without exiting edit mode - CTRL + ALT + S
-    if (this.determineKeyBind("saveDocumentNoExit") && !this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState) {
+    if (this.determineKeyBind("saveDocumentNoExit") && !this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
       this.saveCurrentDocument(true).catch(e => console.log(e))
     }
 
     // Add new under parent - CTRL + SHIFT + N
-    if (this.determineKeyBind("addUnderParent") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState) {
+    if (this.determineKeyBind("addUnderParent") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
       await this.sleep(100)
       this.addNewUnderParent()
     }
 
-    // Add new under parent - CTRL + ALT + C
-    if (this.determineKeyBind("copyDocument") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState) {
+    // Copy document - CTRL + ALT + C
+    if (this.determineKeyBind("copyDocument") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
       await this.sleep(100)
       this.copyTargetDocument()
     }
@@ -559,17 +559,22 @@ export default class DocumentControl extends BaseClass {
       const savedDocument: {
         documentCopy: I_OpenedDocument,
         allOpenedDocuments: I_OpenedDocument[]
-      } = await saveDocument(currentDoc, this.documentsCopy, editMode)
+      } = await saveDocument(currentDoc, this.documentsCopy, this.SGET_allDocuments.docs, editMode).catch(err => console.log(err))
 
       // Update the opened document
       const dataPass = { doc: savedDocument.documentCopy, treeAction: true }
       this.SSET_updateOpenedDocument(dataPass)
+      // @ts-ignore
+      this.SSET_updateDocument({ doc: this.mapShortDocument(savedDocument.documentCopy, this.SGET_allDocumentsByType(savedDocument.documentCopy.type).docs) })
 
       // Update all others
       for (const doc of savedDocument.allOpenedDocuments) {
         // Update the opened document
         const dataPass = { doc: doc, treeAction: true }
         this.SSET_updateOpenedDocument(dataPass)
+
+        // @ts-ignore
+        this.SSET_updateDocument({ doc: this.mapShortDocument(doc, this.SGET_allDocumentsByType(doc.type).docs) })
       }
 
       this.$q.notify({
@@ -696,6 +701,14 @@ export default class DocumentControl extends BaseClass {
     .q-btn,
     .q-separator {
       margin-left: 10px;
+    }
+  }
+}
+
+html body {
+  &.q-body--prevent-scroll {
+    .documentControl {
+      min-width: calc(100vw - 375px);
     }
   }
 }

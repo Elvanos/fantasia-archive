@@ -144,6 +144,7 @@
       :ref="`multieRelationshipField${this.inputDataBluePrint.id}`"
       :options="filterList"
       use-input
+      :option-disable="opt => Object(opt) === opt ? disabledIDList.includes(opt._id) : true"
       :outlined="!isDarkMode"
       :filled="isDarkMode"
       use-chips
@@ -151,7 +152,7 @@
       input-debounce="200"
       v-model="localInput"
       @filter="filterSelect"
-      @input="signalInput(false)"
+      @input="signalInput"
     >
     <template v-slot:append>
         <q-btn round dense flat v-slot:append v-if="!hideAdvSearchCheatsheetButton" icon="mdi-help-rhombus" @click.stop.prevent="SSET_setAdvSearchWindowVisible"
@@ -408,7 +409,7 @@
             label="Note"
             v-model="singleNote.value"
             dense
-            @keyup="signalInput(false)"
+            @keyup="signalInput"
             :outlined="!isDarkMode"
             :filled="isDarkMode"
             >
@@ -431,7 +432,6 @@
 import { Component, Emit, Prop, Watch } from "vue-property-decorator"
 
 import FieldBase from "src/components/fields/_FieldBase"
-import PouchDB from "pouchdb"
 import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
 import { extend } from "quasar"
 import { I_ShortenedDocument, I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
@@ -486,7 +486,7 @@ export default class Field_MultiRelationship extends FieldBase {
 
     this.checkNotes()
 
-    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log())
+    this.reloadObjectListAndCheckIfValueExists()
   }
 
   /**
@@ -494,7 +494,7 @@ export default class Field_MultiRelationship extends FieldBase {
    */
   @Watch("inputDataBluePrint", { deep: true, immediate: true })
   reactToBlueprintChanges () {
-    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log())
+    this.reloadObjectListAndCheckIfValueExists()
   }
 
   /**
@@ -502,7 +502,7 @@ export default class Field_MultiRelationship extends FieldBase {
    */
   @Watch("currentId")
   reactToIDChanges () {
-    this.reloadObjectListAndCheckIfValueExists().catch(e => console.log())
+    this.reloadObjectListAndCheckIfValueExists()
   }
 
   /**
@@ -526,7 +526,7 @@ export default class Field_MultiRelationship extends FieldBase {
   /**
    * A list of all retrieved documents without the current one
    */
-  allDocumentsWithoutCurrent: I_ShortenedDocument[] = []
+  allTypeDocuments: I_ShortenedDocument[] = []
 
   /**
    * A copy of the list for the filter feed
@@ -553,7 +553,9 @@ export default class Field_MultiRelationship extends FieldBase {
   filterSelect (val: string, update: (e: () => void) => void) {
     if (val === "") {
       update(() => {
-        this.filterList = this.allDocumentsWithoutCurrent.filter((obj) => !obj.isMinor)
+        this.filterList = this.allTypeDocuments
+          .filter((obj) => !obj.isMinor && obj._id !== this.currentId)
+
         if (this.$refs[`multiRelationshipField${this.inputDataBluePrint.id}`] && this.filterList.length > 0) {
           this.refocusSelect().catch(e => console.log(e))
         }
@@ -563,10 +565,11 @@ export default class Field_MultiRelationship extends FieldBase {
 
     update(() => {
       const needle = val.toLowerCase()
-      this.filterList = extend(true, [], this.allDocumentsWithoutCurrent)
+      this.filterList = extend(true, [], this.allTypeDocuments)
 
       // @ts-ignore
       this.filterList = advancedDocumentFilter(needle, this.filterList, this.SGET_allBlueprints, this.filterList)
+        .filter((obj) => obj._id !== this.currentId)
 
       if (this.$refs[`multiRelationshipField${this.inputDataBluePrint.id}`] && this.filterList.length > 0) {
         this.refocusSelect().catch(e => console.log(e))
@@ -578,14 +581,13 @@ export default class Field_MultiRelationship extends FieldBase {
    * Prepares the initial loading of the list for filtering and furhter use
    * Also remove the document itself from the list, checks if connected input fields even exist and altogether formats and clears the list
    */
-  async reloadObjectListAndCheckIfValueExists () {
+  reloadObjectListAndCheckIfValueExists () {
     if (this.inputDataBluePrint?.relationshipSettings && this.currentId.length > 0) {
       // Get a list of all objects connected to this field and remap them
-      const CurrentObjectDB = new PouchDB(this.inputDataBluePrint.relationshipSettings.connectedObjectType)
-      let allDbObjects = (await CurrentObjectDB.allDocs({ include_docs: true })).rows.map(doc => doc.doc)
+      const allDbObjects = this.SGET_allDocumentsByTypeWithoutCategories(this.inputDataBluePrint.relationshipSettings.connectedObjectType)
 
       // Map all of the documents to something more digestible for the select
-      let allObjects = allDbObjects.map((doc) => {
+      allDbObjects.docs.forEach((doc) => {
         const objectDoc = doc as unknown as I_ShortenedDocument
 
         const pairedField = (this.inputDataBluePrint?.relationshipSettings?.connectedField) || ""
@@ -601,48 +603,28 @@ export default class Field_MultiRelationship extends FieldBase {
           }
         }
 
-        return {
-          _id: objectDoc._id,
-          icon: objectDoc.icon,
-          value: objectDoc._id,
-          type: objectDoc.type,
-          disable: isDisabled,
-          extraFields: objectDoc.extraFields,
-          url: `/project/display-content/${objectDoc.type}/${objectDoc._id}`,
-          label: objectDoc.extraFields.find(e => e.id === "name")?.value,
-          isCategory: objectDoc.extraFields.find(e => e.id === "categorySwitch")?.value,
-          isMinor: objectDoc.extraFields.find(e => e.id === "minorSwitch")?.value,
-          isDead: objectDoc.extraFields.find(e => e.id === "deadSwitch")?.value,
-          color: objectDoc.extraFields.find(e => e.id === "documentColor")?.value,
-          bgColor: objectDoc.extraFields.find(e => e.id === "documentBackgroundColor")?.value,
-          pairedField: pairedField,
-          tags: objectDoc.extraFields.find(e => e.id === "tags")?.value,
-          // @ts-ignore
-          hierarchicalPath: this.getDocumentHieararchicalPath(objectDoc, allDbObjects)
-
+        if (isDisabled) {
+          this.disabledIDList = [...new Set([
+            ...this.disabledIDList,
+            doc._id
+          ])]
         }
-      }) as unknown as I_ShortenedDocument[]
-
-      // Filter out current object
-      let allObjectsWithoutCurrent: I_ShortenedDocument[] = allObjects.filter((obj) => obj._id !== this.currentId)
+      })
 
       // Do a quick check on formatting of the current input (if something is wrong with it, set it as empty array)
       this.localInput = (Array.isArray(this.localInput)) ? this.localInput : []
-
-      let needsRefresh = false
 
       this.localInput.forEach((s, index) => {
         // Proceed only if the local input is properly set up
         if (s._id) {
           // If the matched object doesn't exist in the object, assume it has been deleted or newer existed and silently emit a signal input which auto-updates the document
-          if (!allObjectsWithoutCurrent.find(e => e._id === s._id)) {
+          if (!allDbObjects.docs.find(e => e._id === s._id)) {
           // @ts-ignore
             this.localInput.splice(index, 1)
-            needsRefresh = true
           }
           // If the object does exist, make sure we have the newest available name by reasigning the label if it is different. Then trigger a silent update
           else {
-            const matchedFieldContent = allObjectsWithoutCurrent.find(e => e._id === s._id)
+            const matchedFieldContent = allDbObjects.docs.find(e => e._id === s._id)
 
             if (matchedFieldContent && (
               this.localInput[index].label !== matchedFieldContent.label ||
@@ -650,29 +632,12 @@ export default class Field_MultiRelationship extends FieldBase {
             ) {
               this.localInput[index].label = matchedFieldContent.label
               this.localInput[index].isDead = matchedFieldContent.extraFields.find(e => e.id === "deadSwitch")?.value
-
-              needsRefresh = true
             }
           }
         }
       })
 
-      if (needsRefresh) {
-        this.signalInput(true).catch(e => console.log(e))
-      }
-
-      await CurrentObjectDB.close()
-
-      // Do a last set of filtering
-      this.allDocumentsWithoutCurrent = allObjectsWithoutCurrent
-        .filter((obj) => !obj.isCategory)
-
-      // @ts-ignore
-      allObjectsWithoutCurrent = null
-      // @ts-ignore
-      allObjects = null
-      // @ts-ignore
-      allDbObjects = null
+      this.allTypeDocuments = allDbObjects.docs
     }
   }
 
@@ -683,9 +648,8 @@ export default class Field_MultiRelationship extends FieldBase {
   /**
    * Opens a new tab from a connected rleationship
    */
-  async openNewTab (input: I_FieldRelationship) {
-    const CurrentObjectDB = new PouchDB(input.type)
-    const retrievedObject = await CurrentObjectDB.get(input._id)
+  openNewTab (input: I_FieldRelationship) {
+    const retrievedObject = (this.SGET_openedDocument(input._id)) || this.SGET_document(input._id)
 
     const dataPass = {
       doc: retrievedObject,
@@ -694,7 +658,6 @@ export default class Field_MultiRelationship extends FieldBase {
 
     // @ts-ignore
     this.SSET_addOpenedDocument(dataPass)
-    await CurrentObjectDB.close()
   }
 
   moveItem (index: number, direction: "up" | "down") {
@@ -704,23 +667,44 @@ export default class Field_MultiRelationship extends FieldBase {
     this.localInput.splice(to, 0, this.localInput.splice(from, 1)[0])
     this.inputNotes.splice(to, 0, this.inputNotes.splice(from, 1)[0])
 
-    this.signalInput().catch(e => console.log(e))
+    this.signalInput()
+  }
+
+  disabledIDList: string[] = []
+
+  processSelectInteraction (input: null| I_ShortenedDocument) {
+    // TODO ADD THIS
+    /* if (input) {
+      this.disabledIDList.push(input._id)
+    }
+    else {
+      const toRemoveIndex = this.disabledIDList.findIndex(id => id === this.inputDataValue.value._id)
+
+      if (toRemoveIndex) {
+        this.disabledIDList.splice(toRemoveIndex, 1)
+      }
+    } */
+    this.signalInput()
   }
 
   /**
    * Signals the input change to the document body parent component
    */
   @Emit()
-  async signalInput (skipSave?: boolean) {
-    await this.$nextTick()
-
+  signalInput () {
     this.checkNotes()
     this.inputNotes = this.inputNotes.filter(single => this.localInput.find(e => single.pairedId === e._id))
 
     return {
-      value: this.localInput,
-      addedValues: this.inputNotes,
-      skipSave: (skipSave)
+      value: this.localInput.map(e => {
+        return {
+          _id: e._id,
+          type: e.type,
+          url: e.url,
+          pairedField: (this.inputDataBluePrint?.relationshipSettings?.connectedField) || ""
+        }
+      }),
+      addedValues: this.inputNotes
     }
   }
 
@@ -742,7 +726,7 @@ export default class Field_MultiRelationship extends FieldBase {
   docToFind = null as unknown as I_OpenedDocument
 
   fixGetCorrectDocument (e: I_OpenedDocument | I_FieldRelationship) {
-    this.docToFind = (this.allDocumentsWithoutCurrent.find(doc => doc._id === e._id)) as unknown as I_OpenedDocument
+    this.docToFind = (this.allTypeDocuments.find(doc => doc._id === e._id)) as unknown as I_OpenedDocument
     return this.docToFind
   }
 

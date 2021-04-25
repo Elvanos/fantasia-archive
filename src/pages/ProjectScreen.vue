@@ -6,7 +6,6 @@
     'q-pa-xl': !disableDocumentControlBar,
     }"
   >
-
       <!-- New document dialog -->
       <newDocumentDialog
         :dialog-trigger="newObjectDialogTrigger"
@@ -128,7 +127,6 @@ import { Component, Watch } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
 import { Loading, colors } from "quasar"
-import PouchDB from "pouchdb"
 import newDocumentDialog from "src/components/dialogs/NewDocument.vue"
 import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
 import { tipsTricks } from "src/scripts/utilities/tipsTricks"
@@ -224,7 +222,7 @@ export default class ProjectScreen extends BaseClass {
    * Loads graph data
    */
   async loadGraphData () {
-    if (this.SGET_allBlueprints.length === 0) {
+    if (this.SGET_allDocumentsFirstRunState) {
       await this.sleep(1000)
       this.loadGraphData().catch(e => console.log(e))
       return
@@ -234,18 +232,15 @@ export default class ProjectScreen extends BaseClass {
 
     const allBlueprings = this.SGET_allBlueprints
 
-    // Process all documents, build hieararchy out of the and sort them via name and custom order
+    // Retrieve all documents
     for (const blueprint of allBlueprings) {
-      const CurrentObjectDB = new PouchDB(blueprint._id)
-      const allDocuments = await CurrentObjectDB.allDocs()
-      const docCount = allDocuments.rows.length
+      const docCount = this.SGET_allDocumentsByType(blueprint._id).docs.length
 
       this.allDocuments = this.allDocuments + docCount
 
       this.series[0].data.push(docCount)
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       this.chartOptions.xaxis.categories.push(blueprint.namePlural)
-      await CurrentObjectDB.close()
     }
     this.graphDataLoaded = true
 

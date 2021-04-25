@@ -6,6 +6,7 @@
   - `#` - Tag
   - `>` - Hierarchical path
   - `^` - Switch
+    - `^c` - Is a category
     - `^d` - Is Dead/Gone/Destroyed
     - `^f` - Is finished
     - `^m` - Is a minor document

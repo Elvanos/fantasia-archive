@@ -283,6 +283,13 @@ export const advancedDocumentFilter = (inputString: string, currentDocumentList:
     currentDocumentList = currentDocumentList.filter(doc => {
       let foundSwitch = false
 
+      if (switchSearch === "c") {
+        const field = doc.extraFields.find(e => e.id === "categorySwitch")
+        if (field && field.value === true) {
+          foundSwitch = true
+        }
+      }
+
       if (switchSearch === "d") {
         const field = doc.extraFields.find(e => e.id === "deadSwitch")
         if (field && field.value === true) {

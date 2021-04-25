@@ -6,6 +6,53 @@ export const charactersBlueprint: I_Blueprint = {
   nameSingular: "Character",
   icon: "mdi-account",
   extraFields: [
+    /* {
+      id: "singleTest",
+      name: "SINGLE TO SINGLE TEST",
+      type: "singleToSingleRelationship",
+      icon: "mdi-account",
+      sizing: 12,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "singleTest"
+      }
+    },
+
+    {
+      id: "singleToMultiTest",
+      name: "SINGLE TO MULTI TEST",
+      type: "singleToManyRelationship",
+      icon: "mdi-account",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "multiToSingleTest"
+      }
+    },
+
+    {
+      id: "multiToSingleTest",
+      name: "MULTI TO SINGLE TEST",
+      type: "manyToSingleRelationship",
+      icon: "mdi-account",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "singleToMultiTest"
+      }
+    },
+
+    {
+      id: "multiTest",
+      name: "MULTI TO MULTI TEST",
+      type: "manyToManyRelationship",
+      icon: "mdi-account",
+      sizing: 12,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "multiTest"
+      }
+    }, */
     {
       id: "breakDocumentSettings",
       name: "Document settings",
@@ -1414,5 +1461,6 @@ export const charactersBlueprint: I_Blueprint = {
         connectedField: "pairedConnectedCharacter"
       }
     }
+
   ]
 }
