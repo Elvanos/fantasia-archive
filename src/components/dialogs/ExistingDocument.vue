@@ -30,7 +30,7 @@
               use-input
               multiple
               filled
-              input-debounce="200"
+              input-debounce="500"
               v-model="existingDocumentModel"
               @filter="filterExistingSelect"
               @input="openExistingInput"

@@ -144,7 +144,7 @@
         use-input
         :outlined="!isDarkMode"
         :filled="isDarkMode"
-        input-debounce="200"
+        input-debounce="500"
         option-value="_id"
         v-model="localInput"
         @filter="filterSelect"

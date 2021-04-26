@@ -18,6 +18,8 @@ if (process.env.PROD) {
 let mainWindow
 
 function createWindow () {
+
+
   /**
    * Initial window options
    */
@@ -74,15 +76,29 @@ function createWindow () {
       })
     )
   }
-  console.log(params.dictionarySuggestions)
-  console.log(params.misspelledWord)
   if((params.dictionarySuggestions && params.dictionarySuggestions.length) || params.misspelledWord){
     menu.popup()
   }
 })
 }
 
-app.on('ready', createWindow)
+const gotTheLock = app.requestSingleInstanceLock()
+
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.focus()
+    }
+  })
+
+  // Create myWindow, load the rest of the app, etc...
+  app.on('ready', createWindow)
+}
+
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {

@@ -150,7 +150,7 @@
       use-chips
       multiple
       option-value="_id"
-      input-debounce="200"
+      input-debounce="500"
       v-model="localInput"
       @filter="filterSelect"
       @input="signalInput"

@@ -13,16 +13,18 @@
 
 ### Bugfixes & Optimizations
 
+- Massive overhaul of how data is being handles across the app!
 - Fixed buttons for moving list items up and down also showing outside of edit mode
 - Fixed `Resume project` button working in instances where it shouldnt
 - Fixed a visual bug in the top document control bar
 - Added a check against invalid characters in new project name to prevent issues while exporting on different OSs
 - Hopefully finally fixed the new project creation bugs that have been plaguing the app for last 3 releases
+- Fixed app starting in mutliple windows when ran multiple times.
 
 ### New features
 
 - Added support for filtering via `Is a category` switch field
-- Added "Hamlet" as a predefined location type
+- Added multiple predefined values list multiple list field across the different document types
 
 ### QoL adjustments
 
