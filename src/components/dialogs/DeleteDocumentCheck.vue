@@ -62,7 +62,6 @@ export default class DeleteDocumentCheckDialog extends DialogBase {
       this.dialogModel = true
 
       const documentID = (this.documentId.length > 0) ? this.documentId : this.$route.params.id
-
       this.currentDocument = this.SGET_document(documentID)
     }
   }
@@ -88,8 +87,13 @@ export default class DeleteDocumentCheckDialog extends DialogBase {
    * Delete the document
    */
   async deleteDocument () {
+    const documentID = (this.documentId.length > 0) ? this.documentId : this.$route.params.id
+
     const documentType = (this.documentType.length > 0) ? this.documentType : this.$route.params.type
     window.FA_dbs[documentType] = new PouchDB(documentType)
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    this.currentDocument = await window.FA_dbs[documentType].get(documentID)
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     await window.FA_dbs[documentType].remove(this.currentDocument)
@@ -99,10 +103,12 @@ export default class DeleteDocumentCheckDialog extends DialogBase {
     this.dialogModel = false
     this.SSET_setDialogState(false)
 
+    this.currentDocument = this.SGET_document(documentID)
+
     // @ts-ignore
     this.SSET_removeOpenedDocument(dataPass)
     // @ts-ignore
-    this.SSET_removeDocument({ doc: this.mapShortDocument(this.currentDocument, this.SGET_allDocumentsByType(this.currentDocument.type)) })
+    this.SSET_removeDocument({ doc: this.currentDocument })
   }
 }
 </script>

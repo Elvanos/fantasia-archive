@@ -145,6 +145,7 @@
         :outlined="!isDarkMode"
         :filled="isDarkMode"
         input-debounce="200"
+        option-value="_id"
         v-model="localInput"
         @filter="filterSelect"
         @input="processSelectInteraction"
@@ -646,6 +647,7 @@ export default class Field_SingleRelationship extends FieldBase {
     const exportValue = (this.localInput && this.localInput._id)
       ? {
         _id: this.localInput._id,
+        id: this.localInput._id,
         type: this.localInput.type,
         url: this.localInput.url,
         pairedField: (this.inputDataBluePrint?.relationshipSettings?.connectedField) || ""

@@ -24,7 +24,7 @@ export const saveDocument = async (
     currentDocument = await CurrentObjectDB.get(document._id)
   }
   catch (error) {
-    console.log(error)
+    // console.log("Creating new document")
   }
 
   let documentCopy = {} as unknown as I_OpenedDocument

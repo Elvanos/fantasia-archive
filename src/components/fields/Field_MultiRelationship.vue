@@ -149,6 +149,7 @@
       :filled="isDarkMode"
       use-chips
       multiple
+      option-value="_id"
       input-debounce="200"
       v-model="localInput"
       @filter="filterSelect"
@@ -699,6 +700,7 @@ export default class Field_MultiRelationship extends FieldBase {
       value: this.localInput.map(e => {
         return {
           _id: e._id,
+          id: e._id,
           type: e.type,
           url: e.url,
           pairedField: (this.inputDataBluePrint?.relationshipSettings?.connectedField) || ""

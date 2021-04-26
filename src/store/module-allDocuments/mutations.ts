@@ -17,14 +17,14 @@ const mutation: MutationTree<AllDocumentsStateInterface> = {
 
     // Docs
     const toAddIndexDocs = state.docs.docs.findIndex(doc => doc.type === input.doc.type && doc._id === input.doc._id)
-    if (!toAddIndexDocs) {
+    if (toAddIndexDocs < 0) {
       state.docs.docs.push(input.doc)
       state.docs.timestamp = timestamp
     }
 
     // Docs, no cat
     const toAddIndexDocsWithoutCategory = state.docsWithoutCategories.docs.findIndex(doc => doc.type === input.doc.type && doc._id === input.doc._id)
-    if (!toAddIndexDocsWithoutCategory) {
+    if (toAddIndexDocsWithoutCategory < 0) {
       state.docsWithoutCategories.docs.push(input.doc)
       state.docsWithoutCategories.timestamp = timestamp
     }
@@ -32,7 +32,7 @@ const mutation: MutationTree<AllDocumentsStateInterface> = {
     // Docs each cat
     const typeIndex = state.docByType.findIndex(type => type.id === input.doc.type)
     const toAddTypeIndexDocs = state.docByType[typeIndex].docs.findIndex(doc => doc._id === input.doc._id)
-    if (!toAddTypeIndexDocs) {
+    if (toAddTypeIndexDocs < 0) {
       state.docByType[typeIndex].docs.push(input.doc)
       state.docByType[typeIndex].timestamp = timestamp
     }
@@ -40,7 +40,7 @@ const mutation: MutationTree<AllDocumentsStateInterface> = {
     // Docs each cat, no cat
     const typeIndexWithoutCats = state.docbyTypeWithoutCategories.findIndex(type => type.id === input.doc.type)
     const toAddTypeIndexDocsWithoutCats = state.docbyTypeWithoutCategories[typeIndexWithoutCats].docs.findIndex(doc => doc._id === input.doc._id)
-    if (!toAddTypeIndexDocsWithoutCats) {
+    if (toAddTypeIndexDocsWithoutCats < 0) {
       state.docbyTypeWithoutCategories[typeIndexWithoutCats].docs.push(input.doc)
       state.docbyTypeWithoutCategories[typeIndex].timestamp = timestamp
     }

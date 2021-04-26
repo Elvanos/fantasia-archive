@@ -465,8 +465,6 @@ export default class ExistingDocumentDialog extends DialogBase {
 
       const retrievedObject = (this.SGET_openedDocument(e._id)) || this.SGET_document(e._id)
 
-      console.log(retrievedObject)
-
       const dataPass = {
         doc: retrievedObject,
         treeAction: false

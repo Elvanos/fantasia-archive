@@ -187,9 +187,6 @@ export const many_addRelationshipToAnotherObject = async (
 
   let targetPairedField = pairedDocument.extraFields[pairedFieldIndex]
 
-  console.log(currentValue)
-  console.log(pairedField)
-
   // Fix non-existant fields
   if (!targetPairedField) {
     await addFieldToDocument(pairedDocument._id, pairedField, typeToFind)

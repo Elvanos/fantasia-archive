@@ -7,7 +7,7 @@
 - Floating notes corkboard
 - Add hover/on-demand document preview to relationships
 
-- Export for MD/PDF
+- Export for MD/PDF/ODT/DOCX
 - Selective export per field basis
 - Templates for exports
 
@@ -44,7 +44,6 @@
 - Add description tabs
 - Add category for materials/resources OR adapt Items category
 - Add category for diseases/curses/etc
-- Add button to pull the left tree in and out
 - Add support for individual document order hiding inside the hierarchical tree for each document
 
 ### Project settings

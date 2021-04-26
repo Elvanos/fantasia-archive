@@ -920,6 +920,9 @@ export default class PageDocumentDisplay extends BaseClass {
 
     const currentDoc = this.findRequestedOrActiveDocument()
 
+    // @ts-ignore
+    const isNew = currentDoc.isNew
+
     const allDocuments = this.SGET_allOpenedDocuments
 
     const openedDocumentsCopy: I_OpenedDocument[] = extend(true, [], allDocuments.docs)
@@ -934,8 +937,17 @@ export default class PageDocumentDisplay extends BaseClass {
       // Update the opened document
       const dataPass = { doc: savedDocument.documentCopy, treeAction: true }
       this.SSET_updateOpenedDocument(dataPass)
-      // @ts-ignore
-      this.SSET_updateDocument({ doc: this.mapShortDocument(savedDocument.documentCopy, this.SGET_allDocumentsByType(savedDocument.documentCopy.type).docs) })
+
+      // Update document
+      if (!isNew) {
+        // @ts-ignore
+        this.SSET_updateDocument({ doc: this.mapShortDocument(savedDocument.documentCopy, this.SGET_allDocumentsByType(savedDocument.documentCopy.type).docs) })
+      }
+      // Add new document
+      else {
+        // @ts-ignore
+        this.SSET_addDocument({ doc: this.mapShortDocument(savedDocument.documentCopy, this.SGET_allDocumentsByType(savedDocument.documentCopy.type).docs) })
+      }
 
       // Update all others
       for (const doc of savedDocument.allOpenedDocuments) {

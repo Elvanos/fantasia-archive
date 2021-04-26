@@ -50,7 +50,7 @@
       no-connectors
       ref="tree"
       dark
-      :duration="0"
+      :duration="200"
       :filter="treeFilter"
       :selected.sync="selectedTreeNode"
       :expanded.sync="expandedTreeNodes"
@@ -566,8 +566,11 @@ export default class ObjectTree extends BaseClass {
    * Builds a brand new sparkling hearchy tree out of available data
    */
   buildCurrentObjectTree () {
+    this.hierarchicalTree = []
+
     const allBlueprings = this.SGET_allBlueprints
     let treeObject: any[] = []
+
     let allTreeDocuments: I_ShortenedDocument[] = []
 
     // Process all documents, build hieararchy out of the and sort them via name and custom order
@@ -734,9 +737,9 @@ export default class ObjectTree extends BaseClass {
     }
 
     // Assign the finished object to the render model
-    treeObject.forEach(cat => this.recursivelyFreezeChildren(cat.children))
+    // treeObject.forEach(cat => this.recursivelyFreezeChildren(cat.children))
     // @ts-ignore
-    this.hierarchicalTree = Object.freeze(treeObject)
+    this.hierarchicalTree = treeObject
   }
 
   recursivelyFreezeChildren (children: {children: []}) {
