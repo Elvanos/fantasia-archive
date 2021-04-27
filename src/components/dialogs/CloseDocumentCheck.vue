@@ -5,7 +5,7 @@
       >
       <q-card dark class="documentCloseDialog">
          <q-card-section class="row justify-center">
-          <h6 class="text-center q-my-sm">Discard changes to {{retrieveFieldValue(dialogDocument,'name')}}?</h6>
+          <h6 class="text-center q-my-sm">Discard changes to <span class="text-primary">{{retrieveFieldValue(dialogDocument,'name')}}</span>?</h6>
         </q-card-section>
 
         <q-card-actions align="around" class="q-mx-xl q-mt-lg q-mb-md">

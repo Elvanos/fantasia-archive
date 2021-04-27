@@ -289,7 +289,7 @@
 import { Component, Watch } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
-import { I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
+import { I_ExtraDocumentFields, I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentCheck.vue"
 
 import { extend, colors } from "quasar"
@@ -562,6 +562,25 @@ export default class ObjectTree extends BaseClass {
     return sortedRoots
   }
 
+  mapImportantExtraFields (extraFields: I_ExtraDocumentFields[]) {
+    const impotantFieldIDList: string[] = [
+      "name",
+      "parentDoc",
+      "documentColor",
+      "documentBackgroundColor",
+      "finishedSwitch",
+      "minorSwitch",
+      "deadSwitch",
+      "categorySwitch",
+      "order",
+      "tags"
+    ]
+    extraFields = extraFields.filter(field => {
+      return impotantFieldIDList.includes(field.id)
+    })
+    return extraFields
+  }
+
   /**
    * Builds a brand new sparkling hearchy tree out of available data
    */
@@ -606,7 +625,7 @@ export default class ObjectTree extends BaseClass {
               hasEdits: false,
               isNew: false,
               url: doc.url,
-              extraFields: (doc?.extraFields) || [],
+              extraFields: (doc?.extraFields) ? this.mapImportantExtraFields(doc.extraFields) : [],
               _id: doc._id,
               key: doc._id
             } as I_ShortenedDocument
@@ -737,9 +756,10 @@ export default class ObjectTree extends BaseClass {
     }
 
     // Assign the finished object to the render model
-    // treeObject.forEach(cat => this.recursivelyFreezeChildren(cat.children))
+    treeObject.forEach(cat => this.recursivelyFreezeChildren(cat.children))
     // @ts-ignore
     this.hierarchicalTree = treeObject
+    console.log(treeObject)
   }
 
   recursivelyFreezeChildren (children: {children: []}) {
@@ -1017,7 +1037,7 @@ export default class ObjectTree extends BaseClass {
   documentPass = null as unknown as I_OpenedDocument
 
   copyTargetDocument (currentDoc: I_OpenedDocument) {
-    this.documentPass = extend(true, {}, currentDoc)
+    this.documentPass = extend(true, {}, this.SGET_document(currentDoc._id))
 
     const newDocument = copyDocument(this.documentPass, this.generateUID())
 

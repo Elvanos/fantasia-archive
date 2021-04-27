@@ -61,7 +61,14 @@ const mutation: MutationTree<AllDocumentsStateInterface> = {
     // Docs, no cat
     const toUpdateIndexDocsWithoutCategory = state.docsWithoutCategories.docs.findIndex(doc => doc.type === input.doc.type && doc._id === input.doc._id)
     if (!isCategory) {
-      state.docsWithoutCategories.docs[toUpdateIndexDocsWithoutCategory] = input.doc
+      // If adding
+      if (toUpdateIndexDocsWithoutCategory < 0) {
+        state.docsWithoutCategories.docs.push(input.doc)
+      }
+      // If updating
+      else {
+        state.docsWithoutCategories.docs[toUpdateIndexDocsWithoutCategory] = input.doc
+      }
     }
     else {
       state.docsWithoutCategories.docs.splice(toUpdateIndexDocsWithoutCategory, 1)
@@ -77,8 +84,16 @@ const mutation: MutationTree<AllDocumentsStateInterface> = {
     // Docs each cat, no cat
     const typeIndexWithoutCats = state.docbyTypeWithoutCategories.findIndex(type => type.id === input.doc.type)
     const toUpdateTypeIndexDocsWithoutCats = state.docbyTypeWithoutCategories[typeIndexWithoutCats].docs.findIndex(doc => doc._id === input.doc._id)
+
     if (!isCategory) {
-      state.docbyTypeWithoutCategories[typeIndexWithoutCats].docs[toUpdateTypeIndexDocsWithoutCats] = input.doc
+      // If adding
+      if (toUpdateTypeIndexDocsWithoutCats < 0) {
+        state.docbyTypeWithoutCategories[typeIndexWithoutCats].docs.push(input.doc)
+      }
+      // If updating
+      else {
+        state.docbyTypeWithoutCategories[typeIndexWithoutCats].docs[toUpdateTypeIndexDocsWithoutCats] = input.doc
+      }
     }
     else {
       state.docbyTypeWithoutCategories[typeIndexWithoutCats].docs.splice(toUpdateTypeIndexDocsWithoutCats, 1)
