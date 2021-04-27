@@ -31,7 +31,7 @@
     v-if="editMode"
     v-model.number="localInput"
     type="text"
-    @keyup="signalInput"
+    @keydown="signalInput"
     :outlined="!isDarkMode"
     :filled="isDarkMode"
     dense

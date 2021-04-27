@@ -361,7 +361,7 @@
               label="Note"
               v-model="inputNote.value"
               dense
-              @keyup="signalInput"
+              @keydown="signalInput"
               :outlined="!isDarkMode"
               :filled="isDarkMode"
               >

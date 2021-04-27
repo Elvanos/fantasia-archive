@@ -26,7 +26,7 @@
   <q-input
       v-if="editMode"
       v-model="localInput"
-      @keyup="signalInput"
+      @keydown="signalInput"
       :outlined="!isDarkMode"
       :filled="isDarkMode"
       dense

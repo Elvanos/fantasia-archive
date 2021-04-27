@@ -759,7 +759,6 @@ export default class ObjectTree extends BaseClass {
     treeObject.forEach(cat => this.recursivelyFreezeChildren(cat.children))
     // @ts-ignore
     this.hierarchicalTree = treeObject
-    console.log(treeObject)
   }
 
   recursivelyFreezeChildren (children: {children: []}) {

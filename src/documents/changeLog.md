@@ -7,7 +7,7 @@
 
 ### Known issues
 
-- Overusing Tags currently causes app crashes on some PCs. If you suffer from this issue, reduce the number of tags in your project below 10.
+- Overusing Tags currently causes app crashes on some PCs. If you suffer from this issue, reduce the number of tags or objects paired underneath them.
 
 ### Bugfixes & Optimizations
 
@@ -19,6 +19,7 @@
 - Hopefully finally fixed the new project creation bugs that have been plaguing the app for last 3 releases
 - Fixed app starting in mutliple windows when ran multiple times.
 - FIxed more typos across the app
+- Fixed a bug that was re-triggering edit mode on document save without any actual edits
 
 ### New features
 

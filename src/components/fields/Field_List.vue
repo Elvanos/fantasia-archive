@@ -87,7 +87,7 @@
           class="grow-1"
           :class="`listField_input${index}_${inputDataBluePrint.id}`"
           dense
-          @keyup="signalInput"
+          @keydown="signalInput"
           :outlined="!isDarkMode"
           :filled="isDarkMode"
           >
