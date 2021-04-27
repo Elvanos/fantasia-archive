@@ -13,6 +13,7 @@
 
 ## THE GM BATCH END
 
+- Add debounce timer to input fields (bad sync updating with store)
 - Add reverse list field option (dropdown first, value in bracket)
 - Rework stats (via reverse list)
 - Add option for project graph to filter out categories or show them separately

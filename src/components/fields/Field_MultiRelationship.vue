@@ -153,7 +153,7 @@
       input-debounce="500"
       v-model="localInput"
       @filter="filterSelect"
-      @input="signalInput"
+      @input="signalInput(false)"
     >
     <template v-slot:append>
         <q-btn round dense flat v-slot:append v-if="!hideAdvSearchCheatsheetButton" icon="mdi-help-rhombus" @click.stop.prevent="SSET_setAdvSearchWindowVisible"
@@ -410,7 +410,7 @@
             label="Note"
             v-model="singleNote.value"
             dense
-            @keydown="signalInput"
+            @keydown="signalInput(false)"
             :outlined="!isDarkMode"
             :filled="isDarkMode"
             >
@@ -680,7 +680,7 @@ export default class Field_MultiRelationship extends FieldBase {
     this.localInput.splice(to, 0, this.localInput.splice(from, 1)[0])
     this.inputNotes.splice(to, 0, this.inputNotes.splice(from, 1)[0])
 
-    this.signalInput()
+    this.signalInput(false)
   }
 
   disabledIDList: string[] = []
@@ -697,14 +697,14 @@ export default class Field_MultiRelationship extends FieldBase {
         this.disabledIDList.splice(toRemoveIndex, 1)
       }
     } */
-    this.signalInput()
+    this.signalInput(false)
   }
 
   /**
    * Signals the input change to the document body parent component
    */
   @Emit()
-  signalInput (isSilent = false) {
+  signalInput (isSilent: boolean) {
     this.checkNotes()
     this.inputNotes = this.inputNotes.filter(single => this.localInput.find(e => single.pairedId === e._id))
 
