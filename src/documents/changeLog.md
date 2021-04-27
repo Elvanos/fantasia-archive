@@ -7,19 +7,18 @@
 
 ### Known issues
 
-- POSSIBLY FIXED: When creating a brand new project, Fantasia Archive sometimes doesn't load the default categories in the left hierarchical tree. A temporary workaround before the issue is fixed is restarting the program - the project stays intact, can be normally edited and no data loss occurs.
-- POSSIBLY FIXED: Some users report that dialog (popups) don't function the very first time you start FA. This is solved by restarting the application. The bug doesn't seem to appear again once FA has been started at least once before.
 - Overusing Tags currently causes app crashes on some PCs. If you suffer from this issue, reduce the number of tags in your project below 10.
 
 ### Bugfixes & Optimizations
 
-- Massive overhaul of how data is being handles across the app!
+- **Massive overhaul of how data is being handles across the app!**
 - Fixed buttons for moving list items up and down also showing outside of edit mode
 - Fixed `Resume project` button working in instances where it shouldnt
 - Fixed a visual bug in the top document control bar
 - Added a check against invalid characters in new project name to prevent issues while exporting on different OSs
 - Hopefully finally fixed the new project creation bugs that have been plaguing the app for last 3 releases
 - Fixed app starting in mutliple windows when ran multiple times.
+- FIxed more typos across the app
 
 ### New features
 

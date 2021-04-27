@@ -47,6 +47,7 @@ export const createNewProject = async (projectName: string, vueRouter: any, quas
     message: `New project succesfully created`
   })
   vueInstance.SSET_resetDocuments()
+  vueInstance.SSET_resetAllDocuments()
   /* eslint-enable */
 
   await ProjectDB.close()

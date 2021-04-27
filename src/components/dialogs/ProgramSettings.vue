@@ -314,7 +314,7 @@
                       Prevent auto-scrolling
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
                       <q-tooltip :delay="500">
-                        Determines if the documents will recall their scroll distances and auto-scroll on switching ot not.
+                        Determines if the documents will recall their scroll distances and auto-scroll on switching or not.
                       </q-tooltip>
                     </q-icon>
                     </div>

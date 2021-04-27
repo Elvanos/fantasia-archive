@@ -632,8 +632,7 @@ export default class PageDocumentDisplay extends BaseClass {
       this.localDataCopy = extend(true, {}, this.currentData)
       const dataPass = { doc: this.localDataCopy, treeAction: false }
       // @ts-ignore
-      if (inputData.skipSave) {
-        this.currentData.extraFields[indexToUpdate].value.skipSave = false
+      if (inputData.isSilent) {
         dataPass.doc.hasEdits = false
       }
 

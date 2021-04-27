@@ -169,8 +169,6 @@ export const addFieldToDocument = async (targetDocumentID: string, fieldID: stri
 
   targetDocument.extraFields.push(newField)
 
-  console.log(newField)
-
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   await window.FA_dbs[currentBlueprint._id].put(targetDocument)
 }

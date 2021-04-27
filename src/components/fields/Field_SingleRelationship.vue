@@ -578,7 +578,6 @@ export default class Field_SingleRelationship extends FieldBase {
           ])]
         }
       })
-
       // Proceed only if the local input is properly set up
       if (this.localInput._id) {
         // If the matched object doesn't exist in the object, assume it has been deleted or never existed

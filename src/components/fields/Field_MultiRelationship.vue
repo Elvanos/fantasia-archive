@@ -479,10 +479,11 @@ export default class Field_MultiRelationship extends FieldBase {
    * Also reload the local object list
    */
   @Watch("inputDataValue", { deep: true, immediate: true })
-  reactToInputChanges () {
-    this.localInput = (this.inputDataValue?.value) ? this.inputDataValue.value : []
+  reactToInputChanges (val : I_RelationshipPair) {
+    const localCopy: I_RelationshipPair = extend(true, {}, val)
+    this.localInput = (localCopy?.value) ? localCopy.value : []
 
-    const notes = (!this.inputDataValue?.addedValues) ? [] : this.inputDataValue.addedValues
+    const notes = (!localCopy?.addedValues) ? [] : localCopy.addedValues
     this.inputNotes = notes.filter(single => this.localInput.find(e => single.pairedId === e._id))
 
     this.checkNotes()
@@ -615,30 +616,41 @@ export default class Field_MultiRelationship extends FieldBase {
       // Do a quick check on formatting of the current input (if something is wrong with it, set it as empty array)
       this.localInput = (Array.isArray(this.localInput)) ? this.localInput : []
 
-      this.localInput.forEach((s, index) => {
+      const toRemoveIndexList: number[] = []
+
+      for (const [index] of this.localInput.entries()) {
         // Proceed only if the local input is properly set up
-        if (s._id) {
+        if (this.localInput[index]._id) {
           // If the matched object doesn't exist in the object, assume it has been deleted or newer existed and silently emit a signal input which auto-updates the document
-          if (!allDbObjects.docs.find(e => e._id === s._id)) {
-          // @ts-ignore
-            this.localInput.splice(index, 1)
+
+          if (!allDbObjects.docs.find(e => e._id === this.localInput[index]._id)) {
+            allDbObjects.docs.forEach(e => {
+              if (e._id === this.localInput[index]._id) {
+                console.log(extend(true, {}, this.localInput[index]))
+                console.log(extend(true, {}, e))
+              }
+            })
+            toRemoveIndexList.push(index)
           }
           // If the object does exist, make sure we have the newest available name by reasigning the label if it is different. Then trigger a silent update
           else {
-            const matchedFieldContent = allDbObjects.docs.find(e => e._id === s._id)
-
-            if (matchedFieldContent && (
-              this.localInput[index].label !== matchedFieldContent.label ||
-               this.localInput[index]?.isDead !== matchedFieldContent.extraFields.find(e => e.id === "deadSwitch")?.value)
-            ) {
+            const matchedFieldContent = allDbObjects.docs.find(e => e._id === this.localInput[index]._id)
+            if (matchedFieldContent) {
               this.localInput[index].label = matchedFieldContent.label
               this.localInput[index].isDead = matchedFieldContent.extraFields.find(e => e.id === "deadSwitch")?.value
             }
           }
         }
-      })
+      }
 
       this.allTypeDocuments = allDbObjects.docs
+
+      if (toRemoveIndexList.length > 0) {
+        toRemoveIndexList.forEach((e, i) => {
+          this.localInput.splice(i, 1)
+        })
+        this.signalInput(true)
+      }
     }
   }
 
@@ -692,7 +704,7 @@ export default class Field_MultiRelationship extends FieldBase {
    * Signals the input change to the document body parent component
    */
   @Emit()
-  signalInput () {
+  signalInput (isSilent = false) {
     this.checkNotes()
     this.inputNotes = this.inputNotes.filter(single => this.localInput.find(e => single.pairedId === e._id))
 
@@ -706,7 +718,8 @@ export default class Field_MultiRelationship extends FieldBase {
           pairedField: (this.inputDataBluePrint?.relationshipSettings?.connectedField) || ""
         }
       }),
-      addedValues: this.inputNotes
+      addedValues: this.inputNotes,
+      isSilent: isSilent
     }
   }
 

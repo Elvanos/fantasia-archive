@@ -14,6 +14,7 @@ const mutation: MutationTree<AllDocumentsStateInterface> = {
     doc: I_ShortenedDocument,
   }) {
     const timestamp = uid()
+    const isCategory = input.doc.extraFields.find(e => e.id === "categorySwitch")?.value
 
     // Docs
     const toAddIndexDocs = state.docs.docs.findIndex(doc => doc.type === input.doc.type && doc._id === input.doc._id)
@@ -24,7 +25,7 @@ const mutation: MutationTree<AllDocumentsStateInterface> = {
 
     // Docs, no cat
     const toAddIndexDocsWithoutCategory = state.docsWithoutCategories.docs.findIndex(doc => doc.type === input.doc.type && doc._id === input.doc._id)
-    if (toAddIndexDocsWithoutCategory < 0) {
+    if (toAddIndexDocsWithoutCategory < 0 && !isCategory) {
       state.docsWithoutCategories.docs.push(input.doc)
       state.docsWithoutCategories.timestamp = timestamp
     }
@@ -40,7 +41,7 @@ const mutation: MutationTree<AllDocumentsStateInterface> = {
     // Docs each cat, no cat
     const typeIndexWithoutCats = state.docbyTypeWithoutCategories.findIndex(type => type.id === input.doc.type)
     const toAddTypeIndexDocsWithoutCats = state.docbyTypeWithoutCategories[typeIndexWithoutCats].docs.findIndex(doc => doc._id === input.doc._id)
-    if (toAddTypeIndexDocsWithoutCats < 0) {
+    if (toAddTypeIndexDocsWithoutCats < 0 && !isCategory) {
       state.docbyTypeWithoutCategories[typeIndexWithoutCats].docs.push(input.doc)
       state.docbyTypeWithoutCategories[typeIndex].timestamp = timestamp
     }

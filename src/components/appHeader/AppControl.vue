@@ -83,6 +83,12 @@
       @trigger-dialog-close="licenseDialogClose"
     />
 
+    <!-- Repair project dialog -->
+    <repairProjectDialog
+      :dialog-trigger="repairProjectDialogTrigger"
+      @trigger-dialog-close="repairProjectDialogClose"
+    />
+
     <q-btn-group
       flat
       class="AppControl__buttons"
@@ -233,6 +239,35 @@
               <q-item-section avatar>
                 <q-icon name="mdi-folder-plus-outline" />
               </q-item-section>
+            </q-item>
+
+            <q-separator dark />
+
+            <q-item clickable>
+              <q-item-section>Advanced project tools</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="keyboard_arrow_right" />
+              </q-item-section>
+              <q-menu anchor="top end" self="top start">
+                <q-list class="bg-gunmetal text-accent">
+
+                  <q-item
+                    v-close-popup
+                    clickable
+                    active
+                    active-class="bg-gunmetal-light text-cultured"
+                    class="noHigh"
+                    @click="repairProjectAssignUID"
+                    :disable="!projectExists"
+                  >
+                    <q-item-section>Repair legacy project</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-folder-open-outline" />
+                    </q-item-section>
+                  </q-item>
+
+                </q-list>
+              </q-menu>
             </q-item>
 
             <q-separator dark />
@@ -424,6 +459,7 @@ import keybindCheatsheetDialog from "src/components/dialogs/KeybindCheatsheet.vu
 import importProjectCheckDialog from "src/components/dialogs/ImportProjectCheck.vue"
 import mergeProjectCheckDialog from "src/components/dialogs/MergeProjectCheck.vue"
 import newProjectCheckDialog from "src/components/dialogs/NewProjectCheck.vue"
+import repairProjectDialog from "src/components/dialogs/RepairProject.vue"
 import aboutAppDialog from "src/components/dialogs/AboutApp.vue"
 import changeLogDialog from "src/components/dialogs/ChangeLog.vue"
 import programSettingsDialog from "src/components/dialogs/ProgramSettings.vue"
@@ -453,7 +489,8 @@ import appLogo from "src/assets/appLogo.png"
     newDocumentDialog,
     existingDocumentDialog,
     tipsTricksTriviaDialog,
-    licenseDialog
+    licenseDialog,
+    repairProjectDialog
   }
 })
 export default class AppControl extends BaseClass {
@@ -725,6 +762,19 @@ export default class AppControl extends BaseClass {
 
   licenseAssignUID () {
     this.licenseDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
+  // Repair project dialog
+  /****************************************************************/
+
+  repairProjectDialogTrigger: string | false = false
+  repairProjectDialogClose () {
+    this.repairProjectDialogTrigger = false
+  }
+
+  repairProjectAssignUID () {
+    this.repairProjectDialogTrigger = this.generateUID()
   }
 }
 </script>
