@@ -7,29 +7,33 @@
 
 ### Known issues
 
-- Overusing Tags (20+ with 400+ documents in them for most) currently causes slowdowns/crashes on some PCs when using the Hierarchy tree. If you suffer from this issue, reduce the number of tags or objects paired underneath them.
+- Overusing Tags (20+ with 400+ documents in them for most) currently causes slowdowns/crashes on some PCs when using the Hierarchy tree. If you suffer from this issue, reduce the number of tags and/or objects paired underneath them.
+- When using the `Legacy project repair` tool, a very small amount of users report being stuck on the progress. If you suffer from the issue, restart the app and then restart the fixing process - this seems to be a workaround for now.
 
 ### Bugfixes & Optimizations
 
-- **Massive overhaul of how data is being handles across the app!**
+- **Massive overhaul of how data is being handled across the app!**
 - Fixed buttons for moving list items up and down also showing outside of edit mode
-- Fixed `Resume project` button working in instances where it shouldnt
+- Fixed `Resume project` button working in instances where it shouldn't
 - Fixed a visual bug in the top document control bar
-- Added a check against invalid characters in new project name to prevent issues while exporting on different OSs
-- Hopefully finally fixed the new project creation bugs that have been plaguing the app for last 3 releases
-- Fixed app starting in mutliple windows when ran multiple times.
+- Added a check against invalid characters in the new project name to prevent issues while exporting on different OSs
+- Hopefully finally fixed the new project creation bugs that have been plaguing the app for the last 3 releases
+- Fixed app starting in multiple windows when ran multiple times.
 - Fixed more typos across the app
-- Added debounce timers for all input fields across whole document to massively improve performance when updating temporary document data across the app
+- Added debounce timers for all input fields across the whole document to massively improve performance when updating temporary document data across the app
 - Fixed a bug that was re-triggering edit mode on document save without any actual edits
 - Fixed a bug that was causing improperly filled in URLs in the text editor field to glitch out the whole app and require a restart
 
 ### New features
 
 - Added support for filtering via `Is a category` switch field
+- Added links to Reddit, GitHub, and FA Website
 - Added multiple predefined values list multiple list field across the different document types
-- Added a super obnoxious propmt for people to repair their project on start-up so they hopefully actually do it! Woo-hoo!
+- Added a super obnoxious prompt for people to repair their project on start-up so they hopefully actually do it! Woo-hoo!
 
 ### QoL adjustments
+
+- None this time, sorry :(
 
 ## 0.1.5a
 

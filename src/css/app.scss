@@ -257,7 +257,7 @@ a {
 .isDead {
   text-decoration: line-through;
   text-decoration-color: #fff;
-} 
+}
 
 .q-icon::after,
 .q-icon::before {
@@ -532,4 +532,74 @@ body .q-tooltip {
   background-position: 25px 12px;
   background-repeat: no-repeat;
   background-size: 26px;
+}
+
+.websiteButton {
+  align-items: center;
+  backface-visibility: hidden;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-flex;
+  font-weight: 500;
+  justify-content: center;
+  padding: 13px 20px 8px 48px;
+  position: relative;
+  text-align: center;
+  border-radius: 4px;
+  transition: background-color 0.17s ease, color 0.17s ease;
+  user-select: none;
+  color: #ffd673;
+  font-size: 16px !important;
+  background-color: #244452;
+  background-image: url('../assets/appLogo.png');
+  background-position: 10px 6px;
+  background-repeat: no-repeat;
+  background-size: 30px;
+
+  &:hover {
+    background-color: lighten(#244452, 4) !important;
+  }
+}
+
+.redditButton {
+  align-items: center;
+  backface-visibility: hidden;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-flex;
+  font-weight: 500;
+  justify-content: center;
+  padding: 22.5px 65px 22.5px 65px;
+  position: relative;
+  text-align: center;
+  border-radius: 4px;
+  transition: all 300ms cubic-bezier(0.19, 1, 0.22, 1) 0s;
+  user-select: none;
+  background-color: #ff4500;
+  background-image: url('../assets/reddit_logo_horizontal_on_orangered.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 80%;
+}
+
+.githubButton {
+  align-items: center;
+  backface-visibility: hidden;
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-flex;
+  font-weight: 500;
+  justify-content: center;
+  padding: 14px 20px 9px 55px;
+  position: relative;
+  text-align: center;
+  border-radius: 4px;
+  transition: all 300ms cubic-bezier(0.19, 1, 0.22, 1) 0s;
+  user-select: none;
+  background-color: #f5f5f5;
+  color: #000;
+  background-image: url('../assets/GitHub-Mark-120px-plus.png');
+  background-position: 14px 6px;
+  background-repeat: no-repeat;
+  background-size: 30px;
 }

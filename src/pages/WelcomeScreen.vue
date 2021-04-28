@@ -58,19 +58,43 @@
       </div>
 
       <template v-if="!hideWelcomeScreenSocials">
-        <q-separator color="primary" horizonatal dark class="q-my-xl" style="opacity: 0.5; width: 400px;" />
+        <q-separator color="primary" horizonatal dark class="q-mt-xl q-mb-lg" style="opacity: 0.5; width: 400px;" />
 
-        <div class="col-12 q-mb-lg">
-          <div class="discordButton" @click="openDiscordInviteLink">
-            Join Fantasia Archive Discord!
-          </div>
-        </div>
-
-        <div class="col-12 q-mt-sm">
-          <div class="patreonButton" @click="openPatreonLink">
+        <div class="col-12 q-mx-sm q-my-md">
+          <div class="patreonButton shadow-1" @click="openPatreonLink">
             Support Fantasia Archive on Patreon!
           </div>
         </div>
+
+        <div class="col-12 q-mb-lg">
+          <div class="row">
+
+            <div class="q-mx-sm q-my-md">
+              <div class="discordButton shadow-1" @click="openDiscordInviteLink">
+                Discord
+              </div>
+            </div>
+
+            <div class="q-mx-sm q-my-md">
+              <div class="redditButton shadow-1" @click="openRedditLink"></div>
+            </div>
+
+            <div class="q-mx-sm q-my-md">
+              <div class="websiteButton shadow-1" @click="openWebsiteLink">
+                Website
+              </div>
+            </div>
+
+            <div class="q-mx-sm q-my-md">
+              <div class="githubButton shadow-1" @click="openGithubLink">
+                GitHub
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
       </template>
 
   </q-page>
@@ -150,6 +174,27 @@ export default class WelcomeScreen extends BaseClass {
    */
   openPatreonLink () {
     shell.openExternal("https://www.patreon.com/elvanos").catch(e => console.log(e))
+  }
+
+  /**
+   * Open Reddit link in thw default browser window
+   */
+  openRedditLink () {
+    shell.openExternal("https://www.reddit.com/r/FantasiaArchive/").catch(e => console.log(e))
+  }
+
+  /**
+   * Open Website link in thw default browser window
+   */
+  openWebsiteLink () {
+    shell.openExternal("http://fantasiaarchive.com/").catch(e => console.log(e))
+  }
+
+  /**
+   * Open GitHub link in thw default browser window
+   */
+  openGithubLink () {
+    shell.openExternal("https://github.com/Elvanos/fantasia-archive").catch(e => console.log(e))
   }
 
   /****************************************************************/
