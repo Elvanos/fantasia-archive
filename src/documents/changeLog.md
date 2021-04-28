@@ -7,7 +7,7 @@
 
 ### Known issues
 
-- Overusing Tags currently causes app crashes on some PCs. If you suffer from this issue, reduce the number of tags or objects paired underneath them.
+- Overusing Tags (20+ with 400+ documents in them for most) currently causes slowdowns/crashes on some PCs when using the Hierarchy tree. If you suffer from this issue, reduce the number of tags or objects paired underneath them.
 
 ### Bugfixes & Optimizations
 
@@ -18,7 +18,8 @@
 - Added a check against invalid characters in new project name to prevent issues while exporting on different OSs
 - Hopefully finally fixed the new project creation bugs that have been plaguing the app for last 3 releases
 - Fixed app starting in mutliple windows when ran multiple times.
-- FIxed more typos across the app
+- Fixed more typos across the app
+- Added debounce timers for all input fields across whole document to massively improve performance when updating temporary document data across the app
 - Fixed a bug that was re-triggering edit mode on document save without any actual edits
 
 ### New features

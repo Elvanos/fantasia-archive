@@ -212,6 +212,9 @@ export default class RepairProjectDialog extends DialogBase {
       allManyToSingleFields.find(e => e.id === field.id) ||
       allManyToManyFields.find(e => e.id === field.id)) {
         if (field.value && field.value.value) {
+          if (field.id === "pairedLocations") {
+            console.log(field.value.value)
+          }
           // eslint-disable-next-line @typescript-eslint/no-unsafe-call
           for (const [i, subValue] of field.value.value.entries()) {
             const blueprintField = blueprint.extraFields.find(e => e.id === field.id)

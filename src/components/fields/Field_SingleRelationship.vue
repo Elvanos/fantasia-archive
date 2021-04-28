@@ -642,6 +642,7 @@ export default class Field_SingleRelationship extends FieldBase {
   pullTimer = null as any
 
   processInput () {
+    this.inputNote = (this.localInput !== null) ? this.inputNote : { pairedId: "", value: "" }
     clearTimeout(this.pullTimer)
     this.pullTimer = setTimeout(() => {
       this.signalInput()

@@ -616,7 +616,7 @@ export default class Field_MultiRelationship extends FieldBase {
       // Do a quick check on formatting of the current input (if something is wrong with it, set it as empty array)
       this.localInput = (Array.isArray(this.localInput)) ? this.localInput : []
 
-      const toRemoveIndexList: number[] = []
+      const toRemoveIndexList: string[] = []
 
       for (const [index] of this.localInput.entries()) {
         // Proceed only if the local input is properly set up
@@ -624,13 +624,7 @@ export default class Field_MultiRelationship extends FieldBase {
           // If the matched object doesn't exist in the object, assume it has been deleted or newer existed and silently emit a signal input which auto-updates the document
 
           if (!allDbObjects.docs.find(e => e._id === this.localInput[index]._id)) {
-            allDbObjects.docs.forEach(e => {
-              if (e._id === this.localInput[index]._id) {
-                console.log(extend(true, {}, this.localInput[index]))
-                console.log(extend(true, {}, e))
-              }
-            })
-            toRemoveIndexList.push(index)
+            toRemoveIndexList.push(this.localInput[index]._id)
           }
           // If the object does exist, make sure we have the newest available name by reasigning the label if it is different. Then trigger a silent update
           else {
@@ -646,8 +640,11 @@ export default class Field_MultiRelationship extends FieldBase {
       this.allTypeDocuments = allDbObjects.docs
 
       if (toRemoveIndexList.length > 0) {
-        toRemoveIndexList.forEach((e, i) => {
-          this.localInput.splice(i, 1)
+        toRemoveIndexList.forEach((id) => {
+          const indexToRemove = this.localInput.findIndex(doc => doc._id === id)
+          if (indexToRemove > -1) {
+            this.localInput.splice(indexToRemove, 1)
+          }
         })
         this.signalInput(true)
       }
@@ -706,9 +703,12 @@ export default class Field_MultiRelationship extends FieldBase {
   pullTimer = null as any
 
   processInput () {
+    this.checkNotes()
+    this.inputNotes = this.inputNotes.filter(single => this.localInput.find(e => single.pairedId === e._id))
+
     clearTimeout(this.pullTimer)
     this.pullTimer = setTimeout(() => {
-      this.processInput()
+      this.signalInput(false)
     }, 500)
   }
 

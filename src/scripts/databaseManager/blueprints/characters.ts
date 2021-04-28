@@ -6,7 +6,8 @@ export const charactersBlueprint: I_Blueprint = {
   nameSingular: "Character",
   icon: "mdi-account",
   extraFields: [
-    /* {
+    /*
+    {
       id: "singleTest",
       name: "SINGLE TO SINGLE TEST",
       type: "singleToSingleRelationship",
@@ -17,7 +18,6 @@ export const charactersBlueprint: I_Blueprint = {
         connectedField: "singleTest"
       }
     },
-
     {
       id: "singleToMultiTest",
       name: "SINGLE TO MULTI TEST",
