@@ -6,30 +6,6 @@ export const charactersBlueprint: I_Blueprint = {
   nameSingular: "Character",
   icon: "mdi-account",
   extraFields: [
-
-    {
-      id: "singleToMultiTest",
-      name: "SINGLE TO MULTI TEST",
-      type: "singleToManyRelationship",
-      icon: "mdi-account",
-      sizing: 6,
-      relationshipSettings: {
-        connectedObjectType: "characters",
-        connectedField: "multiToSingleTest"
-      }
-    },
-
-    {
-      id: "multiToSingleTest",
-      name: "MULTI TO SINGLE TEST",
-      type: "manyToSingleRelationship",
-      icon: "mdi-account",
-      sizing: 6,
-      relationshipSettings: {
-        connectedObjectType: "characters",
-        connectedField: "singleToMultiTest"
-      }
-    },
     {
       id: "breakDocumentSettings",
       name: "Document settings",
