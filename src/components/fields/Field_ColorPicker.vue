@@ -31,7 +31,7 @@
     v-if="editMode"
     v-model.number="localInput"
     type="text"
-    @keydown="signalInput"
+    @keydown="processInput"
     :outlined="!isDarkMode"
     :filled="isDarkMode"
     dense
@@ -44,7 +44,7 @@
       <q-icon name="colorize" class="cursor-pointer">
         <q-popup-proxy transition-show="scale" transition-hide="scale">
           <q-color
-            @input="signalInput"
+            @input="processInput"
             v-model="localInput"
            />
         </q-popup-proxy>
@@ -93,6 +93,18 @@ export default class Field_ColorPicker extends FieldBase {
    * Model for the local input
    */
   localInput = ""
+
+  /**
+   * Debounce timer to prevent buggy input sync
+   */
+  pullTimer = null as any
+
+  processInput () {
+    clearTimeout(this.pullTimer)
+    this.pullTimer = setTimeout(() => {
+      this.signalInput()
+    }, 500)
+  }
 
   /**
    * Signals the input change to the document body parent component

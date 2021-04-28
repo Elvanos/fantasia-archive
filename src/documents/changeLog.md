@@ -25,6 +25,7 @@
 
 - Added support for filtering via `Is a category` switch field
 - Added multiple predefined values list multiple list field across the different document types
+- Added a super obnoxious propmt for people to repair their project on start-up so they hopefully actually do it! Woo-hoo!
 
 ### QoL adjustments
 

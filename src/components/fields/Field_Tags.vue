@@ -42,8 +42,8 @@
       multiple
       v-model="localInput"
       @new-value="addNewValue"
-      @input="signalInput"
-      @keydown="signalInput"
+      @input="processInput"
+      @keydown="processInput"
       error-message="This tag is already present in the selection."
       :error="tagAlreadyExists"
     >
@@ -121,6 +121,18 @@ export default class Field_Tags extends FieldBase {
   }
 
   /**
+   * Debounce timer to prevent buggy input sync
+   */
+  pullTimer = null as any
+
+  processInput () {
+    clearTimeout(this.pullTimer)
+    this.pullTimer = setTimeout(() => {
+      this.signalInput()
+    }, 500)
+  }
+
+  /**
    * Signals the input change to the document body parent component
    */
   @Emit()
@@ -179,7 +191,7 @@ export default class Field_Tags extends FieldBase {
       // @ts-ignore
       this.$refs[`tagField${this.inputDataBluePrint.id}`].updateInputValue ('')     
       /* eslint-enable */
-      this.signalInput()
+      this.processInput()
     }
 
     if (tagAlreadyExistsInList && tagAlreadyExistsAttached) {

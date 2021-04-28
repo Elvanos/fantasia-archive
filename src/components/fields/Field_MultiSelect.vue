@@ -51,8 +51,8 @@
       new-value-mode="add"
       multiple
       v-model="localInput"
-      @input="signalInput"
-      @keydown="signalInput"
+      @input="processInput"
+      @keydown="processInput"
     >
       <template v-slot:selected-item="scope">
         <q-chip
@@ -229,7 +229,19 @@ export default class Field_MultiSelect extends FieldBase {
 
     this.localInput.splice(to, 0, this.localInput.splice(from, 1)[0])
 
-    this.signalInput()
+    this.processInput()
+  }
+
+  /**
+   * Debounce timer to prevent buggy input sync
+   */
+  pullTimer = null as any
+
+  processInput () {
+    clearTimeout(this.pullTimer)
+    this.pullTimer = setTimeout(() => {
+      this.signalInput()
+    }, 500)
   }
 
   /**

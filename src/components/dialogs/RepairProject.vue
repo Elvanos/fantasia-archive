@@ -85,12 +85,13 @@
 <script lang="ts">
 
 import { remote } from "electron"
+import { extend, Loading, QSpinnerGears } from "quasar"
 
 import { Component, Watch } from "vue-property-decorator"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
 import { retrieveCurrentProjectName, exportProject } from "src/scripts/projectManagement/projectManagent"
-import { Loading, QSpinnerGears } from "quasar"
+
 import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
 
@@ -171,6 +172,12 @@ export default class RepairProjectDialog extends DialogBase {
 
     this.repairOngoing = false
     this.repairFinished = true
+
+    const optionsSnapShot = extend(true, {}, this.SGET_options)
+    // @ts-ignore
+    optionsSnapShot.pre016check = false
+    // @ts-ignore
+    this.SSET_options(optionsSnapShot)
   }
 
   async remapDocument (document: I_ShortenedDocument, blueprint: I_Blueprint) {

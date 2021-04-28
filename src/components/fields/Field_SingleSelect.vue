@@ -38,8 +38,8 @@
       input-debounce="0"
       new-value-mode="add"
       v-model="localInput"
-      @input="signalInput"
-      @keydown="signalInput"
+      @input="processInput"
+      @keydown="processInput"
     >
      <template v-slot:selected-item="scope">
       <q-chip
@@ -148,6 +148,18 @@ export default class Field_SingleSelect extends FieldBase {
       }
       this.defocusSelectRef().catch(e => console.log(e))
     })
+  }
+
+  /**
+   * Debounce timer to prevent buggy input sync
+   */
+  pullTimer = null as any
+
+  processInput () {
+    clearTimeout(this.pullTimer)
+    this.pullTimer = setTimeout(() => {
+      this.signalInput()
+    }, 500)
   }
 
   /**

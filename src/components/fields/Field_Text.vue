@@ -26,7 +26,7 @@
   <q-input
       v-if="editMode"
       v-model="localInput"
-      @keydown="signalInput"
+      @keydown="processInput"
       :outlined="!isDarkMode"
       :filled="isDarkMode"
       dense
@@ -95,7 +95,7 @@ export default class Field_Text extends FieldBase {
    */
   deletePlaceholder () {
     this.localInput = ""
-    this.signalInput()
+    this.processInput()
   }
 
   /**
@@ -116,6 +116,18 @@ export default class Field_Text extends FieldBase {
     /* eslint-enable */
       })
     }
+  }
+
+  /**
+   * Debounce timer to prevent buggy input sync
+   */
+  pullTimer = null as any
+
+  processInput () {
+    clearTimeout(this.pullTimer)
+    this.pullTimer = setTimeout(() => {
+      this.signalInput()
+    }, 500)
   }
 
   /**

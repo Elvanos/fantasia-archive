@@ -87,7 +87,7 @@
           class="grow-1"
           :class="`listField_input${index}_${inputDataBluePrint.id}`"
           dense
-          @keydown="signalInput"
+          @keydown="processInput"
           :outlined="!isDarkMode"
           :filled="isDarkMode"
           >
@@ -112,8 +112,8 @@
           input-debounce="0"
           new-value-mode="add"
           dark
-          @input="signalInput"
-          @keydown="signalInput"
+          @input="processInput"
+          @keydown="processInput"
           :label="(inputAffix) ? inputAffix : ''"
           v-model="localInput[index].affix"
         />
@@ -221,7 +221,7 @@ export default class Field_List extends FieldBase {
    */
   removeFromList (index: number) {
     this.localInput.splice(index, 1)
-    this.signalInput()
+    this.processInput()
   }
 
   /**
@@ -243,7 +243,7 @@ export default class Field_List extends FieldBase {
       newInput.focus()
     }
 
-    this.signalInput()
+    this.processInput()
   }
 
   moveItem (index: number, direction: "up" | "down") {
@@ -252,7 +252,19 @@ export default class Field_List extends FieldBase {
 
     this.localInput.splice(to, 0, this.localInput.splice(from, 1)[0])
 
-    this.signalInput()
+    this.processInput()
+  }
+
+  /**
+   * Debounce timer to prevent buggy input sync
+   */
+  pullTimer = null as any
+
+  processInput () {
+    clearTimeout(this.pullTimer)
+    this.pullTimer = setTimeout(() => {
+      this.signalInput()
+    }, 500)
   }
 
   /**

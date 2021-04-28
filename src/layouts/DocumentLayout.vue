@@ -1,6 +1,25 @@
 <template>
   <q-layout view="hHh LpR lfr">
 
+     <!-- Repair project dialog -->
+    <repairProjectDialog
+      :dialog-trigger="repairProjectDialogTrigger"
+      @trigger-dialog-close="repairProjectDialogClose"
+    />
+
+     <q-dialog v-model="pre016check" seamless position="bottom">
+      <q-card style="width: 100vw; min-width: 100vw;" dark class="text-accent bg-secondary">
+
+        <q-card-section class="row items-center no-wrap justify-center">
+          <div>
+            If you are working with a pre-0.1.6 version project, then please <span class="q-mx-lg"><q-btn outline label="Repair your project" color="accent" @click="repairProjectAssignUID" /></span>
+          </div>
+
+          <q-btn outline round icon="close" v-close-popup @click="close016Notification" class="notifClose" />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
+
     <!-- Header -->
     <appHeader/>
 
@@ -57,6 +76,7 @@ import objectTree from "src/components/ObjectTree.vue"
 import appHeader from "src/components/AppHeader.vue"
 import documentControl from "src/components/DocumentControl.vue"
 import { engageBlueprints, retrieveAllBlueprints } from "src/scripts/databaseManager/blueprintManager"
+import repairProjectDialog from "src/components/dialogs/RepairProject.vue"
 
 import { extend } from "quasar"
 import { OptionsStateInteface } from "src/store/module-options/state"
@@ -67,7 +87,8 @@ import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
   components: {
     objectTree,
     appHeader,
-    documentControl
+    documentControl,
+    repairProjectDialog
   }
 })
 export default class DocumentLayout extends BaseClass {
@@ -103,7 +124,7 @@ export default class DocumentLayout extends BaseClass {
   }
 
   establishAllDocumentDatabases () {
-    // @ts-ignore
+  // @ts-ignore
     window.FA_dbs = {}
     for (const blueprint of this.SGET_allBlueprints) {
       window.FA_dbs[blueprint._id] = new PouchDB(blueprint._id)
@@ -112,7 +133,7 @@ export default class DocumentLayout extends BaseClass {
 
   async loadAllProjectDocuments () {
     for (const blueprint of this.SGET_allBlueprints) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
       const dbRows = await window.FA_dbs[blueprint._id].allDocs({ include_docs: true })
 
       // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -150,6 +171,8 @@ export default class DocumentLayout extends BaseClass {
    */
   splitterModel = 375
 
+  pre016check = false
+
   /**
    * Special class for the splitter
    */
@@ -175,6 +198,9 @@ export default class DocumentLayout extends BaseClass {
   onSettingsChange () {
     const options = this.SGET_options
     this.hideHierarchyTree = options.hideHierarchyTree
+
+    // @ts-ignore
+    this.pre016check = options.pre016check
 
     if (options.treeWidth && !this.hideHierarchyTree) {
       this.splitterModel = options.treeWidth
@@ -204,6 +230,12 @@ export default class DocumentLayout extends BaseClass {
    */
   optionsSnapShot = {} as OptionsStateInteface
 
+  close016Notification () {
+    this.optionsSnapShot = extend(true, {}, this.SGET_options)
+    this.optionsSnapShot.pre016check = false
+    this.SSET_options(this.optionsSnapShot)
+  }
+
   /**
    * React to dragging of the splitter
    */
@@ -220,11 +252,30 @@ export default class DocumentLayout extends BaseClass {
       this.SSET_options(this.optionsSnapShot)
     }, 500)
   }
+
+  /****************************************************************/
+  // Repair project dialog
+  /****************************************************************/
+
+  repairProjectDialogTrigger: string | false = false
+  repairProjectDialogClose () {
+    this.repairProjectDialogTrigger = false
+  }
+
+  repairProjectAssignUID () {
+    this.repairProjectDialogTrigger = this.generateUID()
+  }
 }
 
 </script>
 
 <style lang="scss">
+
+.notifClose {
+  position: absolute;
+  right: 20px;
+  top: 14px;
+}
 
 .sideWrapper {
   height: calc(100% - 40px) !important;

@@ -22,7 +22,7 @@
       @paste.native="evt => pasteCapture(evt)"
       :toolbar="wysiwygOptions"
       :fonts="wysiwygFonts"
-      @input="signalInput"
+      @input="processInput"
       :flat="isDarkMode"
       v-if="editMode"
       :definitions="definitions"
@@ -71,6 +71,18 @@ export default class Field_Wysiwyg extends FieldBase {
    * Model for the local input
    */
   localInput = ""
+
+  /**
+   * Debounce timer to prevent buggy input sync
+   */
+  pullTimer = null as any
+
+  processInput () {
+    clearTimeout(this.pullTimer)
+    this.pullTimer = setTimeout(() => {
+      this.signalInput()
+    }, 500)
+  }
 
   /**
    * Signals the input change to the document body parent component

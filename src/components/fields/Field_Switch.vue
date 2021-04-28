@@ -13,7 +13,7 @@
   <q-toggle
     :disable="!editMode"
     v-model="localInput"
-    @input="signalInput"
+    @input="processInput"
   />
 
     <div class="separatorWrapper">
@@ -57,6 +57,18 @@ export default class Field_Switch extends FieldBase {
    * Model for the local input
    */
   localInput: null|boolean = null
+
+  /**
+   * Debounce timer to prevent buggy input sync
+   */
+  pullTimer = null as any
+
+  processInput () {
+    clearTimeout(this.pullTimer)
+    this.pullTimer = setTimeout(() => {
+      this.signalInput()
+    }, 500)
+  }
 
   /**
    * Signals the input change to the document body parent component

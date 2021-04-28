@@ -36,6 +36,7 @@ export interface OptionsStateInteface {
 
   userKeybindList: any[]
   treeWidth?: number
+  pre016check?: boolean
 }
 
 function state (): OptionsStateInteface {
@@ -74,7 +75,8 @@ function state (): OptionsStateInteface {
     hideTreeIconEdit: false,
     hideTreeIconView: false,
     treeWidth: 374,
-    userKeybindList: []
+    userKeybindList: [],
+    pre016check: true
   }
 }
 

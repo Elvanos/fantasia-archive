@@ -27,7 +27,7 @@
     v-if="editMode"
     v-model.number="localInput"
     type="number"
-    @keydown="signalInput"
+    @keydown="processInput"
     :outlined="!isDarkMode"
     :filled="isDarkMode"
     dense
@@ -74,6 +74,18 @@ export default class Field_Number extends FieldBase {
    * Model for the local input
    */
   localInput: null|number = null
+
+  /**
+   * Debounce timer to prevent buggy input sync
+   */
+  pullTimer = null as any
+
+  processInput () {
+    clearTimeout(this.pullTimer)
+    this.pullTimer = setTimeout(() => {
+      this.signalInput()
+    }, 500)
+  }
 
   /**
    * Signals the input change to the document body parent component

@@ -258,7 +258,7 @@
                     active-class="bg-gunmetal-light text-cultured"
                     class="noHigh"
                     @click="repairProjectAssignUID"
-                    :disable="!projectExists"
+                    :disable="!projectExists || isFrontpage"
                   >
                     <q-item-section>Repair legacy project</q-item-section>
                     <q-item-section avatar>

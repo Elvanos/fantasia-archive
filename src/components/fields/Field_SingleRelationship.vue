@@ -361,7 +361,7 @@
               label="Note"
               v-model="inputNote.value"
               dense
-              @keydown="signalInput"
+              @keydown="processInput"
               :outlined="!isDarkMode"
               :filled="isDarkMode"
               >
@@ -633,7 +633,19 @@ export default class Field_SingleRelationship extends FieldBase {
         this.disabledIDList.splice(toRemoveIndex, 1)
       }
     }
-    this.signalInput()
+    this.processInput()
+  }
+
+  /**
+   * Debounce timer to prevent buggy input sync
+   */
+  pullTimer = null as any
+
+  processInput () {
+    clearTimeout(this.pullTimer)
+    this.pullTimer = setTimeout(() => {
+      this.signalInput()
+    }, 500)
   }
 
   /**

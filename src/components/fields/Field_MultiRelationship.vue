@@ -153,7 +153,7 @@
       input-debounce="500"
       v-model="localInput"
       @filter="filterSelect"
-      @input="signalInput(false)"
+      @input="processInput()"
     >
     <template v-slot:append>
         <q-btn round dense flat v-slot:append v-if="!hideAdvSearchCheatsheetButton" icon="mdi-help-rhombus" @click.stop.prevent="SSET_setAdvSearchWindowVisible"
@@ -410,7 +410,7 @@
             label="Note"
             v-model="singleNote.value"
             dense
-            @keydown="signalInput(false)"
+            @keydown="processInput()"
             :outlined="!isDarkMode"
             :filled="isDarkMode"
             >
@@ -680,7 +680,7 @@ export default class Field_MultiRelationship extends FieldBase {
     this.localInput.splice(to, 0, this.localInput.splice(from, 1)[0])
     this.inputNotes.splice(to, 0, this.inputNotes.splice(from, 1)[0])
 
-    this.signalInput(false)
+    this.processInput()
   }
 
   disabledIDList: string[] = []
@@ -697,7 +697,19 @@ export default class Field_MultiRelationship extends FieldBase {
         this.disabledIDList.splice(toRemoveIndex, 1)
       }
     } */
-    this.signalInput(false)
+    this.processInput()
+  }
+
+  /**
+   * Debounce timer to prevent buggy input sync
+   */
+  pullTimer = null as any
+
+  processInput () {
+    clearTimeout(this.pullTimer)
+    this.pullTimer = setTimeout(() => {
+      this.processInput()
+    }, 500)
   }
 
   /**
