@@ -21,6 +21,7 @@
 - Fixed more typos across the app
 - Added debounce timers for all input fields across whole document to massively improve performance when updating temporary document data across the app
 - Fixed a bug that was re-triggering edit mode on document save without any actual edits
+- Fixed a bug that was causing improperly filled in URLs in the text editor field to glitch out the whole app and require a restart
 
 ### New features
 

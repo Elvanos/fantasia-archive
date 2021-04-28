@@ -368,12 +368,16 @@ export default class DocumentControl extends BaseClass {
 
     // Save document - CTRL + S
     if (this.determineKeyBind("saveDocument") && !this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
-      this.saveCurrentDocument(false).catch(e => console.log(e))
+      setTimeout(() => {
+        this.saveCurrentDocument(false).catch(e => console.log(e))
+      }, 500)
     }
 
     // Save document without exiting edit mode - CTRL + ALT + S
     if (this.determineKeyBind("saveDocumentNoExit") && !this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
-      this.saveCurrentDocument(true).catch(e => console.log(e))
+      setTimeout(() => {
+        this.saveCurrentDocument(true).catch(e => console.log(e))
+      }, 500)
     }
 
     // Add new under parent - CTRL + SHIFT + N

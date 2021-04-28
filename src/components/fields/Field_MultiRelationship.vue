@@ -153,7 +153,7 @@
       input-debounce="500"
       v-model="localInput"
       @filter="filterSelect"
-      @input="processInput()"
+      @input="processInput"
     >
     <template v-slot:append>
         <q-btn round dense flat v-slot:append v-if="!hideAdvSearchCheatsheetButton" icon="mdi-help-rhombus" @click.stop.prevent="SSET_setAdvSearchWindowVisible"
@@ -485,7 +485,6 @@ export default class Field_MultiRelationship extends FieldBase {
 
     const notes = (!localCopy?.addedValues) ? [] : localCopy.addedValues
     this.inputNotes = notes.filter(single => this.localInput.find(e => single.pairedId === e._id))
-
     this.checkNotes()
 
     this.reloadObjectListAndCheckIfValueExists()
@@ -600,7 +599,17 @@ export default class Field_MultiRelationship extends FieldBase {
           const pairedFieldObject = objectDoc.extraFields.find(f => f.id === pairedField)
 
           const pairingType = this.inputDataBluePrint.type
-          if (pairedFieldObject !== undefined && typeof pairedFieldObject?.value !== "string" && pairedFieldObject?.value !== null && pairingType === "manyToSingleRelationship") {
+          if (
+            pairedFieldObject !== undefined &&
+            pairedFieldObject !== null &&
+            pairedFieldObject?.value !== undefined &&
+            pairedFieldObject?.value !== null &&
+            typeof pairedFieldObject?.value !== "string" &&
+            pairedFieldObject?.value?.value !== undefined &&
+            pairedFieldObject?.value?.value !== null &&
+            typeof pairedFieldObject?.value?.value !== "string" &&
+            pairingType === "manyToSingleRelationship"
+          ) {
             isDisabled = true
           }
         }
@@ -639,6 +648,7 @@ export default class Field_MultiRelationship extends FieldBase {
 
       this.allTypeDocuments = allDbObjects.docs
 
+      // Remove delete documents paired to this
       if (toRemoveIndexList.length > 0) {
         toRemoveIndexList.forEach((id) => {
           const indexToRemove = this.localInput.findIndex(doc => doc._id === id)
@@ -681,21 +691,6 @@ export default class Field_MultiRelationship extends FieldBase {
   }
 
   disabledIDList: string[] = []
-
-  processSelectInteraction (input: null| I_ShortenedDocument) {
-    // TODO ADD THIS
-    /* if (input) {
-      this.disabledIDList.push(input._id)
-    }
-    else {
-      const toRemoveIndex = this.disabledIDList.findIndex(id => id === this.inputDataValue.value._id)
-
-      if (toRemoveIndex) {
-        this.disabledIDList.splice(toRemoveIndex, 1)
-      }
-    } */
-    this.processInput()
-  }
 
   /**
    * Debounce timer to prevent buggy input sync

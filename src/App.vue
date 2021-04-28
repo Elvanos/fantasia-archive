@@ -10,7 +10,7 @@
       :height="510"
       :width="425"
       :start-x="50"
-      :start-y="150" 
+      :start-y="150"
       :actions="['close']"
       content-class="bg-gunmetal-light text-accent advSearchWindow"
     >
@@ -205,11 +205,28 @@ export default class App extends BaseClass {
    * Open wysiwyg links in default browser window
    */
   openWysiwygLink (event: MouseEvent) {
+    event.preventDefault()
     // @ts-ignore
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     if (event.target && event.target.tagName.toLowerCase() === "a" && event.target.closest(".fieldWysiwyg")) {
+      const isValidHttpUrl = (string:string) => {
+        let url
+
+        try {
+          url = new URL(string)
+        }
+        catch (_) {
+          return false
+        }
+
+        return url.protocol === "http:" || url.protocol === "https:"
+      }
+
       // @ts-ignore
-      shell.openExternal(event.target.href).catch(e => console.log(e))
+      if (isValidHttpUrl(event.target.href)) {
+      // @ts-ignore
+        shell.openExternal(event.target.href).catch(e => console.log(e))
+      }
     }
   }
 

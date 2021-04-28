@@ -629,7 +629,7 @@ export default class Field_SingleRelationship extends FieldBase {
     else {
       const toRemoveIndex = this.disabledIDList.findIndex(id => id === this.inputDataValue.value._id)
 
-      if (toRemoveIndex) {
+      if (toRemoveIndex > -1) {
         this.disabledIDList.splice(toRemoveIndex, 1)
       }
     }
