@@ -40,14 +40,14 @@ export default class BaseClass extends Vue {
   }
 
   /**
-   * Async wait for XY miliseconds
+   * Async wait for XY miliseconds 
    */
   sleep (ms:number) {
     return new Promise(resolve => setTimeout(resolve, ms))
   }
 
   /**
-   * Strip all tags from a string
+   * Strip all tags from a string 
    */
   stripTags (input: string) {
     return (input) ? input.replace(/<[^>]+>/g, "") : input

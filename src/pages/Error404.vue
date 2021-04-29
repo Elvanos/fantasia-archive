@@ -16,7 +16,7 @@
         unelevated
         to="/"
         label="Go Home"
-        no-caps
+        no-capsw
       />
     </div>
   </div>

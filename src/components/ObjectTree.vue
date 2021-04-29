@@ -1103,12 +1103,12 @@ export default class ObjectTree extends BaseClass {
       $shadowColorOutline: #000;
       $shadowColorSurround: #000;
 
-      filter: drop-shadow(0 0 4px #000);
+      filter: drop-shadow(0 0 1px #000);
       text-shadow:
-        -2px -2px 0 $shadowColorSurround,
-        2px -2px 0 $shadowColorSurround,
-        -2px 2px 0 $shadowColorSurround,
-        2px 2px 0 $shadowColorSurround,
+        //-2px -2px 0 $shadowColorSurround,
+        //2px -2px 0 $shadowColorSurround,
+        // -2px 2px 0 $shadowColorSurround,
+        //2px 2px 0 $shadowColorSurround,
         -1px -1px 0 $shadowColorOutline,
         1px -1px 0 $shadowColorOutline,
         -1px 1px 0 $shadowColorOutline,

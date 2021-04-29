@@ -257,6 +257,7 @@
           v-on="itemEvents"
           :key="opt.id"
           :style="`background-color: ${opt.bgColor}`"
+          :title="(disabledIDList.includes(opt._id)) ? 'This option is unavailable for selection as it is already paired to another.': ''"
         >
            <q-item-section avatar>
             <q-icon
@@ -287,9 +288,6 @@
               </q-chip>
             </q-item-label>
           </q-item-section>
-          <q-tooltip v-if='opt.disable'>
-            This option is unavailable for selection as it is already paired to another.
-          </q-tooltip>
            <q-menu
               touch-position
               context-menu

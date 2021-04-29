@@ -23,6 +23,7 @@
 - Added debounce timers for all input fields across the whole document to massively improve performance when updating temporary document data across the app
 - Fixed a bug that was re-triggering edit mode on document save without any actual edits
 - Fixed a bug that was causing improperly filled in URLs in the text editor field to glitch out the whole app and require a restart
+- Revamped how tooltips work in already paired documents in single-to-single and many-to-single relationships
 
 ### New features
 
@@ -33,7 +34,7 @@
 
 ### QoL adjustments
 
-- None this time, sorry :(
+- Adjusted the `Accessibility - Text shadow` option looks to look better
 
 ## 0.1.5a
 
