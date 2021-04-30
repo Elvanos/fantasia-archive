@@ -24,6 +24,7 @@
               dense
               class="existingDocumentSelect"
               dark
+              popup-content-class="menuResizer"
               menu-anchor="bottom middle"
               menu-self="top middle"
               :options="filteredExistingInput"

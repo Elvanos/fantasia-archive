@@ -136,6 +136,7 @@
         menu-anchor="bottom middle"
         menu-self="top middle"
         dark
+        popup-content-class="menuResizer"
         style="flex-grow: 1;"
         dense
         :ref="`singleRelationshipField${inputDataBluePrint.id}`"
@@ -621,16 +622,19 @@ export default class Field_SingleRelationship extends FieldBase {
   }
 
   processSelectInteraction (input: null| I_ShortenedDocument) {
-    if (input) {
-      this.disabledIDList.push(input._id)
-    }
-    else {
-      const toRemoveIndex = this.disabledIDList.findIndex(id => id === this.inputDataValue.value._id)
+    if (this.inputDataBluePrint.type === "singleToSingleRelationship") {
+      if (input) {
+        this.disabledIDList.push(input._id)
+      }
+      else {
+        const toRemoveIndex = this.disabledIDList.findIndex(id => id === this.inputDataValue.value._id)
 
-      if (toRemoveIndex > -1) {
-        this.disabledIDList.splice(toRemoveIndex, 1)
+        if (toRemoveIndex > -1) {
+          this.disabledIDList.splice(toRemoveIndex, 1)
+        }
       }
     }
+
     this.processInput()
   }
 

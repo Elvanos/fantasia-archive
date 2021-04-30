@@ -26,6 +26,7 @@
       style="width: 100%;"
       dense
       dark
+      popup-content-class="menuResizer"
       :ref="`singleSelectField${this.inputDataBluePrint.id}`"
       menu-anchor="bottom middle"
       menu-self="top middle"

@@ -685,6 +685,7 @@ export const charactersBlueprint: I_Blueprint = {
         "Meretricious",
         "Messy",
         "Methodical",
+        "Mischievous",
         "Miserable",
         "Miserly",
         "Misguided",

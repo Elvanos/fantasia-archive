@@ -84,7 +84,7 @@ export const exportProject = (projectName: string, Loading: any, loadingSetup: a
       })
 
       for (const db of DBnames) {
-        const CurrentDB = new PouchDB(db)
+        window.FA_dbs[db] = new PouchDB(db)
 
         if (!fs.existsSync(`${folderPath}`)) {
           fs.mkdirSync(`${folderPath}`)
@@ -96,8 +96,7 @@ export const exportProject = (projectName: string, Loading: any, loadingSetup: a
         const ws = fs.createWriteStream(`${folderPath}/${projectName}/${db}.txt`)
 
         // @ts-ignore
-        await CurrentDB.dump(ws)
-        await CurrentDB.close()
+        await window.FA_dbs[db].dump(ws)
 
       }
 
@@ -128,8 +127,8 @@ export const removeCurrentProject = async () => {
 
 
     for (const db of DBnames) {
-      const CurrentDB = new PouchDB(db)
-      await CurrentDB.destroy()
+      window.FA_dbs[db] = new PouchDB(db)
+      await window.FA_dbs[db].destroy()
     }
     /* eslint-enable */
 }
@@ -162,12 +161,11 @@ export const importExistingProject = (vueRouter: any, Loading: any, loadingSetup
 
     for (const file of allFiles) {
       const currentDBName = path.parse(file).name
-      const CurrentDB = new PouchDB(currentDBName)
+      window.FA_dbs[currentDBName] = new PouchDB(currentDBName)
 
       const fileContents = fs.readFileSync(`${folderPath}/${file}`, { encoding: "utf8" })
       // @ts-ignore
-      await CurrentDB.loadIt(fileContents)
-      await CurrentDB.close()
+      await window.FA_dbs[currentDBName].loadIt(fileContents)
 
     }
 
@@ -235,12 +233,11 @@ export const mergeExistingProject = (vueRouter: any, Loading: any, loadingSetup:
 
     for (const file of allFiles) {
       const currentDBName = path.parse(file).name
-      const CurrentDB = new PouchDB(currentDBName)
+      window.FA_dbs[currentDBName] = new PouchDB(currentDBName)
 
       const fileContents = fs.readFileSync(`${folderPath}/${file}`, { encoding: "utf8" })
       // @ts-ignore
-      await CurrentDB.loadIt(fileContents)
-      await CurrentDB.close()
+      await window.FA_dbs[currentDBName].loadIt(fileContents)
 
     }
 

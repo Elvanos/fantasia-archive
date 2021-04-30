@@ -3,6 +3,28 @@
 
 ---
 
+## 0.1.6a
+
+### Known issues
+
+- Overusing Tags (20+ with 400+ documents in them for most) currently causes slowdowns/crashes on some PCs when using the Hierarchy tree. If you suffer from this issue, reduce the number of tags and/or objects paired underneath them.
+- When using the `Legacy project repair` tool, a very small amount of users report being stuck on the progress. If you suffer from the issue, restart the app and then restart the fixing process - this seems to be a workaround for now.
+- Importing existing project can sometimes get stuck. Restarting the app fixes this.
+
+### Bugfixes & Optimizations
+
+- Fixed hierarchy tree ignoring "0" value in Order fields
+- Fixed a bug where the automatic relationship limter was treating single-to-many field type as single-to-single types
+- Fixed a bug that was causing import/merge/repair tools to get stuck after exporting in the same popup
+- Fixed an issue with flickering select menus
+- Fixed functionality of the `Connected Locations` field in the `Teachings/Religious groups` document type
+
+### New features
+
+- Added new options to predefeined select lists across the app
+
+### QoL adjustments
+
 ## 0.1.6
 
 ### Known issues

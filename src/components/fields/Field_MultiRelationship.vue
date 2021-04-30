@@ -140,6 +140,7 @@
       class="multiRelashionshipSelect"
       dark
       style="flex-grow: 1;"
+      popup-content-class="menuResizer"
       dense
       :ref="`multieRelationshipField${this.inputDataBluePrint.id}`"
       :options="filterList"

@@ -1,6 +1,9 @@
 
 - Fix file name symbols for OSs in new project names
 - Add a way to view the project graph without closing all the documents
+- Add checkbox or something for viewmode switch fields
+- Consider adding color support for text shadow of individual documents
+- Consider adding coloring to icons of documents separately
 
 ## THE GM BATCH
 

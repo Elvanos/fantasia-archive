@@ -95,7 +95,7 @@
             <q-badge
               class="treeBadge"
               :class="{'noChilden': prop.node.children.length === 0}"
-              v-if="prop.node.sticker && !hideTreeOrderNumbers"
+              v-if="typeof prop.node.sticker === 'number' && !hideTreeOrderNumbers"
               color="primary"
               outline
               floating
@@ -512,8 +512,8 @@ export default class ObjectTree extends BaseClass {
 
     // Put the number value on top of the list and alphabetical below them
     input = [
-      ...input.filter(e => e.extraFields.find(e => e.id === "order")?.value),
-      ...input.filter(e => !e.extraFields.find(e => e.id === "order")?.value)
+      ...input.filter(e => typeof e.extraFields.find(e => e.id === "order")?.value === "number"),
+      ...input.filter(e => typeof e.extraFields.find(e => e.id === "order")?.value !== "number")
     ]
 
     input.forEach((e, i) => {

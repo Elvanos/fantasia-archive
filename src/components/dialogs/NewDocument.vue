@@ -19,6 +19,7 @@
               ref="ref_newDocument"
               style="flex-grow: 1;"
               dense
+              popup-content-class="menuResizer"
               menu-anchor="bottom middle"
               menu-self="top middle"
               class="newDocumentSelect"

@@ -141,6 +141,10 @@ a {
   }
 }
 
+.menuResizer {
+  min-width: 600px !important;
+}
+
 .q-notification.bg-info {
   max-width: 550px;
   border: 2px solid var(--q-color-dark);
