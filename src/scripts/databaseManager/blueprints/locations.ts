@@ -382,7 +382,7 @@ export const locationsBlueprint: I_Blueprint = {
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "religions",
-        connectedField: "connectedLocations"
+        connectedField: "collectedLocations"
       }
     },
     {

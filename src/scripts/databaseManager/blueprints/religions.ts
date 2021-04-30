@@ -266,7 +266,7 @@ export const religionsBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "connectedLocations",
+      id: "collectedLocations",
       name: "Connected Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
