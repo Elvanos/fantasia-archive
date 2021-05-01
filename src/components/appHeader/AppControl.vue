@@ -277,7 +277,7 @@
                   >
                     <q-item-section>Repair legacy project</q-item-section>
                     <q-item-section avatar>
-                      <q-icon name="mdi-folder-open-outline" />
+                      <q-icon name="mdi-wrench" />
                     </q-item-section>
                   </q-item>
 

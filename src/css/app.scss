@@ -608,15 +608,26 @@ body .q-tooltip {
   background-size: 30px;
 }
 
+.noteBoardWindow {
+  min-height: 186px !important;
+  min-width: 250px !important;
+
+  .q-window__body{
+    min-height: 146px !important;
+    min-width: 250px !important;
+  }
+} 
+
 .corkboardInput {
   height: 100%;
   width: 100%;
 
   form {
     width: 100%;
+    height: 100%;
   }
 
-  .q-validation-component {
+  .q-validation-component{
     height: 100%;
   }
 

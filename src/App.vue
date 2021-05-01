@@ -32,7 +32,7 @@
       :start-x="350"
       :start-y="100"
       :actions="['pin', 'close']"
-      content-class="bg-gunmetal-light text-accent advSearchWindow"
+      content-class="bg-gunmetal-light text-accent noteBoardWindow"
     >
     <form
     class="corkboardInput"
