@@ -1038,7 +1038,8 @@ export default class ObjectTree extends BaseClass {
   copyTargetDocument (currentDoc: I_OpenedDocument) {
     this.documentPass = extend(true, {}, this.SGET_document(currentDoc._id))
 
-    const newDocument = copyDocument(this.documentPass, this.generateUID())
+    const blueprint = this.SGET_blueprint(this.documentPass.type)
+    const newDocument = copyDocument(this.documentPass, this.generateUID(), blueprint)
 
     const dataPass = {
       doc: newDocument,

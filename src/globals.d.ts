@@ -1,6 +1,6 @@
 declare module "*.md"{
   const content: string
-  export default content
+  export default content 
 }
 
 declare module "*.png"{

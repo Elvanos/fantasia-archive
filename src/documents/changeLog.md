@@ -8,7 +8,6 @@
 ### Known issues
 
 - Overusing Tags (20+ with 400+ documents in them for most) currently causes slowdowns/crashes on some PCs when using the Hierarchy tree. If you suffer from this issue, reduce the number of tags and/or objects paired underneath them.
-- When using the `Legacy project repair` tool, a very small amount of users report being stuck on the progress. If you suffer from the issue, restart the app and then restart the fixing process - this seems to be a workaround for now.
 - Importing existing project can sometimes get stuck. Restarting the app fixes this.
 
 ### Bugfixes & Optimizations
@@ -18,12 +17,21 @@
 - Fixed a bug that was causing import/merge/repair tools to get stuck after exporting in the same popup
 - Fixed an issue with flickering select menus
 - Fixed functionality of the `Connected Locations` field in the `Teachings/Religious groups` document type
+- Fixed a bug that waas causing the copy document functionality to also copy single-to-single and many-to-single relationships.
+  - These relationships can not be copied as they are logically unique across the whole web of all relationships the user build and can exist only once in the whole system
+  - Example: Bilbo has `Place of origin` set to Shire - if you make a copy of Shire, Bilbo will get automatically removed from the `Characters originated from location` in the copy of the Shire as he is already linked to the original Shire and logically couldn't have originated from two places at once.
 
 ### New features
 
 - Added new options to predefeined select lists across the app
+- Added new display for non-edit mode for switch fields
+- Added keybind: Show project overview
 
 ### QoL adjustments
+
+- Adjusted label-align of text editor fields to look more representstive of half-coherent UI
+- Adjusted the behavior, icon and name of the `Resume project` functionality in the menu
+- Renamed "Project screen" to "Project overview" app-wide
 
 ## 0.1.6
 

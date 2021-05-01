@@ -1,13 +1,16 @@
 <template>
   <div>
-    <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md fieldWysiwygTitle">
-      <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
+    <div class="flex justify-center items-center text-weight-bolder q-mb-sm q-mt-md fieldWysiwygTitle">
+      <span>
+      <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'"   class="q-mr-md"/>
       {{inputDataBluePrint.name}}
        <q-icon v-if="toolTip && !disableDocumentToolTips" name="mdi-help-circle" size="16px" class="q-ml-md">
          <q-tooltip :delay="500">
            <span v-html="toolTip"/>
         </q-tooltip>
       </q-icon>
+      </span>
+
     </div>
 
     <div

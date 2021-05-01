@@ -1,13 +1,7 @@
 
-- Fix file name symbols for OSs in new project names
-- Add a way to view the project graph without closing all the documents
-- Add checkbox or something for viewmode switch fields
-- Consider adding color support for text shadow of individual documents
-- Consider adding coloring to icons of documents separately
-
 ## THE GM BATCH
 
-- Floating notes corkboard
+- Add on-the-fly generation of non-existent 2-way relationships
 - Add hover/on-demand document preview to relationships
 
 - Export for MD/PDF/ODT/DOCX
@@ -16,7 +10,6 @@
 
 ## THE GM BATCH END
 
-- Add debounce timer to input fields (bad sync updating with store)
 - Add reverse list field option (dropdown first, value in bracket)
 - Rework stats (via reverse list)
 - Add option for project graph to filter out categories or show them separately
@@ -48,7 +41,10 @@
 - Add description tabs
 - Add category for materials/resources OR adapt Items category
 - Add category for diseases/curses/etc
+- Add category for classes/jobs
 - Add support for individual document order hiding inside the hierarchical tree for each document
+- Consider adding color support for text shadow of individual documents
+- Consider adding coloring to icons of documents separately
 
 ### Project settings
 
@@ -71,7 +67,6 @@
 - Settings search
 
 - Vanity project-wide word count (lol...)
-- Add on-the-fly generation of non-existent 2-way relationships
 
 - Automatic thumbnail generation AND re-checking based on date
 

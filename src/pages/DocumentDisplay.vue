@@ -872,7 +872,8 @@ export default class PageDocumentDisplay extends BaseClass {
   copyTargetDocument () {
     this.documentPass = extend(true, {}, this.findRequestedOrActiveDocument())
 
-    const newDocument = copyDocument(this.documentPass, this.generateUID())
+    const blueprint = this.SGET_blueprint(this.documentPass.type)
+    const newDocument = copyDocument(this.documentPass, this.generateUID(), blueprint)
 
     const dataPass = {
       doc: newDocument,

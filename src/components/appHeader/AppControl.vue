@@ -179,6 +179,21 @@
               </q-item-section>
             </q-item>
 
+            <q-item
+              v-close-popup
+              clickable
+              active
+              active-class="bg-gunmetal-light text-cultured"
+              class="noHigh"
+              @click="SSET_setNoteCorkboardWindowVisible"
+              :disable="!projectExists"
+            >
+              <q-item-section>Show note board</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-clipboard-text-outline" />
+              </q-item-section>
+            </q-item>
+
             <q-separator dark />
 
              <q-item
@@ -279,11 +294,11 @@
               active-class="bg-gunmetal-light text-cultured"
               class="noHigh"
               @click="navigateToProjectPage"
-              :disable="!projectExists || isProjectPage || SGET_allOpenedDocuments.docs.length > 0"
+              :disable="!projectExists || isProjectPage"
             >
-              <q-item-section>Resume project</q-item-section>
+              <q-item-section>Show project overview</q-item-section>
               <q-item-section avatar>
-                <q-icon name="mdi-folder-open-outline" />
+                <q-icon name="mdi-chart-bar" />
               </q-item-section>
             </q-item>
 
@@ -562,6 +577,11 @@ export default class AppControl extends BaseClass {
     // App options
     if (this.determineKeyBind("openAppOptions") && !this.SGET_getDialogsState) {
       this.programSettingsDialogAssignUID()
+    }
+
+    // App options
+    if (this.determineKeyBind("navigateToProjectOverview") && this.projectExists && !this.isProjectPage) {
+      this.navigateToProjectPage()
     }
   }
 

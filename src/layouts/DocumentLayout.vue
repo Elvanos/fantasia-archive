@@ -124,8 +124,10 @@ export default class DocumentLayout extends BaseClass {
   }
 
   establishAllDocumentDatabases () {
-  // @ts-ignore
-    window.FA_dbs = {}
+    if (!window.FA_dbs) {
+      // @ts-ignore
+      window.FA_dbs = {}
+    }
     for (const blueprint of this.SGET_allBlueprints) {
       window.FA_dbs[blueprint._id] = new PouchDB(blueprint._id)
     }

@@ -6,6 +6,10 @@ const mutation: MutationTree<FloatingWindowsStateInteface> = {
 
   setAdvSearchWindowVisible (state: FloatingWindowsStateInteface) {
     state.advSearchWindowVisible = uid()
+  },
+
+  setNoteCorkboardWindowVisible (state: FloatingWindowsStateInteface) {
+    state.noteCorkboardWindowVisible = uid()
   }
 }
 

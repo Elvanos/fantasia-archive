@@ -733,7 +733,8 @@ export default class Field_SingleRelationship extends FieldBase {
   copyTargetDocument (currentDoc: I_OpenedDocument) {
     this.documentPass = extend(true, {}, currentDoc)
 
-    const newDocument = copyDocument(this.documentPass, this.generateUID())
+    const blueprint = this.SGET_blueprint(this.documentPass.type)
+    const newDocument = copyDocument(this.documentPass, this.generateUID(), blueprint)
 
     const dataPass = {
       doc: newDocument,

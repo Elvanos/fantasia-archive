@@ -10,8 +10,26 @@
       </q-icon>
   </div>
 
+  <div v-if="!editMode && localInput">
+    <div
+      v-if="!editMode"
+    >
+     <q-chip
+      :color="(isDarkMode) ? 'accent' : 'gunmetal-light'"
+      :text-color="(isDarkMode) ? 'dark' :'satin-sheen-gold-light'"
+      :class="(isDarkMode) ? 'text-weight-bold':'text-weight-medium'">
+         <q-icon
+            :color="(isDarkMode) ? 'dark' :'satin-sheen-gold-light'"
+            name="mdi-check-bold"
+            class="q-mr-sm"
+             />
+        Active
+      </q-chip>
+    </div>
+  </div>
+
   <q-toggle
-    :disable="!editMode"
+    v-if="editMode"
     v-model="localInput"
     @input="processInput"
   />

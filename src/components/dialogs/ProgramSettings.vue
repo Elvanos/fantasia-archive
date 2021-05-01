@@ -185,10 +185,10 @@
 
                   <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
-                      Hide tips on project screen
+                      Hide tips on project overview
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
                       <q-tooltip :delay="500">
-                        Hides the project screen tips & tricks info card.
+                        Hides the project overview tips & tricks info card.
                       </q-tooltip>
                     </q-icon>
                     </div>

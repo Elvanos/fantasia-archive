@@ -11,7 +11,7 @@
       :width="425"
       :start-x="50"
       :start-y="150"
-      :actions="['close']"
+      :actions="['pin', 'close']"
       content-class="bg-gunmetal-light text-accent advSearchWindow"
     >
       <div class="q-pa-md fit">
@@ -19,6 +19,37 @@
           {{$t('documents.advancedSearchCheatSheet')}}
         </q-markdown>
       </div>
+    </q-window>
+
+    <q-window
+      v-model="corkboardWindowVisible"
+      dark
+      title="Note board"
+      gripper-border-color="primary"
+      gripper-background-color="primary"
+      :height="600"
+      :width="350"
+      :start-x="350"
+      :start-y="100"
+      :actions="['pin', 'close']"
+      content-class="bg-gunmetal-light text-accent advSearchWindow"
+    >
+    <form
+    class="corkboardInput"
+    autocorrect="off"
+    autocapitalize="off"
+    autocomplete="off"
+    spellcheck="false"
+    >
+      <q-input
+
+      v-model="corkboardContent"
+      filled
+      dark
+      @keyup="processCorkboardInput"
+      type="textarea"
+    />
+    </form>
     </q-window>
   </div>
 </template>
@@ -34,6 +65,7 @@ import { colors } from "quasar"
 import { tipsTricks } from "src/scripts/utilities/tipsTricks"
 import { shell } from "electron"
 import { summonAllPlusheForms } from "src/scripts/utilities/plusheMascot"
+import { saveCorkboard, retrieveCorkboard } from "src/scripts/projectManagement/projectManagent"
 
 @Component({
   components: {
@@ -68,6 +100,8 @@ export default class App extends BaseClass {
 
     // Load the popup hint on start
     this.loadHintPopup()
+
+    this.loadCorkboardCotent().catch(e => console.log(e))
   }
 
   destroyed () {
@@ -289,6 +323,34 @@ export default class App extends BaseClass {
 
   advSearchWindowVisible = false
 
+  @Watch("SGET_getNoteCorkboardhWindowVisible")
+  onCorkboardWindowOpen () {
+    this.corkboardWindowVisible = true
+  }
+
+  corkboardWindowVisible = false
+
+  corkboardContent = ""
+
+  /**
+   * Debounce timer to prevent buggy input sync
+   */
+  corkboardTimer = null as any
+
+  processCorkboardInput () {
+    clearTimeout(this.corkboardTimer)
+    this.corkboardTimer = setTimeout(() => {
+      saveCorkboard(this.corkboardContent).catch(e => console.log(e))
+    }, 1000)
+  }
+
+  async loadCorkboardCotent () {
+    this.corkboardContent = await retrieveCorkboard()
+    if (this.corkboardContent.length > 0) {
+      this.corkboardWindowVisible = true
+    }
+  }
+
   /****************************************************************/
   // Local keybinds
   /****************************************************************/
@@ -298,6 +360,11 @@ export default class App extends BaseClass {
     // Toggle the Advanced search cheatsheet
     if (this.determineKeyBind("toggleAdvSearchCheatsheet")) {
       this.advSearchWindowVisible = !this.advSearchWindowVisible
+    }
+
+    // Toggle Note Board - CTRL + ALT + SHIFT + P
+    if (this.determineKeyBind("toggleNoteCorkboard")) {
+      this.corkboardWindowVisible = !this.corkboardWindowVisible
     }
   }
 }

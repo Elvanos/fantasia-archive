@@ -11,6 +11,17 @@ export const defaultKeybinds = [
     tooltip: "Open keybind cheatsheet"
   },
 
+  // Show project overview - NONE
+  {
+    altKey: false,
+    ctrlKey: false,
+    shiftKey: false,
+    which: false,
+    editable: true,
+    id: "navigateToProjectOverview",
+    tooltip: "Show project overview"
+  },
+
   // Open app options - CTRL + ALT + J
   {
     altKey: true,
@@ -231,6 +242,17 @@ export const defaultKeybinds = [
     tooltip: "Toggle the Advanced search cheatsheet"
   },
 
+  // Toggle Note Board - CTRL + ALT + SHIFT + P
+  {
+    altKey: true,
+    ctrlKey: true,
+    shiftKey: true,
+    which: 80,
+    editable: true,
+    id: "toggleNoteCorkboard",
+    tooltip: "Toggle Note board"
+  },
+
   // Next focus - Tab
   {
     altKey: false,
@@ -255,7 +277,7 @@ export const defaultKeybinds = [
     note: "(functionality is the same as when using a web-browser)"
   },
 
-  // Open document coresponding to the tre node - Enter
+  // Open document coresponding to the tree node - Enter
   {
     altKey: false,
     ctrlKey: false,

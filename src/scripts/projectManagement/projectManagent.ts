@@ -15,9 +15,16 @@ import path from "path"
 export const createNewProject = async (projectName: string, vueRouter: any, quasar: any, vueInstance: any) => {
   await removeCurrentProject()
 
-  const ProjectDB = new PouchDB("project-data")
+  if (!window.FA_dbs) {
+    // @ts-ignore
+    window.FA_dbs = {}
+  }
+
+  window.FA_dbs["project-data"] = new PouchDB("project-data")
   const newProject = { _id: projectName }
-  await ProjectDB.put(newProject)
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  window.FA_dbs["project-data"].put(newProject)
 
   /*eslint-disable */
   // @ts-ignore
@@ -49,8 +56,6 @@ export const createNewProject = async (projectName: string, vueRouter: any, quas
   vueInstance.SSET_resetDocuments()
   vueInstance.SSET_resetAllDocuments()
   /* eslint-enable */
-
-  await ProjectDB.close()
 }
 
 /**
@@ -283,9 +288,49 @@ export const mergeExistingProject = (vueRouter: any, Loading: any, loadingSetup:
  * Retrieves current project name
  */
 export const retrieveCurrentProjectName = async () => {
-  const ProjectDB = new PouchDB("project-data")
-  const projectData = await ProjectDB.allDocs({ include_docs: true })
-  await ProjectDB.close()
+  if (!window.FA_dbs) {
+    // @ts-ignore
+    window.FA_dbs = {}
+  }
+  window.FA_dbs["project-data"] = new PouchDB("project-data")
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  const projectData = await window.FA_dbs["project-data"].allDocs({ include_docs: true })
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return projectData?.rows[0]?.id
+}
+
+/**
+ * Save corkboard update
+ */
+export const saveCorkboard = async (input: string) => {
+  if (!window.FA_dbs) {
+    // @ts-ignore
+    window.FA_dbs = {}
+  }
+  window.FA_dbs["project-data"] = new PouchDB("project-data")
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  const projectData = await window.FA_dbs["project-data"].allDocs({ include_docs: true })
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  projectData.rows[0].doc.corkboardText = input.trim()
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  window.FA_dbs["project-data"].put(projectData.rows[0].doc)
+}
+
+/**
+ * Retrieve corkboard
+ */
+export const retrieveCorkboard = async (): Promise<string> => {
+  if (!window.FA_dbs) {
+    // @ts-ignore
+    window.FA_dbs = {}
+  }
+  window.FA_dbs["project-data"] = new PouchDB("project-data")
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  const projectData = await window.FA_dbs["project-data"].allDocs({ include_docs: true })
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return (projectData.rows[0]?.doc.corkboardText) || ""
 }

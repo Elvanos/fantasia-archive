@@ -607,3 +607,36 @@ body .q-tooltip {
   background-repeat: no-repeat;
   background-size: 30px;
 }
+
+.corkboardInput {
+  height: 100%;
+  width: 100%;
+
+  form {
+    width: 100%;
+  }
+
+  .q-validation-component {
+    height: 100%;
+  }
+
+  .q-field__control {
+    height: 100%;
+    padding: 0;
+  }
+
+  .q-field__control::before,
+  .q-field--filled.q-field--dark .q-field__control,
+  .q-field--filled.q-field--dark .q-field__control::before {
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+
+  textarea {
+    padding: 17px 12px;
+    height: 100% !important;
+    resize: none !important;
+    font-size: 15px;
+    line-height: 20px;
+  }
+}

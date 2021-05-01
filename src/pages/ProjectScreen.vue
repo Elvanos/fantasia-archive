@@ -13,7 +13,7 @@
       />
 
       <div class="col-12">
-        <h5 class="mainProjectSubTitle">Project screen for </h5>
+        <h5 class="mainProjectSubTitle">Project overview for </h5>
       </div>
       <div class="col-12">
         <h2 class="mainProjectTitle"> {{projectName}}</h2>
@@ -164,7 +164,7 @@ export default class ProjectScreen extends BaseClass {
   disableDocumentControlBar = false
 
   /**
-   * Determines if the project screen help hint should show or not
+   * Determines if the project overview help hint should show or not
    */
   hideTooltipsProject = false
 

@@ -137,6 +137,21 @@
             </q-tooltip>
           </q-btn>
 
+          <q-btn
+            icon="mdi-clipboard-text-outline"
+            color="primary"
+            outline
+            @click="SSET_setNoteCorkboardWindowVisible"
+          >
+            <q-tooltip
+              :delay="500"
+              anchor="bottom middle"
+              self="top middle"
+            >
+             Show note board
+            </q-tooltip>
+          </q-btn>
+
           <q-separator vertical inset color="accent" />
 
           <q-btn
@@ -512,7 +527,8 @@ export default class DocumentControl extends BaseClass {
   copyTargetDocument () {
     this.documentPass = extend(true, {}, this.findRequestedOrActiveDocument())
 
-    const newDocument = copyDocument(this.documentPass, this.generateUID())
+    const blueprint = this.SGET_blueprint(this.documentPass.type)
+    const newDocument = copyDocument(this.documentPass, this.generateUID(), blueprint)
 
     const dataPass = {
       doc: newDocument,

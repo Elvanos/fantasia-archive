@@ -1,6 +1,7 @@
+import { I_Blueprint } from "src/interfaces/I_Blueprint"
 import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
 
-export const copyDocument = (currentDoc: I_OpenedDocument, newDocumentID: string) : I_OpenedDocument => {
+export const copyDocument = (currentDoc: I_OpenedDocument, newDocumentID: string, documentBlueprint: I_Blueprint) : I_OpenedDocument => {
   currentDoc._id = newDocumentID
   currentDoc.isNew = true
   currentDoc.editMode = true
@@ -37,6 +38,20 @@ export const copyDocument = (currentDoc: I_OpenedDocument, newDocumentID: string
 
   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
   currentDoc.extraFields[documentNameIndex].value = `Copy of - ${currentDoc.extraFields[documentNameIndex].value}`
+
+  currentDoc.extraFields.map(field => {
+    const fieldType = documentBlueprint.extraFields.find(blueprintField => field.id === blueprintField.id)?.type
+
+    if (fieldType === "singleToSingleRelationship") {
+      field.value = ""
+    }
+
+    if (fieldType === "manyToSingleRelationship") {
+      field.value = ""
+    }
+
+    return field
+  })
 
   return currentDoc
 }
