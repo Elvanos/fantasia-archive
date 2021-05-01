@@ -23,9 +23,12 @@
 
 ### New features
 
+- Added a floating Note board window
 - Added new options to predefeined select lists across the app
 - Added new display for non-edit mode for switch fields
 - Added keybind: Show project overview
+- Added keybind: Toggle Note board
+- Added menu and document control bar buttons to show Note board
 
 ### QoL adjustments
 
