@@ -38,7 +38,7 @@
       use-chips
       @filter="filterFn"
       input-debounce="0"
-      new-value-mode="add"
+      new-value-mode="add-unique"
       multiple
       v-model="localInput"
       @new-value="addNewValue"

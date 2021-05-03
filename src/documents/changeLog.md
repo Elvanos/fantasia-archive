@@ -3,6 +3,28 @@
 
 ---
 
+## 0.1.7
+
+### Known issues
+
+- Creating a brand new project can sometimes get stuck. Restarting the app fixes this.
+- Importing existing project can sometimes get stuck. Restarting the app fixes this.
+
+### Bugfixes & Optimizations
+
+- Fixed infinite vertical scroll of the app caused by buggy behavior of the floating windows being pulled on the bottom of the visible window
+- Fixed a limiter for advanced search that was throwing errors in rare cases
+- Fixed a bug that was causing single-to-single relationship notes not properly saving
+
+### New features
+
+- **Added on-the-fly relationship documents generation**
+- Added option: Prevent filled note board showing
+
+### QoL adjustments
+
+- Added a note about possible color searching in the advanced search cheatsheet popup window
+
 ## 0.1.6a
 
 ### Known issues

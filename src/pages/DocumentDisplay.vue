@@ -932,7 +932,7 @@ export default class PageDocumentDisplay extends BaseClass {
       const savedDocument: {
         documentCopy: I_OpenedDocument,
         allOpenedDocuments: I_OpenedDocument[]
-      } = await saveDocument(currentDoc, openedDocumentsCopy, this.SGET_allDocuments.docs, keepEditMode)
+      } = await saveDocument(currentDoc, openedDocumentsCopy, this.SGET_allDocuments.docs, keepEditMode, this)
 
       // Update the opened document
       const dataPass = { doc: savedDocument.documentCopy, treeAction: true }

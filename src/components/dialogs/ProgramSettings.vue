@@ -23,7 +23,7 @@
         >
           <q-tab name="uiSettings" label="Visuals & Accessibility" />
           <q-tab name="docSettings" label="Document view/edit" />
-          <q-tab name="popupSettings" label="Popup dialogs" />
+          <q-tab name="popupSettings" label="Popups & Floating Windows" />
           <q-tab name="treeSettings" label="Hierarchical tree" />
 
           <q-separator dark />
@@ -338,7 +338,7 @@
                 <div class="row justify-start">
                   <div class="col-12">
                     <div class="text-h6">
-                      Popup dialogs
+                      Popups & Floating Windows
                     </div>
                   </div>
 
@@ -400,6 +400,31 @@
 
                       <q-toggle
                         v-model="options.disableQuickSearchCategoryPrecheck"
+                      />
+                  </div>
+
+                  <div class="col-12">
+                    <div class="text-bold q-mt-xl">
+                      Floating windows
+                    </div>
+                  </div>
+
+                   <div class="col-12 col-md-6 col-lg-4 optionWrapper">
+                    <div class="optionTitle">
+                      Prevent filled note board showing
+                      <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Turning this on prevents the note board showing automatically
+                        <br>
+                        at the start of the app in case in contains any notes persisting
+                        <br>
+                        from previous sessions of FA that the user filed previously.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.preventFilledNoteBoardPopup"
                       />
                   </div>
 
@@ -917,6 +942,7 @@ export default class ProgramSettings extends DialogBase {
   options: OptionsStateInteface = {
     _id: "settings",
     darkMode: false,
+    preventFilledNoteBoardPopup: false,
     preventAutoScroll: false,
     textShadow: false,
     hideAdvSearchCheatsheetButton: false,

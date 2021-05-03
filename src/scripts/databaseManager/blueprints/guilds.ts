@@ -346,7 +346,7 @@ export const guildsBlueprint: I_Blueprint = {
       id: "pairedEnemyPolGroups",
       name: "Enemy Ideologies/Political groups",
       type: "manyToManyRelationship",
-      icon: "mdi-account-group",
+      icon: "mdi-bank-outline",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",

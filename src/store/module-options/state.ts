@@ -2,6 +2,7 @@ export interface OptionsStateInteface {
   _id: string,
   _rev?: string,
   darkMode: boolean
+  preventFilledNoteBoardPopup: boolean
   preventAutoScroll: boolean
   hideAdvSearchCheatsheetButton: boolean
   textShadow: boolean
@@ -43,6 +44,7 @@ function state (): OptionsStateInteface {
   return {
     _id: "settings",
     darkMode: false,
+    preventFilledNoteBoardPopup: false,
     preventAutoScroll: false,
     hideAdvSearchCheatsheetButton: false,
     textShadow: false,

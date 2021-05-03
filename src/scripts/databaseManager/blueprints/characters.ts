@@ -564,7 +564,7 @@ export const charactersBlueprint: I_Blueprint = {
         "Focused",
         "Folksy",
         "Foolish",
-        "Forecful",
+        "Forceful",
         "Forgetful",
         "Forgiving",
         "Formal",

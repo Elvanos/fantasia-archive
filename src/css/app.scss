@@ -612,11 +612,11 @@ body .q-tooltip {
   min-height: 186px !important;
   min-width: 250px !important;
 
-  .q-window__body{
+  .q-window__body {
     min-height: 146px !important;
     min-width: 250px !important;
   }
-} 
+}
 
 .corkboardInput {
   height: 100%;
@@ -627,7 +627,7 @@ body .q-tooltip {
     height: 100%;
   }
 
-  .q-validation-component{
+  .q-validation-component {
     height: 100%;
   }
 
@@ -650,4 +650,9 @@ body .q-tooltip {
     font-size: 15px;
     line-height: 20px;
   }
+}
+
+#q-app {
+  position: relative;
+  overflow: hidden !important;
 }

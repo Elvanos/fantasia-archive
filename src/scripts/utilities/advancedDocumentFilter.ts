@@ -128,6 +128,7 @@ export const advancedDocumentFilter = (inputString: string, currentDocumentList:
 
             // @ts-ignore
             const matchingDocument = allDocuments.find(doc => doc.id === valueToMap._id)
+
             if (matchingDocument) {
               // @ts-ignore
               returnValue = matchingDocument.extraFields.find(e => e.id === "name")?.value as string
@@ -162,7 +163,7 @@ export const advancedDocumentFilter = (inputString: string, currentDocumentList:
           }
 
           // Fix all missing values that slipped through
-          if (!returnValue || returnValue.value === null) {
+          if (typeof returnValue !== "string") {
             returnValue = ""
           }
 

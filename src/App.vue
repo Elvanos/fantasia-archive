@@ -7,8 +7,8 @@
       no-resize
       dark
       title="Advanced Search Cheatsheet"
-      :height="510"
-      :width="425"
+      :height="535"
+      :width="500"
       :start-x="50"
       :start-y="150"
       :actions="['pin', 'close']"
@@ -77,7 +77,7 @@ export default class App extends BaseClass {
   // APP START & END SETUP
   /****************************************************************/
 
-  created () {
+  async created () {
     // Catch middle clicks
     window.addEventListener("auxclick", this.reactToMiddleClick)
 
@@ -89,19 +89,19 @@ export default class App extends BaseClass {
       }
     }
 
-    // Catch normal clicks inside wysiwyg
-    window.addEventListener("click", this.openWysiwygLink)
-
     // Load settings
-    this.loadSettings().catch(e => console.log(e))
+    await this.loadSettings()
 
-    // React to keybind presses
-    window.addEventListener("keydown", this.triggerKeyPush)
+    await this.loadCorkboardCotent()
 
     // Load the popup hint on start
     this.loadHintPopup()
 
-    this.loadCorkboardCotent().catch(e => console.log(e))
+    // React to keybind presses
+    window.addEventListener("keydown", this.triggerKeyPush)
+
+    // Catch normal clicks inside wysiwyg
+    window.addEventListener("click", this.openWysiwygLink)
   }
 
   destroyed () {
@@ -344,9 +344,31 @@ export default class App extends BaseClass {
     }, 1000)
   }
 
+  /**
+   * Corkboard checker
+   * Can go up to 3
+   */
+  corkboardCheck = 0 
+
   async loadCorkboardCotent () {
+    const options = this.SGET_options
+
     this.corkboardContent = await retrieveCorkboard()
-    if (this.corkboardContent.length > 0) {
+
+    // Considering there is a bit of a delay between the initial load of the store DB content, we give the program 3 attempts to load the data over 3 seconds. If no is loaded in that time, we assume that the settings are not set at all and display the hint as normal.
+    if ((!options._id || !options._rev) && this.corkboardCheck < 3) {
+      setTimeout(() => {
+        this.corkboardCheck++
+        this.loadCorkboardCotent().catch(e => console.log(e))
+      }, 1000)
+      return
+    }
+
+    if (options.preventFilledNoteBoardPopup) {
+      return
+    }
+
+    if (this.corkboardContent.length) {
       this.corkboardWindowVisible = true
     }
   }

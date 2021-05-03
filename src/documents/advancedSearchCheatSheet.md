@@ -13,4 +13,5 @@
 - Full search
   - `%` - Beginning of the full-search
   - `:` - Division between the field-name and field value
-  - `%:something` - Search through all fields for value
+  - `%some-field:some-value` - Search through all fields for value
+  - This can also be used to search for colors: `%color:blue`

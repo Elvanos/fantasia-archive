@@ -582,7 +582,7 @@ export default class DocumentControl extends BaseClass {
       const savedDocument: {
         documentCopy: I_OpenedDocument,
         allOpenedDocuments: I_OpenedDocument[]
-      } = await saveDocument(currentDoc, this.documentsCopy, this.SGET_allDocuments.docs, editMode).catch(err => console.log(err))
+      } = await saveDocument(currentDoc, this.documentsCopy, this.SGET_allDocuments.docs, editMode, this).catch(err => console.log(err))
 
       // Update the opened document
       const dataPass = { doc: savedDocument.documentCopy, treeAction: true }
