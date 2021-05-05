@@ -133,6 +133,13 @@ export const currenciesBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
+      id: "otherNames",
+      name: "Other Names & Epithets",
+      type: "list",
+      icon: "mdi-book-plus",
+      sizing: 12
+    },
+    {
       id: "categoryDescription",
       name: "Category description",
       type: "wysiwyg",
@@ -146,18 +153,11 @@ export const currenciesBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "otherNames",
-      name: "Other Names & Epithets",
-      type: "list",
-      icon: "mdi-book-plus",
-      sizing: 6
-    },
-    {
       id: "traits",
       name: "Defining Features/Traits",
       type: "list",
       icon: "fas fa-coins",
-      sizing: 6
+      sizing: 12
     },
     {
       id: "pairedItems",

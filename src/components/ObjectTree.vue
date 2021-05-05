@@ -573,7 +573,8 @@ export default class ObjectTree extends BaseClass {
       "deadSwitch",
       "categorySwitch",
       "order",
-      "tags"
+      "tags",
+      "otherNames"
     ]
     extraFields = extraFields.filter(field => {
       return impotantFieldIDList.includes(field.id)

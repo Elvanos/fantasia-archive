@@ -133,6 +133,13 @@ export const chaptersBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
+      id: "otherNames",
+      name: "Other Names & Epithets",
+      type: "list",
+      icon: "mdi-book-plus",
+      sizing: 12
+    },
+    {
       id: "categoryDescription",
       name: "Category description",
       type: "wysiwyg",

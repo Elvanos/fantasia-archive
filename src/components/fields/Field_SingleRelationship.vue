@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
-      <q-icon v-if="inputIcon" :name="inputIcon" :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
+      <q-icon v-if="inputIcon" :name="inputIcon" :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-sm"/>
       {{inputDataBluePrint.name}}
        <q-icon v-if="toolTip && !disableDocumentToolTips" name="mdi-help-circle" size="16px" class="q-ml-md">
          <q-tooltip :delay="500">
@@ -151,7 +151,7 @@
         option-value="_id"
         v-model="localInput"
         @filter="filterSelect"
-        @input="processSelectInteraction"
+        @input="selectValue"
       >
         <template v-slot:append>
           <q-btn round dense flat v-slot:append v-if="!hideAdvSearchCheatsheetButton" icon="mdi-help-rhombus" @click.stop.prevent="SSET_setAdvSearchWindowVisible"
@@ -771,7 +771,21 @@ export default class Field_SingleRelationship extends FieldBase {
     })
   }
 
+  selectValue () {
+    /*eslint-disable */
+    // @ts-ignore
+    this.$refs[`singleRelationshipField${this.inputDataBluePrint.id}`].updateInputValue ('')  
+    /* eslint-enable */
+
+    this.processInput()
+  }
+
   addNewRelationshipObject (input: string) {
+    /*eslint-disable */
+    // @ts-ignore
+    this.$refs[`singleRelationshipField${this.inputDataBluePrint.id}`].updateInputValue ('')  
+    /* eslint-enable */
+
     const newObjectType = this.inputDataBluePrint?.relationshipSettings?.connectedObjectType as unknown as string
 
     const pairedBlueprint = this.SGET_blueprint(newObjectType)

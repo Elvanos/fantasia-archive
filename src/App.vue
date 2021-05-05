@@ -7,7 +7,7 @@
       no-resize
       dark
       title="Advanced Search Cheatsheet"
-      :height="535"
+      :height="625"
       :width="500"
       :start-x="50"
       :start-y="150"
@@ -348,7 +348,7 @@ export default class App extends BaseClass {
    * Corkboard checker
    * Can go up to 3
    */
-  corkboardCheck = 0 
+  corkboardCheck = 0
 
   async loadCorkboardCotent () {
     const options = this.SGET_options

@@ -133,6 +133,13 @@ export const eventsBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
+      id: "otherNames",
+      name: "Other Names & Epithets",
+      type: "list",
+      icon: "mdi-book-plus",
+      sizing: 12
+    },
+    {
       id: "categoryDescription",
       name: "Category description",
       type: "wysiwyg",
@@ -146,18 +153,11 @@ export const eventsBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "otherNames",
-      name: "Other Names & Epithets",
-      type: "list",
-      icon: "mdi-book-plus",
-      sizing: 4
-    },
-    {
       id: "eventType",
       name: "Event type",
       type: "multiSelect",
       icon: "fas fa-meteor",
-      sizing: 2,
+      sizing: 4,
       predefinedSelectValues: [
         "Annual",
         "Battle/Skirmish",
@@ -197,7 +197,7 @@ export const eventsBlueprint: I_Blueprint = {
       name: "Amount of participants",
       type: "number",
       icon: "mdi-account-group",
-      sizing: 2
+      sizing: 4
     },
     {
       id: "pairedCharacter",

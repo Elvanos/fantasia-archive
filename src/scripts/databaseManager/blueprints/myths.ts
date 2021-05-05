@@ -133,6 +133,13 @@ export const mythsBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
+      id: "otherNames",
+      name: "Other Names & Epithets",
+      type: "list",
+      icon: "mdi-book-plus",
+      sizing: 12
+    },
+    {
       id: "categoryDescription",
       name: "Category description",
       type: "wysiwyg",
@@ -146,18 +153,11 @@ export const mythsBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "otherNames",
-      name: "Other Names & Epithets",
-      type: "list",
-      icon: "mdi-book-plus",
-      sizing: 6
-    },
-    {
       id: "pairedOtherMyths",
       name: "Connected to other Myths, legends and stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "myths",
         connectedField: "pairedOtherMyths"
@@ -168,7 +168,7 @@ export const mythsBlueprint: I_Blueprint = {
       name: "Connected to Events",
       type: "manyToManyRelationship",
       icon: "mdi-calendar-text",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "events",
         connectedField: "pairedMyths"
@@ -179,7 +179,7 @@ export const mythsBlueprint: I_Blueprint = {
       name: "Connected to Items",
       type: "manyToManyRelationship",
       icon: "mdi-sword-cross",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "items",
         connectedField: "pairedMyths"

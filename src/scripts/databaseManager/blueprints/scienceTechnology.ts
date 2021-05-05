@@ -133,6 +133,13 @@ export const techBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
+      id: "otherNames",
+      name: "Other names & Epithets",
+      type: "list",
+      icon: "mdi-book-plus",
+      sizing: 12
+    },
+    {
       id: "categoryDescription",
       name: "Category description",
       type: "wysiwyg",
@@ -146,13 +153,6 @@ export const techBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "otherNames",
-      name: "Other names & Epithets",
-      type: "list",
-      icon: "mdi-book-plus",
-      sizing: 6
-    },
-    {
       id: "headquarters",
       name: "Headquarters",
       type: "singleToNoneRelationship",
@@ -161,6 +161,22 @@ export const techBlueprint: I_Blueprint = {
       relationshipSettings: {
         connectedObjectType: "locations"
       }
+    },
+    {
+      id: "population",
+      name: "Member/User count",
+      type: "text",
+      icon: "mdi-account-group",
+      sizing: 3,
+      tooltip: "The amount of members of this scientific school/teaching."
+    },
+    {
+      id: "followers",
+      name: "Follower/Subject count",
+      type: "text",
+      icon: "mdi-account-group-outline",
+      sizing: 3,
+      tooltip: "The amount of people affected by/following this scientific school/teaching."
     },
     {
       id: "leaders",

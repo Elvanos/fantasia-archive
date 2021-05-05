@@ -133,6 +133,13 @@ export const languagesBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
+      id: "otherNames",
+      name: "Other Names & Epithets",
+      type: "list",
+      icon: "mdi-book-plus",
+      sizing: 12
+    },
+    {
       id: "categoryDescription",
       name: "Category description",
       type: "wysiwyg",
@@ -146,18 +153,11 @@ export const languagesBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "otherNames",
-      name: "Other Names & Epithets",
-      type: "list",
-      icon: "mdi-book-plus",
-      sizing: 6
-    },
-    {
       id: "languageFamily",
       name: "Language family",
       type: "manyToManyRelationship",
       icon: "mdi-book-alphabet",
-      sizing: 4,
+      sizing: 8,
       relationshipSettings: {
         connectedObjectType: "languages",
         connectedField: "languageFamily"
@@ -168,7 +168,7 @@ export const languagesBlueprint: I_Blueprint = {
       name: "Estimated speaker count",
       type: "text",
       icon: "mdi-account-group",
-      sizing: 2
+      sizing: 4
     },
     {
       id: "predecessorLanguages",

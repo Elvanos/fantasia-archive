@@ -133,6 +133,13 @@ export const charactersBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
+      id: "otherNames",
+      name: "Other Names & Epithets",
+      type: "list",
+      icon: "mdi-book-plus",
+      sizing: 12
+    },
+    {
       id: "categoryDescription",
       name: "Category description",
       type: "wysiwyg",
@@ -145,19 +152,13 @@ export const charactersBlueprint: I_Blueprint = {
       type: "break",
       sizing: 12
     },
-    {
-      id: "otherNames",
-      name: "Other Names & Epithets",
-      type: "list",
-      icon: "mdi-book-plus",
-      sizing: 6
-    },
+
     {
       id: "titles",
       name: "Titles",
       type: "list",
       icon: "mdi-crown",
-      sizing: 6
+      sizing: 12
     },
     {
       id: "sex",
@@ -520,6 +521,7 @@ export const charactersBlueprint: I_Blueprint = {
         "Earthy",
         "Easily Discouraged",
         "Ebullient",
+        "Eccentric",
         "Educated",
         "Effeminate",
         "Efficient",
@@ -787,7 +789,7 @@ export const charactersBlueprint: I_Blueprint = {
         "Providential",
         "Provocative",
         "Prudent",
-        "Pruposeful",
+        "Purposeful",
         "Pugnacious",
         "Punctual",
         "Pure",

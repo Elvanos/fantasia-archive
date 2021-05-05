@@ -1,6 +1,7 @@
 
 - Notes for filter types
   - Substitute whitespaces with `-`
+  - `@` prefix to include `Other names` in the search
 - Filter types
   - `$` - Document type
   - `#` - Tag
@@ -15,3 +16,5 @@
   - `:` - Division between the field-name and field value
   - `%some-field:some-value` - Search through all fields for value
   - This can also be used to search for colors: `%color:blue`
+  - `""` wrap for precise search (field name and/or value)
+    - Example: `%"some-field":"some-value"`

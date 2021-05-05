@@ -133,6 +133,13 @@ export const locationsBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
+      id: "otherNames",
+      name: "Other Names & Epithets",
+      type: "list",
+      icon: "mdi-book-plus",
+      sizing: 12
+    },
+    {
       id: "categoryDescription",
       name: "Category description",
       type: "wysiwyg",
@@ -146,18 +153,11 @@ export const locationsBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "otherNames",
-      name: "Other Names & Epithets",
-      type: "list",
-      icon: "mdi-book-plus",
-      sizing: 3
-    },
-    {
       id: "connectedLocations",
       name: "Connected Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
-      sizing: 3,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "locations",
         connectedField: "connectedLocations"
@@ -168,7 +168,7 @@ export const locationsBlueprint: I_Blueprint = {
       name: "Location type",
       type: "singleSelect",
       icon: "fas fa-monument",
-      sizing: 2,
+      sizing: 4,
       predefinedSelectValues: [
         "Area",
         "Body of water",

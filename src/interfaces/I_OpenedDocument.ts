@@ -39,4 +39,5 @@ export interface I_ShortenedDocument{
   exactMatch?: boolean
   fullWordMatch?: number
   partialWordMatch?: number
+  isMatched?: boolean
 }

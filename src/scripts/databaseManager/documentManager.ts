@@ -118,6 +118,10 @@ export const saveDocument = async (
           {
             id: "categoryDescription",
             value: ""
+          },
+          {
+            id: "otherNames",
+            value: []
           }
         ],
         hierarchicalPath: pairedBlueprint.namePlural,

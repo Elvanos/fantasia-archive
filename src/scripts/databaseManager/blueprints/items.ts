@@ -133,6 +133,13 @@ export const itemsBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
+      id: "otherNames",
+      name: "Other Names & Epithets",
+      type: "list",
+      icon: "mdi-book-plus",
+      sizing: 12
+    },
+    {
       id: "categoryDescription",
       name: "Category description",
       type: "wysiwyg",
@@ -146,18 +153,11 @@ export const itemsBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "otherNames",
-      name: "Other Names & Epithets",
-      type: "list",
-      icon: "mdi-book-plus",
-      sizing: 6
-    },
-    {
       id: "features",
       name: "Prominent features",
       type: "list",
       icon: "mdi-sword-cross",
-      sizing: 6,
+      sizing: 12,
       predefinedListExtras: {
         affix: "Note",
         extraSelectValueList: [

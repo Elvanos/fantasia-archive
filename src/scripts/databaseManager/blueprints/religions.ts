@@ -133,6 +133,13 @@ export const religionsBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
+      id: "otherNames",
+      name: "Other Names & Epithets",
+      type: "list",
+      icon: "mdi-book-plus",
+      sizing: 12
+    },
+    {
       id: "categoryDescription",
       name: "Category description",
       type: "wysiwyg",
@@ -145,29 +152,32 @@ export const religionsBlueprint: I_Blueprint = {
       type: "break",
       sizing: 12
     },
-    {
-      id: "otherNames",
-      name: "Other Names & Epithets",
-      type: "list",
-      icon: "mdi-book-plus",
-      sizing: 6
-    },
+
     {
       id: "headquarters",
       name: "Headquarters",
       type: "singleToNoneRelationship",
       icon: "mdi-map-marker-radius",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "locations"
       }
     },
     {
-      id: "followers",
-      name: "Follower count",
+      id: "population",
+      name: "Member count",
       type: "text",
       icon: "mdi-account-group",
-      sizing: 2
+      sizing: 3,
+      tooltip: "The amount of members of this religious school/teaching."
+    },
+    {
+      id: "followers",
+      name: "Follower/Subject count",
+      type: "text",
+      icon: "mdi-account-group-outline",
+      sizing: 3,
+      tooltip: "The amount of people affected by/following this religious school/teaching."
     },
     {
       id: "leaders",

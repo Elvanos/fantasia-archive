@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
-      <q-icon v-if="inputIcon" :name="inputIcon" :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-md"/>
+      <q-icon v-if="inputIcon" :name="inputIcon" :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-sm"/>
       {{inputDataBluePrint.name}}
        <q-icon v-if="toolTip && !disableDocumentToolTips" name="mdi-help-circle" size="16px" class="q-ml-md">
          <q-tooltip :delay="500">
@@ -156,7 +156,7 @@
       input-debounce="500"
       v-model="localInput"
       @filter="filterSelect"
-      @input="processInput"
+      @input="selectValue"
     >
     <template v-slot:append>
         <q-btn round dense flat v-slot:append v-if="!hideAdvSearchCheatsheetButton" icon="mdi-help-rhombus" @click.stop.prevent="SSET_setAdvSearchWindowVisible"
@@ -550,9 +550,9 @@ export default class Field_MultiRelationship extends FieldBase {
     await this.$nextTick()
     /*eslint-disable */
     // @ts-ignore 
-    this.$refs[`multiRelationshipField${this.inputDataBluePrint.id}`].setOptionIndex(-1)
+    this.$refs[`multieRelationshipField${this.inputDataBluePrint.id}`].setOptionIndex(-1)
     // @ts-ignore 
-    this.$refs[`multiRelationshipField${this.inputDataBluePrint.id}`].moveOptionSelection(1, true) 
+    this.$refs[`multieRelationshipField${this.inputDataBluePrint.id}`].moveOptionSelection(1, true) 
     /* eslint-enable */
   }
 
@@ -565,7 +565,7 @@ export default class Field_MultiRelationship extends FieldBase {
         this.filterList = this.allTypeDocuments
           .filter((obj) => !obj.isMinor && obj._id !== this.currentId)
 
-        if (this.$refs[`multiRelationshipField${this.inputDataBluePrint.id}`] && this.filterList.length > 0) {
+        if (this.$refs[`multieRelationshipField${this.inputDataBluePrint.id}`] && this.filterList.length > 0) {
           this.refocusSelect().catch(e => console.log(e))
         }
       })
@@ -580,7 +580,7 @@ export default class Field_MultiRelationship extends FieldBase {
       this.filterList = advancedDocumentFilter(needle, this.filterList, this.SGET_allBlueprints, this.filterList)
         .filter((obj) => obj._id !== this.currentId)
 
-      if (this.$refs[`multiRelationshipField${this.inputDataBluePrint.id}`] && this.filterList.length > 0) {
+      if (this.$refs[`multieRelationshipField${this.inputDataBluePrint.id}`] && this.filterList.length > 0) {
         this.refocusSelect().catch(e => console.log(e))
       }
     })
@@ -692,6 +692,15 @@ export default class Field_MultiRelationship extends FieldBase {
 
     // @ts-ignore
     this.SSET_addOpenedDocument(dataPass)
+  }
+
+  selectValue () {
+    /*eslint-disable */
+    // @ts-ignore
+    this.$refs[`multieRelationshipField${this.inputDataBluePrint.id}`].updateInputValue ('')  
+    /* eslint-enable */
+
+    this.processInput()
   }
 
   moveItem (index: number, direction: "up" | "down") {
@@ -838,6 +847,11 @@ export default class Field_MultiRelationship extends FieldBase {
   }
 
   addNewRelationshipObject (input: string) {
+    /*eslint-disable */
+    // @ts-ignore
+    this.$refs[`multieRelationshipField${this.inputDataBluePrint.id}`].updateInputValue ('')  
+    /* eslint-enable */
+
     const newObjectType = this.inputDataBluePrint?.relationshipSettings?.connectedObjectType as unknown as string
 
     const pairedBlueprint = this.SGET_blueprint(newObjectType)

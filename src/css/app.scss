@@ -346,6 +346,7 @@ a {
     &__content {
       white-space: normal;
       flex-wrap: wrap;
+      min-height: 24px;
     }
 
     &__icon--remove {
@@ -608,9 +609,10 @@ body .q-tooltip {
   background-size: 30px;
 }
 
-.noteBoardWindow {
+.q-window.noteBoardWindow {
   min-height: 186px !important;
   min-width: 250px !important;
+  z-index: 2001 !important;
 
   .q-window__body {
     min-height: 146px !important;

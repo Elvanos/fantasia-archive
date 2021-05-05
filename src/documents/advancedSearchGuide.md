@@ -29,6 +29,8 @@ The search itself works the following: You can search any amount of words and th
   - **Fragments are at the bottom of the list**
     - Each fragment matched counts individually; the more fragments the document has, the higher it will be in the list
     - Example: `Dark scary castle` has 2 fragment matches from `sca tle`
+- **It is possible to include `Other names` into the search as well, by prefixing `@` in front of the search string**
+  - Example: `@Vampire lair` (if your `Dark scary castle` had other name filled as `Vampire lair`, the search will find it this way)
 
 ---
 
@@ -78,6 +80,12 @@ This feature is meant mostly for those in need of full-scale search that can cra
 - **The following filter terms must be used inside of the search term**
   - `%` - Symbol for the beginning full-search
   - `:` - Symbol for the division between the field-name and field value
+- **Is possible to use precise searching**
+  - Both the field name and its value can be wrapped inside invidual limiters
+  - Example for both precise: `%"local-currencies":"some-currency"
+  - Example for precise field name: `%"local-currencies":some-currency
+  - Example for precise field value: `%local-currencies:"some-currency"
+
 - **If your filter-term contained whitespaces, replace them with the `-` symbol**
   - Example: You wish to search for a field called `Local Currencies` that contains `Canadian Dollars` as value, to fully match this tag, you will need to type `%local-currencies:canadian-dollars`
 - **It is possible to do a full-text search, checking all fields for the desired text by doing the following: `%:canadian-dollars`**

@@ -14,11 +14,15 @@ export const advancedDocumentFilter = (inputString: string, currentDocumentList:
     // @ts-ignore
     doc.hierarchicalPath = doc.hierarchicalPath.replace(/<[^>]+>/g, "")
 
+    // @ts-ignore
+    doc.hierarchicalPath = doc.hierarchicalPath.replace(/<[^>]+>/g, "")
+
     doc.fullWordMatch = 0
     doc.partialWordMatch = 0
     doc.exactMatch = false
     doc.filteredOut = false
     doc.activeTypeSearch = false
+    doc.isMatched = false
     return doc
   })
 
@@ -38,13 +42,19 @@ export const advancedDocumentFilter = (inputString: string, currentDocumentList:
   // Build advanced search data
   /****************************************************************/
 
+  let otherNamesSearch = false
+
+  if (inputString.includes("@")) {
+    otherNamesSearch = true
+    inputString = inputString.replace("@", "")
+  }
+
   const searchWordList = inputString.toLowerCase().split(" ")
 
   let categorySeach = false as unknown as string
   let tagSearch = false as unknown as string
   let typeSeach = false as unknown as string
   let switchSearch = false as unknown as string
-
   let fieldSearch = false as unknown as string
 
   const categorySeachIndex = searchWordList.findIndex(w => w.charAt(0) === ">")
@@ -197,9 +207,68 @@ export const advancedDocumentFilter = (inputString: string, currentDocumentList:
 
       if (searchDuo.length === 2) {
         let foundMatch = false
+
+        const firstCharName = searchDuo[0].charAt(0)
+        const lastCharName = searchDuo[0].charAt(searchDuo[0].length - 1)
+
+        const firstCharValue = searchDuo[1].charAt(0)
+        const lastCharValue = searchDuo[1].charAt(searchDuo[1].length - 1)
+
         mappedFields.forEach(field => {
-          if (field.name.includes(searchDuo[0]) && field.value.includes(searchDuo[1])) {
-            foundMatch = true
+          // If both precise search
+          if ((
+            firstCharValue === "\"" &&
+            lastCharValue === "\"") &&
+            firstCharName === "\"" &&
+            lastCharName === "\"") {
+            if (
+              field.name === searchDuo[0].substring(1, searchDuo[0].length - 1) &&
+              field.value === searchDuo[1].substring(1, searchDuo[1].length - 1)
+            ) {
+              foundMatch = true
+            }
+          }
+
+          // If name precise search
+          if ((
+            firstCharName === "\"" &&
+            lastCharName === "\"") &&
+              (firstCharValue !== "\"" ||
+              lastCharValue !== "\"")
+          ) {
+            if (
+              field.value.includes(searchDuo[1]) &&
+              field.name === searchDuo[0].substring(1, searchDuo[0].length - 1)
+            ) {
+              foundMatch = true
+            }
+          }
+
+          // If value precise search
+          if ((
+            firstCharValue === "\"" &&
+            lastCharValue === "\"") &&
+              (firstCharName !== "\"" ||
+              lastCharName !== "\"")
+          ) {
+            if (
+              field.name.includes(searchDuo[0]) &&
+              field.value === searchDuo[1].substring(1, searchDuo[1].length - 1)
+            ) {
+              foundMatch = true
+            }
+          }
+
+          // If none precise search
+          if (
+            (firstCharName !== "\"" ||
+            lastCharName !== "\"") &&
+            (firstCharValue !== "\"" ||
+            lastCharValue !== "\"")
+          ) {
+            if (field.name.includes(searchDuo[0]) && field.value.includes(searchDuo[1])) {
+              foundMatch = true
+            }
           }
         })
         return foundMatch
@@ -329,14 +398,7 @@ export const advancedDocumentFilter = (inputString: string, currentDocumentList:
   }
 
   /****************************************************************/
-  // Return list without further lookup for actual text if none is present
-  /****************************************************************/
-  if (filteredSearchWordList.length === 0) {
-    return currentDocumentList
-  }
-
-  /****************************************************************/
-  // Priority search & filtering out non-matching search results
+  // LABEL - Priority search & filtering out non-matching search results
   /****************************************************************/
   currentDocumentList.forEach(doc => {
     // If we have a precise matching letter to letter
@@ -396,6 +458,73 @@ export const advancedDocumentFilter = (inputString: string, currentDocumentList:
   })
 
   /****************************************************************/
+  // Return list without further lookup for actual text if none is present
+  /****************************************************************/
+  if (filteredSearchWordList.length === 0) {
+    return currentDocumentList
+  }
+
+  /****************************************************************/
+  // OTHER NAMES - Priority search & filtering out non-matching search results
+  /****************************************************************/
+  if (otherNamesSearch) {
+    currentDocumentList.forEach(doc => {
+      const otherNamesField = doc.extraFields.find(e => e.id === "otherNames")
+      if (otherNamesField && otherNamesField.value && Array.isArray(otherNamesField.value)) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        const otherNames = otherNamesField.value.map(v => v.value)
+
+        otherNames.forEach((otherName: string) => {
+          // If we have a precise matching letter to letter
+          if (otherName.toLowerCase() === filteredSearchWordList.join(" ")) {
+            doc.exactMatch = true
+            doc.isMatched = true
+            return
+          }
+
+          const documentWordList = otherName.toLowerCase().split(" ")
+
+          // Safeguards
+          let previousWordNotFound = false
+          const foundWordList: string[] = []
+
+          // Check for individual word fragments
+          filteredSearchWordList.forEach(filterWord => {
+            let wordNotFound = true
+            documentWordList.forEach(docWord => {
+              if (foundWordList.includes(docWord)) {
+                return
+              }
+              if (docWord === filterWord) {
+                // @ts-ignore
+                doc.fullWordMatch += 1
+                wordNotFound = false
+                doc.isMatched = true
+                foundWordList.push(docWord)
+              }
+              if (docWord.includes(filterWord)) {
+                // @ts-ignore
+                doc.partialWordMatch += 1
+                wordNotFound = false
+                doc.isMatched = true
+                foundWordList.push(docWord)
+              }
+            })
+            // Safeguards
+            if (!doc.isMatched) {
+              doc.filteredOut = !(!wordNotFound && !previousWordNotFound)
+            }
+            else {
+              doc.filteredOut = false
+            }
+            previousWordNotFound = wordNotFound
+          })
+        })
+      }
+    })
+  }
+
+  /****************************************************************/
   // Sorting
   /****************************************************************/
 
@@ -416,7 +545,7 @@ export const advancedDocumentFilter = (inputString: string, currentDocumentList:
   if (filteredSearchWordList.length > 0) {
     currentDocumentList = currentDocumentList.filter(doc => {
       // @ts-ignore
-      return ((doc.exactMatch || doc.fullWordMatch > 0 || doc.partialWordMatch > 0) && !doc.filteredOut)
+      return ((doc.exactMatch || doc.fullWordMatch > 0 || doc.partialWordMatch > 0) && (!doc.filteredOut || doc.isMatched))
     })
   }
 

@@ -133,6 +133,13 @@ export const racesBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
+      id: "otherNames",
+      name: "Other Names & Epithets",
+      type: "list",
+      icon: "mdi-book-plus",
+      sizing: 12
+    },
+    {
       id: "categoryDescription",
       name: "Category description",
       type: "wysiwyg",
@@ -144,13 +151,6 @@ export const racesBlueprint: I_Blueprint = {
       name: "Basic information",
       type: "break",
       sizing: 12
-    },
-    {
-      id: "otherNames",
-      name: "Other Names & Epithets",
-      type: "list",
-      icon: "mdi-book-plus",
-      sizing: 6
     },
     {
       id: "relatedRaces",
@@ -196,21 +196,21 @@ export const racesBlueprint: I_Blueprint = {
       name: "Average height",
       type: "text",
       icon: "mdi-human-male-height-variant",
-      sizing: 3
+      sizing: 2
     },
     {
       id: "weight",
       name: "Average weight",
       type: "text",
       icon: "mdi-weight",
-      sizing: 3
+      sizing: 2
     },
     {
       id: "beingType",
       name: "Type of being",
       type: "multiSelect",
       icon: "fas fa-paw",
-      sizing: 6,
+      sizing: 4,
       predefinedSelectValues: [
         "Amphibian",
         "Animal",
@@ -237,7 +237,7 @@ export const racesBlueprint: I_Blueprint = {
       name: "Level of sapience",
       type: "multiSelect",
       icon: "fas fa-brain",
-      sizing: 6,
+      sizing: 4,
       predefinedSelectValues: [
         "Ascended",
         "Half-sapient",
