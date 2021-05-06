@@ -369,6 +369,7 @@
               label="Note"
               v-model="inputNote.value"
               dense
+              autogrow
               @keydown="processInput"
               :outlined="!isDarkMode"
               :filled="isDarkMode"

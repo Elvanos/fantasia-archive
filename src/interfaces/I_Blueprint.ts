@@ -23,8 +23,12 @@ export interface I_ExtraFields {
   "tags"
 
   predefinedListExtras?: {
+    reverse?: boolean
     affix?: string
-    extraSelectValueList?: string[]
+    extraSelectValueList?: (string | {
+      title: string,
+      values: string[]
+    }) []
   }
   predefinedSelectValues?: string[]
   relationshipSettings?: {

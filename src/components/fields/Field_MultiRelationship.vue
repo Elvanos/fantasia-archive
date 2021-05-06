@@ -418,6 +418,7 @@
             label="Note"
             v-model="singleNote.value"
             dense
+            autogrow
             @keydown="processInput()"
             :outlined="!isDarkMode"
             :filled="isDarkMode"

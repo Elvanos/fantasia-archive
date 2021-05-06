@@ -39,7 +39,10 @@
       v-for="(singleInput,index) in localInput"
       :key="index"
     >
-      <div class="col-sm-12 col-md flex">
+      <div
+       class="col-sm-12 col-md flex"
+        >
+
         <q-btn
           tabindex="-1"
           round
@@ -81,28 +84,13 @@
           Move the item one place down
           </q-tooltip>
         </q-btn>
-
-        <q-input
-          v-model="localInput[index].value"
-          class="grow-1"
-          :class="`listField_input${index}_${inputDataBluePrint.id}`"
-          dense
-          @keydown="processInput"
-          :outlined="!isDarkMode"
-          :filled="isDarkMode"
-          >
-        </q-input>
-      </div>
-
-      <div
-      class="q-ml-lg justify-end flex"
-      style="max-width: 220px; width: 220px;"
-      v-if="hasExtraInput">
+      <template v-if="isReversed">
         <q-select
-          style="width: 100%;"
+          style="min-width: 300px; width: 300px;"
           dense
-          class="listAtributeSelect"
-          :options="localExtraInput"
+          v-if="hasExtraInput"
+          class="listAtributeSelect q-mr-lg"
+          :options="filteredLocalExtraInput"
           use-input
           :hide-dropdown-icon="!editMode"
           :outlined="editMode && !isDarkMode"
@@ -112,21 +100,198 @@
           input-debounce="0"
           new-value-mode="add"
           dark
+          :class="`listField_prefix${index}_${inputDataBluePrint.id}`"
+          @filter="filterFn"
           @input="processInput"
           @keydown="processInput"
           :label="(inputAffix) ? inputAffix : ''"
           v-model="localInput[index].affix"
-        />
-      </div>
+        >
+          <template v-slot:option="scope">
+            <template v-if="typeof scope.opt === 'string'">
+               <q-item
+                class="list_specialItem"
+                :class="{'q-item--active': localInput[index].affix === scope.opt }"
+                @click="localInput[index].affix = scope.opt"
+                clickable
+                v-ripple
+                v-bind="scope.itemProps"
+                v-on="scope.itemEvents"
+                v-close-popup
+              >
+                {{scope.opt}}
+              </q-item>
+            </template>
 
-      <div style="width: 115px;" class="justify-end flex">
+            <template v-else>
+              <q-item
+                class="bg-gunmetal-light"
+                :label="scope.opt.title"
+              >
+                <q-item-section >{{ scope.opt.title }}</q-item-section>
+                <q-item-section side>
+                 <q-btn
+                  tabindex="-1"
+                  round
+                  flat
+                  dense
+                  dark
+                  color="primary"
+                  class="z-max q-ml-sm self-center"
+                  icon="mdi-plus"
+                  size="12px"
+                  v-close-popup
+                  @click="assignOptionGroupValues(scope.opt.title, index)"
+                  >
+                    <q-tooltip
+                      :delay="300"
+                    >
+                      Add this category to the field.
+                    </q-tooltip>
+                </q-btn>
+              </q-item-section>
+              </q-item>
+              <q-item
+                v-for="value in scope.opt.values"
+                :key="`${value}_${scope.opt.title}`"
+                :class="{'q-item--active': localInput[index].affix === value }"
+                clickable
+                v-ripple
+                v-close-popup
+                @click="localInput[index].affix = value"
+                >
+                <q-item-section>
+                  <q-item-label v-html="value" class="q-ml-md" ></q-item-label>
+                </q-item-section>
+              </q-item>
+            </template>
+          </template>
+        </q-select>
+
+        <q-input
+          v-model="localInput[index].value"
+          class="grow-1 q-mr-lg"
+          :class="`listField_input${index}_${inputDataBluePrint.id}`"
+          dense
+          autogrow
+          @keydown="processInput"
+          :outlined="!isDarkMode"
+          :filled="isDarkMode"
+          >
+        </q-input>
+      </template>
+
+      <template v-if="!isReversed">
+        <q-input
+          v-model="localInput[index].value"
+          class="grow-1 q-mr-lg"
+          :class="`listField_input${index}_${inputDataBluePrint.id}`"
+          dense
+          autogrow
+          @keydown="processInput"
+          :outlined="!isDarkMode"
+          :filled="isDarkMode"
+          >
+        </q-input>
+        <q-select
+          v-if="hasExtraInput"
+          style="min-width: 300px; width: 300px;"
+          dense
+          class="listAtributeSelect q-mr-lg"
+          :options="filteredLocalExtraInput"
+          use-input
+          :hide-dropdown-icon="!editMode"
+          :outlined="editMode && !isDarkMode"
+          :borderless="!editMode"
+          :filled="editMode && isDarkMode"
+          :readonly="!editMode"
+          input-debounce="0"
+          new-value-mode="add"
+          dark
+          :class="`listField_prefix${index}_${inputDataBluePrint.id}`"
+          @filter="filterFn"
+          @input="processInput"
+          @keydown="processInput"
+          :label="(inputAffix) ? inputAffix : ''"
+          v-model="localInput[index].affix"
+        >
+         <template v-slot:option="scope">
+            <template v-if="typeof scope.opt === 'string'">
+              <q-item
+                class="list_specialItem"
+                :class="{'q-item--active': localInput[index].affix === scope.opt }"
+                @click="localInput[index].affix = scope.opt"
+                clickable
+                v-ripple
+                v-close-popup
+                v-bind="scope.itemProps"
+                v-on="scope.itemEvents"
+              >
+                {{scope.opt}}
+              </q-item>
+            </template>
+
+            <template v-else>
+              <q-item
+                class="bg-gunmetal-light"
+                :label="scope.opt.title"
+              >
+                <q-item-section >{{ scope.opt.title }}</q-item-section>
+                <q-item-section side>
+                 <q-btn
+                  tabindex="-1"
+                  round
+                  flat
+                  dense
+                  dark
+                  color="primary"
+                  class="z-max q-ml-sm self-center"
+                  icon="mdi-plus"
+                  size="12px"
+                  v-close-popup
+                  @click="assignOptionGroupValues(scope.opt.title, index)"
+                  >
+                    <q-tooltip
+                      :delay="300"
+                    >
+                      Add this category to the field.
+                    </q-tooltip>
+                </q-btn>
+              </q-item-section>
+              </q-item>
+              <q-item
+                :class="{'q-item--active': localInput[index].affix === value }"
+                  v-for="value in scope.opt.values"
+                :key="`${value}_${scope.opt.title}`"
+                clickable
+                v-ripple
+                v-close-popup
+                @click="localInput[index].affix = value"
+                >
+                <q-item-section>
+                  <q-item-label v-html="value" class="q-ml-md" ></q-item-label>
+                </q-item-section>
+              </q-item>
+            </template>
+          </template>
+        </q-select>
+      </template>
+
+      <div style="width: 60px; align-self: center; height: 35px;" class="justify-end flex">
         <q-btn
           v-if="editMode"
           color="secondary"
           :outline="isDarkMode"
+          icon="mdi-close"
+          tabindex="-1"
           @click="removeFromList(index)"
-          label="Remove" />
+          >
+            <q-tooltip :delay="500">
+              Remove
+            </q-tooltip>
+        </q-btn>
       </div>
+    </div>
     </div>
 
     <div class="row q-mt-xs" v-if="editMode">
@@ -135,7 +300,7 @@
         color="primary"
         :outline="isDarkMode"
         label="Add new"
-        @click="addNewInput" />
+        @click="addNewInput()" />
       </div>
     </div>
   </div>
@@ -200,13 +365,34 @@ export default class Field_List extends FieldBase {
   get hasExtraInput () {
     // @ts-ignore
     this.localExtraInput = this.inputDataBluePrint?.predefinedListExtras?.extraSelectValueList
+    this.filteredLocalExtraInput = extend(true, [], this.localExtraInput)
+
     return this.inputDataBluePrint?.predefinedListExtras?.extraSelectValueList
+  }
+
+  /**
+   * Determine if the input is reversed
+   */
+  get isReversed () {
+    // @ts-ignore
+    return (this.inputDataBluePrint?.predefinedListExtras?.reverse)
   }
 
   /**
    * List of extra input values
    */
-  localExtraInput:string[] = []
+  localExtraInput:string[] | {
+    title: string,
+    values: string[]
+  } [] = []
+
+  /**
+   * List of extra input values - filtered
+   */
+  filteredLocalExtraInput:string[] | {
+    title: string,
+    values: string[]
+  } [] = []
 
   /**
    * Label for the extra input
@@ -214,6 +400,59 @@ export default class Field_List extends FieldBase {
    */
   get inputAffix () {
     return (this.inputDataBluePrint?.predefinedListExtras?.affix) || ""
+  }
+
+  filterFn (val:string, update: (e: () => void) => void) {
+    if (val === "") {
+      update(() => {
+        this.filteredLocalExtraInput = this.localExtraInput
+      })
+      return
+    }
+
+    update(() => {
+      const needle = val.toLowerCase()
+
+      const returnList: string[] | {
+        title: string,
+        values: string[]
+      } [] = []
+
+      const localListCopy: [] = extend(true, [], this.localExtraInput)
+
+      localListCopy.forEach((value:string | {
+        title: string,
+        values: string[]
+      }) => {
+        // For strings
+        if (typeof value === "string" && value.toLowerCase().includes(needle)) {
+          // @ts-ignore
+          returnList.push(value)
+        }
+
+        // For lists
+        if (typeof value !== "string") {
+          // If title matches
+          if (value.title.toLowerCase().includes(needle)) {
+            // @ts-ignore
+            returnList.push(value)
+          }
+          // Try matching child values
+          else {
+            const localFilteredSubvalues = value.values.filter(subValue => {
+              return subValue.toLowerCase().includes(needle)
+            })
+            if (localFilteredSubvalues.length > 0) {
+              value.values = localFilteredSubvalues
+              // @ts-ignore
+              returnList.push(value)
+            }
+          }
+        }
+      })
+
+      this.filteredLocalExtraInput = returnList
+    })
   }
 
   /**
@@ -227,13 +466,15 @@ export default class Field_List extends FieldBase {
   /**
    * Adds new row to the input list
    */
-  async addNewInput () {
+  async addNewInput (affixValue = "") {
     this.localInput.push({
       value: "",
-      affix: ""
+      affix: affixValue
     })
 
-    const targetRefStringNamer = `.listField_input${this.localInput.length - 1}_${this.inputDataBluePrint.id}`
+    const targetRefStringNamer = (!this.isReversed)
+      ? `.listField_input${this.localInput.length - 1}_${this.inputDataBluePrint.id}`
+      : `.listField_prefix${this.localInput.length - 1}_${this.inputDataBluePrint.id}`
 
     await this.$nextTick()
 
@@ -288,6 +529,23 @@ export default class Field_List extends FieldBase {
 
     return returnValue
   }
+
+  async assignOptionGroupValues (categoryTitle: string, callerIndex: number) {
+    const targetCategory:{
+      title: string,
+      values: string[]
+    } = this.localExtraInput
+      // @ts-ignore
+      .find((e: {title: string}) => e.title === categoryTitle)
+
+    for (const value of targetCategory.values) {
+      await this.addNewInput(value)
+    }
+
+    if (this.localInput[callerIndex].value === "" && this.localInput[callerIndex].affix === "") {
+      this.removeFromList(callerIndex)
+    }
+  }
 }
 </script>
 
@@ -310,4 +568,8 @@ export default class Field_List extends FieldBase {
   }
 }
 
+.list_specialItem {
+  display: flex;
+  align-items: center;
+}
 </style>

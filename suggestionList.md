@@ -1,5 +1,9 @@
 ## THE GM BATCH
 
+- Add more stat systems
+- Add stats to items (and anywhere else they might be needed)
+- Add automatic-stats fixer to the repair tool from older versions
+
 - Add hover/on-demand document preview to relationships
 
 - Export for MD/PDF/ODT/DOCX
@@ -8,18 +12,13 @@
 
 ## THE GM BATCH END  
 
-- Add reverse list field option (dropdown first, value in bracket)
-- Rework stats (via reverse list)
-- Add option for project graph to filter out categories or show them separately
 - Add HTML webcolor cheatsheet in floating window (look for JSON of them somewhere?)
 - Word count for editor fields
 - Try to get field titles to show in full-screen edit of text editor fields
 - List of last saved documents on project overview
 
-- Consider adding some kind of "Follower name" to different group types
-- Consider reworking the save document mechanic (save doesnt close, open/exit edit mode instead)
 - Add color support (text and background) to view and edit mode of document display
-- Add a toggle option for it (default off)
+  - Add a toggle option for it (default off)
 
 - Mass tag rename/deletion (done via document saving!)
 - Context menu for tags
@@ -27,22 +26,17 @@
   - Add new document type under tag
   - Delete tag (unsets for all docs)
   - Rename tag (resaves all docs with new tag)
-
-- Add "Predecessors", "Successors", "Date of start", "Date of end" and "How long it lasted" fields to locations and all other groups
-
-- Add advanced search capabilities to the hierarchical tree
-
 - "Save all" keybind and "Save all and exit" option on the exiting
 
-- Add "Open all search matches" button in the Quick-search that opens a new page with a list of items
-- Allow showing of document types under tags
+- Consider adding color support for text shadow of individual documents
 - Add description tabs
+- Add option for project graph to filter out categories or show them separately
+
+- Add "Predecessors", "Successors", "Date of start", "Date of end" and "How long it lasted" fields to locations and all other groups
 - Add category for materials/resources OR adapt Items category
 - Add category for diseases/curses/etc
 - Add category for classes/jobs
-- Add support for individual document order hiding inside the hierarchical tree for each document
-- Consider adding color support for text shadow of individual documents
-- Consider adding coloring to icons of documents separately
+- Add advanced search capabilities to the hierarchical tree
 
 ### Project settings
 
