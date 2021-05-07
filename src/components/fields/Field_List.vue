@@ -86,7 +86,7 @@
         </q-btn>
       <template v-if="isReversed">
         <q-select
-          style="min-width: 300px; width: 300px;"
+          style="min-width: 350px; width: 350px;"
           dense
           v-if="hasExtraInput"
           class="listAtributeSelect q-mr-lg"
@@ -147,6 +147,8 @@
                       :delay="300"
                     >
                       Add this category to the field.
+                      <br>
+                      <b>If there is A LOT of different stats, FA might freeze for a while.</b>
                     </q-tooltip>
                 </q-btn>
               </q-item-section>
@@ -195,7 +197,7 @@
         </q-input>
         <q-select
           v-if="hasExtraInput"
-          style="min-width: 300px; width: 300px;"
+          style="min-width: 350px; width: 350px;"
           dense
           class="listAtributeSelect q-mr-lg"
           :options="filteredLocalExtraInput"
@@ -255,6 +257,8 @@
                       :delay="300"
                     >
                       Add this category to the field.
+                      <br>
+                      <b>If there is A LOT of different stats, FA might freeze for a while.</b>
                     </q-tooltip>
                 </q-btn>
               </q-item-section>

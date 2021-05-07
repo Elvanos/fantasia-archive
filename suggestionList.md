@@ -1,7 +1,6 @@
 ## THE GM BATCH
 
-- Add more stat systems
-- Add stats to items (and anywhere else they might be needed)
+- Add more stat systems (missing 2 #meta atm)
 - Add automatic-stats fixer to the repair tool from older versions
 
 - Add hover/on-demand document preview to relationships

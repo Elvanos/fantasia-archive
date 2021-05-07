@@ -1,3 +1,4 @@
+import { RPGSystemsStats } from "./../extraFieldLists/RPGSystemsStats"
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const racesBlueprint: I_Blueprint = {
   _id: "races",
@@ -246,6 +247,18 @@ export const racesBlueprint: I_Blueprint = {
         "Sapient",
         "Other"
       ]
+    },
+    {
+      id: "statsList",
+      name: "Stats/Attributes",
+      type: "list",
+      icon: "mdi-sword-cross",
+      sizing: 12,
+      predefinedListExtras: {
+        reverse: true,
+        affix: "Stat/Attribute",
+        extraSelectValueList: RPGSystemsStats
+      }
     },
     {
       id: "strength",
