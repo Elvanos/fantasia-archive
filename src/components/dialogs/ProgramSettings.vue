@@ -323,6 +323,22 @@
                         v-model="options.preventAutoScroll"
                       />
                   </div>
+
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
+                    <div class="optionTitle">
+                      DEVELOPMENT - Show document IDs
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        If this is ticked on, document body will also show the internal document ID value.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.showDocumentID"
+                      />
+                  </div>
+
                 </div>
            </q-scroll-area>
 
@@ -965,6 +981,7 @@ export default class ProgramSettings extends DialogBase {
     allowQuickPopupSameKeyClose: false,
     disableDocumentCounts: false,
     compactDocumentCount: false,
+    showDocumentID: false,
     invertCategoryPosition: false,
     hideWelcomeScreenSocials: false,
     hideTooltipsStart: false,

@@ -20,12 +20,17 @@
 ### New features
 
 - **Added on-the-fly relationship documents generation**
+- **Added stat/attribute support for multiple RPG systems**
+- **Added option to search through the `Other names` field via `@` modifier**
+- Added reverse display for lists
+- Added category adding for lists
 - Added precise mode search to full-field search in the relationship search inputs
-- Added option to search through the `Other names` field via `@` modifier
 - Added option: Prevent filled note board showing
 - Added `Other Names & Epithets` to `Chapters` document type
 - Revamped `Member count` field in all types of groups document types
 - Added `Follower/Subject count` field to all types of groups document types
+- Added dev option to the menu for quick document ID copying
+- Updated the legacy project repair tool to also transfer old stat fields into the new setup
 
 ### QoL adjustments
 
@@ -33,6 +38,7 @@
 - Added input reseting after adding/selection in the relationship fields
 - Revamped the field order in all document types since `Other names` field moved to `Document settings` from `Basic information` as it is not a mandatory system field specially used in advanced search
 - Added tooltips to `Member count` and `Follower/Subject count` fields in all groups document types
+- Updated selects to act as text input fields in case there are no prdefixed values in the list
 
 ## 0.1.6a
 

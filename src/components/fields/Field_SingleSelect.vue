@@ -21,8 +21,21 @@
       </q-item>
     </q-list>
 
+    <q-input
+      v-if="editMode && extraInput.length === 0"
+      style="width: 100%;"
+      v-model="localInput"
+      class="grow-1 q-mr-lg"
+      :ref="`singleSelectField${this.inputDataBluePrint.id}`"
+      dense
+      autogrow
+      @keydown="processInput"
+      :outlined="!isDarkMode"
+      :filled="isDarkMode"
+      >
+    </q-input>
     <q-select
-      v-if="editMode"
+      v-if="editMode && extraInput.length > 0"
       style="width: 100%;"
       dense
       dark

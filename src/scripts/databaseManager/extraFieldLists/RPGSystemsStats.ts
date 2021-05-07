@@ -243,13 +243,9 @@ export const RPGSystemsStats = [
     title: "GURPS (3rd & 4th edition)",
     values: [
       "Strength",
-      "Agility",
-      "Wits",
-      "Empathy",
-      "Damage",
-      "Fatigue",
-      "Confusion",
-      "Doubt"
+      "Dexterity",
+      "Health",
+      "Intelligence"
     ]
   },
   {
@@ -368,6 +364,134 @@ export const RPGSystemsStats = [
       "Willpower",
       "Nightmare",
       "Banality"
+    ]
+  },
+  {
+    title: "Microlite20 (expert rules)",
+    values: [
+      "Strength",
+      "Dexterity",
+      "Intellect",
+      "Charisma",
+      "Physical",
+      "Knowledge",
+      "Subterfuge",
+      "Communication",
+      "Survival",
+      "Hit Points",
+      "Armor Class"
+    ]
+  },
+  {
+    title: "Conspiracy X",
+    values: [
+      "Strength",
+      "Size",
+      "Agility",
+      "Reflexes",
+      "Intelligence",
+      "Willpower",
+      "Perception",
+      "Good Luck",
+      "Bad Luck",
+      "Influence"
+    ]
+  },
+  {
+    title: "Call of Cthulu - Characteristics/Stats (7th edition)",
+    values: [
+      "Strength",
+      "Constitution",
+      "Power",
+      "Dexterity",
+      "Appearance",
+      "Size",
+      "Intelligence",
+      "Education",
+      "Movement Rate",
+      "Hit Points",
+      "Sanity",
+      "Luck",
+      "Magic Points",
+      "Damage Bonus",
+      "Build",
+      "Dodge"
+    ]
+  },
+  {
+    title: "Call of Cthulu - Investigator Skills (7th edition)",
+    values: [
+      "Accounting",
+      "Anthropology",
+      "Appraise",
+      "Archaeology",
+      "Art/Craft",
+      "Charm",
+      "Climb",
+      "Credit Rating",
+      "Cthulu Mythos",
+      "Disguise",
+      "Dodge",
+      "Drive Auto",
+      "Electric Repair",
+      "Fast Talk",
+      "Fighting (brawl)",
+      "Firearms (handgun)",
+      "Firearms (rifle/shotgun)",
+      "First Aid",
+      "History",
+      "Intimidate",
+      "Jump",
+      "Language (other)",
+      "Language (own)",
+      "Law",
+      "Library Use",
+      "Listen",
+      "Locksmith",
+      "Mechanical Repair",
+      "Medicine",
+      "Natural World",
+      "Navigate",
+      "Occult",
+      "Operate Heavy",
+      "Machine",
+      "Persuade",
+      "Pilot",
+      "Psychology",
+      "Psychoanalysis",
+      "Ride",
+      "Science",
+      "Sleight of Hand",
+      "Spot Hidden",
+      "Stealth",
+      "Survival",
+      "Swim",
+      "Throw",
+      "Track"
+    ]
+  },
+  {
+    title: "Mork Borg",
+    values: [
+      "Melee",
+      "Ranged",
+      "Defence",
+      "Agility - Defend",
+      "Agility - Balance",
+      "Agility - Swim",
+      "Agility - Flee",
+      "Presence - Perceive",
+      "Presence - Aim",
+      "Presence - Charm",
+      "Presence - Wield Powers",
+      "Strength - Crush",
+      "Strength - Lift",
+      "Strength - Strike",
+      "Strength - Grapple",
+      "Toughness - Resist Poison",
+      "Toughness - Resist Cold",
+      "Toughness - Resist Heat",
+      "Toughness - Survive Falling"
     ]
   },
 

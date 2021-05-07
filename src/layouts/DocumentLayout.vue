@@ -7,15 +7,15 @@
       @trigger-dialog-close="repairProjectDialogClose"
     />
 
-     <q-dialog v-model="pre016check" seamless position="bottom">
+     <q-dialog v-model="pre017check" seamless position="bottom">
       <q-card style="width: 100vw; min-width: 100vw;" dark class="text-accent bg-secondary">
 
         <q-card-section class="row items-center no-wrap justify-center">
           <div>
-            If you are working with a pre-0.1.6 version project, then please <span class="q-mx-lg"><q-btn outline label="Repair your project" color="accent" @click="repairProjectAssignUID" /></span>
+            If you are working with a pre-0.1.7 version project, then please <span class="q-mx-lg"><q-btn outline label="Repair your project" color="accent" @click="repairProjectAssignUID" /></span>
           </div>
 
-          <q-btn outline round icon="close" v-close-popup @click="close016Notification" class="notifClose" />
+          <q-btn outline round icon="close" v-close-popup @click="close017Notification" class="notifClose" />
         </q-card-section>
       </q-card>
     </q-dialog>
@@ -173,7 +173,7 @@ export default class DocumentLayout extends BaseClass {
    */
   splitterModel = 375
 
-  pre016check = false
+  pre017check = false
 
   /**
    * Special class for the splitter
@@ -202,7 +202,7 @@ export default class DocumentLayout extends BaseClass {
     this.hideHierarchyTree = options.hideHierarchyTree
 
     // @ts-ignore
-    this.pre016check = options.pre016check
+    this.pre017check = options.pre017check
 
     if (options.treeWidth && !this.hideHierarchyTree) {
       this.splitterModel = options.treeWidth
@@ -232,9 +232,9 @@ export default class DocumentLayout extends BaseClass {
    */
   optionsSnapShot = {} as OptionsStateInteface
 
-  close016Notification () {
+  close017Notification () {
     this.optionsSnapShot = extend(true, {}, this.SGET_options)
-    this.optionsSnapShot.pre016check = false
+    this.optionsSnapShot.pre017check = false
     this.SSET_options(this.optionsSnapShot)
   }
 

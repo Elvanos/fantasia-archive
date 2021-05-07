@@ -34,10 +34,11 @@ export interface OptionsStateInteface {
   hideTreeIconEdit: boolean
   hideTreeIconView: boolean
   hidePlushes: boolean
+  showDocumentID: boolean
 
   userKeybindList: any[]
   treeWidth?: number
-  pre016check?: boolean
+  pre017check?: boolean
 }
 
 function state (): OptionsStateInteface {
@@ -76,9 +77,10 @@ function state (): OptionsStateInteface {
     hideTreeIconAddUnder: false,
     hideTreeIconEdit: false,
     hideTreeIconView: false,
+    showDocumentID: false,
     treeWidth: 374,
     userKeybindList: [],
-    pre016check: true
+    pre017check: true
   }
 }
 

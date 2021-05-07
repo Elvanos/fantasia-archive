@@ -12,7 +12,7 @@
 
         <q-card-section class="row justify-center q-mx-xl">
           <div>
-            If you are working with project created (or added via Merge) before version 0.1.6, this process might significantly improve your performance.
+            If you are working with project created (or added via Merge) before version 0.1.7, this process might significantly improve your performance.
             <br>
             <br>
             However, before proceeding, please export your current project first to prevent a <span class="text-bold text-secondary">POSSIBLE CORRUPTION</span> of your current project data!
@@ -175,12 +175,28 @@ export default class RepairProjectDialog extends DialogBase {
 
     const optionsSnapShot = extend(true, {}, this.SGET_options)
     // @ts-ignore
-    optionsSnapShot.pre016check = false
+    optionsSnapShot.pre017check = false
     // @ts-ignore
     this.SSET_options(optionsSnapShot)
   }
 
   async remapDocument (document: I_ShortenedDocument, blueprint: I_Blueprint) {
+    const statFieldIDS = [
+      "strength",
+      "constitution",
+      "dexterity",
+      "intellect",
+      "wisdom",
+      "charisma"
+    ]
+
+    const transeferedStats = {
+      id: "statsList",
+      value: []
+    }
+
+    const obsoleteFieldIDs: string[] = []
+
     const allSingleToNoneFields = blueprint.extraFields.filter(e => e.type === "singleToNoneRelationship")
     const allSingleToSingleFields = blueprint.extraFields.filter(e => e.type === "singleToSingleRelationship")
     const allSingleToManyFields = blueprint.extraFields.filter(e => e.type === "singleToManyRelationship")
@@ -212,9 +228,6 @@ export default class RepairProjectDialog extends DialogBase {
       allManyToSingleFields.find(e => e.id === field.id) ||
       allManyToManyFields.find(e => e.id === field.id)) {
         if (field.value && field.value.value) {
-          if (field.id === "pairedLocations") {
-            console.log(field.value.value)
-          }
           // eslint-disable-next-line @typescript-eslint/no-unsafe-call
           for (const [i, subValue] of field.value.value.entries()) {
             const blueprintField = blueprint.extraFields.find(e => e.id === field.id)
@@ -229,8 +242,50 @@ export default class RepairProjectDialog extends DialogBase {
           }
         }
       }
+
+      // Fix stat fields
+      if (statFieldIDS.includes(field.id)) {
+        if (field.value.length > 0) {
+          transeferedStats.value.push({
+          // @ts-ignore
+            value: field.value,
+            // @ts-ignore
+            affix: field.id.charAt(0).toUpperCase() + field.id.slice(1)
+          })
+        }
+
+        obsoleteFieldIDs.push(field.id)
+      }
     }
 
+    if (transeferedStats.value.length > 0) {
+      const statFieldIndex = document.extraFields.findIndex(e => e.id === "statsList")
+      // If new stats/attributes field doesn't exist yet, create a new one
+      if (statFieldIndex === -1) {
+        document.extraFields.push(transeferedStats)
+      }
+      // If the field already exists
+      else {
+        document.extraFields[statFieldIndex].value = [
+          ...document.extraFields[statFieldIndex].value,
+          ...transeferedStats.value]
+      }
+    }
+
+    if (document._id === "e1e24951-e2af-4513-8e4c-50fb93fd94d9") {
+      console.log(obsoleteFieldIDs)
+    }
+
+    // Clean out obsolete fields that will cause bugs if left alone
+    obsoleteFieldIDs.forEach(i => {
+      const fieldIndex = document.extraFields.findIndex(e => e.id === i)
+      // Cut out the legacy field
+      document.extraFields.splice(fieldIndex, 1)
+    })
+
+    if (document._id === "e1e24951-e2af-4513-8e4c-50fb93fd94d9") {
+      console.log(document.extraFields)
+    }
     this.processedDocument++
 
     await this.sleep(25)

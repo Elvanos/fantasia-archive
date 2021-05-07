@@ -125,6 +125,11 @@
         </q-btn>
       </div>
 
+      <div class="col-12 q-mt-xl justify-end" v-if="showDocumentID">
+        <q-input style="width: 100%;" readonly outlined label="Document ID" stack-label @click="copyID" ref="idCopy" v-model="currentData._id">
+        </q-input>
+      </div>
+
       <div
         v-for="field in bluePrintData.extraFields"
         :key="`${field.id}`"
@@ -325,7 +330,10 @@ export default class PageDocumentDisplay extends BaseClass {
     this.isDarkMode = options.darkMode
     this.hideEmptyFields = options.hideEmptyFields
     this.preventAutoScroll = options.preventAutoScroll
+    this.showDocumentID = options.showDocumentID
   }
+
+  showDocumentID = false
 
   /**
   * Determines if the documents will recall their scroll distances and auto-scroll on switching ot not.
@@ -965,6 +973,21 @@ export default class PageDocumentDisplay extends BaseClass {
         message: "Document successfully saved"
       })
     }
+  }
+
+  copyID () {
+    const copyText = this.$refs.idCopy
+
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    copyText.select()
+    document.execCommand("copy")
+
+    this.$q.notify({
+      group: false,
+      type: "positive",
+      message: "Document ID Copied"
+    })
   }
 }
 </script>

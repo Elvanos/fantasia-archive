@@ -261,48 +261,6 @@ export const racesBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "strength",
-      name: "Strength",
-      type: "text",
-      icon: "fas fa-dumbbell",
-      sizing: 2
-    },
-    {
-      id: "constitution",
-      name: "Constitution",
-      type: "text",
-      icon: "mdi-shield",
-      sizing: 2
-    },
-    {
-      id: "dexterity",
-      name: "Dexterity",
-      type: "text",
-      icon: "mdi-run-fast",
-      sizing: 2
-    },
-    {
-      id: "intellect",
-      name: "Intellect",
-      type: "text",
-      icon: "mdi-brain",
-      sizing: 2
-    },
-    {
-      id: "wisdom",
-      name: "Wisdom/Willpower",
-      type: "text",
-      icon: "fas fa-yin-yang",
-      sizing: 2
-    },
-    {
-      id: "charisma",
-      name: "Charisma",
-      type: "text",
-      icon: "mdi-drama-masks",
-      sizing: 2
-    },
-    {
       id: "traits",
       name: "Defining Features & Traits",
       type: "list",

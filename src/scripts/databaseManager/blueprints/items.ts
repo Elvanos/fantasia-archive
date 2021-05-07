@@ -178,48 +178,6 @@ export const itemsBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "strength",
-      name: "Strength change",
-      type: "text",
-      icon: "fas fa-dumbbell",
-      sizing: 2
-    },
-    {
-      id: "constitution",
-      name: "Constitution change",
-      type: "text",
-      icon: "mdi-shield",
-      sizing: 2
-    },
-    {
-      id: "dexterity",
-      name: "Dexterity change",
-      type: "text",
-      icon: "mdi-run-fast",
-      sizing: 2
-    },
-    {
-      id: "intellect",
-      name: "Intellect change",
-      type: "text",
-      icon: "mdi-brain",
-      sizing: 2
-    },
-    {
-      id: "wisdom",
-      name: "Wisdom/Willpower change",
-      type: "text",
-      icon: "fas fa-yin-yang",
-      sizing: 2
-    },
-    {
-      id: "charisma",
-      name: "Charisma change",
-      type: "text",
-      icon: "mdi-drama-masks",
-      sizing: 2
-    },
-    {
       id: "pairedItems",
       name: "Connected to other Items",
       type: "manyToManyRelationship",

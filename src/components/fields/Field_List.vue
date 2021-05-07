@@ -25,10 +25,10 @@
         </q-item-section>
         <q-item-section>
           <span class="text-weight-medium">
-            {{input.value}}
+            {{(isReversed) ? localInput[index].affix : input.value}}
           </span>
           <span v-if="localInput[index].affix" class="inline-block q-ml-xs text-italic listNote">
-            ({{localInput[index].affix}})
+            {{(!isReversed) ? `(${localInput[index].affix})` : ` - ${input.value}`}}
             </span>
         </q-item-section>
       </q-item>
@@ -85,10 +85,24 @@
           </q-tooltip>
         </q-btn>
       <template v-if="isReversed">
+         <q-input
+          v-if="hasExtraInput && filteredLocalExtraInput.length === 0"
+          style="min-width: 350px; width: 350px; max-width: 350px;"
+          v-model="localInput[index].affix"
+          class="grow-1 q-mr-lg"
+          :class="`listField_prefix${index}_${inputDataBluePrint.id}`"
+          dense
+          autogrow
+          :label="(inputAffix) ? inputAffix : ''"
+          @keydown="processInput"
+          :outlined="!isDarkMode"
+          :filled="isDarkMode"
+          >
+        </q-input>
         <q-select
           style="min-width: 350px; width: 350px;"
           dense
-          v-if="hasExtraInput"
+          v-if="hasExtraInput && filteredLocalExtraInput.length > 0"
           class="listAtributeSelect q-mr-lg"
           :options="filteredLocalExtraInput"
           use-input
@@ -195,8 +209,22 @@
           :filled="isDarkMode"
           >
         </q-input>
+        <q-input
+          v-if="hasExtraInput && filteredLocalExtraInput.length === 0"
+          style="min-width: 350px; width: 350px; max-width: 350px;"
+          v-model="localInput[index].affix"
+          class="grow-1 q-mr-lg"
+          :class="`listField_prefix${index}_${inputDataBluePrint.id}`"
+          dense
+          autogrow
+          :label="(inputAffix) ? inputAffix : ''"
+          @keydown="processInput"
+          :outlined="!isDarkMode"
+          :filled="isDarkMode"
+          >
+        </q-input>
         <q-select
-          v-if="hasExtraInput"
+          v-if="hasExtraInput && filteredLocalExtraInput.length > 0"
           style="min-width: 350px; width: 350px;"
           dense
           class="listAtributeSelect q-mr-lg"
