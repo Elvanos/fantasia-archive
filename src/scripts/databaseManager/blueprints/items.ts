@@ -154,18 +154,6 @@ export const itemsBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "features",
-      name: "Prominent features",
-      type: "list",
-      icon: "mdi-sword-cross",
-      sizing: 12,
-      predefinedListExtras: {
-        affix: "Note",
-        extraSelectValueList: [
-        ]
-      }
-    },
-    {
       id: "statsList",
       name: "Stats/Attributes",
       type: "list",
@@ -175,6 +163,18 @@ export const itemsBlueprint: I_Blueprint = {
         reverse: true,
         affix: "Stat/Attribute",
         extraSelectValueList: RPGSystemsStats
+      }
+    },
+    {
+      id: "features",
+      name: "Prominent features",
+      type: "list",
+      icon: "mdi-sword-cross",
+      sizing: 12,
+      predefinedListExtras: {
+        affix: "Note",
+        extraSelectValueList: [
+        ]
       }
     },
     {

@@ -1,8 +1,5 @@
 ## THE GM BATCH
 
-- Add more stat systems (missing 2 #meta atm)
-- Add automatic-stats fixer to the repair tool from older versions
-
 - Add hover/on-demand document preview to relationships
 
 - Export for MD/PDF/ODT/DOCX
@@ -32,6 +29,8 @@
 - Add option for project graph to filter out categories or show them separately
 
 - Add "Predecessors", "Successors", "Date of start", "Date of end" and "How long it lasted" fields to locations and all other groups
+
+- Add category for skill/spells, edit magic and tech category
 - Add category for materials/resources OR adapt Items category
 - Add category for diseases/curses/etc
 - Add category for classes/jobs

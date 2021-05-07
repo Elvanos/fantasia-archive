@@ -40,7 +40,13 @@
       :key="single._id"
       clickable
       class="text-primary"
+      @mouseleave="setDocumentPreviewClose"
       >
+        <documentPreview
+          v-if="!recursive"
+          :document-id="single._id"
+          :external-close-trigger="documentPreviewClose"
+        />
         <q-item-section
           @click.left="openExistingDocumentRoute(single)"
           @click.middle="openNewTab(single)"
@@ -73,7 +79,7 @@
               </q-tooltip>
             </q-btn>
         </q-item-section>
-         <q-menu
+        <q-menu
               touch-position
               context-menu
               auto-close
@@ -129,7 +135,8 @@
                 </template>
               </q-list>
 
-            </q-menu>
+        </q-menu>
+
       </q-item>
     </q-list>
 
@@ -451,12 +458,19 @@ import { copyDocumentName, copyDocumentTextColor, copyDocumentBackgroundColor } 
 import { copyDocument } from "src/scripts/documentActions/copyDocument"
 
 @Component({
-  components: { }
+  components: {
+    documentPreview: () => import("src/components/DocumentPreview.vue")
+  }
 })
 export default class Field_MultiRelationship extends FieldBase {
   /****************************************************************/
   // BASIC FIELD DATA
   /****************************************************************/
+
+  /**
+   * Prevent document preview in already existing previews
+   */
+  @Prop({ default: false }) readonly recursive!: true
 
   /**
    * Already existing value in the input field (IF one is there right now)
@@ -928,6 +942,12 @@ export default class Field_MultiRelationship extends FieldBase {
 
     this.processInput()
   }
+
+  setDocumentPreviewClose () {
+    this.documentPreviewClose = uid()
+  }
+
+  documentPreviewClose = ""
 }
 </script>
 

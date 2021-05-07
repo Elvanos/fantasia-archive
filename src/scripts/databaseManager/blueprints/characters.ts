@@ -196,18 +196,6 @@ export const charactersBlueprint: I_Blueprint = {
       sizing: 3
     },
     {
-      id: "statsList",
-      name: "Stats/Attributes",
-      type: "list",
-      icon: "mdi-sword-cross",
-      sizing: 12,
-      predefinedListExtras: {
-        reverse: true,
-        affix: "Stat/Attribute",
-        extraSelectValueList: RPGSystemsStats
-      }
-    },
-    {
       id: "pairedOriginLocation",
       name: "Place of origin",
       type: "singleToManyRelationship",
@@ -307,9 +295,21 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "breakSkills",
-      name: "Skills & Other features",
+      name: "Skills, Stats & Other features",
       type: "break",
       sizing: 12
+    },
+    {
+      id: "statsList",
+      name: "Stats/Attributes",
+      type: "list",
+      icon: "mdi-sword-cross",
+      sizing: 12,
+      predefinedListExtras: {
+        reverse: true,
+        affix: "Stat/Attribute",
+        extraSelectValueList: RPGSystemsStats
+      }
     },
     {
       id: "personalityTraits",
