@@ -34,115 +34,139 @@
       v-if="!editMode && localInput"
       class="connectionList"
       dense>
-      <q-item
-      clickable
-      class="text-primary"
-      @mouseleave="setDocumentPreviewClose"
+      <div
+        style="position: relative;"
       >
-        <q-item-section
-          @click.left="openExistingDocumentRoute(localInput)"
-          @click.middle="openNewTab(localInput)"
-          >
-          <span class="text-weight-medium">
-            <span class="isDeadIndicator" v-if="localInput.isDead">
-              †
-            </span>
-            <span :class="{'isDead': (localInput.isDead && !hideDeadCrossThrough)}">
-                {{stripTags(localInput.label)}}
-            </span>
-          </span>
-          <span class="inline-block q-ml-xs text-italic connectionNote">
-            {{retrieveNoteText()}}
-          </span>
-          <q-btn
-            tabindex="-1"
-            round
-            flat
-            dense
-            dark
-            color="primary"
-            icon="mdi-open-in-new"
-            size="12px"
-            class="relationshipOpeningButton"
-            @click.stop.prevent.left="openNewTab(localInput)"
+        <div
+          v-if="recursive"
+          class="relationshipOpeningButton q-btn q-btn-item non-selectable no-outline q-btn--flat q-btn--round text-primary q-btn--actionable q-focusable q-hoverable q-btn--wrap q-btn--dense"
+          @click.stop.prevent.left="openNewTab(localInput)"
+          v-ripple
+        >
+        <span class="q-focus-helper"></span>
+          <i
+          style="font-size: 20px;"
+          class="mdi mdi-open-in-new q-icon notranslate  text-primary"
+          />
+          <q-tooltip :delay="500">
+            Open in new tab without leaving this one
+          </q-tooltip>
+        </div>
+
+        <div
+          v-if="recursive"
+          class="relationshipChangeParent q-btn q-btn-item non-selectable no-outline q-btn--flat q-btn--round text-primary q-btn--actionable q-focusable q-hoverable q-btn--wrap q-btn--dense"
+          @click.stop.prevent.left="setNewParentId(localInput._id)"
+          v-ripple
+        >
+        <span class="q-focus-helper"></span>
+          <i
+          style="font-size: 20px;"
+          class="mdi mdi-eye-outline q-icon notranslate  text-primary"
+          />
+          <q-tooltip :delay="500">
+          Change preview to this document
+          </q-tooltip>
+        </div>
+
+        <q-item
+        clickable
+        class="text-primary"
+        :class="{'hasSetParentButton': recursive}"
+        @mouseleave="setDocumentPreviewClose"
+        >
+          <q-item-section
+            @click.stop.prevent.left="openExistingDocumentRoute(localInput)"
+            @click.stop.prevent.middle="openNewTab(localInput)"
             >
-            <q-tooltip :delay="500">
-              Open in new tab without leaving this one
-            </q-tooltip>
-          </q-btn>
-        </q-item-section>
-        <q-menu
-              touch-position
-              context-menu
-              auto-close
-              separate-close-popup
-              @before-show="menuMode(true)"
-              @before-hide="menuMode(false)"
-              @mouseleave="menuLeave"
-              @mouseenter="menuEnter"
-              :dense="recursive"
-            >
+            <span class="text-weight-medium">
+              <span class="isDeadIndicator" v-if="localInput.isDead">
+                †
+              </span>
+              <span :class="{'isDead': (localInput.isDead && !hideDeadCrossThrough)}">
+                  {{stripTags(localInput.label)}}
+              </span>
+            </span>
+            <span class="inline-block q-ml-xs text-italic connectionNote">
+              {{retrieveNoteText()}}
+            </span>
+          </q-item-section>
+          <q-menu
+                touch-position
+                context-menu
+                auto-close
+                separate-close-popup
+                @before-show="menuMode(true)"
+                @before-hide="menuMode(false)"
+                @mouseleave="menuLeave"
+                @mouseenter="menuEnter"
+                :dense="recursive"
+                :content-style="`z-index: ${(specialZIndex !== 999) ? specialZIndex+1 : '' } !important;`"
+              >
 
-              <q-list class="bg-gunmetal-light text-accent">
+                <q-list class="bg-gunmetal-light text-accent">
 
-                <template>
-                  <q-item clickable  @click="copyName(fixGetCorrectDocument(localInput))">
-                    <q-item-section>Copy name</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="mdi-text-recognition" />
-                    </q-item-section>
-                  </q-item>
-                  <q-item clickable @click="copyTextColor(fixGetCorrectDocument(localInput))">
-                    <q-item-section>Copy text color</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="mdi-eyedropper" />
-                    </q-item-section>
-                  </q-item>
-                  <q-item clickable @click="copyBackgroundColor(fixGetCorrectDocument(localInput))">
-                    <q-item-section>Copy background color</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="mdi-format-color-fill" />
-                    </q-item-section>
-                  </q-item>
-                  <q-separator dark />
-                    <q-item clickable @click="openExistingInput(fixGetCorrectDocument(localInput))">
-                    <q-item-section>Open document</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="mdi-book-open-page-variant-outline" />
-                    </q-item-section>
-                  </q-item>
-                  <q-item clickable @click="editExistingInput(fixGetCorrectDocument(localInput))">
-                    <q-item-section>Edit document</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="mdi-pencil" />
-                    </q-item-section>
-                  </q-item>
-                  <q-item clickable @click="addNewUnderParent(fixGetCorrectDocument(localInput))">
-                    <q-item-section>Create new document with this document as parent</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon color="primary" name="mdi-file-tree" />
-                    </q-item-section>
-                  </q-item>
-                  <q-item clickable @click="copyTargetDocument(fixGetCorrectDocument(localInput))">
-                    <q-item-section>Copy this document</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon color="primary" name="mdi-content-copy" />
-                    </q-item-section>
-                  </q-item>
-                </template>
-              </q-list>
+                  <template>
+                    <q-item clickable  @click="copyName(fixGetCorrectDocument(localInput))">
+                      <q-item-section>Copy name</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-text-recognition" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable @click="copyTextColor(fixGetCorrectDocument(localInput))">
+                      <q-item-section>Copy text color</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-eyedropper" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable @click="copyBackgroundColor(fixGetCorrectDocument(localInput))">
+                      <q-item-section>Copy background color</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-format-color-fill" />
+                      </q-item-section>
+                    </q-item>
+                    <q-separator dark />
+                      <q-item clickable @click="openExistingInput(fixGetCorrectDocument(localInput))">
+                      <q-item-section>Open document</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-book-open-page-variant-outline" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable @click="editExistingInput(fixGetCorrectDocument(localInput))">
+                      <q-item-section>Edit document</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-pencil" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable @click="addNewUnderParent(fixGetCorrectDocument(localInput))">
+                      <q-item-section>Create new document with this document as parent</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon color="primary" name="mdi-file-tree" />
+                      </q-item-section>
+                    </q-item>
+                    <q-item clickable @click="copyTargetDocument(fixGetCorrectDocument(localInput))">
+                      <q-item-section>Copy this document</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon color="primary" name="mdi-content-copy" />
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-list>
 
-        </q-menu>
-        <documentPreview
-          v-if="!recursive || preventPreviewsDocuments"
-          :document-id="localInput._id"
-          :external-close-trigger="documentPreviewClose"
-        />
-      </q-item>
+          </q-menu>
+          <documentPreview
+            v-if="!recursive || preventPreviewsDocuments"
+            :document-id="localInput._id"
+            :external-close-trigger="documentPreviewClose"
+          />
+        </q-item>
+      </div>
+
     </q-list>
 
-    <div class="flex" v-if="editMode">
+    <div class="flex" v-if="editMode" @mouseleave="setDocumentPreviewClose">
       <q-select
+        @mouseleave="setDocumentPreviewClose"
         class="singleRelashionshipSelect"
         menu-anchor="bottom middle"
         menu-self="top middle"
@@ -183,6 +207,7 @@
             :color="(scope.opt.isAutoGenerated) ? 'teal-3' : 'accent'"
             text-color="dark"
             class="text-bold"
+            @mouseleave="setDocumentPreviewClose"
           >
             <q-tooltip
               v-if="scope.opt.isAutoGenerated"
@@ -209,11 +234,22 @@
                 Open in new tab without leaving this one
               </q-tooltip>
             </q-btn>
+            <documentPreview
+              v-if="(!recursive || preventPreviewsDocuments) && !scope.opt.isAutoGenerated"
+              :document-id="scope.opt._id"
+              :external-close-trigger="documentPreviewClose"
+            />
             <q-menu
-                touch-position
-                context-menu
-                auto-close
-                separate-close-popup
+              v-if="!scope.opt.isAutoGenerated"
+              touch-position
+              context-menu
+              auto-close
+              separate-close-popup
+              @before-show="menuMode(true)"
+              @before-hide="menuMode(false)"
+              @mouseleave="menuLeave"
+              @mouseenter="menuEnter"
+              :dense="recursive"
               >
 
                 <q-list class="bg-gunmetal-light text-accent">
@@ -308,11 +344,23 @@
                 </q-item-label>
               </q-item-section>
 
+              <documentPreview
+                v-if="!recursive || preventPreviewsDocuments"
+                :document-id="opt._id"
+                :external-close-trigger="documentPreviewClose"
+                :custom-anchor="'top start'"
+                :custom-self="'center right'"
+              />
               <q-menu
                 touch-position
                 context-menu
                 auto-close
                 separate-close-popup
+                @before-show="menuMode(true)"
+                @before-hide="menuMode(false)"
+                @mouseleave="menuLeave"
+                @mouseenter="menuEnter"
+                :dense="recursive"
               >
 
                 <q-list class="bg-gunmetal-light text-accent">
@@ -424,6 +472,8 @@ export default class Field_SingleRelationship extends FieldBase {
   /****************************************************************/
   // BASIC FIELD DATA
   /****************************************************************/
+
+  @Prop({ default: 999 }) readonly specialZIndex!: number
 
   /**
    * Prevent document preview in already existing previews
@@ -901,6 +951,11 @@ export default class Field_SingleRelationship extends FieldBase {
   menuLeave () {
     return true
   }
+
+  @Emit()
+  setNewParentId (id: string) {
+    return id
+  }
 }
 </script>
 
@@ -915,8 +970,12 @@ table {
 <style lang="scss">
 .connectionList {
   .q-item {
-    padding-right: 30px;
     padding-left: 10px;
+    padding-right: 30px;
+
+    &.hasSetParentButton {
+      padding-right: 60px;
+    }
   }
 
   .q-item__section {
@@ -924,11 +983,32 @@ table {
     flex-direction: row;
     justify-content: flex-start;
     align-items: center;
+  }
 
-    .relationshipOpeningButton {
-      position: absolute;
-      right: -30px;
-    }
+  .relationshipOpeningButton {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 29px;
+    width: 29px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+  }
+
+  .relationshipChangeParent {
+    position: absolute;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 29px;
+    width: 29px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
   }
 }
 

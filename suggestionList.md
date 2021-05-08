@@ -1,6 +1,8 @@
 ## THE GM BATCH
 
-- Add hover/on-demand document preview to relationships
+- Add category for diseases/curses/etc
+- Add category for classes/occupations
+- Add category for skill/spells, edit magic and tech category
 
 - Export for MD/PDF/ODT/DOCX
 - Selective export per field basis
@@ -30,11 +32,10 @@
 
 - Add "Predecessors", "Successors", "Date of start", "Date of end" and "How long it lasted" fields to locations and all other groups
 
-- Add category for skill/spells, edit magic and tech category
 - Add category for materials/resources OR adapt Items category
-- Add category for diseases/curses/etc
-- Add category for classes/jobs
+
 - Add advanced search capabilities to the hierarchical tree
+- Add keybinds on button tooltips
 
 ### Project settings
 

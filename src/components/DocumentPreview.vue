@@ -9,11 +9,12 @@
   :offset="[0, 0]"
   :anchor="customAnchor"
   :self="customSelf"
-  @show="openDocumentPreview"
+  @before-show="openDocumentPreview"
   @before-hide="consitentDocumentPreviewSwitch"
   v-model="documentPreviewSwitch"
   transition-show="scale"
   transition-hide="scale"
+  ref="documentPreview"
   >
     <div
       v-if="localBlueprint"
@@ -107,9 +108,11 @@
         :editMode="false"
         :current-id="localDocument._id"
         :recursive="true"
+        :special-z-index="(specialZIndex)"
         @menu-mode="reactToMenuMode"
         @menu-enter="reactToMenuEnter"
         @menu-leave="reactToMenuLeave"
+        @set-new-parent-id="setOtherContent"
         />
 
         <Field_MultiRelationship
@@ -122,9 +125,11 @@
         :editMode="false"
         :current-id="localDocument._id"
         :recursive="true"
+        :special-z-index="specialZIndex"
         @menu-mode="reactToMenuMode"
         @menu-enter="reactToMenuEnter"
         @menu-leave="reactToMenuLeave"
+        @set-new-parent-id="setOtherContent"
         />
 
         <Field_Wysiwyg
@@ -171,6 +176,7 @@ import Field_SingleSelect from "src/components/fields/Field_SingleSelect.vue"
 import Field_MultiSelect from "src/components/fields/Field_MultiSelect.vue"
 import Field_Wysiwyg from "src/components/fields/Field_Wysiwyg.vue"
 import Field_Tags from "src/components/fields/Field_Tags.vue"
+import { extend } from "quasar"
 
 @Component({
   components: {
@@ -198,24 +204,32 @@ export default class DocumentPreview extends BaseClass {
    */
   @Prop() readonly documentId!: string
 
-  @Prop() readonly forceRefresh!: string
+  setOtherContent (id:string) {
+    this.hasOtherContent = true
+    this.setNewDocumentID(id).catch(e => console.log(e))
+  }
 
-  @Watch("forceRefresh")
-  reactToForceRefresh () {
-    this.reactToDocumentIDChange()
+  async setNewDocumentID (id: string) {
+    this.localDocument = extend(true, {}, this.SGET_document(id))
+    if (!this.localDocument) {
+      // @ts-ignore
+      this.localDocument = extend(true, {}, this.SGET_openedDocument(id))
+    }
+    if (this.localDocument) {
+      this.localBlueprint = this.SGET_blueprint(this.localDocument.type)
+
+      await this.$nextTick()
+
+      document.querySelectorAll(".documentPreviewWrapper").forEach(e => {
+        e.scrollTop = 0
+      })
+    }
   }
 
   @Watch("documentId", { immediate: true })
-  reactToDocumentIDChange () {
+  reactToDocumentIDChange (val: string) {
     if (this.documentId) {
-      this.localDocument = this.SGET_document(this.documentId)
-      if (!this.localDocument) {
-        // @ts-ignore
-        this.localDocument = this.SGET_openedDocument(this.documentId)
-      }
-      if (this.localDocument) {
-        this.localBlueprint = this.SGET_blueprint(this.localDocument.type)
-      }
+      this.setNewDocumentID(val).catch(e => console.log(e))
     }
   }
 
@@ -300,13 +314,21 @@ export default class DocumentPreview extends BaseClass {
   documentPreviewClose () {
     this.documentPreviewLock = false
     this.documentPreviewSwitch = false
+    this.hasOtherContent = false
   }
 
   documentPreviewLock = false
   documentPreviewSwitch = false
 
+  hasOtherContent = false
+
   openDocumentPreview () {
-    this.documentPreviewLock = true
+    if (!this.hasOtherContent) {
+      this.documentPreviewLock = true
+      if (this.documentId) {
+        this.setNewDocumentID(this.documentId).catch(e => console.log(e))
+      }
+    }
   }
 
   clearCloseTimer () {
@@ -345,6 +367,8 @@ export default class DocumentPreview extends BaseClass {
   pointer-events: all !important;
   padding: 0 !important;
   box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
+  height: 600px;
+  background-color: map-get($customColors, 'gunmetal-lighter') !important;
 }
 
 .documentPreviewContent {

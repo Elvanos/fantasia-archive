@@ -152,6 +152,7 @@
               context-menu
               auto-close
               separate-close-popup
+              content-style="z-index: 1000000000 !important;"
             >
 
               <q-list class="bg-gunmetal-light text-accent">
