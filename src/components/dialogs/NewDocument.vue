@@ -2,7 +2,7 @@
     <q-dialog
       no-route-dismiss
       v-model="dialogModel"
-      @hide="triggerDialogClose"
+      @before-hide="triggerDialogClose"
       >
       <q-card
         dark
@@ -238,8 +238,10 @@ export default class NewDocumentDialog extends DialogBase {
    */
   triggerNewInput (e: NewObjectDocument) {
     this.dialogModel = false
-    this.addNewObjectRoute(e)
-    this.newDocumentModel = null
+    setTimeout(() => {
+      this.addNewObjectRoute(e)
+      this.newDocumentModel = null
+    }, 1000)
   }
 }
 </script>

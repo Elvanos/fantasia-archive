@@ -200,7 +200,7 @@ export default class DocumentPreview extends BaseClass {
 
   @Prop() readonly forceRefresh!: string
 
-  @Watch("forceRefresh", { immediate: true })
+  @Watch("forceRefresh")
   reactToForceRefresh () {
     this.reactToDocumentIDChange()
   }
@@ -350,6 +350,7 @@ export default class DocumentPreview extends BaseClass {
 .documentPreviewContent {
   padding: 20px;
   width: 700px;
+  max-width: 100%;
   background-color: map-get($customColors, 'gunmetal-lighter') !important;
   color: #fff;
 

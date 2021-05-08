@@ -36,6 +36,11 @@ export interface OptionsStateInteface {
   hidePlushes: boolean
   showDocumentID: boolean
 
+  preventPreviewsTree: boolean
+  preventPreviewsTabs: boolean
+  preventPreviewsPopups: boolean
+  preventPreviewsDocuments: boolean
+
   userKeybindList: any[]
   treeWidth?: number
   pre017check?: boolean
@@ -78,6 +83,10 @@ function state (): OptionsStateInteface {
     hideTreeIconEdit: false,
     hideTreeIconView: false,
     showDocumentID: false,
+    preventPreviewsTree: true,
+    preventPreviewsTabs: true,
+    preventPreviewsPopups: false,
+    preventPreviewsDocuments: false,
     treeWidth: 374,
     userKeybindList: [],
     pre017check: true

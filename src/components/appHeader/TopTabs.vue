@@ -67,6 +67,7 @@
              {{retrieveFieldValue(document,'name')}}
             </div>
             <documentPreview
+              v-if="!preventPreviewsTabs"
               :document-id="document._id"
               :external-close-trigger="documentPreviewClose"
               :custom-delay="1500"
@@ -240,6 +241,11 @@ export default class TopTabs extends BaseClass {
   hideDeadCrossThrough = false
 
   /**
+   * Determines document previews should be shown or not
+   */
+  preventPreviewsTabs = true
+
+  /**
    * Watch changes on options
    */
   @Watch("SGET_options", { immediate: true, deep: true })
@@ -247,6 +253,7 @@ export default class TopTabs extends BaseClass {
     const options = this.SGET_options
     this.textShadow = options.textShadow
     this.hideDeadCrossThrough = options.hideDeadCrossThrough
+    this.preventPreviewsTabs = options.preventPreviewsTabs
   }
 
   /****************************************************************/

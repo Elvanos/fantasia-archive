@@ -46,6 +46,7 @@ export default class FieldBase extends BaseClass {
     this.textShadow = this.SGET_options.textShadow
     this.hideDeadCrossThrough = this.SGET_options.hideDeadCrossThrough
     this.hideAdvSearchCheatsheetButton = this.SGET_options.hideAdvSearchCheatsheetButton
+    this.preventPreviewsDocuments = this.SGET_options.preventPreviewsDocuments
   }
 
   /**
@@ -72,4 +73,9 @@ export default class FieldBase extends BaseClass {
    * Determines if the tooltips should be disabled or not
    */
   disableDocumentToolTips = false
+
+  /**
+   * Determines if the document previews should be disabled or not
+   */
+  preventPreviewsDocuments = false
 }

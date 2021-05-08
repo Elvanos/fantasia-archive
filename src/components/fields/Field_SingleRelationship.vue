@@ -134,7 +134,7 @@
 
         </q-menu>
         <documentPreview
-          v-if="!recursive"
+          v-if="!recursive || preventPreviewsDocuments"
           :document-id="localInput._id"
           :external-close-trigger="documentPreviewClose"
         />

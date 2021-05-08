@@ -43,7 +43,7 @@
       @mouseleave="setDocumentPreviewClose"
       >
         <documentPreview
-          v-if="!recursive"
+          v-if="!recursive || preventPreviewsDocuments"
           :document-id="single._id"
           :external-close-trigger="documentPreviewClose"
         />

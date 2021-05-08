@@ -3,7 +3,7 @@
   <q-dialog
     v-model="dialogModel"
     persistent
-    @hide="triggerDialogClose"
+    @before-hide="triggerDialogClose"
     >
     <q-card
       class="programSettingsDialog"
@@ -25,6 +25,7 @@
           <q-tab name="docSettings" label="Document view/edit" />
           <q-tab name="popupSettings" label="Popups & Floating Windows" />
           <q-tab name="treeSettings" label="Hierarchical tree" />
+          <q-tab name="tabSettings" label="Opened documents tabs" />
 
           <q-separator dark />
 
@@ -326,6 +327,21 @@
 
                   <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
+                      Prevent document previews
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Determines if the document quick-previews on hover are on or off.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.preventPreviewsDocuments"
+                      />
+                  </div>
+
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
+                    <div class="optionTitle">
                       DEVELOPMENT - Show document IDs
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
                       <q-tooltip :delay="500">
@@ -387,7 +403,7 @@
 
                   <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
-                      Stop quick-search close after selection
+                      Stop closing after selection
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
                       <q-tooltip :delay="500">
                         Normally the quick-search closes after an item is selected from it.
@@ -416,6 +432,21 @@
 
                       <q-toggle
                         v-model="options.disableQuickSearchCategoryPrecheck"
+                      />
+                  </div>
+
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
+                    <div class="optionTitle">
+                      Prevent document previews
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Determines if the document quick-previews on hover are on or off.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.preventPreviewsPopups"
                       />
                   </div>
 
@@ -481,6 +512,23 @@
                     <q-toggle
                       v-model="options.hideHierarchyTree"
                     />
+                  </div>
+
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
+                    <div class="optionTitle">
+                      PERFORMANCE TAXING<br>Prevent document previews
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Determines if the document quick-previews on hover are on or off.
+                        <br>
+                        <b>Turning OFF this setting might have a MASSIVE impact on the performance of the app.</b>
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.preventPreviewsTree"
+                      />
                   </div>
 
                   <div class="col-12">
@@ -722,6 +770,45 @@
                   </div>
                 </div>
             </q-scroll-area>
+          </q-tab-panel>
+
+           <q-tab-panel name="tabSettings" dark class="q-pt-sm">
+             <q-scroll-area
+              class="programSettingsScrollArea"
+              visible
+              dark
+              :thumb-style="thumbStyle"
+              >
+                <div class="row justify-start">
+                  <div class="col-12">
+                    <div class="text-h6">
+                      Opened documents tabs
+                    </div>
+                  </div>
+
+                   <div class="col-12">
+                    <div class="text-bold q-mt-xl">
+                      Tab behavior
+                    </div>
+                  </div>
+
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
+                    <div class="optionTitle">
+                      Prevent document previews
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Determines if the document quick-previews on hover are on or off.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.preventPreviewsTabs"
+                      />
+                  </div>
+
+                </div>
+           </q-scroll-area>
           </q-tab-panel>
 
           <q-tab-panel name="keybinds" dark>
@@ -991,6 +1078,10 @@ export default class ProgramSettings extends DialogBase {
     hideTreeIconAddUnder: false,
     hideTreeIconEdit: false,
     hideTreeIconView: false,
+    preventPreviewsTree: true,
+    preventPreviewsTabs: true,
+    preventPreviewsPopups: false,
+    preventPreviewsDocuments: false,
     userKeybindList: []
   }
 

@@ -2,7 +2,7 @@
       <q-dialog
       no-route-dismiss
       v-model="dialogModel"
-      @hide="triggerDialogClose"
+      @before-hide="triggerDialogClose"
       >
       <q-card
         dark
@@ -54,9 +54,12 @@
                     @mouseleave="setDocumentPreviewClose"
                   >
                   <documentPreview
+                    v-if="!preventPreviewsPopups"
                     :document-id="opt._id"
                     :external-close-trigger="documentPreviewClose"
                     :special-z-index="999999999"
+                    :custom-anchor="'top start'"
+                    :custom-self="'center right'"
                   />
                     <q-item-section avatar>
                       <q-icon
@@ -282,7 +285,13 @@ export default class ExistingDocumentDialog extends DialogBase {
     this.textShadow = this.SGET_options.textShadow
     this.hideDeadCrossThrough = this.SGET_options.hideDeadCrossThrough
     this.hideAdvSearchCheatsheetButton = this.SGET_options.hideAdvSearchCheatsheetButton
+    this.preventPreviewsPopups = this.SGET_options.preventPreviewsPopups
   }
+
+  /**
+   * Determines if the document previews should be disabled or not
+   */
+  preventPreviewsPopups = false
 
   /**
    * Hides the advanced search cheatsheet help button in relationship type fields.

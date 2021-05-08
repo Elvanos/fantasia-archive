@@ -68,10 +68,11 @@
           @mouseleave="setDocumentPreviewClose"
         >
          <documentPreview
-          v-if="!prop.node.isRoot && !prop.node.isTag && !prop.node.specialLabel"
+          v-if="!preventPreviewsTree && !prop.node.isRoot && !prop.node.isTag && !prop.node.specialLabel"
           :document-id="prop.node._id"
           :custom-anchor="'center right'"
           :custom-self="'center left'"
+          :external-close-trigger="documentPreviewClose"
         />
 
           <div class="documentLabel"
@@ -307,12 +308,11 @@ import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projec
 import { createNewWithParent } from "src/scripts/documentActions/createNewWithParent"
 import { copyDocumentName, copyDocumentTextColor, copyDocumentBackgroundColor } from "src/scripts/documentActions/uniqueFieldCopy"
 import { copyDocument } from "src/scripts/documentActions/copyDocument"
-import documentPreview from "src/components/DocumentPreview.vue"
 
 @Component({
   components: {
     deleteDocumentCheckDialog,
-    documentPreview
+    documentPreview: () => import("src/components/DocumentPreview.vue")
   }
 })
 export default class ObjectTree extends BaseClass {
@@ -367,6 +367,7 @@ export default class ObjectTree extends BaseClass {
   hideTreeIconAddUnder = false
   hideTreeIconEdit = false
   hideTreeIconView = false
+  preventPreviewsTree = true
 
   @Watch("SGET_options", { immediate: true, deep: true })
   onSettingsChange () {
@@ -389,6 +390,7 @@ export default class ObjectTree extends BaseClass {
     this.hideTreeIconAddUnder = options.hideTreeIconAddUnder
     this.hideTreeIconEdit = options.hideTreeIconEdit
     this.hideTreeIconView = options.hideTreeIconView
+    this.preventPreviewsTree = options.preventPreviewsTree
     this.buildCurrentObjectTree()
   }
 

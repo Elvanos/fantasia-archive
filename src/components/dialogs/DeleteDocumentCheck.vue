@@ -1,7 +1,7 @@
 <template>
     <q-dialog
       v-model="dialogModel"
-      @hide="triggerDialogClose"
+      @before-hide="triggerDialogClose"
       >
       <q-card dark class="documentCloseDialog">
          <q-card-section class="row justify-center">
