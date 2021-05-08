@@ -11,7 +11,7 @@
   </div>
 
   <q-list
-    v-if="!editMode"
+    v-if="!editMode && localInput && localInput.toString().length > 0"
     class="fieldNumber_list"
     dense>
     <q-item>

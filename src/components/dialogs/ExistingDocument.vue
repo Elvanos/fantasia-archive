@@ -51,7 +51,13 @@
                     v-on="itemEvents"
                     :key="opt.id"
                     :style="`color: ${opt.color}; background-color: ${opt.bgColor}`"
+                    @mouseleave="setDocumentPreviewClose"
                   >
+                  <documentPreview
+                    :document-id="opt._id"
+                    :external-close-trigger="documentPreviewClose"
+                    :special-z-index="999999999"
+                  />
                     <q-item-section avatar>
                       <q-icon
                         :style="`color: ${retrieveIconColor(opt)}`"
@@ -216,7 +222,7 @@
 import { Component, Watch } from "vue-property-decorator"
 import { I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
-import { extend } from "quasar"
+import { extend, uid } from "quasar"
 
 import { createNewWithParent } from "src/scripts/documentActions/createNewWithParent"
 import { copyDocumentName, copyDocumentTextColor, copyDocumentBackgroundColor } from "src/scripts/documentActions/uniqueFieldCopy"
@@ -224,9 +230,12 @@ import { copyDocument } from "src/scripts/documentActions/copyDocument"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
+import documentPreview from "src/components/DocumentPreview.vue"
 
 @Component({
-  components: { }
+  components: {
+    documentPreview
+  }
 })
 export default class ExistingDocumentDialog extends DialogBase {
   /****************************************************************/
@@ -567,6 +576,12 @@ export default class ExistingDocumentDialog extends DialogBase {
 
     this.dialogModel = false
   }
+
+  setDocumentPreviewClose () {
+    this.documentPreviewClose = uid()
+  }
+
+  documentPreviewClose = ""
 }
 </script>
 

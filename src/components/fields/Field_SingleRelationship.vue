@@ -76,6 +76,11 @@
               context-menu
               auto-close
               separate-close-popup
+              @before-show="menuMode(true)"
+              @before-hide="menuMode(false)"
+              @mouseleave="menuLeave"
+              @mouseenter="menuEnter"
+              :dense="recursive"
             >
 
               <q-list class="bg-gunmetal-light text-accent">
@@ -881,6 +886,21 @@ export default class Field_SingleRelationship extends FieldBase {
   }
 
   documentPreviewClose = ""
+
+  @Emit()
+  menuMode (val: boolean) {
+    return val
+  }
+
+  @Emit()
+  menuEnter () {
+    return true
+  }
+
+  @Emit()
+  menuLeave () {
+    return true
+  }
 }
 </script>
 

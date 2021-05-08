@@ -11,12 +11,12 @@
   </div>
 
   <q-list
-    v-if="!editMode"
+    v-if="!editMode && localInput && localInput.length > 0"
     dense>
     <q-item>
        <q-item-section>
-      <div class="colorIndicatorWrapper">
-        <div class="colorIndicator" :style="`background-color: ${localInput}`">
+      <div class="colorIndicatorWrapper" >
+        <div  class="colorIndicator" :style="`background-color: ${localInput}`">
         </div>
         <span class="text-weight-medium">
           {{localInput}}

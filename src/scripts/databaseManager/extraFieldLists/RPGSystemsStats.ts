@@ -494,6 +494,36 @@ export const RPGSystemsStats = [
       "Toughness - Survive Falling"
     ]
   },
+  {
+    title: "Degenesis",
+    values: [
+      "Body",
+      "Agility",
+      "Charisma",
+      "Intellect",
+      "Psyche",
+      "Instinct"
+    ]
+  },
+  {
+    title: "Feng Shui (1st edition)",
+    values: [
+      "Body (bod) - Move (mov)",
+      "Body (bod) - Strength (str)",
+      "Body (bod) - Constitution (con)",
+      "Body (bod) - Toughness (tgh)",
+      "Chi (chi) - Fortune (for)",
+      "Chi (chi) - Kung Fu (fu)",
+      "Chi (chi) - Magic (mag)",
+      "Mind (mnd) - Charisma (Cha)",
+      "Mind (mnd) - Intelligence (Int)",
+      "Mind (mnd) - Perception (Per)",
+      "Mind (mnd) - Willpower (Wil)",
+      "Reflexes (ref) - Agility (agl)",
+      "Reflexes (ref) - Dexterity (dex)",
+      "Reflexes (ref) - Speed (spd)"
+    ]
+  },
 
   "Absorption",
   "Alertness",

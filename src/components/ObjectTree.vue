@@ -60,11 +60,20 @@
       <template v-slot:default-header="prop">
         <div
           class="row items-center col-grow documentWrapper"
+          :ref="`treeNode-${prop.node._id}`"
           :class="{'isMinor': prop.node.isMinor, 'isDeadTree': prop.node.isDead}"
           :style="`background-color: ${prop.node.bgColor};`"
           @click.stop.prevent="processNodeClick(prop.node)"
           @click.stop.prevent.middle="processNodeLabelMiddleClick(prop.node)"
+          @mouseleave="setDocumentPreviewClose"
         >
+         <documentPreview
+          v-if="!prop.node.isRoot && !prop.node.isTag && !prop.node.specialLabel"
+          :document-id="prop.node._id"
+          :custom-anchor="'center right'"
+          :custom-self="'center left'"
+        />
+
           <div class="documentLabel"
             :style="`color: ${prop.node.color};`"
            >
@@ -292,15 +301,19 @@ import BaseClass from "src/BaseClass"
 import { I_ExtraDocumentFields, I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentCheck.vue"
 
-import { extend, colors } from "quasar"
+import { extend, colors, uid } from "quasar"
 import { tagListBuildFromBlueprints } from "src/scripts/utilities/tagListBuilder"
 import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
 import { createNewWithParent } from "src/scripts/documentActions/createNewWithParent"
 import { copyDocumentName, copyDocumentTextColor, copyDocumentBackgroundColor } from "src/scripts/documentActions/uniqueFieldCopy"
 import { copyDocument } from "src/scripts/documentActions/copyDocument"
+import documentPreview from "src/components/DocumentPreview.vue"
 
 @Component({
-  components: { deleteDocumentCheckDialog }
+  components: {
+    deleteDocumentCheckDialog,
+    documentPreview
+  }
 })
 export default class ObjectTree extends BaseClass {
   /****************************************************************/
@@ -1088,6 +1101,12 @@ export default class ObjectTree extends BaseClass {
     this.toDeleteType = targetDocument.type
     this.deleteObjectAssignUID()
   }
+
+  setDocumentPreviewClose () {
+    this.documentPreviewClose = uid()
+  }
+
+  documentPreviewClose = ""
 }
 </script>
 

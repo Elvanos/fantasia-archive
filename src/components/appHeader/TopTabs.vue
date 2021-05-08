@@ -56,6 +56,7 @@
           :alert="document.hasEdits"
           alert-icon="mdi-feather"
           @click.prevent.middle="tryCloseTab(document)"
+          @mouseleave="setDocumentPreviewClose"
           >
             <span class="isDeadIndicator" v-if="retrieveFieldValue(document,'deadSwitch')">
               †
@@ -65,16 +66,12 @@
              :class="{'isDead': (retrieveFieldValue(document,'deadSwitch') && !hideDeadCrossThrough)}">
              {{retrieveFieldValue(document,'name')}}
             </div>
-            <q-tooltip
-              :delay="700"
-            >
-              <span class="isDeadIndicator" v-if="retrieveFieldValue(document,'deadSwitch')">
-              †
-              </span>
-              {{retrieveFieldValue(document,'name')}}
-              <br>
-              <span class="text-caption">Middle mouse button to close</span>
-            </q-tooltip>
+            <documentPreview
+              :document-id="document._id"
+              :external-close-trigger="documentPreviewClose"
+              :custom-delay="1500"
+            />
+
             <q-btn
               round
               dense
@@ -217,12 +214,14 @@ import closeDocumentCheckDialog from "src/components/dialogs/CloseDocumentCheck.
 import { createNewWithParent } from "src/scripts/documentActions/createNewWithParent"
 import { copyDocumentName, copyDocumentTextColor, copyDocumentBackgroundColor } from "src/scripts/documentActions/uniqueFieldCopy"
 import { copyDocument } from "src/scripts/documentActions/copyDocument"
-import { extend } from "quasar"
+import { extend, uid } from "quasar"
+import documentPreview from "src/components/DocumentPreview.vue"
 
 @Component({
   components: {
     closeDocumentCheckDialog,
-    deleteDocumentCheckDialog
+    deleteDocumentCheckDialog,
+    documentPreview
   }
 })
 export default class TopTabs extends BaseClass {
@@ -475,6 +474,12 @@ export default class TopTabs extends BaseClass {
     this.toDeleteType = targetDocument.type
     this.deleteObjectAssignUID()
   }
+
+  setDocumentPreviewClose () {
+    this.documentPreviewClose = uid()
+  }
+
+  documentPreviewClose = ""
 }
 </script>
 
