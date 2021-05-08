@@ -38,10 +38,9 @@
       <div
         v-for="single in localInput"
         :key="single._id"
-        style="position: relative;"
+        class="relationsViewList"
       >
          <div
-          v-if="recursive"
           class="relationshipOpeningButton q-btn q-btn-item non-selectable no-outline q-btn--flat q-btn--round text-primary q-btn--actionable q-focusable q-hoverable q-btn--wrap q-btn--dense"
           @click.stop.prevent.left="openNewTab(single)"
           v-ripple
@@ -1039,6 +1038,16 @@ table {
 
 <style lang="scss">
 .connectionList {
+.relationsViewList {
+    position: relative;
+
+    > .q-item {
+      min-height: 32px;
+      padding-top: 2px;
+      padding-bottom: 2px;
+    }
+  }
+
   .q-item {
     padding-left: 10px;
     padding-right: 30px;
@@ -1047,6 +1056,7 @@ table {
       padding-right: 60px;
     }
   }
+
   .q-item__section {
     position: relative;
     flex-direction: row;
