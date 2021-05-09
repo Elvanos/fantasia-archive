@@ -47,7 +47,6 @@
 - Consider adding translations before the project patch
 - Consider adding color support for text shadow of individual documents
 - Add HTML webcolor cheatsheet in floating window (look for JSON of them somewhere?)
-0
 - Add keybinds on button tooltips
 - Add advanced search capabilities to the hierarchical tree (maybe, might need to be moved to 0.2.1)
 
