@@ -200,6 +200,16 @@ export default class DocumentPreview extends BaseClass {
   /****************************************************************/
 
   /**
+   * Variable string for closing of the popup due to external influences
+   */
+  @Prop({ default: "" }) readonly externalCloseTrigger!: string
+
+  @Watch("externalCloseTrigger")
+  reactToExternalClose () {
+    this.setCloseTimer()
+  }
+
+  /**
    * Retrieved document ID
    */
   @Prop() readonly documentId!: string
@@ -292,18 +302,12 @@ export default class DocumentPreview extends BaseClass {
   /**
    * Variable string for closing of the popup due to external influences
    */
-  @Prop({ default: "" }) readonly externalCloseTrigger!: string
   @Prop({ default: 999 }) readonly specialZIndex!: number
   @Prop({ default: 750 }) readonly customDelay!: number
   @Prop({ default: true }) readonly customTarget!: string | boolean
   @Prop({ default: "bottom middle" }) readonly customAnchor!: string
   @Prop({ default: "top middle" }) readonly customSelf!: string
   @Prop({ default: 500 }) readonly customCloseDelay!: number
-
-  @Watch("externalCloseTrigger")
-  reactToExternalClose () {
-    this.setCloseTimer()
-  }
 
   consitentDocumentPreviewSwitch () {
     if (this.documentPreviewLock) {
@@ -332,10 +336,12 @@ export default class DocumentPreview extends BaseClass {
   }
 
   clearCloseTimer () {
+    this.disableScroll()
     clearTimeout(this.closeTimer)
   }
 
   setCloseTimer () {
+    this.enableScroll()
     this.closeTimer = setTimeout(() => {
       this.documentPreviewClose()
     }, this.customCloseDelay)
@@ -359,6 +365,51 @@ export default class DocumentPreview extends BaseClass {
   reactToMenuLeave () {
     this.setCloseTimer()
   }
+
+  wheelOpt = { passive: false }
+  wheelEvent = "onwheel" in document.createElement("div") ? "wheel" : "mousewheel"
+
+  preventDefault (e: WheelEvent) {
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    const previewWrapper = e.target.closest(".documentPreviewWrapper")
+
+    if (previewWrapper) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      const previewContent = previewWrapper.querySelector(".documentPreviewContent")
+
+      const wheelDirection = (e.deltaY > 0) ? "down" : "up"
+
+      if (wheelDirection === "up" && previewWrapper.scrollTop === 0) {
+        e.preventDefault()
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      const combinedHeight = previewContent.getBoundingClientRect().height - previewWrapper.getBoundingClientRect().height
+
+      if (wheelDirection === "down" && previewWrapper.scrollTop >= combinedHeight) {
+        e.preventDefault()
+      }
+    }
+  }
+
+  disableScroll () {
+    // @ts-ignore
+    window.addEventListener("DOMMouseScroll", this.preventDefault, false)
+    // @ts-ignore
+    window.addEventListener(this.wheelEvent, this.preventDefault, this.wheelOpt)
+    // @ts-ignore
+    window.addEventListener("touchmove", this.preventDefault, this.wheelOpt)
+  }
+
+  enableScroll () {
+    // @ts-ignore
+    window.removeEventListener("DOMMouseScroll", this.preventDefault, false)
+    // @ts-ignore
+    window.removeEventListener(this.wheelEvent, this.preventDefault, this.wheelOpt)
+    // @ts-ignore
+    window.removeEventListener("touchmove", this.preventDefault, this.wheelOpt)
+  }
 }
 </script>
 
@@ -375,6 +426,7 @@ export default class DocumentPreview extends BaseClass {
   padding: 20px;
   width: 700px;
   max-width: 100%;
+  min-height: 600px;
   background-color: map-get($customColors, 'gunmetal-lighter') !important;
   color: #fff;
 

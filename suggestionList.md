@@ -67,6 +67,7 @@
 - Drag/drop tree list
 - Global text find/replace
 - Mass document editing (not sure about this one...)
+- Color themes
 
 - Detailed language editor support
 - Calendar field
