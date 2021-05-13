@@ -1,10 +1,11 @@
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const religionsBlueprint: I_Blueprint = {
   _id: "religions",
-  order: 13,
+  order: 270,
   namePlural: "Teachings/Religious groups",
   nameSingular: "Teaching/Religious group",
   icon: "fas fa-ankh",
+  category: "Groups/Teachings",
   extraFields: [
     {
       id: "breakDocumentSettings",
@@ -158,17 +159,24 @@ export const religionsBlueprint: I_Blueprint = {
       name: "Headquarters",
       type: "singleToNoneRelationship",
       icon: "mdi-map-marker-radius",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "locations"
       }
+    },
+    {
+      id: "followerName",
+      name: "Name for members/followers",
+      type: "text",
+      icon: "fas fa-file-signature",
+      sizing: 3
     },
     {
       id: "population",
       name: "Member count",
       type: "text",
       icon: "mdi-account-group",
-      sizing: 3,
+      sizing: 2,
       tooltip: "The amount of members of this religious school/teaching."
     },
     {
@@ -184,7 +192,7 @@ export const religionsBlueprint: I_Blueprint = {
       name: "Leading Figures",
       type: "manyToNoneRelationship",
       icon: "mdi-crown",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "characters"
       }
@@ -194,7 +202,7 @@ export const religionsBlueprint: I_Blueprint = {
       name: "Form of religion",
       type: "multiSelect",
       icon: "fas fa-yin-yang",
-      sizing: 3,
+      sizing: 4,
       predefinedSelectValues: [
         "Cult",
         "Free-form faith",
@@ -210,7 +218,7 @@ export const religionsBlueprint: I_Blueprint = {
       name: "Type of religion",
       type: "multiSelect",
       icon: "fas fa-sun",
-      sizing: 3,
+      sizing: 4,
       predefinedSelectValues: [
         "Ancestor worship",
         "Animism",
@@ -225,6 +233,17 @@ export const religionsBlueprint: I_Blueprint = {
       ]
     },
     {
+      id: "relatedReligions",
+      name: "Related Religions",
+      type: "manyToManyRelationship",
+      icon: "fas fa-ankh",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "religions",
+        connectedField: "relatedReligions"
+      }
+    },
+    {
       id: "localLanguages",
       name: "Used Languages",
       type: "manyToManyRelationship",
@@ -237,7 +256,7 @@ export const religionsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedRaces",
-      name: "Common Species/Races/Flora/Faunas",
+      name: "Common Species/Races/Flora/Fauna",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
       sizing: 6,
@@ -247,20 +266,61 @@ export const religionsBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "pairedConnectedResources",
+      name: "Important Resources/Materials",
+      type: "manyToManyRelationship",
+      icon: "mdi-gold",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "resources",
+        connectedField: "pairedConnectedReligiousGroups"
+      }
+    },
+    {
       id: "description",
       name: "Description & History",
       type: "wysiwyg",
+      icon: "mdi-book-open-page-variant-outline",
       sizing: 12
     },
     {
       id: "traditions",
       name: "Traditions & Customs",
       type: "wysiwyg",
+      icon: "mdi-book-open-page-variant-outline",
       sizing: 12
     },
     {
-      id: "breakRelasionships",
-      name: "Diplomatic relationships & Influences",
+      id: "breakNotes",
+      name: "Connections - Story/Lore",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedNotes",
+      name: "Connected to Lore notes/Other notes",
+      type: "manyToManyRelationship",
+      icon: "mdi-script-text-outline",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "loreNotes",
+        connectedField: "pairedConnectedRelGroups"
+      }
+    },
+    {
+      id: "pairedConnectedMyths",
+      name: "Connected to Myths, legends and stories",
+      type: "manyToManyRelationship",
+      icon: "fas fa-journal-whills",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "myths",
+        connectedField: "pairedConnectedRelGroups"
+      }
+    },
+    {
+      id: "breakWorld",
+      name: "Connections - World",
       type: "break",
       sizing: 12
     },
@@ -269,7 +329,7 @@ export const religionsBlueprint: I_Blueprint = {
       name: "Ruled/Influenced Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "locations",
         connectedField: "governReligious"
@@ -280,10 +340,32 @@ export const religionsBlueprint: I_Blueprint = {
       name: "Connected Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "locations",
         connectedField: "connectedReligious"
+      }
+    },
+    {
+      id: "connectedEvents",
+      name: "Connected Events",
+      type: "manyToManyRelationship",
+      icon: "mdi-calendar-text",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "events",
+        connectedField: "connectedReligious"
+      }
+    },
+    {
+      id: "pairedConnectedCultures",
+      name: "Connected to Cultures/Art",
+      type: "manyToManyRelationship",
+      icon: "fas fa-archway",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "culture",
+        connectedField: "pairedConnectedReligiousGroups"
       }
     },
     {
@@ -329,6 +411,12 @@ export const religionsBlueprint: I_Blueprint = {
         connectedObjectType: "characters",
         connectedField: "pairedEnemyRelGroup"
       }
+    },
+    {
+      id: "breakPolitics",
+      name: "Connections - Groups/Teachings",
+      type: "break",
+      sizing: 12
     },
     {
       id: "pairedConnectedPolGroups",
@@ -432,7 +520,7 @@ export const religionsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedMagicGroups",
-      name: "Connected Magical groups/Ideologies",
+      name: "Connected Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 4,
@@ -443,7 +531,7 @@ export const religionsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedAllyMagicGroups",
-      name: "Allied Magical groups/Ideologies",
+      name: "Allied Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 4,
@@ -454,7 +542,7 @@ export const religionsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedEnemyMagicGroups",
-      name: "Enemy Magical groups/Ideologies",
+      name: "Enemy Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 4,
@@ -497,59 +585,53 @@ export const religionsBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "breakOther",
-      name: "Other details",
+      id: "breakDetails",
+      name: "Connections - Details",
       type: "break",
       sizing: 12
     },
     {
-      id: "connectedEvents",
-      name: "Connected Events",
+      id: "pairedSkills",
+      name: "Connected to Skills/Spells/Other",
       type: "manyToManyRelationship",
-      icon: "mdi-calendar-text",
-      sizing: 4,
+      icon: "mdi-sword-cross",
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "events",
-        connectedField: "connectedReligious"
-      }
-    },
-    {
-      id: "pairedConnectedMyths",
-      name: "Connected to Myths, legends and stories",
-      type: "manyToManyRelationship",
-      icon: "fas fa-journal-whills",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "myths",
-        connectedField: "pairedConnectedRelGroups"
+        connectedObjectType: "skills",
+        connectedField: "pairedReligiousGroupsSkills"
       }
     },
     {
       id: "pairedConnectedItems",
       name: "Connected to Items",
       type: "manyToManyRelationship",
-      icon: "mdi-sword-cross",
-      sizing: 4,
+      icon: "mdi-sword",
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "items",
         connectedField: "pairedConnectedRelGroups"
       }
     },
     {
-      id: "breakNotes",
-      name: "Notes",
-      type: "break",
-      sizing: 12
+      id: "pairedConnectedProfessions",
+      name: "Connected to Occupations/Classes",
+      type: "manyToManyRelationship",
+      icon: "fab fa-pied-piper-hat",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "professions",
+        connectedField: "pairedConnectedReligiousGroups"
+      }
     },
     {
-      id: "pairedConnectedNotes",
-      name: "Connected to Lore notes/Other notes",
+      id: "pairedConditions",
+      name: "Connected to Afflictions/Boons/Conditions",
       type: "manyToManyRelationship",
-      icon: "mdi-script-text-outline",
-      sizing: 12,
+      icon: "mdi-virus",
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "loreNotes",
-        connectedField: "pairedConnectedRelGroups"
+        connectedObjectType: "conditions",
+        connectedField: "pairedReligiousGroups"
       }
     }
   ]

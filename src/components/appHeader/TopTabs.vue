@@ -495,7 +495,8 @@ export default class TopTabs extends BaseClass {
   display: flex;
 }
 
-.tabsWrapper .fas {
+.tabsWrapper .fas,
+.tabsWrapper .fab {
   font-size: 16px;
 }
 
@@ -554,7 +555,8 @@ export default class TopTabs extends BaseClass {
     }
   }
 
-  .fas {
+  .fas,
+  .fab {
     font-size: 16px;
   }
 

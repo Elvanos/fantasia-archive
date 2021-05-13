@@ -1,12 +1,12 @@
-import { RPGSystemsStats } from "./../extraFieldLists/RPGSystemsStats"
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
-export const racesBlueprint: I_Blueprint = {
-  _id: "races",
-  order: 340,
-  namePlural: "Species/Races/Flora/Fauna",
-  nameSingular: "Species/Races/Flora/Fauna",
-  icon: "fas fa-dragon",
-  category: "World",
+import { RPGSystemsStats } from "../extraFieldLists/RPGSystemsStats"
+export const professionsBlueprint: I_Blueprint = {
+  _id: "professions",
+  order: 160,
+  namePlural: "Occupations/Classes",
+  nameSingular: "Occupation/Class",
+  icon: "fab fa-pied-piper-hat",
+  category: "Details",
   extraFields: [
     {
       id: "breakDocumentSettings",
@@ -18,7 +18,7 @@ export const racesBlueprint: I_Blueprint = {
       id: "name",
       name: "Name",
       type: "text",
-      icon: "fas fa-dragon",
+      icon: "fab fa-pied-piper-hat",
       sizing: 3
     },
     {
@@ -32,7 +32,7 @@ export const racesBlueprint: I_Blueprint = {
         `,
       sizing: 3,
       relationshipSettings: {
-        connectedObjectType: "races"
+        connectedObjectType: "professions"
       }
     },
     {
@@ -155,164 +155,135 @@ export const racesBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "relatedRaces",
-      name: "Related Species/Races/Flora/Fauna",
-      type: "manyToManyRelationship",
-      icon: "fas fa-dragon",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "races",
-        connectedField: "relatedRaces"
+      id: "titles",
+      name: "Titles & Ranks",
+      type: "list",
+      icon: "mdi-crown",
+      sizing: 12,
+      predefinedListExtras: {
+        affix: "Note",
+        extraSelectValueList: [
+        ]
       }
     },
     {
-      id: "memberCount",
-      name: "Estimated population",
-      type: "text",
-      icon: "mdi-account-group",
-      sizing: 2
+      id: "features",
+      name: "Prominent features",
+      type: "list",
+      icon: "mdi-guy-fawkes-mask",
+      sizing: 8,
+      predefinedListExtras: {
+        affix: "Note",
+        extraSelectValueList: [
+        ]
+      }
     },
+
     {
-      id: "age",
-      name: "Average lifespan",
-      type: "text",
-      icon: "mdi-timer-sand-empty",
-      sizing: 2
-    },
-    {
-      id: "ageAdult",
-      name: "Average adulthood",
-      type: "text",
-      icon: "mdi-timer-sand",
-      sizing: 2
-    },
-    {
-      id: "ageOldest",
-      name: "Oldest known",
-      type: "text",
-      icon: "mdi-timer-sand-full",
-      sizing: 2
-    },
-    {
-      id: "height",
-      name: "Average height",
-      type: "text",
-      icon: "mdi-human-male-height-variant",
-      sizing: 2
-    },
-    {
-      id: "weight",
-      name: "Average weight",
-      type: "text",
-      icon: "mdi-weight",
-      sizing: 2
-    },
-    {
-      id: "beingType",
-      name: "Type of being",
+      id: "professionType",
+      name: "Occupation/Class type",
       type: "multiSelect",
-      icon: "fas fa-paw",
+      icon: "mdi-pickaxe",
       sizing: 4,
       predefinedSelectValues: [
-        "Amphibian",
-        "Animal",
-        "Artificial",
-        "Bacteria",
-        "Bird",
-        "Draconoid",
-        "Elemental",
-        "Fish",
-        "Humanoid",
-        "Insect",
-        "Lichen",
-        "Mammal",
-        "Mushroom",
-        "Plant",
-        "Reptile",
-        "Spiritual",
-        "Virus",
+        "Aristocratic",
+        "Bureaucratic",
+        "Caste",
+        "Character class",
+        "Civil",
+        "Hobby",
+        "Indentured",
+        "Inherited",
+        "Innate",
+        "Legal",
+        "Magical",
+        "Martial",
+        "Medical",
+        "Occupation",
+        "Political",
+        "Private",
+        "Professional",
+        "Religious",
+        "Scientific",
+        "Social class",
+        "Trade",
+        "Unskilled",
         "Other"
       ]
     },
     {
-      id: "sentience",
-      name: "Level of sapience",
-      type: "multiSelect",
-      icon: "fas fa-brain",
+      id: "relatedProfessions",
+      name: "Related Occupations/Classes",
+      type: "manyToManyRelationship",
+      icon: "fab fa-pied-piper-hat",
       sizing: 4,
-      predefinedSelectValues: [
-        "Ascended",
-        "Half-sapient",
-        "Hivemind",
-        "Non-sapient",
-        "Sapient",
-        "Other"
-      ]
+      relationshipSettings: {
+        connectedObjectType: "professions",
+        connectedField: "relatedProfessions"
+      }
     },
     {
       id: "pairedCharacter",
-      name: "Characters of Species/Races/Flora/Fauna",
+      name: "Characters of the Occupation/Class",
       type: "manyToManyRelationship",
       icon: "mdi-account",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "characters",
-        connectedField: "pairedRace"
-      }
-    },
-    {
-      id: "pairedConnectedPlaces",
-      name: "Inhabited Locations",
-      type: "manyToManyRelationship",
-      icon: "mdi-map-marker-radius",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "locations",
-        connectedField: "pairedConnectedRaces"
+        connectedField: "pairedProfession"
       }
     },
     {
       id: "relatedCultures",
-      name: "Connected to Culture/Art",
+      name: "Connected to Cultures/Art",
       type: "manyToManyRelationship",
       icon: "fas fa-archway",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "culture",
-        connectedField: "relatedRaces"
+        connectedField: "relatedProfessions"
       }
     },
     {
-      id: "localCurrencies",
-      name: "Commonly used Currencies",
-      type: "manyToManyRelationship",
-      icon: "fas fa-coins",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "currencies",
-        connectedField: "usedByRaces"
-      }
-    },
-    {
-      id: "localLanguages",
-      name: "Commonly spoken Languages",
-      type: "manyToManyRelationship",
-      icon: "mdi-book-alphabet",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "languages",
-        connectedField: "usedByRaces"
-      }
-    },
-    {
-      id: "pairedSkills",
-      name: "Common Skills/Spells/Other",
-      type: "manyToManyRelationship",
+      id: "pairedUsedSkills",
+      name: "Commonly used Skills/Spells/Other",
+      type: "manyToNoneRelationship",
       icon: "mdi-sword-cross",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "skills",
-        connectedField: "pairedRacesSkills"
+        connectedObjectType: "skills"
+      }
+    },
+    {
+      id: "pairedUsedItems",
+      name: "Commonly used Items",
+      type: "manyToNoneRelationship",
+      icon: "mdi-sword",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "items"
+      }
+    },
+    {
+      id: "usedResources",
+      name: "Used Resources/Materials",
+      type: "manyToManyRelationship",
+      icon: "mdi-gold",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "resources",
+        connectedField: "usedProfessions"
+      }
+    },
+    {
+      id: "producedResources",
+      name: "Produced Resources/Materials",
+      type: "manyToManyRelationship",
+      icon: "mdi-gold",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "resources",
+        connectedField: "producedProfessions"
       }
     },
     {
@@ -328,111 +299,6 @@ export const racesBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "strengths",
-      name: "Strengths",
-      type: "list",
-      icon: "fas fa-plus-square",
-      sizing: 12,
-      predefinedListExtras: {
-        affix: "Impact",
-        extraSelectValueList: [
-          "Barely noticeable",
-          "Minor",
-          "Medium",
-          "Strong",
-          "Powerful",
-          "Overwhelming"
-        ]
-      }
-    },
-    {
-      id: "weaknesses",
-      name: "Weaknesses",
-      type: "list",
-      icon: "fas fa-minus-square",
-      sizing: 12,
-      predefinedListExtras: {
-        affix: "Severity",
-        extraSelectValueList: [
-          "Barely noticeable",
-          "Minor",
-          "Medium",
-          "Severe",
-          "Imcapacitating",
-          "Deadly"
-        ]
-      }
-    },
-    {
-      id: "traits",
-      name: "Defining Features & Traits",
-      type: "list",
-      icon: "fas fa-dragon",
-      sizing: 12
-    },
-    {
-      id: "pairedConditionsPositive",
-      name: "Affected by Boons",
-      type: "manyToManyRelationship",
-      icon: "mdi-virus",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "conditions",
-        connectedField: "pairedRacesPositive"
-      }
-    },
-    {
-      id: "pairedConditionsNegative",
-      name: "Affected by Afflictions",
-      type: "manyToManyRelationship",
-      icon: "mdi-virus",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "conditions",
-        connectedField: "pairedRacesNegative"
-      }
-    },
-    {
-      id: "pairedConditionsOther",
-      name: "Affected by Other conditions",
-      type: "manyToManyRelationship",
-      icon: "mdi-virus",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "conditions",
-        connectedField: "pairedRacesOther"
-      }
-    },
-    {
-      id: "commonNames",
-      name: "Common names among the Species/Races/Flora/Fauna",
-      type: "list",
-      icon: "fas fa-signature",
-      sizing: 12,
-      predefinedListExtras: {
-        affix: "Normally used for",
-        extraSelectValueList: [
-          "Child",
-          "Female",
-          "Honorary",
-          "Male",
-          "Other"
-        ]
-      }
-    },
-    {
-      id: "commonFamilyNames",
-      name: "Common Family/Clan names among the Species/Races/Flora/Fauna",
-      type: "list",
-      icon: "mdi-family-tree",
-      sizing: 12,
-      predefinedListExtras: {
-        affix: "Note",
-        extraSelectValueList: [
-        ]
-      }
-    },
-    {
       id: "description",
       name: "Description & History",
       type: "wysiwyg",
@@ -441,9 +307,8 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "traditions",
-      name: "Traditions & Customs",
+      name: "Traditions & customs connected to the item",
       type: "wysiwyg",
-      icon: "mdi-book-open-page-variant-outline",
       sizing: 12
     },
     {
@@ -460,59 +325,51 @@ export const racesBlueprint: I_Blueprint = {
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "loreNotes",
-        connectedField: "pairedConnectedRaces"
+        connectedField: "pairedConnectedProfessions"
       }
     },
     {
-      id: "pairedConnectedMyths",
-      name: "Connected to Myths, legends and stories",
+      id: "pairedMyths",
+      name: "Connected to Myths/Legends/Stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
       sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "myths",
-        connectedField: "pairedConnectedRaces"
+        connectedObjectType: "professions",
+        connectedField: "pairedProfessions"
       }
     },
+
     {
-      id: "breakOther",
-      name: "Connections - World & Details",
+      id: "breakWorld",
+      name: "Connections - World",
       type: "break",
       sizing: 12
     },
+
     {
-      id: "connectedEvents",
-      name: "Connected to important Events",
+      id: "connectedLocations",
+      name: "Connected to Locations/Geography",
       type: "manyToManyRelationship",
-      icon: "mdi-calendar-text",
-      sizing: 4,
+      icon: "mdi-map-marker-radius",
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "events",
-        connectedField: "pairedRaces"
+        connectedObjectType: "locations",
+        connectedField: "connectedProfessions"
       }
     },
     {
-      id: "pairedConnectedItems",
-      name: "Connected to Items",
+      id: "localLanguages",
+      name: "Languages",
       type: "manyToManyRelationship",
-      icon: "mdi-sword",
-      sizing: 4,
+      icon: "mdi-book-alphabet",
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "items",
-        connectedField: "pairedConnectedRaces"
+        connectedObjectType: "languages",
+        connectedField: "pairedConnectedProfessions"
       }
     },
-    {
-      id: "pairedConnectedResources",
-      name: "Connected to Resources/Materials",
-      type: "manyToManyRelationship",
-      icon: "mdi-gold",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "resources",
-        connectedField: "pairedConnectedRaces"
-      }
-    },
+
     {
       id: "breakPolitics",
       name: "Connections - Groups/Teachings",
@@ -520,58 +377,86 @@ export const racesBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "commonInPoliticalGroups",
-      name: "Common in Ideologies/Political groups",
+      id: "pairedConnectedPolGroups",
+      name: "Connected to Ideologies/Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
-        connectedField: "connectedRaces"
+        connectedField: "pairedConnectedProfessions"
       }
     },
     {
-      id: "commonInOtherGroups",
-      name: "Common in Organizations/Other groups",
-      type: "manyToManyRelationship",
-      icon: "mdi-account-group",
-      sizing: 6,
-      relationshipSettings: {
-        connectedObjectType: "guilds",
-        connectedField: "connectedRaces"
-      }
-    },
-    {
-      id: "commonInReligiousGroups",
-      name: "Common in Teachings/Religious groups",
+      id: "pairedConnectedReligiousGroups",
+      name: "Connected to Teachings/Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "religions",
-        connectedField: "connectedRaces"
+        connectedField: "pairedConnectedProfessions"
       }
     },
     {
-      id: "commonInMagicGroups",
-      name: "Common in Magical groups",
+      id: "pairedConnectedOtherGroups",
+      name: "Connected to Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "pairedConnectedProfessions"
+      }
+    },
+    {
+      id: "pairedConnectedMagicGroups",
+      name: "Connected to Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "magic",
-        connectedField: "connectedRaces"
+        connectedField: "pairedConnectedProfessions"
       }
     },
     {
-      id: "commonInTechGroups",
-      name: "Common in Sciencific/Technological groups",
+      id: "pairedConnectedTechGroups",
+      name: "Connected to Sciences/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "tech",
-        connectedField: "connectedRaces"
+        connectedField: "pairedConnectedProfessions"
+      }
+    },
+    {
+      id: "breakDetails",
+      name: "Connections - Details",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedSkills",
+      name: "Connected to Skills/Spells/Other",
+      type: "manyToManyRelationship",
+      icon: "mdi-sword-cross",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "skills",
+        connectedField: "pairedConnectedProfessions"
+      }
+    },
+    {
+      id: "pairedConnectedItems",
+      name: "Connected to Items",
+      type: "manyToManyRelationship",
+      icon: "mdi-sword",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "items",
+        connectedField: "pairedConnectedProfessions"
       }
     }
   ]

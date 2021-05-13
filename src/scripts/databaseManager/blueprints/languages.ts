@@ -1,10 +1,11 @@
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const languagesBlueprint: I_Blueprint = {
   _id: "languages",
-  order: 8,
+  order: 330,
   namePlural: "Languages",
   nameSingular: "Language",
   icon: "mdi-book-alphabet",
+  category: "World",
   extraFields: [
     {
       id: "breakDocumentSettings",
@@ -205,8 +206,37 @@ export const languagesBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "breakSpeakers",
-      name: "Speakers, groups and areas connected to the language",
+      id: "breakNotes",
+      name: "Connections - Story/Lore & Details",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedNotes",
+      name: "Connected to Lore notes/Other notes",
+      type: "manyToManyRelationship",
+      icon: "mdi-script-text-outline",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "loreNotes",
+        connectedField: "localLanguages"
+      }
+    },
+    {
+      id: "pairedConnectedProfessions",
+      name: "Spoken by Occupations/Classes",
+      type: "manyToManyRelationship",
+      icon: "fab fa-pied-piper-hat",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "professions",
+        connectedField: "localLanguages"
+      }
+    },
+
+    {
+      id: "breakWorld",
+      name: "Connections - World",
       type: "break",
       sizing: 12
     },
@@ -222,17 +252,6 @@ export const languagesBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "usedByRaces",
-      name: "Spoken by Species/Races/Flora/Faunas",
-      type: "manyToManyRelationship",
-      icon: "fas fa-dragon",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "races",
-        connectedField: "localLanguages"
-      }
-    },
-    {
       id: "pairedLocations",
       name: "Spoken in Locations",
       type: "manyToManyRelationship",
@@ -242,6 +261,24 @@ export const languagesBlueprint: I_Blueprint = {
         connectedObjectType: "locations",
         connectedField: "pairedLanguages"
       }
+    },
+    {
+      id: "usedByRaces",
+      name: "Spoken by Species/Races/Flora/Fauna",
+      type: "manyToManyRelationship",
+      icon: "fas fa-dragon",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "races",
+        connectedField: "localLanguages"
+      }
+    },
+
+    {
+      id: "breakPolitics",
+      name: "Connections - Groups/Teachings",
+      type: "break",
+      sizing: 12
     },
     {
       id: "usedInPoliticalGroups",
@@ -295,23 +332,6 @@ export const languagesBlueprint: I_Blueprint = {
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "tech",
-        connectedField: "localLanguages"
-      }
-    },
-    {
-      id: "breakNotes",
-      name: "Notes",
-      type: "break",
-      sizing: 12
-    },
-    {
-      id: "pairedConnectedNotes",
-      name: "Connected to Lore notes/Other notes",
-      type: "manyToManyRelationship",
-      icon: "mdi-script-text-outline",
-      sizing: 12,
-      relationshipSettings: {
-        connectedObjectType: "loreNotes",
         connectedField: "localLanguages"
       }
     }

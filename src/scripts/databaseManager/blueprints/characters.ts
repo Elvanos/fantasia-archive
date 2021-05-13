@@ -2,11 +2,67 @@ import { RPGSystemsStats } from "./../extraFieldLists/RPGSystemsStats"
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const charactersBlueprint: I_Blueprint = {
   _id: "characters",
-  order: 18,
+  order: 370,
   namePlural: "Characters",
   nameSingular: "Character",
   icon: "mdi-account",
+  category: "World",
   extraFields: [
+    {
+      id: "breakLegacyFields",
+      name: "Legacy fields",
+      type: "break",
+      sizing: 12,
+      isLegacy: true
+    },
+    {
+      id: "pairedMagic",
+      name: "Known Magic/Spells",
+      type: "manyToManyRelationship",
+      icon: "fas fa-hat-wizard",
+      sizing: 6,
+      isLegacy: true,
+      relationshipSettings: {
+        connectedObjectType: "magic",
+        connectedField: "pairedCharacter"
+      }
+    },
+    {
+      id: "pairedTech",
+      name: "Known Technologies/Sciences",
+      type: "manyToManyRelationship",
+      icon: "fas fa-wrench",
+      isLegacy: true,
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "tech",
+        connectedField: "pairedCharacter"
+      }
+    },
+    {
+      id: "skills",
+      name: "Skills",
+      type: "list",
+      icon: "mdi-sword",
+      sizing: 12,
+      isLegacy: true,
+      predefinedListExtras: {
+        affix: "Level",
+        extraSelectValueList: [
+          "Trainee",
+          "Apprentice",
+          "Capable",
+          "Advanced",
+          "Expert",
+          "Master",
+          "Grand-master",
+          "Genius",
+          "Prodigy",
+          "Off-the-scale"
+        ]
+      }
+    },
+
     {
       id: "breakDocumentSettings",
       name: "Document settings",
@@ -153,20 +209,24 @@ export const charactersBlueprint: I_Blueprint = {
       type: "break",
       sizing: 12
     },
-
     {
       id: "titles",
       name: "Titles",
       type: "list",
       icon: "mdi-crown",
-      sizing: 12
+      sizing: 12,
+      predefinedListExtras: {
+        affix: "Note",
+        extraSelectValueList: [
+        ]
+      }
     },
     {
       id: "sex",
       name: "Sex",
       type: "singleSelect",
       icon: "mdi-gender-male-female",
-      sizing: 3,
+      sizing: 2,
       predefinedSelectValues: [
         "Male",
         "Female",
@@ -179,77 +239,55 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Age",
       type: "text",
       icon: "mdi-timer-sand",
-      sizing: 3
+      sizing: 2
     },
     {
       id: "height",
       name: "Height",
       type: "text",
       icon: "mdi-human-male-height-variant",
-      sizing: 3
+      sizing: 2
     },
     {
       id: "weight",
       name: "Weight",
       type: "text",
       icon: "mdi-weight",
-      sizing: 3
-    },
-    {
-      id: "pairedOriginLocation",
-      name: "Place of origin",
-      type: "singleToManyRelationship",
-      icon: "mdi-map-marker-radius",
-      sizing: 3,
-      relationshipSettings: {
-        connectedObjectType: "locations",
-        connectedField: "pairedOriginCharacters"
-      }
+      sizing: 2
     },
     {
       id: "birthDate",
       name: "Date of birth",
       type: "text",
       icon: "mdi-cake-variant",
-      sizing: 3
-    },
-    {
-      id: "pairedDemiseLocation",
-      name: "Place of demise",
-      type: "singleToManyRelationship",
-      icon: "mdi-map-marker-radius",
-      sizing: 3,
-      relationshipSettings: {
-        connectedObjectType: "locations",
-        connectedField: "pairedDemiseCharacters"
-      }
+      sizing: 2
     },
     {
       id: "deathDate",
       name: "Date of death",
       type: "text",
       icon: "mdi-skull-crossbones",
-      sizing: 3
-    },
-    {
-      id: "pairedCurrentLocation",
-      name: "Place of residence",
-      type: "singleToManyRelationship",
-      icon: "mdi-map-marker-radius",
-      sizing: 3,
-      relationshipSettings: {
-        connectedObjectType: "locations",
-        connectedField: "pairedCurrentCharacters"
-      }
+      sizing: 2
     },
     {
       id: "pairedRace",
-      name: "Species/Races/Flora/Fauna",
+      name: "Species/Races",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
-      sizing: 3,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "races",
+        connectedField: "pairedCharacter"
+      }
+    },
+    {
+      id: "pairedProfession",
+      name: "Occupation/Class",
+      type: "manyToManyRelationship",
+      icon: "fab fa-pied-piper-hat",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "professions",
         connectedField: "pairedCharacter"
       }
     },
@@ -258,14 +296,14 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Ethnicity",
       type: "text",
       icon: "fas fa-hand-paper",
-      sizing: 3
+      sizing: 6
     },
     {
       id: "powerLevel",
       name: "Combat rating",
       type: "singleSelect",
       icon: "fas fa-fist-raised",
-      sizing: 3,
+      sizing: 6,
       predefinedSelectValues: [
         /*
         "0 - Civilian",
@@ -288,28 +326,83 @@ export const charactersBlueprint: I_Blueprint = {
       ]
     },
     {
+      id: "pairedCurrentLocation",
+      name: "Place of residence",
+      type: "singleToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "pairedCurrentCharacters"
+      }
+    },
+    {
+      id: "pairedOriginLocation",
+      name: "Place of origin",
+      type: "singleToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "pairedOriginCharacters"
+      }
+    },
+    {
+      id: "pairedDemiseLocation",
+      name: "Place of demise",
+      type: "singleToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "pairedDemiseCharacters"
+      }
+    },
+    {
+      id: "pairedConditionsPositive",
+      name: "Affected by Boons",
+      type: "manyToManyRelationship",
+      icon: "mdi-virus",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "conditions",
+        connectedField: "pairedCharactersPositive"
+      }
+    },
+    {
+      id: "pairedConditionsNegative",
+      name: "Affected by Afflictions",
+      type: "manyToManyRelationship",
+      icon: "mdi-virus",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "conditions",
+        connectedField: "pairedCharactersNegative"
+      }
+    },
+    {
+      id: "pairedConditionsOther",
+      name: "Affected by Other conditions",
+      type: "manyToManyRelationship",
+      icon: "mdi-virus",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "conditions",
+        connectedField: "pairedCharactersOther"
+      }
+    },
+    {
       id: "description",
       name: "Description & History",
       type: "wysiwyg",
+      icon: "mdi-book-open-page-variant-outline",
       sizing: 12
     },
     {
       id: "breakSkills",
-      name: "Skills, Stats & Other features",
+      name: "Skills, Stats, Knowledge & Characteristics",
       type: "break",
       sizing: 12
-    },
-    {
-      id: "statsList",
-      name: "Stats/Attributes",
-      type: "list",
-      icon: "mdi-sword-cross",
-      sizing: 12,
-      predefinedListExtras: {
-        reverse: true,
-        affix: "Stat/Attribute",
-        extraSelectValueList: RPGSystemsStats
-      }
     },
     {
       id: "personalityTraits",
@@ -962,64 +1055,92 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "traits",
-      name: "Unusual Features/Traits",
+      name: "Unique/Unusual Features",
       type: "list",
       icon: "mdi-guy-fawkes-mask",
       sizing: 6
     },
     {
-      id: "skills",
-      name: "Skills",
+      id: "statsList",
+      name: "Stats/Attributes",
       type: "list",
-      icon: "mdi-sword-cross",
+      icon: "mdi-sword",
       sizing: 12,
       predefinedListExtras: {
-        affix: "Level",
-        extraSelectValueList: [
-          "Trainee",
-          "Apprentice",
-          "Capable",
-          "Advanced",
-          "Expert",
-          "Master",
-          "Grand-master",
-          "Genius",
-          "Prodigy",
-          "Off-the-scale"
-        ]
+        reverse: true,
+        affix: "Stat/Attribute",
+        extraSelectValueList: RPGSystemsStats
       }
     },
     {
-      id: "pairedLanguage",
-      name: "Languages",
-      type: "manyToManyRelationship",
+      id: "possessedItems",
+      name: "Equipment/Owned Items",
+      type: "manyToNoneRelationship",
+      icon: "mdi-sword",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "items"
+      }
+    },
+    {
+      id: "possessedCurrencies",
+      name: "Whealth/Owned Currencies",
+      type: "manyToNoneRelationship",
+      icon: "fas fa-coins",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "currencies"
+      }
+    },
+    {
+      id: "knownSkills",
+      name: "Known Skills/Abilities",
+      type: "manyToNoneRelationship",
+      icon: "mdi-sword-cross",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "skills"
+      }
+    },
+
+    {
+      id: "knownSpells",
+      name: "Known Spells",
+      type: "manyToNoneRelationship",
+      icon: "mdi-sword-cross",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "skills"
+      }
+    },
+    {
+      id: "knownLanguage",
+      name: "Known Languages",
+      type: "manyToNoneRelationship",
       icon: "mdi-book-alphabet",
       sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "languages",
-        connectedField: "pairedCharacter"
+        connectedObjectType: "languages"
       }
     },
     {
-      id: "pairedMagic",
-      name: "Known Magic/Spells",
-      type: "manyToManyRelationship",
+      id: "knownMagic",
+      name: "Known Magical teachings",
+      type: "manyToNoneRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "magic",
-        connectedField: "pairedCharacter"
+        connectedObjectType: "magic"
       }
     },
     {
-      id: "pairedTech",
+      id: "knownTech",
       name: "Known Technologies/Sciences",
-      type: "manyToManyRelationship",
+      type: "manyToNoneRelationship",
       icon: "fas fa-wrench",
       sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "tech",
-        connectedField: "pairedCharacter"
+        connectedObjectType: "tech"
       }
     },
     {
@@ -1095,11 +1216,90 @@ export const charactersBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "breakPolitics",
-      name: "Ideologies, Religions, Politics & Other connections",
+      id: "breakNotes",
+      name: "Connections - Story/Lore",
       type: "break",
       sizing: 12
     },
+    {
+      id: "pairedConnectedNotes",
+      name: "Connected to Lore notes/Other notes",
+      type: "manyToManyRelationship",
+      icon: "mdi-script-text-outline",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "loreNotes",
+        connectedField: "pairedConnectedCharacter"
+      }
+    },
+    {
+      id: "pairedConnectedMyths",
+      name: "Connected to Myths, legends and stories",
+      type: "manyToManyRelationship",
+      icon: "fas fa-journal-whills",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "myths",
+        connectedField: "pairedConnectedCharacter"
+      }
+    },
+    {
+      id: "breakOther",
+      name: "Connections - World",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedEvent",
+      name: "Took part in Events",
+      type: "manyToManyRelationship",
+      icon: "mdi-calendar-text",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "events",
+        connectedField: "pairedCharacter"
+      }
+    },
+    {
+      id: "pairedConnectedPlaces",
+      name: "Connected to Locations",
+      type: "manyToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "pairedConnectedCharacter"
+      }
+    },
+    {
+      id: "pairedLanguage",
+      name: "Connected to Languages",
+      type: "manyToManyRelationship",
+      icon: "mdi-book-alphabet",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "languages",
+        connectedField: "pairedCharacter"
+      }
+    },
+    {
+      id: "relatedCultures",
+      name: "Connected Cultures/Art",
+      type: "manyToManyRelationship",
+      icon: "fas fa-archway",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "culture",
+        connectedField: "relatedCharacters"
+      }
+    },
+    {
+      id: "breakPolitics",
+      name: "Connections - Groups/Teachings",
+      type: "break",
+      sizing: 12
+    },
+
     {
       id: "pairedConnectionPolGroup",
       name: "Connected to Ideologies/Political groups",
@@ -1236,7 +1436,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectionMagicGroup",
-      name: "Connected to Magical groups",
+      name: "Connected to Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -1247,7 +1447,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedBelongingMagicGroup",
-      name: "Member of Magical groups",
+      name: "Member of Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -1258,7 +1458,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedAllyMagicGroup",
-      name: "Ally of Magical groups",
+      name: "Ally of Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -1269,7 +1469,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedEnemyMagicGroup",
-      name: "Enemy of Magical groups",
+      name: "Enemy of Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -1323,49 +1523,27 @@ export const charactersBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "breakOther",
-      name: "Other details",
+      id: "breakDetails",
+      name: "Connections - Details",
       type: "break",
       sizing: 12
     },
     {
-      id: "pairedEvent",
-      name: "Took part in Events",
+      id: "pairedSkills",
+      name: "Connected to Skills/Spells/Other",
       type: "manyToManyRelationship",
-      icon: "mdi-calendar-text",
+      icon: "mdi-sword-cross",
       sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "events",
-        connectedField: "pairedCharacter"
-      }
-    },
-    {
-      id: "pairedConnectedPlaces",
-      name: "Connected to Locations",
-      type: "manyToManyRelationship",
-      icon: "mdi-map-marker-radius",
-      sizing: 6,
-      relationshipSettings: {
-        connectedObjectType: "locations",
-        connectedField: "pairedConnectedCharacter"
-      }
-    },
-    {
-      id: "pairedConnectedMyths",
-      name: "Connected to Myths, legends and stories",
-      type: "manyToManyRelationship",
-      icon: "fas fa-journal-whills",
-      sizing: 6,
-      relationshipSettings: {
-        connectedObjectType: "myths",
-        connectedField: "pairedConnectedCharacter"
+        connectedObjectType: "skills",
+        connectedField: "pairedCharacterSkills"
       }
     },
     {
       id: "pairedConnectedItems",
       name: "Connected to Items",
       type: "manyToManyRelationship",
-      icon: "mdi-sword-cross",
+      icon: "mdi-sword",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "items",
@@ -1373,22 +1551,26 @@ export const charactersBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "breakNotes",
-      name: "Notes",
-      type: "break",
-      sizing: 12
+      id: "pairedConditionsConnected",
+      name: "Connected to Afflictions/Boons/Conditions",
+      type: "manyToManyRelationship",
+      icon: "mdi-virus",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "conditions",
+        connectedField: "pairedCharactersConnected"
+      }
     },
     {
-      id: "pairedConnectedNotes",
-      name: "Connected to Lore notes/Other notes",
+      id: "pairedResources",
+      name: "Connected to Resources/Materials",
       type: "manyToManyRelationship",
-      icon: "mdi-script-text-outline",
-      sizing: 12,
+      icon: "mdi-gold",
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "loreNotes",
-        connectedField: "pairedConnectedCharacter"
+        connectedObjectType: "resources",
+        connectedField: "pairedCharacter"
       }
     }
-
   ]
 }

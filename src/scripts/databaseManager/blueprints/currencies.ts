@@ -1,11 +1,24 @@
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const currenciesBlueprint: I_Blueprint = {
   _id: "currencies",
-  order: 7,
+  order: 8,
   namePlural: "Currencies",
   nameSingular: "Currency",
   icon: "fas fa-coins",
+  category: "Details",
   extraFields: [
+    {
+      id: "pairedItems",
+      name: "Connected to Items",
+      type: "manyToManyRelationship",
+      icon: "mdi-sword",
+      isLegacy: true,
+      sizing: 12,
+      relationshipSettings: {
+        connectedObjectType: "items",
+        connectedField: "pairedCurrencies"
+      }
+    },
     {
       id: "breakDocumentSettings",
       name: "Document settings",
@@ -156,31 +169,33 @@ export const currenciesBlueprint: I_Blueprint = {
       id: "traits",
       name: "Defining Features/Traits",
       type: "list",
-      icon: "fas fa-coins",
-      sizing: 12
-    },
-    {
-      id: "pairedItems",
-      name: "Connected to Items",
-      type: "manyToManyRelationship",
-      icon: "mdi-sword-cross",
+      icon: "mdi-guy-fawkes-mask",
       sizing: 12,
-      relationshipSettings: {
-        connectedObjectType: "items",
-        connectedField: "pairedCurrencies"
+      predefinedListExtras: {
+        affix: "Note",
+        extraSelectValueList: [
+        ]
       }
     },
     {
-      id: "description",
-      name: "Description & History",
-      type: "wysiwyg",
-      sizing: 12
+      id: "priceCurrencies",
+      name: "Exchange rates to other Currencies",
+      type: "manyToNoneRelationship",
+      icon: "fas fa-coins",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "currencies"
+      }
     },
     {
-      id: "breakRelasionships",
-      name: "Usage details",
-      type: "break",
-      sizing: 12
+      id: "madeFromResources",
+      name: "Made from Resources/Materials",
+      type: "manyToNoneRelationship",
+      icon: "mdi-gold",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "resources"
+      }
     },
     {
       id: "pairedLocations",
@@ -225,6 +240,13 @@ export const currenciesBlueprint: I_Blueprint = {
         connectedObjectType: "guilds",
         connectedField: "localCurrencies"
       }
+    },
+    {
+      id: "description",
+      name: "Description & History",
+      type: "wysiwyg",
+      icon: "mdi-book-open-page-variant-outline",
+      sizing: 12
     },
     {
       id: "breakNotes",

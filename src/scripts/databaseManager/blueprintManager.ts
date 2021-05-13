@@ -18,12 +18,21 @@ import { magicBlueprint } from "src/scripts/databaseManager/blueprints/magic"
 import { techBlueprint } from "src/scripts/databaseManager/blueprints/scienceTechnology"
 import { itemsBlueprint } from "src/scripts/databaseManager/blueprints/items"
 import { guildsBlueprint } from "src/scripts/databaseManager/blueprints/guilds"
+import { resourcesBlueprint } from "src/scripts/databaseManager/blueprints/resources"
+import { conditionsBlueprint } from "src/scripts/databaseManager/blueprints/conditions"
+import { professionsBlueprint } from "src/scripts/databaseManager/blueprints/professions"
+import { skillsBlueprint } from "src/scripts/databaseManager/blueprints/skills"
+import { cultureBlueprint } from "src/scripts/databaseManager/blueprints/culture"
 
 /**
  * Loads all the blueprints and processes them apropriatelly
  */
 export const engageBlueprints = async () => {
-  const BlueprintsDB = new PouchDB("blueprints")
+  // Clean up previous versions of the blueprint DB to get fresh info
+  let BlueprintsDB = new PouchDB("blueprints")
+  await BlueprintsDB.destroy()
+
+  BlueprintsDB = new PouchDB("blueprints")
 
   /**
    * List of all blueprintes needed to get processed
@@ -43,7 +52,12 @@ export const engageBlueprints = async () => {
     magicBlueprint,
     techBlueprint,
     itemsBlueprint,
-    guildsBlueprint
+    guildsBlueprint,
+    resourcesBlueprint,
+    conditionsBlueprint,
+    professionsBlueprint,
+    skillsBlueprint,
+    cultureBlueprint
   ]
 
   /**

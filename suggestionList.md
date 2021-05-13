@@ -1,24 +1,29 @@
 ## THE GM BATCH START - 0.1.7
 
-- Add category for diseases/curses/etc
-- Add category for classes/occupations
-- Add category for skill/spells, edit magic and tech category
-- Add category for materials/resources OR adapt Items category
+- Add "Predecessors", "Successors", "Date of start", "Date of end" and "How long it lasted" fields to locations and all other groups
+
+- Add setting to hide labels in document preview/view
+- Add legacy field support & options
+
+- Add toggle for "Simple/Complex conditions" to show only one field for conditions
+
+- "Toggle dev tools" keybind
+- "Save all" keybind and "Save all and exit" option on the exiting
+- "Save and tick as finished" keybind
 
 - Export for MD/PDF/ODT/DOCX
-
-- "Save all" keybind and "Save all and exit" option on the exiting
 
 ## THE GM BATCH END   - 0.1.7
 
 ## PROJECT SETTINGS BATCH 1 START - 0.1.8
 
+- Add `SHIFT + ENTER` add mode to relationship searches to add documents without deleting the entered text
+- Pin document preview floating window
 - Project setting dialog/options
 - Project rename
 - List of last saved documents on project overview
 
 - Add option for project graph to filter out categories or show them separately
-- Add "Predecessors", "Successors", "Date of start", "Date of end" and "How long it lasted" fields to locations and all other groups
 
 - Selective export per field basis
 - Templates for exports
@@ -31,9 +36,10 @@
   - Rename tag (resaves all docs with new tag)
 
 - New text editor (TipTap2)?
-- Add description tabs
-- Word count for editor fields
-- Try to get field titles to show in full-screen edit of text editor fields
+  - Simple @ mentions
+  - Add description tabs
+  - Word count for editor fields
+  - Try to get field titles to show in full-screen edit of text editor fields
 
 ## PROJECT SETTINGS BATCH 1 START - 0.1.8
 
@@ -58,6 +64,8 @@
 
 - Allow/Disallow default document types
 - Custom order document types
+- Custom modules/reorganizing of them
+- Hiding of individual fields for individual document types
 - Add Colors, Renaming and Hiding to default document types per project settings
 
 - Pinned tabs (save through program closing)

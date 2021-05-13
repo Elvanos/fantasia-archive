@@ -1,10 +1,11 @@
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const chaptersBlueprint: I_Blueprint = {
   _id: "chapters",
-  order: 20,
+  order: 450,
   namePlural: "Chapters",
   nameSingular: "Chapter",
   icon: "mdi-file-outline",
+  category: "Story/Lore",
   extraFields: [
     {
       id: "breakDocumentSettings",

@@ -1,11 +1,12 @@
+import { RPGSystemsStats } from "./../extraFieldLists/RPGSystemsStats"
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
-export const politicalGroupsBlueprint: I_Blueprint = {
-  _id: "politicalGroups",
-  order: 280,
-  namePlural: "Ideologies/Political groups",
-  nameSingular: "Ideology/Political group",
-  icon: "mdi-bank-outline",
-  category: "Groups/Teachings",
+export const conditionsBlueprint: I_Blueprint = {
+  _id: "conditions",
+  order: 150,
+  namePlural: "Afflictions/Boons/Conditions",
+  nameSingular: "Affliction/Boon/Condition",
+  icon: "mdi-virus",
+  category: "Details",
   extraFields: [
     {
       id: "breakDocumentSettings",
@@ -17,7 +18,7 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       id: "name",
       name: "Name",
       type: "text",
-      icon: "mdi-bank-outline",
+      icon: "mdi-virus",
       sizing: 3
     },
     {
@@ -31,7 +32,7 @@ export const politicalGroupsBlueprint: I_Blueprint = {
         `,
       sizing: 3,
       relationshipSettings: {
-        connectedObjectType: "politicalGroups"
+        connectedObjectType: "conditions"
       }
     },
     {
@@ -154,133 +155,108 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "headquarters",
-      name: "Headquarters",
-      type: "singleToNoneRelationship",
-      icon: "mdi-map-marker-radius",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "locations"
+      id: "features",
+      name: "Prominent features",
+      type: "list",
+      icon: "mdi-guy-fawkes-mask",
+      sizing: 6,
+      predefinedListExtras: {
+        affix: "Note",
+        extraSelectValueList: [
+        ]
       }
     },
     {
-      id: "followerName",
-      name: "Name for members/followers",
+      id: "duration",
+      name: "Duration",
       type: "text",
-      icon: "fas fa-file-signature",
+      icon: "mdi-timer-sand",
       sizing: 3
     },
     {
-      id: "population",
-      name: "Member count",
-      type: "text",
-      icon: "mdi-account-group",
-      sizing: 2,
-      tooltip: "The amount of members of this political group/ideology."
-    },
-    {
-      id: "followers",
-      name: "Follower/Subject count",
-      type: "text",
-      icon: "mdi-account-group-outline",
-      sizing: 3,
-      tooltip: "The amount of people affected by/following this political group/ideology."
-    },
-    {
-      id: "leaders",
-      name: "Leading Figures",
-      type: "manyToNoneRelationship",
-      icon: "mdi-crown",
-      sizing: 6,
-      relationshipSettings: {
-        connectedObjectType: "characters"
-      }
-    },
-    {
-      id: "formGovernment",
-      name: "Form of government",
+      id: "conditionType",
+      name: "Affliction/Boon/Condition type",
       type: "multiSelect",
-      icon: "fas fa-person-booth",
-      sizing: 6,
+      icon: "mdi-auto-fix",
+      sizing: 3,
       predefinedSelectValues: [
-        "Anarchism",
-        "Anarcho-capitalism",
-        "Anarchy",
-        "Aristocracy",
-        "Autocracy",
-        "Communism",
-        "Corporatocracy",
-        "Democracy",
-        "Despotism",
-        "Dictatorship",
-        "Fascism",
-        "Feudalism",
-        "Geniocracy",
-        "Matriarchy",
-        "Monarchy",
-        "Oligarchy",
-        "Patriarchy",
-        "Republic",
-        "Socialism",
-        "Technocracy",
-        "Theocracy",
-        "Theodemocracy",
-        "Tyranny"
+        "Affliction",
+        "Antidote",
+        "Boon",
+        "Charm",
+        "Cure",
+        "Curse",
+        "Disease",
+        "Gift/Blessing",
+        "Glamour",
+        "Handicap",
+        "Inborn defect",
+        "Medicine",
+        "Physical condition",
+        "Poison ",
+        "Racial trait",
+        "Remedy",
+        "Virus",
+        "Other"
       ]
     },
     {
-      id: "realedTeachings",
-      name: "Related Ideologies",
+      id: "meansOfAttaining",
+      name: "Ways of attaining",
+      type: "list",
+      icon: "fas fa-disease",
+      sizing: 6
+    },
+    {
+      id: "meansOfRemoving",
+      name: "Ways of removing",
+      type: "list",
+      icon: "fas fa-heart",
+      sizing: 6
+    },
+    {
+      id: "pairedConnectedConditionsPositive",
+      name: "Related Boons",
       type: "manyToManyRelationship",
-      icon: "mdi-bank-outline",
+      icon: "mdi-virus",
       sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "politicalGroups",
-        connectedField: "realedTeachings"
+        connectedObjectType: "conditions",
+        connectedField: "pairedConnectedConditionsPositive"
       }
     },
     {
-      id: "localLanguages",
-      name: "Used Languages",
+      id: "pairedConnectedConditionsNegative",
+      name: "Related Afflictions",
       type: "manyToManyRelationship",
-      icon: "mdi-book-alphabet",
+      icon: "mdi-virus",
       sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "languages",
-        connectedField: "usedInPoliticalGroups"
+        connectedObjectType: "conditions",
+        connectedField: "pairedConnectedConditionsNegative"
       }
     },
     {
-      id: "connectedRaces",
-      name: "Common Species/Races/Flora/Fauna",
+      id: "pairedConnectedConditionsOther",
+      name: "Related Other conditions",
       type: "manyToManyRelationship",
-      icon: "fas fa-dragon",
+      icon: "mdi-virus",
       sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "races",
-        connectedField: "commonInPoliticalGroups"
+        connectedObjectType: "conditions",
+        connectedField: "pairedConnectedConditionsOther"
       }
     },
     {
-      id: "localCurrencies",
-      name: "Used Currencies",
-      type: "manyToManyRelationship",
-      icon: "fas fa-coins",
-      sizing: 6,
-      relationshipSettings: {
-        connectedObjectType: "currencies",
-        connectedField: "usedInPoliticalGroups"
-      }
-    },
-    {
-      id: "pairedConnectedResources",
-      name: "Important Resources/Materials",
-      type: "manyToManyRelationship",
-      icon: "mdi-gold",
-      sizing: 6,
-      relationshipSettings: {
-        connectedObjectType: "resources",
-        connectedField: "pairedConnectedPoliticalGroups"
+      id: "statsListRequired",
+      name: "Stats/Attributes modifiers",
+      type: "list",
+      icon: "mdi-sword",
+      sizing: 12,
+      predefinedListExtras: {
+        reverse: true,
+        affix: "Stat/Attribute",
+        extraSelectValueList: RPGSystemsStats
       }
     },
     {
@@ -292,9 +268,8 @@ export const politicalGroupsBlueprint: I_Blueprint = {
     },
     {
       id: "traditions",
-      name: "Traditions & Customs",
+      name: "Traditions & customs connected to the item",
       type: "wysiwyg",
-      icon: "mdi-book-open-page-variant-outline",
       sizing: 12
     },
     {
@@ -311,20 +286,21 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "loreNotes",
-        connectedField: "pairedConnectedPolGroups"
+        connectedField: "pairedConnectedConditions"
       }
     },
     {
-      id: "pairedConnectedMyths",
-      name: "Connected to Myths, legends and stories",
+      id: "pairedMyths",
+      name: "Connected to Myths/Legends/Stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "myths",
-        connectedField: "pairedConnectedPolGroups"
+        connectedField: "pairedConditions"
       }
     },
+
     {
       id: "breakWorld",
       name: "Connections - World",
@@ -332,91 +308,146 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "governLocations",
-      name: "Ruled/Influenced Locations",
+      id: "pairedCharactersPositive",
+      name: "Affecting Characters positively",
       type: "manyToManyRelationship",
-      icon: "mdi-map-marker-radius",
+      icon: "mdi-account",
       sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "locations",
-        connectedField: "governPolitical"
+        connectedObjectType: "characters",
+        connectedField: "pairedConditionsPositive"
       }
     },
     {
-      id: "connectedLocations",
-      name: "Connected Locations",
+      id: "pairedCharactersNegative",
+      name: "Affecting Characters negatively",
       type: "manyToManyRelationship",
-      icon: "mdi-map-marker-radius",
+      icon: "mdi-account",
       sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "locations",
-        connectedField: "connectedPolitical"
+        connectedObjectType: "characters",
+        connectedField: "pairedConditionsNegative"
       }
     },
     {
-      id: "connectedEvents",
-      name: "Connected Events",
+      id: "pairedCharactersOther",
+      name: "Affecting Characters in other ways",
+      type: "manyToManyRelationship",
+      icon: "mdi-account",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "pairedConditionsOther"
+      }
+    },
+    {
+      id: "pairedCharactersConnected",
+      name: "Connected to Characters",
+      type: "manyToManyRelationship",
+      icon: "mdi-account",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "pairedConditionsConnected"
+      }
+    },
+    {
+      id: "pairedLocationsPositive",
+      name: "Affecting Locations/Geography positively",
+      type: "manyToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "pairedConditionsPositive"
+      }
+    },
+    {
+      id: "pairedLocationsNegative",
+      name: "Affecting Locations/Geography negatively",
+      type: "manyToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "pairedConditionsNegative"
+      }
+    },
+    {
+      id: "pairedLocationsOther",
+      name: "Affecting Locations/Geography in other ways",
+      type: "manyToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "pairedConditionsOther"
+      }
+    },
+    {
+      id: "pairedEventsPositive",
+      name: "Affecting Events positively",
       type: "manyToManyRelationship",
       icon: "mdi-calendar-text",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "events",
-        connectedField: "connectedPolitical"
+        connectedField: "pairedConditionsPositive"
       }
     },
     {
-      id: "pairedConnectedCultures",
-      name: "Connected to Cultures/Art",
+      id: "pairedEventsNegative",
+      name: "Affecting Events negatively",
       type: "manyToManyRelationship",
-      icon: "fas fa-archway",
-      sizing: 6,
+      icon: "mdi-calendar-text",
+      sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "culture",
-        connectedField: "pairedConnectedPolGroups"
+        connectedObjectType: "events",
+        connectedField: "pairedConditionsNegative"
       }
     },
     {
-      id: "pairedConnectionCharacter",
-      name: "Connected Characters",
+      id: "pairedEventsOther",
+      name: "Affecting Events in other ways",
       type: "manyToManyRelationship",
-      icon: "mdi-account",
-      sizing: 6,
+      icon: "mdi-calendar-text",
+      sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "characters",
-        connectedField: "pairedConnectionPolGroup"
+        connectedObjectType: "events",
+        connectedField: "pairedConditionsOther"
       }
     },
     {
-      id: "pairedBelongingCharacter",
-      name: "Prominent Members",
+      id: "pairedRacesPositive",
+      name: "Affecting Species/Races/Flora/Fauna positively",
       type: "manyToManyRelationship",
-      icon: "mdi-account",
-      sizing: 6,
+      icon: "fas fa-dragon",
+      sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "characters",
-        connectedField: "pairedBelongingPolGroup"
+        connectedObjectType: "races",
+        connectedField: "pairedConditionsPositive"
       }
     },
     {
-      id: "pairedAllyCharacter",
-      name: "Prominent Allies",
+      id: "pairedRacesNegative",
+      name: "Affecting Species/Races/Flora/Fauna negatively",
       type: "manyToManyRelationship",
-      icon: "mdi-account",
-      sizing: 6,
+      icon: "fas fa-dragon",
+      sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "characters",
-        connectedField: "pairedAllyPolGroup"
+        connectedObjectType: "races",
+        connectedField: "pairedConditionsNegative"
       }
     },
     {
-      id: "pairedEnemyCharacter",
-      name: "Prominent Enemies",
+      id: "pairedRacesOther",
+      name: "Affecting Species/Races/Flora/Fauna in other ways",
       type: "manyToManyRelationship",
-      icon: "mdi-account",
-      sizing: 6,
+      icon: "fas fa-dragon",
+      sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "characters",
-        connectedField: "pairedEnemyPolGroup"
+        connectedObjectType: "races",
+        connectedField: "pairedConditionsOther"
       }
     },
     {
@@ -426,220 +457,178 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "pairedConnectedPolGroups",
-      name: "Connected Ideologies/Political groups",
+      id: "pairedRacesPoliticalGroups",
+      name: "Connected to Ideologies/Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
-        connectedField: "pairedConnectedPolGroups"
+        connectedField: "pairedConditions"
       }
     },
     {
-      id: "pairedAllyPolGroups",
-      name: "Allied Ideologies/Political groups",
+      id: "pairedReligiousGroups",
+      name: "Connected to Teachings/Religious groups",
       type: "manyToManyRelationship",
-      icon: "mdi-bank-outline",
+      icon: "fas fa-ankh",
       sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "politicalGroups",
-        connectedField: "pairedAllyPolGroups"
+        connectedObjectType: "religions",
+        connectedField: "pairedConditions"
       }
     },
     {
-      id: "pairedEnemyPolGroups",
-      name: "Enemy Ideologies/Political groups",
-      type: "manyToManyRelationship",
-      icon: "mdi-bank-outline",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "politicalGroups",
-        connectedField: "pairedEnemyPolGroups"
-      }
-    },
-    {
-      id: "pairedConnectedOtherGroups",
-      name: "Connected Organizations/Other groups",
+      id: "pairedOtherGroups",
+      name: "Connected to Organizations/Other groups",
       type: "manyToManyRelationship",
       icon: "mdi-account-group",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "guilds",
-        connectedField: "pairedConnectedPolGroups"
+        connectedField: "pairedConditions"
       }
     },
     {
-      id: "pairedAllyOtherGroups",
-      name: "Allied Organizations/Other groups",
+      id: "pairedMagicGroups",
+      name: "Connected to Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
-      icon: "mdi-account-group",
-      sizing: 4,
+      icon: "fas fa-hat-wizard",
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "guilds",
-        connectedField: "pairedAllyPolGroups"
+        connectedObjectType: "magic",
+        connectedField: "pairedConditions"
       }
     },
     {
-      id: "pairedEnemyOtherGroups",
-      name: "Enemy Organizations/Other groups",
+      id: "pairedTechGroups",
+      name: "Connected to Sciences/Technological groups",
       type: "manyToManyRelationship",
-      icon: "mdi-account-group",
-      sizing: 4,
+      icon: "fas fa-wrench",
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "guilds",
-        connectedField: "pairedEnemyPolGroups"
+        connectedObjectType: "tech",
+        connectedField: "pairedConditions"
       }
     },
 
     {
-      id: "pairedConnectedReligiousGroups",
-      name: "Connected Teachings/Religious groups",
-      type: "manyToManyRelationship",
-      icon: "fas fa-ankh",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "religions",
-        connectedField: "pairedConnectedPolGroups"
-      }
-    },
-    {
-      id: "pairedAllyReligiousGroups",
-      name: "Allied Teachings/Religious groups",
-      type: "manyToManyRelationship",
-      icon: "fas fa-ankh",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "religions",
-        connectedField: "pairedAllyPolGroups"
-      }
-    },
-    {
-      id: "pairedEnemyReligiousGroups",
-      name: "Enemy Teachings/Religious groups",
-      type: "manyToManyRelationship",
-      icon: "fas fa-ankh",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "religions",
-        connectedField: "pairedEnemyPolGroups"
-      }
-    },
-    {
-      id: "pairedConnectedMagicalGroups",
-      name: "Connected Schools of Magic/Magical groups",
-      type: "manyToManyRelationship",
-      icon: "fas fa-hat-wizard",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "magic",
-        connectedField: "pairedConnectedPolGroups"
-      }
-    },
-    {
-      id: "pairedAllyMagicalGroups",
-      name: "Allied Schools of Magic/Magical groups",
-      type: "manyToManyRelationship",
-      icon: "fas fa-hat-wizard",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "magic",
-        connectedField: "pairedAllyPolGroups"
-      }
-    },
-    {
-      id: "pairedEnemyMagicalGroups",
-      name: "Enemy Schools of Magic/Magical groups",
-      type: "manyToManyRelationship",
-      icon: "fas fa-hat-wizard",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "magic",
-        connectedField: "pairedEnemyPolGroups"
-      }
-    },
-
-    {
-      id: "pairedConnectedTechGroups",
-      name: "Connected Sciences/Technological groups",
-      type: "manyToManyRelationship",
-      icon: "fas fa-wrench",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "tech",
-        connectedField: "pairedConnectedPolGroups"
-      }
-    },
-    {
-      id: "pairedAllyTechGroups",
-      name: "Allied Sciences/Technological groups",
-      type: "manyToManyRelationship",
-      icon: "fas fa-wrench",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "tech",
-        connectedField: "pairedAllyPolGroups"
-      }
-    },
-    {
-      id: "pairedEnemyTechGroups",
-      name: "Enemy Sciences/Technological groups",
-      type: "manyToManyRelationship",
-      icon: "fas fa-wrench",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "tech",
-        connectedField: "pairedEnemyPolGroups"
-      }
-    },
-    {
-      id: "breakOther",
+      id: "breakDetails",
       name: "Connections - Details",
       type: "break",
       sizing: 12
     },
+
     {
-      id: "pairedSkills",
-      name: "Connected to Skills/Spells/Other",
+      id: "pairedSkillsPositive",
+      name: "Caused by positive Skills/Spells/Other",
       type: "manyToManyRelationship",
       icon: "mdi-sword-cross",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "skills",
-        connectedField: "pairedPoliticalGroupsSkills"
+        connectedField: "pairedConditionsPositive"
       }
     },
     {
-      id: "pairedConnectedItems",
-      name: "Connected to Items",
+      id: "pairedSkillsNegative",
+      name: "Caused by negative Skills/Spells/Other",
+      type: "manyToManyRelationship",
+      icon: "mdi-sword-cross",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "skills",
+        connectedField: "pairedConditionsNegative"
+      }
+    },
+    {
+      id: "pairedSkillsOther",
+      name: "Caused by neutral/other Skills/Spells/Other",
+      type: "manyToManyRelationship",
+      icon: "mdi-sword-cross",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "skills",
+        connectedField: "pairedConditionsOther"
+      }
+    },
+
+    {
+      id: "pairedItemsPositive",
+      name: "Boon caused by Items",
       type: "manyToManyRelationship",
       icon: "mdi-sword",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "items",
-        connectedField: "pairedConnectedPolGroups"
+        connectedField: "pairedConditionsPositive"
       }
     },
     {
-      id: "pairedConnectedProfessions",
-      name: "Connected to Occupations/Classes",
+      id: "pairedItemsNegative",
+      name: "Affliction caused by Items",
       type: "manyToManyRelationship",
-      icon: "fab fa-pied-piper-hat",
+      icon: "mdi-sword",
       sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "professions",
-        connectedField: "pairedConnectedPolGroups"
+        connectedObjectType: "items",
+        connectedField: "pairedConditionsNegative"
       }
     },
     {
-      id: "pairedConditions",
-      name: "Connected to Afflictions/Boons/Conditions",
+      id: "pairedItemsOther",
+      name: "Other Condition caused by Items",
       type: "manyToManyRelationship",
-      icon: "mdi-virus",
+      icon: "mdi-sword",
       sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "conditions",
-        connectedField: "pairedRacesPoliticalGroups"
+        connectedObjectType: "items",
+        connectedField: "pairedConditionsOther"
+      }
+    },
+    {
+      id: "pairedItemsAfflicting",
+      name: "Affecting the following Items",
+      type: "manyToManyRelationship",
+      icon: "mdi-sword",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "items",
+        connectedField: "pairedConditionsAfflicting"
+      }
+    },
+
+    {
+      id: "pairedResourcesPositive",
+      name: "Caused by positive Resources/Materials",
+      type: "manyToManyRelationship",
+      icon: "mdi-gold",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "resources",
+        connectedField: "pairedConditionsPositive"
+      }
+    },
+    {
+      id: "pairedResourcesNegative",
+      name: "Caused by negative Resources/Materials",
+      type: "manyToManyRelationship",
+      icon: "mdi-gold",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "resources",
+        connectedField: "pairedConditionsNegative"
+      }
+    },
+    {
+      id: "pairedResourcesOther",
+      name: "Caused by neutral/other Resources/Materials",
+      type: "manyToManyRelationship",
+      icon: "mdi-gold",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "resources",
+        connectedField: "pairedConditionsOther"
       }
     }
 

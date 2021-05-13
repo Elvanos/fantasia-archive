@@ -140,6 +140,7 @@
           col-lg-${determineSize_LG(field)}
           col-xl-${determineSize_XL(field)}
           q-mb-md
+          documentColumnWrapper
         `">
 
           <Field_Break
@@ -793,6 +794,9 @@ export default class PageDocumentDisplay extends BaseClass {
    * Checks if the field in question
    */
   hasValueFieldFilter (field: any) {
+    if (this.retrieveFieldType(this.currentData, field.id) === "break") {
+      return true
+    }
     if (!this.hideEmptyFields && !this.retrieveFieldValue(this.currentData, "finishedSwitch")) {
       return true
     }
@@ -1007,6 +1011,10 @@ export default class PageDocumentDisplay extends BaseClass {
 </style>
 
 <style lang="scss">
+.documentColumnWrapper {
+  flex-grow: 1;
+}
+
 .separatorWrapper {
   margin-top: auto;
 }

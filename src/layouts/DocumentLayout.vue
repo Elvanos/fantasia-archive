@@ -118,7 +118,20 @@ export default class DocumentLayout extends BaseClass {
 
     const allObjectBlueprints = (await retrieveAllBlueprints()).rows.map((blueprint) => {
       return blueprint.doc
-    }) as I_Blueprint[]
+    })
+    // @ts-ignore
+      .sort((a: I_Blueprint, b: I_Blueprint) => {
+        const order1 = a.order
+        const order2 = b.order
+        if (order1 > order2) {
+          return -1
+        }
+        if (order1 < order2) {
+          return 1
+        }
+
+        return 0
+      }) as I_Blueprint[]
 
     this.SSET_allBlueprints(allObjectBlueprints)
   }

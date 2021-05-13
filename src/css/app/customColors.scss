@@ -5,7 +5,15 @@
     color: $color;
   }
 
+  .text-#{$name}-imp {
+    color: $color !important;
+  }
+
   .bg-#{$name} {
     background-color: $color;
+  }
+
+  .bg-#{$name}-imp {
+    background-color: $color !important;
   }
 }

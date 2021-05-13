@@ -1,11 +1,10 @@
-import { RPGSystemsStats } from "./../extraFieldLists/RPGSystemsStats"
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
-export const racesBlueprint: I_Blueprint = {
-  _id: "races",
-  order: 340,
-  namePlural: "Species/Races/Flora/Fauna",
-  nameSingular: "Species/Races/Flora/Fauna",
-  icon: "fas fa-dragon",
+export const cultureBlueprint: I_Blueprint = {
+  _id: "culture",
+  order: 320,
+  namePlural: "Cultures/Art",
+  nameSingular: "Culture/Art",
+  icon: "fas fa-archway",
   category: "World",
   extraFields: [
     {
@@ -18,7 +17,7 @@ export const racesBlueprint: I_Blueprint = {
       id: "name",
       name: "Name",
       type: "text",
-      icon: "fas fa-dragon",
+      icon: "fas fa-archway",
       sizing: 3
     },
     {
@@ -32,7 +31,7 @@ export const racesBlueprint: I_Blueprint = {
         `,
       sizing: 3,
       relationshipSettings: {
-        connectedObjectType: "races"
+        connectedObjectType: "culture"
       }
     },
     {
@@ -155,283 +154,129 @@ export const racesBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "relatedRaces",
-      name: "Related Species/Races/Flora/Fauna",
-      type: "manyToManyRelationship",
-      icon: "fas fa-dragon",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "races",
-        connectedField: "relatedRaces"
-      }
+      id: "traits",
+      name: "Unique/Defining Features",
+      type: "list",
+      icon: "mdi-guy-fawkes-mask",
+      sizing: 6
     },
     {
-      id: "memberCount",
+      id: "population",
       name: "Estimated population",
       type: "text",
       icon: "mdi-account-group",
-      sizing: 2
+      sizing: 3
     },
     {
-      id: "age",
-      name: "Average lifespan",
-      type: "text",
-      icon: "mdi-timer-sand-empty",
-      sizing: 2
-    },
-    {
-      id: "ageAdult",
-      name: "Average adulthood",
-      type: "text",
-      icon: "mdi-timer-sand",
-      sizing: 2
-    },
-    {
-      id: "ageOldest",
-      name: "Oldest known",
-      type: "text",
-      icon: "mdi-timer-sand-full",
-      sizing: 2
-    },
-    {
-      id: "height",
-      name: "Average height",
-      type: "text",
-      icon: "mdi-human-male-height-variant",
-      sizing: 2
-    },
-    {
-      id: "weight",
-      name: "Average weight",
-      type: "text",
-      icon: "mdi-weight",
-      sizing: 2
-    },
-    {
-      id: "beingType",
-      name: "Type of being",
+      id: "typeCulture",
+      name: "Type",
       type: "multiSelect",
-      icon: "fas fa-paw",
-      sizing: 4,
+      icon: "mdi-eiffel-tower",
+      sizing: 3,
       predefinedSelectValues: [
-        "Amphibian",
-        "Animal",
-        "Artificial",
-        "Bacteria",
-        "Bird",
-        "Draconoid",
-        "Elemental",
-        "Fish",
-        "Humanoid",
-        "Insect",
-        "Lichen",
-        "Mammal",
-        "Mushroom",
-        "Plant",
-        "Reptile",
-        "Spiritual",
-        "Virus",
+        "Architecture",
+        "Contemporary",
+        "Craft",
+        "Literary",
+        "Musical",
+        "Oral",
+        "Sculptural",
+        "Social",
+        "Theatrica",
+        "Traditional",
+        "Visual arts",
         "Other"
       ]
     },
     {
-      id: "sentience",
-      name: "Level of sapience",
-      type: "multiSelect",
-      icon: "fas fa-brain",
-      sizing: 4,
-      predefinedSelectValues: [
-        "Ascended",
-        "Half-sapient",
-        "Hivemind",
-        "Non-sapient",
-        "Sapient",
-        "Other"
-      ]
-    },
-    {
-      id: "pairedCharacter",
-      name: "Characters of Species/Races/Flora/Fauna",
+      id: "relatedCharacters",
+      name: "Connected Characters",
       type: "manyToManyRelationship",
       icon: "mdi-account",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "characters",
-        connectedField: "pairedRace"
+        connectedField: "relatedCultures"
       }
     },
     {
-      id: "pairedConnectedPlaces",
-      name: "Inhabited Locations",
+      id: "relatedRaces",
+      name: "Common among Species/Races/Flora/Fauna",
+      type: "manyToManyRelationship",
+      icon: "fas fa-dragon",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "races",
+        connectedField: "relatedCultures"
+      }
+    },
+    {
+      id: "relatedLocations",
+      name: "Common in Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "locations",
-        connectedField: "pairedConnectedRaces"
+        connectedField: "relatedCultures"
       }
     },
     {
-      id: "relatedCultures",
-      name: "Connected to Culture/Art",
+      id: "pairedEvents",
+      name: "Connected to Events",
       type: "manyToManyRelationship",
-      icon: "fas fa-archway",
-      sizing: 4,
+      icon: "mdi-calendar-text",
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "culture",
-        connectedField: "relatedRaces"
-      }
-    },
-    {
-      id: "localCurrencies",
-      name: "Commonly used Currencies",
-      type: "manyToManyRelationship",
-      icon: "fas fa-coins",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "currencies",
-        connectedField: "usedByRaces"
-      }
-    },
-    {
-      id: "localLanguages",
-      name: "Commonly spoken Languages",
-      type: "manyToManyRelationship",
-      icon: "mdi-book-alphabet",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "languages",
-        connectedField: "usedByRaces"
+        connectedObjectType: "events",
+        connectedField: "relatedCultures"
       }
     },
     {
       id: "pairedSkills",
-      name: "Common Skills/Spells/Other",
+      name: "Related Skills/Spells/Other",
       type: "manyToManyRelationship",
       icon: "mdi-sword-cross",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "skills",
-        connectedField: "pairedRacesSkills"
+        connectedField: "relatedCultures"
       }
     },
     {
-      id: "statsList",
-      name: "Stats/Attributes",
-      type: "list",
+      id: "pairedItems",
+      name: "Important Items",
+      type: "manyToManyRelationship",
       icon: "mdi-sword",
-      sizing: 12,
-      predefinedListExtras: {
-        reverse: true,
-        affix: "Stat/Attribute",
-        extraSelectValueList: RPGSystemsStats
-      }
-    },
-    {
-      id: "strengths",
-      name: "Strengths",
-      type: "list",
-      icon: "fas fa-plus-square",
-      sizing: 12,
-      predefinedListExtras: {
-        affix: "Impact",
-        extraSelectValueList: [
-          "Barely noticeable",
-          "Minor",
-          "Medium",
-          "Strong",
-          "Powerful",
-          "Overwhelming"
-        ]
-      }
-    },
-    {
-      id: "weaknesses",
-      name: "Weaknesses",
-      type: "list",
-      icon: "fas fa-minus-square",
-      sizing: 12,
-      predefinedListExtras: {
-        affix: "Severity",
-        extraSelectValueList: [
-          "Barely noticeable",
-          "Minor",
-          "Medium",
-          "Severe",
-          "Imcapacitating",
-          "Deadly"
-        ]
-      }
-    },
-    {
-      id: "traits",
-      name: "Defining Features & Traits",
-      type: "list",
-      icon: "fas fa-dragon",
-      sizing: 12
-    },
-    {
-      id: "pairedConditionsPositive",
-      name: "Affected by Boons",
-      type: "manyToManyRelationship",
-      icon: "mdi-virus",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "conditions",
-        connectedField: "pairedRacesPositive"
+        connectedObjectType: "items",
+        connectedField: "relatedCultures"
       }
     },
     {
-      id: "pairedConditionsNegative",
-      name: "Affected by Afflictions",
+      id: "relatedProfessions",
+      name: "Common Occupations/Classes",
       type: "manyToManyRelationship",
-      icon: "mdi-virus",
-      sizing: 4,
+      icon: "fab fa-pied-piper-hat",
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "conditions",
-        connectedField: "pairedRacesNegative"
+        connectedObjectType: "professions",
+        connectedField: "relatedCultures"
       }
     },
     {
-      id: "pairedConditionsOther",
-      name: "Affected by Other conditions",
+      id: "relatedResouces",
+      name: "Important Resources/Materials",
       type: "manyToManyRelationship",
-      icon: "mdi-virus",
-      sizing: 4,
+      icon: "mdi-gold",
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "conditions",
-        connectedField: "pairedRacesOther"
+        connectedObjectType: "resources",
+        connectedField: "relatedCultures"
       }
     },
-    {
-      id: "commonNames",
-      name: "Common names among the Species/Races/Flora/Fauna",
-      type: "list",
-      icon: "fas fa-signature",
-      sizing: 12,
-      predefinedListExtras: {
-        affix: "Normally used for",
-        extraSelectValueList: [
-          "Child",
-          "Female",
-          "Honorary",
-          "Male",
-          "Other"
-        ]
-      }
-    },
-    {
-      id: "commonFamilyNames",
-      name: "Common Family/Clan names among the Species/Races/Flora/Fauna",
-      type: "list",
-      icon: "mdi-family-tree",
-      sizing: 12,
-      predefinedListExtras: {
-        affix: "Note",
-        extraSelectValueList: [
-        ]
-      }
-    },
+
     {
       id: "description",
       name: "Description & History",
@@ -441,13 +286,13 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "traditions",
-      name: "Traditions & Customs",
+      name: "Connected Traditions & Customs to the myth, legend or story",
       type: "wysiwyg",
       icon: "mdi-book-open-page-variant-outline",
       sizing: 12
     },
     {
-      id: "breakNotes",
+      id: "breakStory",
       name: "Connections - Story/Lore",
       type: "break",
       sizing: 12
@@ -460,57 +305,18 @@ export const racesBlueprint: I_Blueprint = {
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "loreNotes",
-        connectedField: "pairedConnectedRaces"
+        connectedField: "pairedConnectedCultures"
       }
     },
     {
-      id: "pairedConnectedMyths",
+      id: "pairedOtherMyths",
       name: "Connected to Myths, legends and stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "myths",
-        connectedField: "pairedConnectedRaces"
-      }
-    },
-    {
-      id: "breakOther",
-      name: "Connections - World & Details",
-      type: "break",
-      sizing: 12
-    },
-    {
-      id: "connectedEvents",
-      name: "Connected to important Events",
-      type: "manyToManyRelationship",
-      icon: "mdi-calendar-text",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "events",
-        connectedField: "pairedRaces"
-      }
-    },
-    {
-      id: "pairedConnectedItems",
-      name: "Connected to Items",
-      type: "manyToManyRelationship",
-      icon: "mdi-sword",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "items",
-        connectedField: "pairedConnectedRaces"
-      }
-    },
-    {
-      id: "pairedConnectedResources",
-      name: "Connected to Resources/Materials",
-      type: "manyToManyRelationship",
-      icon: "mdi-gold",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "resources",
-        connectedField: "pairedConnectedRaces"
+        connectedField: "pairedCultures"
       }
     },
     {
@@ -520,58 +326,58 @@ export const racesBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "commonInPoliticalGroups",
-      name: "Common in Ideologies/Political groups",
+      id: "pairedConnectedPolGroups",
+      name: "Connected to Ideologies/Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
-        connectedField: "connectedRaces"
+        connectedField: "pairedConnectedCultures"
       }
     },
     {
-      id: "commonInOtherGroups",
-      name: "Common in Organizations/Other groups",
-      type: "manyToManyRelationship",
-      icon: "mdi-account-group",
-      sizing: 6,
-      relationshipSettings: {
-        connectedObjectType: "guilds",
-        connectedField: "connectedRaces"
-      }
-    },
-    {
-      id: "commonInReligiousGroups",
-      name: "Common in Teachings/Religious groups",
+      id: "pairedConnectedReligiousGroups",
+      name: "Connected to Teachings/Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "religions",
-        connectedField: "connectedRaces"
+        connectedField: "pairedConnectedCultures"
       }
     },
     {
-      id: "commonInMagicGroups",
-      name: "Common in Magical groups",
+      id: "pairedConnectedOtherGroups",
+      name: "Connected to Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "pairedConnectedCultures"
+      }
+    },
+    {
+      id: "pairedConnectedMagicGroups",
+      name: "Connected to Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "magic",
-        connectedField: "connectedRaces"
+        connectedField: "pairedConnectedCultures"
       }
     },
     {
-      id: "commonInTechGroups",
-      name: "Common in Sciencific/Technological groups",
+      id: "pairedConnectedTechGroups",
+      name: "Connected to Sciences/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "tech",
-        connectedField: "connectedRaces"
+        connectedField: "pairedConnectedCultures"
       }
     }
   ]

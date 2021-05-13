@@ -1,10 +1,11 @@
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const locationsBlueprint: I_Blueprint = {
   _id: "locations",
-  order: 17,
+  order: 360,
   namePlural: "Locations/Geography",
   nameSingular: "Location/Geography",
   icon: "mdi-map-marker-radius",
+  category: "World",
   extraFields: [
     {
       id: "breakDocumentSettings",
@@ -153,15 +154,11 @@ export const locationsBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "connectedLocations",
-      name: "Connected Locations",
-      type: "manyToManyRelationship",
-      icon: "mdi-map-marker-radius",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "locations",
-        connectedField: "connectedLocations"
-      }
+      id: "traits",
+      name: "Unusual features/Traits",
+      type: "list",
+      icon: "mdi-guy-fawkes-mask",
+      sizing: 4
     },
     {
       id: "locationType",
@@ -233,22 +230,61 @@ export const locationsBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "traits",
-      name: "Unusual features/Traits",
-      type: "list",
-      icon: "mdi-guy-fawkes-mask",
-      sizing: 4
+      id: "relatedCultures",
+      name: "Local Cultures/Art",
+      type: "manyToManyRelationship",
+      icon: "fas fa-archway",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "culture",
+        connectedField: "relatedLocations"
+      }
+    },
+    {
+      id: "connectedProfessions",
+      name: "Common Occupations/Classes",
+      type: "manyToManyRelationship",
+      icon: "fab fa-pied-piper-hat",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "professions",
+        connectedField: "connectedLocations"
+      }
+    },
+    {
+      id: "connectedResources",
+      name: "Local Resources/Materials",
+      type: "manyToManyRelationship",
+      icon: "mdi-gold",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "resources",
+        connectedField: "connectedLocations"
+      }
+    },
+    {
+      id: "connectedLocations",
+      name: "Other connected Locations",
+      type: "manyToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "connectedLocations"
+      }
     },
     {
       id: "description",
       name: "Description & History",
       type: "wysiwyg",
+      icon: "mdi-book-open-page-variant-outline",
       sizing: 12
     },
     {
       id: "traditions",
       name: "Traditions & Customs",
       type: "wysiwyg",
+      icon: "mdi-book-open-page-variant-outline",
       sizing: 12
     },
     {
@@ -259,7 +295,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedOriginCharacters",
-      name: "Characters originated from location",
+      name: "Characters originated from the location",
       type: "manyToSingleRelationship",
       icon: "mdi-account",
       sizing: 4,
@@ -270,7 +306,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedCurrentCharacters",
-      name: "Characters currently living in location",
+      name: "Characters currently living in the location",
       type: "manyToSingleRelationship",
       icon: "mdi-account",
       sizing: 4,
@@ -303,7 +339,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedRaces",
-      name: "Local Species/Races/Flora/Faunas",
+      name: "Local Species/Races/Flora/Fauna",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
       sizing: 6,
@@ -313,8 +349,111 @@ export const locationsBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "breakNotes",
+      name: "Connections - Story/Lore",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedNotes",
+      name: "Connected to Lore notes/Other notes",
+      type: "manyToManyRelationship",
+      icon: "mdi-script-text-outline",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "loreNotes",
+        connectedField: "pairedConnectedLocation"
+      }
+    },
+    {
+      id: "pairedConnectedMyths",
+      name: "Connected to Myths, legends and stories",
+      type: "manyToManyRelationship",
+      icon: "fas fa-journal-whills",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "myths",
+        connectedField: "pairedConnectedLocations"
+      }
+    },
+
+    {
+      id: "breakOther",
+      name: "Connections - World & Details",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedEvent",
+      name: "Connected to Events",
+      type: "manyToManyRelationship",
+      icon: "mdi-calendar-text",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "events",
+        connectedField: "pairedLocations"
+      }
+    },
+    {
+      id: "pairedSkills",
+      name: "Connected to Skills/Spells/Other",
+      type: "manyToManyRelationship",
+      icon: "mdi-sword-cross",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "skills",
+        connectedField: "pairedLocationsSkills"
+      }
+    },
+    {
+      id: "pairedConnectedItems",
+      name: "Connected to Items",
+      type: "manyToManyRelationship",
+      icon: "mdi-sword",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "items",
+        connectedField: "pairedConnectedLocations"
+      }
+    },
+
+    {
+      id: "pairedConditionsPositive",
+      name: "Affected by Boons",
+      type: "manyToManyRelationship",
+      icon: "mdi-virus",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "conditions",
+        connectedField: "pairedLocationsPositive"
+      }
+    },
+    {
+      id: "pairedConditionsNegative",
+      name: "Affected by Afflictions",
+      type: "manyToManyRelationship",
+      icon: "mdi-virus",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "conditions",
+        connectedField: "pairedLocationsNegative"
+      }
+    },
+    {
+      id: "pairedConditionsOther",
+      name: "Affected by Other conditions",
+      type: "manyToManyRelationship",
+      icon: "mdi-virus",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "conditions",
+        connectedField: "pairedLocationsOther"
+      }
+    },
+
+    {
       id: "breakGroups",
-      name: "Involved groups",
+      name: "Connections - Groups/Teachings",
       type: "break",
       sizing: 12
     },
@@ -365,7 +504,7 @@ export const locationsBlueprint: I_Blueprint = {
 
     {
       id: "governReligious",
-      name: "Governing Religious groups",
+      name: "Governing Teachings/Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 6,
@@ -376,7 +515,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedReligious",
-      name: "Connected Religious groups",
+      name: "Connected Teachings/Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 6,
@@ -387,7 +526,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "governMagical",
-      name: "Governing Magical groups",
+      name: "Governing Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -398,7 +537,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedMagical",
-      name: "Connected Magical groups",
+      name: "Connected Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
@@ -409,7 +548,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "governTech",
-      name: "Governing Technological/Scientific groups",
+      name: "Governing Sciences/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
@@ -420,7 +559,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedTech",
-      name: "Connected Technological/Scientific groups",
+      name: "Connected Sciences/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 6,
@@ -428,63 +567,6 @@ export const locationsBlueprint: I_Blueprint = {
         connectedObjectType: "tech",
         connectedField: "connectedLocations"
       }
-    },
-    {
-      id: "breakOther",
-      name: "Other details",
-      type: "break",
-      sizing: 12
-    },
-    {
-      id: "pairedEvent",
-      name: "Connected to Events",
-      type: "manyToManyRelationship",
-      icon: "mdi-calendar-text",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "events",
-        connectedField: "pairedLocations"
-      }
-    },
-    {
-      id: "pairedConnectedMyths",
-      name: "Connected to Myths, legends and stories",
-      type: "manyToManyRelationship",
-      icon: "fas fa-journal-whills",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "myths",
-        connectedField: "pairedConnectedLocations"
-      }
-    },
-    {
-      id: "pairedConnectedItems",
-      name: "Connected to Items",
-      type: "manyToManyRelationship",
-      icon: "mdi-sword-cross",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "items",
-        connectedField: "pairedConnectedLocations"
-      }
-    },
-    {
-      id: "breakNotes",
-      name: "Notes",
-      type: "break",
-      sizing: 12
-    },
-    {
-      id: "pairedConnectedNotes",
-      name: "Connected to Lore notes/Other notes",
-      type: "manyToManyRelationship",
-      icon: "mdi-script-text-outline",
-      sizing: 12,
-      relationshipSettings: {
-        connectedObjectType: "loreNotes",
-        connectedField: "pairedConnectedLocation"
-      }
     }
-
   ]
 }

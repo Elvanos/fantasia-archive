@@ -29,13 +29,16 @@ export const single_changeRelationshipToAnotherObject = async (
 
   if (previousValue && typeof currentValue !== "string" && currentValue) {
     if (fieldType === "singleToSingleRelationship") {
-      updatedDocuments.push(await single_removeRelationshipFromAnotherObject(currentValue, previousValue))
+      const updatedDocument = await single_removeRelationshipFromAnotherObject(currentValue, previousValue)
+      if (updatedDocument) {
+        updatedDocuments.push(updatedDocument)
+      }
       updatedDocuments.push(await single_addRelationshipToAnotherObject(field, currentValue, currentDocument))
     }
     if (fieldType === "singleToManyRelationship") {
-      const removedValued = await many_removeRelationshipFromAnotherObject(previousValue, currentDocument)
-      if (removedValued) {
-        updatedDocuments.push(removedValued)
+      const removedValues = await many_removeRelationshipFromAnotherObject(previousValue, currentDocument)
+      if (removedValues) {
+        updatedDocuments.push(removedValues)
       }
       updatedDocuments.push(await many_addRelationshipToAnotherObject(field, currentValue, currentDocument))
     }
@@ -43,12 +46,15 @@ export const single_changeRelationshipToAnotherObject = async (
 
   if ((previousValue && typeof currentValue === "string") || (previousValue && !currentValue)) {
     if (fieldType === "singleToSingleRelationship") {
-      updatedDocuments.push(await single_removeRelationshipFromAnotherObject(currentValue, previousValue))
+      const updatedDocument = await single_removeRelationshipFromAnotherObject(currentValue, previousValue)
+      if (updatedDocument) {
+        updatedDocuments.push(updatedDocument)
+      }
     }
     if (fieldType === "singleToManyRelationship") {
-      const removedValued = await many_removeRelationshipFromAnotherObject(previousValue, currentDocument)
-      if (removedValued) {
-        updatedDocuments.push(removedValued)
+      const removedValues = await many_removeRelationshipFromAnotherObject(previousValue, currentDocument)
+      if (removedValues) {
+        updatedDocuments.push(removedValues)
       }
     }
   }
@@ -108,9 +114,16 @@ export const single_removeRelationshipFromAnotherObject = async (
   const typeToFind = previousValue.type
   const idToFind = previousValue._id
 
-  window.FA_dbs[typeToFind] = new PouchDB(typeToFind)
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  const pairedDocument = await window.FA_dbs[typeToFind].get(idToFind) as I_OpenedDocument
+  let pairedDocument = false as unknown as I_OpenedDocument
+  try {
+    window.FA_dbs[typeToFind] = new PouchDB(typeToFind)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    pairedDocument = await window.FA_dbs[typeToFind].get(idToFind)
+  }
+  catch (error) {
+    return pairedDocument
+  }
+
   const pairedField = previousValue.pairedField
   const pairedFieldIndex = pairedDocument.extraFields.findIndex(e => e.id === pairedField)
 
@@ -153,22 +166,20 @@ export const many_changeRelationshipToAnotherObject = async (
 
   for (const removedValue of removedValues) {
     if (fieldType === "manyToManyRelationship") {
-      const removedValued = await many_removeRelationshipFromAnotherObject(removedValue, currentDocument)
-      if (removedValued) {
-        updatedDocuments.push(removedValued)
+      const removedValues = await many_removeRelationshipFromAnotherObject(removedValue, currentDocument)
+      if (removedValues) {
+        updatedDocuments.push(removedValues)
       }
     }
 
     if (fieldType === "manyToSingleRelationship") {
       // @ts-ignore
-      const removedValued = await single_removeRelationshipFromAnotherObject(removedValue, {})
-      if (removedValued) {
-        updatedDocuments.push(removedValued)
+      const removedValues = await single_removeRelationshipFromAnotherObject(removedValue, {})
+      if (removedValues) {
+        updatedDocuments.push(removedValues)
       }
     }
   }
-
-  // console.log(updatedDocuments)
 
   await BlueprintsDB.close()
 
@@ -238,10 +249,11 @@ export const many_removeRelationshipFromAnotherObject = async (
   const typeToFind = previousValue.type
   const idToFind = previousValue._id
 
-  const PairedObjectDB = new PouchDB(typeToFind)
   let pairedDocument = false as unknown as I_OpenedDocument
   try {
-    pairedDocument = await PairedObjectDB.get(idToFind)
+    window.FA_dbs[typeToFind] = new PouchDB(typeToFind)
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    pairedDocument = await window.FA_dbs[typeToFind].get(idToFind)
   }
   catch (e) {
     return pairedDocument
@@ -257,7 +269,7 @@ export const many_removeRelationshipFromAnotherObject = async (
   currentValues.splice(indexToRemove, 1)
   pairedDocument.extraFields[pairedFieldIndex].value.value = currentValues
 
-  await PairedObjectDB.put(pairedDocument)
-
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  await window.FA_dbs[typeToFind].put(pairedDocument)
   return pairedDocument
 }

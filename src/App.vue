@@ -94,7 +94,7 @@ export default class App extends BaseClass {
 
     await this.loadCorkboardCotent()
 
-    // Load the popup hint on start
+    // Load the popup hint on
     this.loadHintPopup()
 
     // React to keybind presses

@@ -265,6 +265,10 @@ export default class DocumentPreview extends BaseClass {
    * Checks if the field in question
    */
   hasValueFieldFilter (field: any) {
+    if (this.retrieveFieldType(this.localDocument, field.id) === "break") {
+      return true
+    }
+
     const value = this.retrieveFieldValue(this.localDocument, field.id)
 
     if (!value ||
@@ -429,6 +433,15 @@ export default class DocumentPreview extends BaseClass {
   min-height: 600px;
   background-color: map-get($customColors, 'gunmetal-lighter') !important;
   color: #fff;
+
+  .inputWrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  h5 {
+    font-size: 19px;
+  }
 
   .text-primary {
     color: #ffd673 !important;

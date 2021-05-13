@@ -109,7 +109,7 @@
               transition-show="scale"
               transition-hide="scale"
             >
-              <h5 class="q-px-lg q-my-lg">
+              <h5 class="q-px-xl q-my-lg">
                 Document distribution - <span class="text-bold text-primary">{{allDocuments}}</span> total
               </h5>
               <apexchart v-if="graphDataShowing" type="bar" height="350" width="900" :options="chartOptions" :series="series" />
@@ -419,6 +419,7 @@ export default class ProjectScreen extends BaseClass {
 }
 
 .mainProjectTitle {
+  margin-bottom: 30px;
   color: var(--q-color-dark);
 }
 
@@ -434,6 +435,8 @@ body.body--dark {
 
 .apexcharts-canvas {
   padding-bottom: 50px;
+  padding-left: 30px;
+  padding-right: 30px;
   box-sizing: content-box !important;
 
   path {
@@ -441,7 +444,8 @@ body.body--dark {
   }
 
   svg {
-    height: 400px;
+    height: 425px;
+    overflow: visible;
   }
 
   .apexcharts-series path {
@@ -450,8 +454,8 @@ body.body--dark {
 }
 
 .documentGraphParent {
-  min-height: 500px;
-  max-height: 500px;
+  min-height: 525px;
+  max-height: 525px;
   overflow-x: auto;
   overflow-y: hidden;
   max-width: calc(100% - 110px);
@@ -459,8 +463,8 @@ body.body--dark {
 }
 
 .documentGraphWrapper {
-  min-height: 500px;
-  max-height: 500px;
+  min-height: 525px;
+  max-height: 525px;
   overflow: hidden;
   width: 950px;
 }

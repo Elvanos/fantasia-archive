@@ -1,10 +1,11 @@
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const mythsBlueprint: I_Blueprint = {
   _id: "myths",
-  order: 6,
+  order: 430,
   namePlural: "Myths/Legends/Stories",
   nameSingular: "Myth/Legend/Story",
   icon: "fas fa-journal-whills",
+  category: "Story/Lore",
   extraFields: [
     {
       id: "breakDocumentSettings",
@@ -153,14 +154,75 @@ export const mythsBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
+      id: "description",
+      name: "Description & History",
+      type: "wysiwyg",
+      icon: "mdi-book-open-page-variant-outline",
+      sizing: 12
+    },
+    {
+      id: "traditions",
+      name: "Connected Traditions & Customs to the myth, legend or story",
+      type: "wysiwyg",
+      icon: "mdi-book-open-page-variant-outline",
+      sizing: 12
+    },
+
+    {
+      id: "breakStory",
+      name: "Connections - Story/Lore",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedNotes",
+      name: "Connected to Lore notes/Other notes",
+      type: "manyToManyRelationship",
+      icon: "mdi-script-text-outline",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "loreNotes",
+        connectedField: "pairedConnectedMyths"
+      }
+    },
+    {
       id: "pairedOtherMyths",
       name: "Connected to other Myths, legends and stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "myths",
         connectedField: "pairedOtherMyths"
+      }
+    },
+
+    {
+      id: "breakWorld",
+      name: "Connections - World",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedCharacter",
+      name: "Connected Characters",
+      type: "manyToManyRelationship",
+      icon: "mdi-account",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "pairedConnectedMyths"
+      }
+    },
+    {
+      id: "pairedConnectedLocations",
+      name: "Connected Locations",
+      type: "manyToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "pairedConnectedMyths"
       }
     },
     {
@@ -175,59 +237,8 @@ export const mythsBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "pairedItems",
-      name: "Connected to Items",
-      type: "manyToManyRelationship",
-      icon: "mdi-sword-cross",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "items",
-        connectedField: "pairedMyths"
-      }
-    },
-    {
-      id: "description",
-      name: "Description & History",
-      type: "wysiwyg",
-      sizing: 12
-    },
-    {
-      id: "traditions",
-      name: "Connected traditions & Customs to the myth, legend or story",
-      type: "wysiwyg",
-      sizing: 12
-    },
-    {
-      id: "breakRelasionships",
-      name: "Characters, locations and groups/institutions details",
-      type: "break",
-      sizing: 12
-    },
-    {
-      id: "pairedConnectedCharacter",
-      name: "Connected Characters",
-      type: "manyToManyRelationship",
-      icon: "mdi-account",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "characters",
-        connectedField: "pairedConnectedMyths"
-      }
-    },
-    {
-      id: "pairedConnectedLocations",
-      name: "Connected Locations",
-      type: "manyToManyRelationship",
-      icon: "mdi-map-marker-radius",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "locations",
-        connectedField: "pairedConnectedMyths"
-      }
-    },
-    {
       id: "pairedConnectedRaces",
-      name: "Connected to Species/Races/Flora/Faunas",
+      name: "Connected to Species/Races/Flora/Fauna",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
       sizing: 4,
@@ -237,11 +248,28 @@ export const mythsBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "pairedCultures",
+      name: "Connected to Cultures/Art",
+      type: "manyToManyRelationship",
+      icon: "fas fa-archway",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "culture",
+        connectedField: "pairedOtherMyths"
+      }
+    },
+    {
+      id: "breakGroups",
+      name: "Connections - Groups/Teachings",
+      type: "break",
+      sizing: 12
+    },
+    {
       id: "pairedConnectedPolGroups",
       name: "Connected to Ideologies/Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
         connectedField: "pairedConnectedMyths"
@@ -252,7 +280,7 @@ export const mythsBlueprint: I_Blueprint = {
       name: "Connected to Organizations/Other groups",
       type: "manyToManyRelationship",
       icon: "mdi-account-group",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "guilds",
         connectedField: "pairedConnectedMyths"
@@ -271,10 +299,10 @@ export const mythsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedMagicGroups",
-      name: "Connected to Magic/Spells",
+      name: "Connected to Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "magic",
         connectedField: "pairedConnectedMyths"
@@ -285,27 +313,71 @@ export const mythsBlueprint: I_Blueprint = {
       name: "Connected to Technologies/Sciences",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "tech",
         connectedField: "pairedConnectedMyths"
       }
     },
     {
-      id: "breakNotes",
-      name: "Notes",
+      id: "breakDetails",
+      name: "Connections - Details",
       type: "break",
       sizing: 12
     },
     {
-      id: "pairedConnectedNotes",
-      name: "Connected to Lore notes/Other notes",
+      id: "pairedSkills",
+      name: "Connected to Skills/Spells/Other",
       type: "manyToManyRelationship",
-      icon: "mdi-script-text-outline",
-      sizing: 12,
+      icon: "mdi-sword-cross",
+      sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "loreNotes",
-        connectedField: "pairedConnectedMyths"
+        connectedObjectType: "skills",
+        connectedField: "pairedMyths"
+      }
+    },
+    {
+      id: "pairedItems",
+      name: "Connected to Items",
+      type: "manyToManyRelationship",
+      icon: "mdi-sword",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "items",
+        connectedField: "pairedMyths"
+      }
+    },
+    {
+      id: "pairedProfessions",
+      name: "Connected to Occupations/Classes",
+      type: "manyToManyRelationship",
+      icon: "fab fa-pied-piper-hat",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "professions",
+        connectedField: "pairedMyths"
+      }
+    },
+    {
+      id: "pairedConditions",
+      name: "Connected to Afflictions/Boons/Conditions",
+      type: "manyToManyRelationship",
+      icon: "mdi-virus",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "conditions",
+        connectedField: "pairedMyths"
+      }
+    },
+    {
+      id: "pairedResources",
+      name: "Connected to Resources/Materials",
+      type: "manyToManyRelationship",
+      icon: "mdi-gold",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "resources",
+        connectedField: "pairedMyths"
       }
     }
 

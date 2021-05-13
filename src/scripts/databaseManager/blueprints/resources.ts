@@ -1,12 +1,11 @@
-import { RPGSystemsStats } from "./../extraFieldLists/RPGSystemsStats"
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
-export const racesBlueprint: I_Blueprint = {
-  _id: "races",
-  order: 340,
-  namePlural: "Species/Races/Flora/Fauna",
-  nameSingular: "Species/Races/Flora/Fauna",
-  icon: "fas fa-dragon",
-  category: "World",
+export const resourcesBlueprint: I_Blueprint = {
+  _id: "resources",
+  order: 140,
+  namePlural: "Resources/Materials",
+  nameSingular: "Resource/Material",
+  icon: "mdi-gold",
+  category: "Details",
   extraFields: [
     {
       id: "breakDocumentSettings",
@@ -18,7 +17,7 @@ export const racesBlueprint: I_Blueprint = {
       id: "name",
       name: "Name",
       type: "text",
-      icon: "fas fa-dragon",
+      icon: "mdi-gold",
       sizing: 3
     },
     {
@@ -32,7 +31,7 @@ export const racesBlueprint: I_Blueprint = {
         `,
       sizing: 3,
       relationshipSettings: {
-        connectedObjectType: "races"
+        connectedObjectType: "resources"
       }
     },
     {
@@ -154,282 +153,261 @@ export const racesBlueprint: I_Blueprint = {
       type: "break",
       sizing: 12
     },
+
     {
-      id: "relatedRaces",
-      name: "Related Species/Races/Flora/Fauna",
-      type: "manyToManyRelationship",
-      icon: "fas fa-dragon",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "races",
-        connectedField: "relatedRaces"
-      }
-    },
-    {
-      id: "memberCount",
-      name: "Estimated population",
-      type: "text",
-      icon: "mdi-account-group",
-      sizing: 2
-    },
-    {
-      id: "age",
-      name: "Average lifespan",
-      type: "text",
-      icon: "mdi-timer-sand-empty",
-      sizing: 2
-    },
-    {
-      id: "ageAdult",
-      name: "Average adulthood",
-      type: "text",
-      icon: "mdi-timer-sand",
-      sizing: 2
-    },
-    {
-      id: "ageOldest",
-      name: "Oldest known",
-      type: "text",
-      icon: "mdi-timer-sand-full",
-      sizing: 2
-    },
-    {
-      id: "height",
-      name: "Average height",
-      type: "text",
-      icon: "mdi-human-male-height-variant",
-      sizing: 2
-    },
-    {
-      id: "weight",
-      name: "Average weight",
-      type: "text",
-      icon: "mdi-weight",
-      sizing: 2
-    },
-    {
-      id: "beingType",
-      name: "Type of being",
-      type: "multiSelect",
-      icon: "fas fa-paw",
-      sizing: 4,
-      predefinedSelectValues: [
-        "Amphibian",
-        "Animal",
-        "Artificial",
-        "Bacteria",
-        "Bird",
-        "Draconoid",
-        "Elemental",
-        "Fish",
-        "Humanoid",
-        "Insect",
-        "Lichen",
-        "Mammal",
-        "Mushroom",
-        "Plant",
-        "Reptile",
-        "Spiritual",
-        "Virus",
-        "Other"
-      ]
-    },
-    {
-      id: "sentience",
-      name: "Level of sapience",
-      type: "multiSelect",
-      icon: "fas fa-brain",
-      sizing: 4,
-      predefinedSelectValues: [
-        "Ascended",
-        "Half-sapient",
-        "Hivemind",
-        "Non-sapient",
-        "Sapient",
-        "Other"
-      ]
-    },
-    {
-      id: "pairedCharacter",
-      name: "Characters of Species/Races/Flora/Fauna",
-      type: "manyToManyRelationship",
-      icon: "mdi-account",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "characters",
-        connectedField: "pairedRace"
-      }
-    },
-    {
-      id: "pairedConnectedPlaces",
-      name: "Inhabited Locations",
-      type: "manyToManyRelationship",
-      icon: "mdi-map-marker-radius",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "locations",
-        connectedField: "pairedConnectedRaces"
-      }
-    },
-    {
-      id: "relatedCultures",
-      name: "Connected to Culture/Art",
-      type: "manyToManyRelationship",
-      icon: "fas fa-archway",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "culture",
-        connectedField: "relatedRaces"
-      }
-    },
-    {
-      id: "localCurrencies",
-      name: "Commonly used Currencies",
-      type: "manyToManyRelationship",
-      icon: "fas fa-coins",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "currencies",
-        connectedField: "usedByRaces"
-      }
-    },
-    {
-      id: "localLanguages",
-      name: "Commonly spoken Languages",
-      type: "manyToManyRelationship",
-      icon: "mdi-book-alphabet",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "languages",
-        connectedField: "usedByRaces"
-      }
-    },
-    {
-      id: "pairedSkills",
-      name: "Common Skills/Spells/Other",
-      type: "manyToManyRelationship",
-      icon: "mdi-sword-cross",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "skills",
-        connectedField: "pairedRacesSkills"
-      }
-    },
-    {
-      id: "statsList",
-      name: "Stats/Attributes",
+      id: "features",
+      name: "Prominent features",
       type: "list",
-      icon: "mdi-sword",
-      sizing: 12,
-      predefinedListExtras: {
-        reverse: true,
-        affix: "Stat/Attribute",
-        extraSelectValueList: RPGSystemsStats
-      }
-    },
-    {
-      id: "strengths",
-      name: "Strengths",
-      type: "list",
-      icon: "fas fa-plus-square",
-      sizing: 12,
-      predefinedListExtras: {
-        affix: "Impact",
-        extraSelectValueList: [
-          "Barely noticeable",
-          "Minor",
-          "Medium",
-          "Strong",
-          "Powerful",
-          "Overwhelming"
-        ]
-      }
-    },
-    {
-      id: "weaknesses",
-      name: "Weaknesses",
-      type: "list",
-      icon: "fas fa-minus-square",
-      sizing: 12,
-      predefinedListExtras: {
-        affix: "Severity",
-        extraSelectValueList: [
-          "Barely noticeable",
-          "Minor",
-          "Medium",
-          "Severe",
-          "Imcapacitating",
-          "Deadly"
-        ]
-      }
-    },
-    {
-      id: "traits",
-      name: "Defining Features & Traits",
-      type: "list",
-      icon: "fas fa-dragon",
-      sizing: 12
-    },
-    {
-      id: "pairedConditionsPositive",
-      name: "Affected by Boons",
-      type: "manyToManyRelationship",
-      icon: "mdi-virus",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "conditions",
-        connectedField: "pairedRacesPositive"
-      }
-    },
-    {
-      id: "pairedConditionsNegative",
-      name: "Affected by Afflictions",
-      type: "manyToManyRelationship",
-      icon: "mdi-virus",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "conditions",
-        connectedField: "pairedRacesNegative"
-      }
-    },
-    {
-      id: "pairedConditionsOther",
-      name: "Affected by Other conditions",
-      type: "manyToManyRelationship",
-      icon: "mdi-virus",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "conditions",
-        connectedField: "pairedRacesOther"
-      }
-    },
-    {
-      id: "commonNames",
-      name: "Common names among the Species/Races/Flora/Fauna",
-      type: "list",
-      icon: "fas fa-signature",
-      sizing: 12,
-      predefinedListExtras: {
-        affix: "Normally used for",
-        extraSelectValueList: [
-          "Child",
-          "Female",
-          "Honorary",
-          "Male",
-          "Other"
-        ]
-      }
-    },
-    {
-      id: "commonFamilyNames",
-      name: "Common Family/Clan names among the Species/Races/Flora/Fauna",
-      type: "list",
-      icon: "mdi-family-tree",
+      icon: "mdi-guy-fawkes-mask",
       sizing: 12,
       predefinedListExtras: {
         affix: "Note",
         extraSelectValueList: [
         ]
+      }
+    },
+    {
+      id: "priceCurrencies",
+      name: "Price in Currencies",
+      type: "manyToNoneRelationship",
+      icon: "fas fa-coins",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "currencies"
+      }
+    },
+    {
+      id: "density",
+      name: "Density",
+      type: "text",
+      icon: "mdi-weight",
+      sizing: 3,
+      tooltip: `
+        This field is meant more for realistic world-building/sci-fi.
+        <br>
+        Feel free to skip it if you don't need it.
+      `
+    },
+    {
+      id: "hardness",
+      name: "Hardness",
+      type: "singleSelect",
+      icon: "mdi-shield-outline",
+      sizing: 3,
+      tooltip: `
+        A rough scale to help you determine how hard your materials are.
+        <br>
+        Please note that harness means that a harder material can scratch/pierce/drill through the softer one.
+        <br>
+        It does NOT mean that the material is automatically tougher as hardness tends to come with brittlenes.
+      `,
+      predefinedSelectValues: [
+        "1 (Talc)",
+        "2 (Calcium, Sulfur)",
+        "3 (Copper, Gold, Silver)",
+        "4 (Iron)",
+        "5 (Obsidian, Ordinary steel)",
+        "6 (Titanium)",
+        "7 (Quartz)",
+        "8 (Hardened steel)",
+        "9 (Tungsten carbide)",
+        "10 (Diamond)"
+      ]
+    },
+    {
+      id: "biomeType",
+      name: "Found in biomes",
+      type: "multiSelect",
+      icon: "mdi-pine-tree",
+      sizing: 4,
+      predefinedSelectValues: [
+        "Tropical Rainforest",
+        "Temperate Forest ",
+        "Desert (Sandy)",
+        "Desert (Arctic)",
+        "Tundra",
+        "Taiga (Boreal Forest) ",
+        "Grassland ",
+        "Savanna",
+        "Freshwater",
+        "Marine (Ocean/Sea)       ",
+        "High plateaus",
+        "Bog/Swamp",
+        "Caverns/Underground",
+        "Interstellar space",
+        "Non-physical",
+        "Other"
+
+      ]
+    },
+    {
+      id: "rarity",
+      name: "Rarity",
+      type: "singleSelect",
+      icon: "fas fa-chart-area",
+      sizing: 4,
+      predefinedSelectValues: [
+        "Common",
+        "Uncommon",
+        "Rare",
+        "Exceptionally rare",
+        "Next-to-impossible to obtain"
+      ]
+    },
+    {
+      id: "resourceType",
+      name: "Resources/Materials type",
+      type: "multiSelect",
+      icon: "mdi-diamond-stone",
+      sizing: 4,
+      predefinedSelectValues: [
+        "Alien",
+        "Arcane",
+        "Artificial",
+        "Energy",
+        "Ethereal",
+        "Extraterrestrial",
+        "Food",
+        "Fossil",
+        "Fuel",
+        "Gas",
+        "Liquid",
+        "Metal",
+        "Mineral",
+        "Mutator",
+        "Natural",
+        "Non-physical",
+        "Organic",
+        "Planar",
+        "Plasma",
+        "Radioactive",
+        "Refined",
+        "Supernatural",
+        "Transmutator",
+        "Waste",
+        "Other"
+      ]
+    },
+    {
+      id: "relatedResources",
+      name: "Related Resources/Materials",
+      type: "manyToManyRelationship",
+      icon: "mdi-gold",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "resources",
+        connectedField: "relatedResources"
+      }
+    },
+    {
+      id: "madeIntoResources",
+      name: "Made into Resources/Materials",
+      type: "manyToManyRelationship",
+      icon: "mdi-gold",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "resources",
+        connectedField: "madeFromResources"
+      }
+    },
+    {
+      id: "madeFromResources",
+      name: "Created from Resources/Materials",
+      type: "manyToManyRelationship",
+      icon: "mdi-gold",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "resources",
+        connectedField: "madeIntoResources"
+      }
+    },
+    {
+      id: "connectedLocations",
+      name: "Found in Locations",
+      type: "manyToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "connectedResources"
+      }
+    },
+    {
+      id: "relatedCultures",
+      name: "Connected to Cultures/Art",
+      type: "manyToManyRelationship",
+      icon: "fas fa-archway",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "culture",
+        connectedField: "relatedResouces"
+      }
+    },
+    {
+      id: "usedResources",
+      name: "Used by Occupations/Classes",
+      type: "manyToManyRelationship",
+      icon: "fab fa-pied-piper-hat",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "professions",
+        connectedField: "usedProfessions"
+      }
+    },
+    {
+      id: "producedResources",
+      name: "Produced by Occupations/Classes",
+      type: "manyToManyRelationship",
+      icon: "fab fa-pied-piper-hat",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "professions",
+        connectedField: "producedProfessions"
+      }
+    },
+    {
+      id: "pairedResourcesRequire",
+      name: "Required by Skills/Spells/Other",
+      type: "manyToManyRelationship",
+      icon: "mdi-sword-cross",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "skills",
+        connectedField: "pairedResourcesRequire"
+      }
+    },
+    {
+      id: "pairedResourcesCreate",
+      name: "Created by Skills/Spells/Other",
+      type: "manyToManyRelationship",
+      icon: "mdi-sword-cross",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "skills",
+        connectedField: "pairedResourcesCreate"
+      }
+    },
+
+    {
+      id: "pairedItemMade",
+      name: "Resource/Material used to make Items",
+      type: "manyToManyRelationship",
+      icon: "mdi-sword",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "items",
+        connectedField: "pairedResourcesMade"
+      }
+    },
+    {
+      id: "pairedItemProduced",
+      name: "Resource/Material produced by Items",
+      type: "manyToManyRelationship",
+      icon: "mdi-sword",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "items",
+        connectedField: "pairedResourcesProduced"
       }
     },
     {
@@ -441,9 +419,8 @@ export const racesBlueprint: I_Blueprint = {
     },
     {
       id: "traditions",
-      name: "Traditions & Customs",
+      name: "Traditions & customs connected to the item",
       type: "wysiwyg",
-      icon: "mdi-book-open-page-variant-outline",
       sizing: 12
     },
     {
@@ -460,59 +437,84 @@ export const racesBlueprint: I_Blueprint = {
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "loreNotes",
-        connectedField: "pairedConnectedRaces"
+        connectedField: "pairedConnectedResources"
       }
     },
     {
-      id: "pairedConnectedMyths",
-      name: "Connected to Myths, legends and stories",
+      id: "pairedMyths",
+      name: "Connected to Myths/Legends/Stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "myths",
-        connectedField: "pairedConnectedRaces"
+        connectedField: "pairedResources"
       }
     },
+
     {
-      id: "breakOther",
+      id: "breakWorld",
       name: "Connections - World & Details",
       type: "break",
       sizing: 12
     },
     {
-      id: "connectedEvents",
-      name: "Connected to important Events",
+      id: "pairedCharacter",
+      name: "Connected to Characters",
       type: "manyToManyRelationship",
-      icon: "mdi-calendar-text",
-      sizing: 4,
+      icon: "mdi-account",
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "events",
-        connectedField: "pairedRaces"
+        connectedObjectType: "characters",
+        connectedField: "pairedResources"
+      }
+    },
+
+    {
+      id: "pairedConnectedRaces",
+      name: "Connected to Species/Races/Flora/Fauna",
+      type: "manyToManyRelationship",
+      icon: "fas fa-dragon",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "races",
+        connectedField: "pairedConnectedResources"
       }
     },
     {
-      id: "pairedConnectedItems",
-      name: "Connected to Items",
+      id: "pairedConditionsPositive",
+      name: "Causing Boons",
       type: "manyToManyRelationship",
-      icon: "mdi-sword",
+      icon: "mdi-virus",
       sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "items",
-        connectedField: "pairedConnectedRaces"
+        connectedObjectType: "conditions",
+        connectedField: "pairedResourcesPositive"
       }
     },
     {
-      id: "pairedConnectedResources",
-      name: "Connected to Resources/Materials",
+      id: "pairedConditionsNegative",
+      name: "Causing Afflictions",
       type: "manyToManyRelationship",
-      icon: "mdi-gold",
+      icon: "mdi-virus",
       sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "resources",
-        connectedField: "pairedConnectedRaces"
+        connectedObjectType: "conditions",
+        connectedField: "pairedResourcesNegative"
       }
     },
+    {
+      id: "pairedConditionsOther",
+      name: "Causing Other conditions",
+      type: "manyToManyRelationship",
+      icon: "mdi-virus",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "conditions",
+        connectedField: "pairedResourcesOther"
+      }
+    },
+
     {
       id: "breakPolitics",
       name: "Connections - Groups/Teachings",
@@ -520,58 +522,58 @@ export const racesBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "commonInPoliticalGroups",
-      name: "Common in Ideologies/Political groups",
+      id: "pairedConnectedPoliticalGroups",
+      name: "Connected to Ideologies/Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
-        connectedField: "connectedRaces"
+        connectedField: "pairedConnectedResources"
       }
     },
     {
-      id: "commonInOtherGroups",
-      name: "Common in Organizations/Other groups",
-      type: "manyToManyRelationship",
-      icon: "mdi-account-group",
-      sizing: 6,
-      relationshipSettings: {
-        connectedObjectType: "guilds",
-        connectedField: "connectedRaces"
-      }
-    },
-    {
-      id: "commonInReligiousGroups",
-      name: "Common in Teachings/Religious groups",
+      id: "pairedConnectedReligiousGroups",
+      name: "Connected to Teachings/Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "religions",
-        connectedField: "connectedRaces"
+        connectedField: "pairedConnectedResources"
       }
     },
     {
-      id: "commonInMagicGroups",
-      name: "Common in Magical groups",
+      id: "pairedConnectedOtherGroups",
+      name: "Connected to Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "pairedConnectedResources"
+      }
+    },
+    {
+      id: "pairedConnectedMagicGroups",
+      name: "Connected to Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "magic",
-        connectedField: "connectedRaces"
+        connectedField: "pairedConnectedResources"
       }
     },
     {
-      id: "commonInTechGroups",
-      name: "Common in Sciencific/Technological groups",
+      id: "pairedConnectedTechGroups",
+      name: "Connected to Sciences/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "tech",
-        connectedField: "connectedRaces"
+        connectedField: "pairedConnectedResources"
       }
     }
   ]

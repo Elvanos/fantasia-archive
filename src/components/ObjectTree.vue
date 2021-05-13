@@ -68,7 +68,7 @@
           @mouseleave="setDocumentPreviewClose"
         >
          <documentPreview
-          v-if="!preventPreviewsTree && !prop.node.isRoot && !prop.node.isTag && !prop.node.specialLabel"
+          v-if="!preventPreviewsTree && !prop.node.isRoot && !prop.node.isTag && !prop.node.specialLabel && !prop.node.isModule"
           :document-id="prop.node._id"
           :custom-anchor="'center right'"
           :custom-self="'center left'"
@@ -76,11 +76,12 @@
         />
 
           <div class="documentLabel"
+            :class="{'text-satin-sheen-gold-bright-imp': prop.node.isModule, 'text-weight-bold': prop.node.isModule}"
             :style="`color: ${prop.node.color};`"
            >
           <q-icon
             :style="`color: ${determineNodeColor(prop.node)}; width: 22px !important;`"
-            :size="(prop.node.icon.includes('fas')? '16px': '21px')"
+            :size="((prop.node.icon.includes('fas') || prop.node.icon.includes('fab')) ? '16px': '21px')"
             :name="prop.node.icon"
             class="q-mr-sm self-center" />
             <span v-if="prop.node.isDead" class="documentLabel__isDeadMarker">†</span>
@@ -120,7 +121,7 @@
             <div class="treeButtonGroup">
               <q-btn
                 tabindex="-1"
-                v-if="((prop.node.children && prop.node.children.length > 0) || !hideTreeExtraIcons) && !prop.node.isRoot && !prop.node.isTag && !hideTreeIconView && !prop.node.specialLabel"
+                v-if="((prop.node.children && prop.node.children.length > 0) || !hideTreeExtraIcons) && !prop.node.isRoot && !prop.node.isTag && !hideTreeIconView && !prop.node.specialLabel && !prop.node.isModule"
                 round
                 flat
                 dense
@@ -138,7 +139,7 @@
               </q-btn>
               <q-btn
                 tabindex="-1"
-                v-if="!prop.node.isRoot && !prop.node.isTag && !hideTreeIconEdit && !prop.node.specialLabel"
+                v-if="!prop.node.isRoot && !prop.node.isTag && !hideTreeIconEdit && !prop.node.specialLabel && !prop.node.isModule"
                 round
                 flat
                 dense
@@ -156,7 +157,7 @@
               </q-btn>
               <q-btn
                 tabindex="-1"
-                v-if="!prop.node.specialLabel && !prop.node.isRoot && !prop.node.isTag && !hideTreeIconAddUnder"
+                v-if="!prop.node.specialLabel && !prop.node.isRoot && !prop.node.isTag && !hideTreeIconAddUnder && !prop.node.isModule"
                 round
                 flat
                 dense
@@ -180,7 +181,7 @@
 
               <q-list class="bg-gunmetal-light text-accent" v-if="!prop.node.isTag">
 
-                <template v-if="prop.node.isRoot || prop.node.children.length > 0">
+                <template v-if="prop.node.isRoot || prop.node.children.length > 0 || prop.node.isModule">
                   <q-item clickable v-close-popup @click="recursivelyExpandNodeDownwards(prop.node.key)">
                     <q-item-section>Expand all under this node</q-item-section>
                     <q-item-section avatar>
@@ -195,7 +196,7 @@
                   </q-item>
                 </template>
 
-                <template v-if="prop.node.isRoot">
+                <template v-if="prop.node.isRoot && !prop.node.isModule">
                   <q-separator dark />
                   <q-item clickable v-close-popup @click="addNewObjectRoute(prop.node)">
                     <q-item-section>Add new document of type: {{prop.node.label}}</q-item-section>
@@ -205,7 +206,7 @@
                   </q-item>
                 </template>
 
-                <template v-if="!prop.node.isRoot">
+                <template v-if="!prop.node.isRoot && !prop.node.isModule">
                   <q-separator dark />
                   <q-item clickable v-close-popup @click="copyName(prop.node)">
                     <q-item-section>Copy name</q-item-section>
@@ -603,6 +604,11 @@ export default class ObjectTree extends BaseClass {
   buildCurrentObjectTree () {
     this.hierarchicalTree = []
 
+    const moduleCategories: {
+      label: string
+      maxOrder: number
+    }[] = []
+
     const allBlueprings = this.SGET_allBlueprints
     let treeObject: any[] = []
 
@@ -665,6 +671,7 @@ export default class ObjectTree extends BaseClass {
         handler: this.addNewObjectRoute,
         specialLabel: blueprint.nameSingular.toLowerCase(),
         isRoot: true,
+        cat: blueprint.category,
         allCount: allCount,
         documentCount: documentCount,
         categoryCount: categoryCount,
@@ -683,6 +690,18 @@ export default class ObjectTree extends BaseClass {
         ]
       }
 
+      const matchedCategoryIndex = moduleCategories.findIndex(e => e.label === blueprint.category)
+
+      if (matchedCategoryIndex < 0) {
+        moduleCategories.push({
+          label: blueprint.category,
+          maxOrder: blueprint.order
+        })
+      }
+      else if (moduleCategories[matchedCategoryIndex].maxOrder < blueprint.order) {
+        moduleCategories[matchedCategoryIndex].maxOrder = blueprint.order
+      }
+
       treeObject.push(treeRow)
     }
 
@@ -693,6 +712,18 @@ export default class ObjectTree extends BaseClass {
       }
 
       if (a.order > b.order) {
+        return -1
+      }
+      return 0
+    })
+
+    // Sort the top level of the super-categories
+    moduleCategories.sort((a, b) => {
+      if (a.maxOrder < b.maxOrder) {
+        return 1
+      }
+
+      if (a.maxOrder > b.maxOrder) {
         return -1
       }
       return 0
@@ -763,12 +794,32 @@ export default class ObjectTree extends BaseClass {
         ]
       }
 
-      if (this.tagsAtTop) {
-        treeObject = [...tagNodeList, ...treeObject]
-      }
-      else {
-        treeObject = [...treeObject, ...tagNodeList]
-      }
+      treeObject = [...tagNodeList, ...treeObject]
+    }
+
+    treeObject = [
+      ...(this.tagsAtTop) ? treeObject.filter(branch => branch.isTag) : [],
+      ...moduleCategories.map(cat => {
+        return {
+          label: cat.label,
+          icon: "mdi-database",
+          _id: `module-${cat.label}`,
+          key: `module-${cat.label}`,
+          isModule: true,
+          // @ts-ignore
+          children: treeObject.filter(e => e.cat === cat.label)
+        }
+      }),
+      ...(this.tagsAtTop) ? [] : treeObject.filter(branch => branch.isTag)
+    ]
+
+    if (this.firstTimeRender && moduleCategories.length > 0) {
+      this.expandedTreeNodes = [...new Set([
+        ...this.expandedTreeNodes,
+        ...moduleCategories.map(e => `module-${e.label}`)
+      ])]
+
+      this.firstTimeRender = false
     }
 
     // Assign the finished object to the render model
@@ -776,6 +827,8 @@ export default class ObjectTree extends BaseClass {
     // @ts-ignore
     this.hierarchicalTree = treeObject
   }
+
+  firstTimeRender = true
 
   recursivelyFreezeChildren (children: {children: []}) {
     Object.freeze(children)
@@ -926,9 +979,10 @@ export default class ObjectTree extends BaseClass {
     type: string
     isRoot: boolean
     isTag: boolean
+    isModule: boolean
     specialLabel: string|boolean
   }) {
-    if (node.isRoot && node.isTag) {
+    if ((node.isRoot && node.isTag) || node.isModule) {
       return
     }
 
@@ -978,9 +1032,9 @@ export default class ObjectTree extends BaseClass {
     }
   }
 
-  determineNodeColor (node: {color: string, isTag: boolean, isRoot: boolean}) {
+  determineNodeColor (node: {color: string, isTag: boolean, isRoot: boolean, isModule: boolean}) {
     // @ts-ignore
-    return (node?.isTag) ? colors.getBrand("primary") : node.color
+    return (node?.isTag || node?.isModule) ? colors.getBrand("primary") : node.color
   }
 
   collapseAllNodes (node: {key: string, children: []}) {
@@ -1214,6 +1268,10 @@ export default class ObjectTree extends BaseClass {
     justify-content: space-between;
     padding: 4px 4px 4px 25px;
     align-items: center;
+
+    &__content {
+      word-break: break-word;
+    }
   }
 
   .treeButtonGroup {

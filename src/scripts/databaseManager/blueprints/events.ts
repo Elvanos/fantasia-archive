@@ -1,10 +1,11 @@
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const eventsBlueprint: I_Blueprint = {
   _id: "events",
-  order: 16,
+  order: 350,
   namePlural: "Events",
   nameSingular: "Event",
   icon: "mdi-calendar-text",
+  category: "World",
   extraFields: [
     {
       id: "breakDocumentSettings",
@@ -204,21 +205,10 @@ export const eventsBlueprint: I_Blueprint = {
       name: "Prominent Actors",
       type: "manyToManyRelationship",
       icon: "mdi-account",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedEvent"
-      }
-    },
-    {
-      id: "pairedRaces",
-      name: "Affected or involved Species/Races/Flora/Faunas",
-      type: "manyToManyRelationship",
-      icon: "fas fa-dragon",
-      sizing: 6,
-      relationshipSettings: {
-        connectedObjectType: "races",
-        connectedField: "connectedEvents"
       }
     },
     {
@@ -226,7 +216,7 @@ export const eventsBlueprint: I_Blueprint = {
       name: "Connected to Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "locations",
         connectedField: "pairedEvent"
@@ -237,7 +227,7 @@ export const eventsBlueprint: I_Blueprint = {
       name: "Connected to other Events",
       type: "manyToManyRelationship",
       icon: "mdi-calendar-text",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "events",
         connectedField: "pairedEvents"
@@ -247,16 +237,62 @@ export const eventsBlueprint: I_Blueprint = {
       id: "pairedItems",
       name: "Connected to Items",
       type: "manyToManyRelationship",
-      icon: "mdi-sword-cross",
-      sizing: 6,
+      icon: "mdi-sword",
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "items",
         connectedField: "pairedEvents"
       }
     },
     {
+      id: "pairedRaces",
+      name: "Affected or involved Species/Races/Flora/Fauna",
+      type: "manyToManyRelationship",
+      icon: "fas fa-dragon",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "races",
+        connectedField: "connectedEvents"
+      }
+    },
+    {
+      id: "relatedCultures",
+      name: "Connected to Cultures/Art",
+      type: "manyToManyRelationship",
+      icon: "fas fa-archway",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "culture",
+        connectedField: "pairedEvents"
+      }
+    },
+    {
+      id: "description",
+      name: "Description & History",
+      type: "wysiwyg",
+      icon: "mdi-book-open-page-variant-outline",
+      sizing: 12
+    },
+    {
+      id: "breakNotes",
+      name: "Connections - Story/Lore",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedNotes",
+      name: "Connected to Lore notes/Other notes",
+      type: "manyToManyRelationship",
+      icon: "mdi-script-text-outline",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "loreNotes",
+        connectedField: "pairedConnectedEvents"
+      }
+    },
+    {
       id: "pairedMyths",
-      name: "Connected to Myths/Legends",
+      name: "Connected to Myths, legends and stories",
       type: "manyToManyRelationship",
       icon: "fas fa-journal-whills",
       sizing: 6,
@@ -266,20 +302,14 @@ export const eventsBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "description",
-      name: "Description & History",
-      type: "wysiwyg",
-      sizing: 12
-    },
-    {
-      id: "breakGroups",
-      name: "Involved groups",
+      id: "breakPolitics",
+      name: "Connections - Groups/Teachings",
       type: "break",
       sizing: 12
     },
     {
       id: "connectedPolitical",
-      name: "Involved Political groups",
+      name: "Involved Ideologies/Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
       sizing: 6,
@@ -301,7 +331,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedReligious",
-      name: "Involved Religious groups",
+      name: "Involved Teachings/Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
       sizing: 4,
@@ -312,7 +342,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedMagical",
-      name: "Involved Magical groups",
+      name: "Involved Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 4,
@@ -323,7 +353,7 @@ export const eventsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedTech",
-      name: "Involved Technological/Scientific groups",
+      name: "Involved Sciences/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       sizing: 4,
@@ -333,21 +363,67 @@ export const eventsBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "breakNotes",
-      name: "Notes",
+      id: "breakOther",
+      name: "Connections - Details",
       type: "break",
       sizing: 12
     },
     {
-      id: "pairedConnectedNotes",
-      name: "Connected to Lore notes/Other notes",
+      id: "pairedSkills",
+      name: "Skills/Other connected to the Event",
       type: "manyToManyRelationship",
-      icon: "mdi-script-text-outline",
-      sizing: 12,
+      icon: "mdi-sword-cross",
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "loreNotes",
-        connectedField: "pairedConnectedEvents"
+        connectedObjectType: "skills",
+        connectedField: "pairedEventSkills"
+      }
+    },
+    {
+      id: "pairedSpells",
+      name: "Spells connected to the Event",
+      type: "manyToManyRelationship",
+      icon: "mdi-sword-cross",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "skills",
+        connectedField: "pairedEventSpells"
+      }
+    },
+
+    {
+      id: "pairedConditionsPositive",
+      name: "Connected to Boons",
+      type: "manyToManyRelationship",
+      icon: "mdi-virus",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "conditions",
+        connectedField: "pairedEventsPositive"
+      }
+    },
+    {
+      id: "pairedConditionsNegative",
+      name: "Connected to Afflictions",
+      type: "manyToManyRelationship",
+      icon: "mdi-virus",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "conditions",
+        connectedField: "pairedEventsNegative"
+      }
+    },
+    {
+      id: "pairedConditionsOther",
+      name: "Connected to Other conditions",
+      type: "manyToManyRelationship",
+      icon: "mdi-virus",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "conditions",
+        connectedField: "pairedEventsOther"
       }
     }
+
   ]
 }

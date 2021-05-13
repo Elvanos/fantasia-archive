@@ -1,14 +1,16 @@
 <template>
   <div>
-    <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
-      <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-sm"/>
+  <div class="documentLabelWrapper text-weight-bolder q-mb-sm q-mt-md">
+    <q-icon v-if="inputIcon" :name="inputIcon" :size="(inputIcon.includes('fas') || inputIcon.includes('fab'))? '15px': '20px'" class="documentLabelIcon"/>
+    <div class="documentLabelContent">
       {{inputDataBluePrint.name}}
-       <q-icon v-if="toolTip && !disableDocumentToolTips" name="mdi-help-circle" size="16px" class="q-ml-md">
-         <q-tooltip :delay="500">
-           <span v-html="toolTip"/>
-        </q-tooltip>
-      </q-icon>
     </div>
+    <q-icon v-if="toolTip && !disableDocumentToolTips" name="mdi-help-circle" size="16px" class="documentLabelTooltip">
+        <q-tooltip :delay="500">
+          <span v-html="toolTip"/>
+      </q-tooltip>
+    </q-icon>
+  </div>
 
     <q-list
       v-if="!editMode"
@@ -23,9 +25,8 @@
 
     <q-input
       v-if="editMode && extraInput.length === 0"
-      style="width: 100%;"
       v-model="localInput"
-      class="grow-1 q-mr-lg"
+      class="q-mr-lg"
       :ref="`singleSelectField${this.inputDataBluePrint.id}`"
       dense
       autogrow

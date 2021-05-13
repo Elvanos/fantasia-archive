@@ -7,8 +7,8 @@
 
 ### Known issues
 
-- Creating a brand new project can sometimes get stuck. Restarting the app fixes this.
-- Importing existing project can sometimes get stuck. Restarting the app fixes this.
+- Creating a brand new project can very occasionally get stuck. Restarting the app fixes this.
+- Importing existing project can very occasionally get stuck. Restarting the app fixes this.
 
 ### Bugfixes & Optimizations
 
@@ -16,14 +16,20 @@
 - Fixed a limiter for advanced search that was throwing errors in rare cases
 - Fixed a bug that was causing single-to-single relationship notes not properly saving
 - Fixed the notes window showing on top of popup overlay
+- Fixed a bug that was causing changed to document blueprints to not update properly
+- Fixed a bug affecting single-to-single and many-to-single relationships in case deleteted values were lingering in the connected data
+- Fixed a bug that was causing improper rendering of the project overview graph legends
 
 ### New features
 
 - **Added on-the-fly relationship documents generation**
 - **Added stat/attribute support for multiple RPG systems**
 - **Added option to search through the `Other names` field via `@` modifier**
+- **Added document preview popup and corresponding options to the settings for them**
+- **Added `Skills/Spells/Other`, `Resources/Materials`, `Occupations/Classes` and `Afflictions/Boons/Conditions` document types and all their respected fields across the whole app**
+- **Reworked all existing document types to function better with the new additions**
 - Added reverse display for lists
-- Added category adding for lists
+- Added a whole category of items adding for lists
 - Added precise mode search to full-field search in the relationship search inputs
 - Added option: Prevent filled note board showing
 - Added `Other Names & Epithets` to `Chapters` document type
@@ -39,6 +45,8 @@
 - Revamped the field order in all document types since `Other names` field moved to `Document settings` from `Basic information` as it is not a mandatory system field specially used in advanced search
 - Added tooltips to `Member count` and `Follower/Subject count` fields in all groups document types
 - Updated selects to act as text input fields in case there are no prdefixed values in the list
+- Field labels received a facelift to look more appealing to look at when showing on smaller screens
+- Attempteds to "prettify" the display mode of the document fields in case the "Hide empty fields" option is ticked on
 
 ## 0.1.6a
 
@@ -148,7 +156,7 @@
 
 ### Bugfixes & Optimizations
 
-- Fixed a typo in the `Type of being` field in the `Species/Races/Flora/Faunas` document type
+- Fixed a typo in the `Type of being` field in the `Species/Races/Flora/Fauna` document type
 - Fixed even more random typos I don't even recall T_T
 - Fixed a bug in light mode that was coloring the `List` field type's addition atributes dropdown wrong
 - Fixed a bug that was causing the relationship dropdowns sometimes not to be clickable and instead caused dragging of the app window when shown over the top of the drag-bar at the top of the app
@@ -493,8 +501,8 @@
 - Renamed "Lore notes" to "Other/Notes" for more intuitive usage
 - Renamed "Other names" to "Other names & Epithets" across all document types
 - Renamed "Power level" to "Combat rating" in "Characters" document type
-- Renamed "Level of sentience" to "Level of sapience" in "Species/Races/Flora/Faunas" document type
-- Added "Oldest known" and "Average adulthood" fields to the "Species/Races/Flora/Faunas" document type
+- Renamed "Level of sentience" to "Level of sapience" in "Species/Races/Flora/Fauna" document type
+- Added "Oldest known" and "Average adulthood" fields to the "Species/Races/Flora/Fauna" document type
 - Added "Continent" and "Landmass" to prefilled options to the "Location type" field in the "Locations" document type
 - Added "Ethnicity" field in "Characters" document type
 - Added "Titles" field in "Characters" document type

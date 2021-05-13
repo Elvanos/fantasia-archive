@@ -659,3 +659,36 @@ body .q-tooltip {
   position: relative;
   overflow: hidden !important;
 }
+
+.documentLabelWrapper {
+  position: relative;
+  padding: 0;
+  padding-right: 30px;
+}
+
+.documentLabelIcon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  top: 50%;
+  transform: translateY(-50%);
+
+  ~ .documentLabelContent {
+    padding-left: 30px;
+  }
+}
+
+.documentLabelContent {
+  line-height: 1.6;
+  float: left;
+}
+
+.documentLabelTooltip {
+  margin-left: 10px;
+}
+
+.documentLabelExtra {
+  position: absolute;
+  right: 0;
+  top: 0;
+}

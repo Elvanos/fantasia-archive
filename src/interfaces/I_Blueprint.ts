@@ -4,6 +4,7 @@ export interface I_ExtraFields {
   icon?: string,
   sizing: number
   tooltip?: string
+  isLegacy?: boolean
   type:
   "text" |
   "number" |
@@ -39,9 +40,10 @@ export interface I_ExtraFields {
 export interface I_Blueprint{
   _id: string
   _rev?: string
-  order: number | false,
+  order: number,
   namePlural: string
   nameSingular: string,
   icon: string
+  category: string
   extraFields: I_ExtraFields[]
 }

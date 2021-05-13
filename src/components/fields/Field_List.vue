@@ -1,14 +1,16 @@
 <template>
   <div>
-    <div class="flex justify-start items-center text-weight-bolder q-mb-sm q-mt-md">
-      <q-icon v-if="inputIcon" :name="inputIcon"  :size="inputIcon.includes('fas')? '15px': '20px'" class="q-mr-sm"/>
+  <div class="documentLabelWrapper text-weight-bolder q-mb-sm q-mt-md">
+    <q-icon v-if="inputIcon" :name="inputIcon" :size="(inputIcon.includes('fas') || inputIcon.includes('fab'))? '15px': '20px'" class="documentLabelIcon"/>
+    <div class="documentLabelContent">
       {{inputDataBluePrint.name}}
-       <q-icon v-if="toolTip && !disableDocumentToolTips" name="mdi-help-circle" size="16px" class="q-ml-md">
-         <q-tooltip :delay="500">
-           <span v-html="toolTip"/>
-        </q-tooltip>
-      </q-icon>
     </div>
+    <q-icon v-if="toolTip && !disableDocumentToolTips" name="mdi-help-circle" size="16px" class="documentLabelTooltip">
+        <q-tooltip :delay="500">
+          <span v-html="toolTip"/>
+      </q-tooltip>
+    </q-icon>
+  </div>
 
   <q-list
       v-if="!editMode"
@@ -86,7 +88,7 @@
         </q-btn>
       <template v-if="isReversed">
          <q-input
-          v-if="hasExtraInput && filteredLocalExtraInput.length === 0"
+          v-if="hasExtraInput && localExtraInput.length === 0"
           style="min-width: 350px; width: 350px; max-width: 350px;"
           v-model="localInput[index].affix"
           class="grow-1 q-mr-lg"
@@ -102,7 +104,7 @@
         <q-select
           style="min-width: 350px; width: 350px;"
           dense
-          v-if="hasExtraInput && filteredLocalExtraInput.length > 0"
+          v-if="hasExtraInput && localExtraInput.length > 0"
           class="listAtributeSelect q-mr-lg"
           :options="filteredLocalExtraInput"
           use-input
@@ -114,6 +116,7 @@
           input-debounce="0"
           new-value-mode="add"
           dark
+          virtual-scroll-slice-size="1000"
           :class="`listField_prefix${index}_${inputDataBluePrint.id}`"
           @filter="filterFn"
           @input="processInput"
@@ -174,6 +177,7 @@
                 clickable
                 v-ripple
                 v-close-popup
+                v-on="scope.itemEvents"
                 @click="localInput[index].affix = value"
                 >
                 <q-item-section>
@@ -210,7 +214,7 @@
           >
         </q-input>
         <q-input
-          v-if="hasExtraInput && filteredLocalExtraInput.length === 0"
+          v-if="hasExtraInput && localExtraInput.length === 0"
           style="min-width: 350px; width: 350px; max-width: 350px;"
           v-model="localInput[index].affix"
           class="grow-1 q-mr-lg"
@@ -224,7 +228,7 @@
           >
         </q-input>
         <q-select
-          v-if="hasExtraInput && filteredLocalExtraInput.length > 0"
+          v-if="hasExtraInput && localExtraInput.length > 0"
           style="min-width: 350px; width: 350px;"
           dense
           class="listAtributeSelect q-mr-lg"
@@ -237,6 +241,7 @@
           :readonly="!editMode"
           input-debounce="0"
           new-value-mode="add"
+          virtual-scroll-slice-size="1000"
           dark
           :class="`listField_prefix${index}_${inputDataBluePrint.id}`"
           @filter="filterFn"
@@ -319,20 +324,24 @@
           @click="removeFromList(index)"
           >
             <q-tooltip :delay="500">
-              Remove
+              <span style="white-space: nowrap;">Remove "{{(isReversed)? localInput[index].affix : localInput[index].value }}"</span>
             </q-tooltip>
         </q-btn>
       </div>
     </div>
     </div>
 
-    <div class="row q-mt-xs" v-if="editMode">
-      <div class="col justify-start flex">
+    <div class="row q-mt-lg" v-if="editMode">
+      <div class="col justify-end flex">
         <q-btn
         color="primary"
+        icon="mdi-plus"
         :outline="isDarkMode"
-        label="Add new"
-        @click="addNewInput()" />
+        @click="addNewInput()" >
+          <q-tooltip :delay="500">
+            Add new
+          </q-tooltip>
+        </q-btn>
       </div>
     </div>
   </div>
@@ -437,7 +446,8 @@ export default class Field_List extends FieldBase {
   filterFn (val:string, update: (e: () => void) => void) {
     if (val === "") {
       update(() => {
-        this.filteredLocalExtraInput = this.localExtraInput
+        const localListCopy: [] = extend(true, [], this.localExtraInput)
+        this.filteredLocalExtraInput = localListCopy
       })
       return
     }

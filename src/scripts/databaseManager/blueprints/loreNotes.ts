@@ -1,10 +1,11 @@
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const loreNotesBlueprint: I_Blueprint = {
   _id: "loreNotes",
-  order: 19,
+  order: 440,
   namePlural: "Lore notes/Other notes",
   nameSingular: "Lore notes/Other note",
   icon: "mdi-script-text-outline",
+  category: "Story/Lore",
   extraFields: [
     {
       id: "breakDocumentSettings",
@@ -168,8 +169,8 @@ export const loreNotesBlueprint: I_Blueprint = {
     },
 
     {
-      id: "breakRelated",
-      name: "Connections",
+      id: "breakStory",
+      name: "Connections - Story/Lore",
       type: "break",
       sizing: 12
     },
@@ -194,6 +195,24 @@ export const loreNotesBlueprint: I_Blueprint = {
         connectedObjectType: "loreNotes",
         connectedField: "pairedConnectedNote"
       }
+    },
+    {
+      id: "pairedConnectedMyths",
+      name: "Connected to Myths/Legends/Stories",
+      type: "manyToManyRelationship",
+      icon: "fas fa-journal-whills",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "myths",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+
+    {
+      id: "breakWorld",
+      name: "Connections - World",
+      type: "break",
+      sizing: 12
     },
     {
       id: "pairedConnectedCharacter",
@@ -227,6 +246,46 @@ export const loreNotesBlueprint: I_Blueprint = {
         connectedObjectType: "events",
         connectedField: "pairedConnectedNotes"
       }
+    },
+    {
+      id: "pairedConnectedRaces",
+      name: "Connected to Species/Races/Flora/Fauna",
+      type: "manyToManyRelationship",
+      icon: "fas fa-dragon",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "races",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+    {
+      id: "localLanguages",
+      name: "Connected to Languages",
+      type: "manyToManyRelationship",
+      icon: "mdi-book-alphabet",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "languages",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+    {
+      id: "pairedConnectedCultures",
+      name: "Connected to Culture/Art",
+      type: "manyToManyRelationship",
+      icon: "fas fa-archway",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "culture",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+
+    {
+      id: "breakGroups",
+      name: "Connections - Groups/Teachings",
+      type: "break",
+      sizing: 12
     },
     {
       id: "pairedConnectedPolGroups",
@@ -263,10 +322,10 @@ export const loreNotesBlueprint: I_Blueprint = {
     },
     {
       id: "pairedConnectedMagicGroups",
-      name: "Connected to Spells/Magical groups",
+      name: "Connected to Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "magic",
         connectedField: "pairedConnectedNotes"
@@ -277,20 +336,26 @@ export const loreNotesBlueprint: I_Blueprint = {
       name: "Connected to Sciences/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "tech",
         connectedField: "pairedConnectedNotes"
       }
     },
     {
-      id: "pairedConnectedRaces",
-      name: "Connected to Species/Races/Flora/Fauna",
+      id: "breakDetails",
+      name: "Connections - Details",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedSkills",
+      name: "Connected to Skills/Spells/Other",
       type: "manyToManyRelationship",
-      icon: "fas fa-dragon",
+      icon: "mdi-sword-cross",
       sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "races",
+        connectedObjectType: "skills",
         connectedField: "pairedConnectedNotes"
       }
     },
@@ -298,21 +363,44 @@ export const loreNotesBlueprint: I_Blueprint = {
       id: "pairedConnectedItems",
       name: "Connected to Items",
       type: "manyToManyRelationship",
-      icon: "mdi-sword-cross",
+      icon: "mdi-sword",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "items",
         connectedField: "pairedConnectedNotes"
       }
     },
+
     {
-      id: "localLanguages",
-      name: "Connected to Languages",
+      id: "pairedConnectedProfessions",
+      name: "Connected to Occupations/Classes",
       type: "manyToManyRelationship",
-      icon: "mdi-book-alphabet",
+      icon: "fab fa-pied-piper-hat",
       sizing: 4,
       relationshipSettings: {
-        connectedObjectType: "languages",
+        connectedObjectType: "professions",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+    {
+      id: "pairedConnectedConditions",
+      name: "Connected to Afflictions/Boons/Conditions",
+      type: "manyToManyRelationship",
+      icon: "mdi-virus",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "conditions",
+        connectedField: "pairedConnectedNotes"
+      }
+    },
+    {
+      id: "pairedConnectedResources",
+      name: "Connected to Resources/Materials",
+      type: "manyToManyRelationship",
+      icon: "mdi-gold",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "resources",
         connectedField: "pairedConnectedNotes"
       }
     },
@@ -326,17 +414,7 @@ export const loreNotesBlueprint: I_Blueprint = {
         connectedObjectType: "currencies",
         connectedField: "pairedConnectedNotes"
       }
-    },
-    {
-      id: "pairedConnectedMyths",
-      name: "Connected to Myths/Legends/Stories",
-      type: "manyToManyRelationship",
-      icon: "fas fa-journal-whills",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "myths",
-        connectedField: "pairedConnectedNotes"
-      }
     }
+
   ]
 }

@@ -1,10 +1,11 @@
 import { I_Blueprint } from "../../../interfaces/I_Blueprint"
 export const guildsBlueprint: I_Blueprint = {
   _id: "guilds",
-  order: 14,
+  order: 260,
   namePlural: "Organizations/Other groups",
   nameSingular: "Organization/Other group",
   icon: "mdi-account-group",
+  category: "Groups/Teachings",
   extraFields: [
     {
       id: "breakDocumentSettings",
@@ -157,17 +158,24 @@ export const guildsBlueprint: I_Blueprint = {
       name: "Headquarters",
       type: "singleToNoneRelationship",
       icon: "mdi-map-marker-radius",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "locations"
       }
+    },
+    {
+      id: "followerName",
+      name: "Name for members/followers",
+      type: "text",
+      icon: "fas fa-file-signature",
+      sizing: 3
     },
     {
       id: "population",
       name: "Member count",
       type: "text",
       icon: "mdi-account-group",
-      sizing: 3,
+      sizing: 2,
       tooltip: "The amount of members of this group/organization."
     },
     {
@@ -213,22 +221,11 @@ export const guildsBlueprint: I_Blueprint = {
       ]
     },
     {
-      id: "localCurrencies",
-      name: "Used Currencies",
-      type: "manyToManyRelationship",
-      icon: "fas fa-coins",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "currencies",
-        connectedField: "usedInOtherGroups"
-      }
-    },
-    {
       id: "localLanguages",
       name: "Used Languages",
       type: "manyToManyRelationship",
       icon: "mdi-book-alphabet",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "languages",
         connectedField: "usedInOtherGroups"
@@ -236,36 +233,88 @@ export const guildsBlueprint: I_Blueprint = {
     },
     {
       id: "connectedRaces",
-      name: "Common Species/Races/Flora/Faunas",
+      name: "Common Species/Races/Flora/Fauna",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "races",
         connectedField: "commonInOtherGroups"
       }
     },
     {
+      id: "localCurrencies",
+      name: "Used Currencies",
+      type: "manyToManyRelationship",
+      icon: "fas fa-coins",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "currencies",
+        connectedField: "usedInOtherGroups"
+      }
+    },
+    {
+      id: "pairedConnectedResources",
+      name: "Important Resources/Materials",
+      type: "manyToManyRelationship",
+      icon: "mdi-gold",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "resources",
+        connectedField: "pairedConnectedOtherGroups"
+      }
+    },
+    {
       id: "description",
       name: "Description & History",
       type: "wysiwyg",
+      icon: "mdi-book-open-page-variant-outline",
       sizing: 12
     },
     {
       id: "traditions",
       name: "Traditions & Customs",
       type: "wysiwyg",
+      icon: "mdi-book-open-page-variant-outline",
       sizing: 12
     },
     {
-      id: "breakRelasionships",
-      name: "Diplomatic relationships & Influences",
+      id: "breakNotes",
+      name: "Connections - Story/Lore",
+      type: "break",
+      sizing: 12
+    },
+    {
+      id: "pairedConnectedNotes",
+      name: "Connected to Lore notes/Other notes",
+      type: "manyToManyRelationship",
+      icon: "mdi-script-text-outline",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "loreNotes",
+        connectedField: "pairedConnectedOtherGroups"
+      }
+    },
+    {
+      id: "pairedConnectedMyths",
+      name: "Connected to Myths, legends and stories",
+      type: "manyToManyRelationship",
+      icon: "fas fa-journal-whills",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "myths",
+        connectedField: "pairedConnectedOtherGroups"
+      }
+    },
+    {
+      id: "breakWorld",
+      name: "Connections - World",
       type: "break",
       sizing: 12
     },
     {
       id: "governLocations",
-      name: "Ruled Locations",
+      name: "Ruled/Influenced Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 6,
@@ -283,6 +332,28 @@ export const guildsBlueprint: I_Blueprint = {
       relationshipSettings: {
         connectedObjectType: "locations",
         connectedField: "connectedOther"
+      }
+    },
+    {
+      id: "connectedEvents",
+      name: "Connected Events",
+      type: "manyToManyRelationship",
+      icon: "mdi-calendar-text",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "events",
+        connectedField: "connectedOtherGroups"
+      }
+    },
+    {
+      id: "pairedConnectedCultures",
+      name: "Connected to Cultures/Art",
+      type: "manyToManyRelationship",
+      icon: "fas fa-archway",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "culture",
+        connectedField: "pairedConnectedOtherGroups"
       }
     },
     {
@@ -328,6 +399,12 @@ export const guildsBlueprint: I_Blueprint = {
         connectedObjectType: "characters",
         connectedField: "pairedEnemyOtherGroups"
       }
+    },
+    {
+      id: "breakPolitics",
+      name: "Connections - Groups/Teachings",
+      type: "break",
+      sizing: 12
     },
     {
       id: "pairedConnectedPolGroups",
@@ -431,7 +508,7 @@ export const guildsBlueprint: I_Blueprint = {
 
     {
       id: "pairedConnectedMagicalGroups",
-      name: "Connected Spells/Magical groups",
+      name: "Connected Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 4,
@@ -442,7 +519,7 @@ export const guildsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedAllyMagicalGroups",
-      name: "Allied Spells/Magical groups",
+      name: "Allied Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 4,
@@ -453,7 +530,7 @@ export const guildsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedEnemyMagicalGroups",
-      name: "Enemy Spells/Magical groups",
+      name: "Enemy Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 4,
@@ -496,59 +573,53 @@ export const guildsBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "breakOther",
-      name: "Other details",
+      id: "breakDetails",
+      name: "Connections - Details",
       type: "break",
       sizing: 12
     },
     {
-      id: "connectedEvents",
-      name: "Connected Events",
+      id: "pairedSkills",
+      name: "Connected to Skills/Spells/Other",
       type: "manyToManyRelationship",
-      icon: "mdi-calendar-text",
-      sizing: 4,
+      icon: "mdi-sword-cross",
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "events",
-        connectedField: "connectedOtherGroups"
-      }
-    },
-    {
-      id: "pairedConnectedMyths",
-      name: "Connected to Myths, legends and stories",
-      type: "manyToManyRelationship",
-      icon: "fas fa-journal-whills",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "myths",
-        connectedField: "pairedConnectedOtherGroups"
+        connectedObjectType: "skills",
+        connectedField: "pairedOtherGroupsSkills"
       }
     },
     {
       id: "pairedConnectedItems",
       name: "Connected to Items",
       type: "manyToManyRelationship",
-      icon: "mdi-sword-cross",
-      sizing: 4,
+      icon: "mdi-sword",
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "items",
         connectedField: "pairedConnectedOtherGroups"
       }
     },
     {
-      id: "breakNotes",
-      name: "Notes",
-      type: "break",
-      sizing: 12
+      id: "pairedConnectedProfessions",
+      name: "Connected to Occupations/Classes",
+      type: "manyToManyRelationship",
+      icon: "fab fa-pied-piper-hat",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "professions",
+        connectedField: "pairedConnectedOtherGroups"
+      }
     },
     {
-      id: "pairedConnectedNotes",
-      name: "Connected to Lore notes/Other notes",
+      id: "pairedConditions",
+      name: "Connected to Afflictions/Boons/Conditions",
       type: "manyToManyRelationship",
-      icon: "mdi-script-text-outline",
-      sizing: 12,
+      icon: "mdi-virus",
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "loreNotes",
-        connectedField: "pairedConnectedOtherGroups"
+        connectedObjectType: "conditions",
+        connectedField: "pairedOtherGroups"
       }
     }
   ]
