@@ -457,6 +457,25 @@ export default class BaseClass extends Vue {
   }
 
   /**
+   * Retrieves value of requested field. If the field doesn't exist, returns false instead
+   * @param document - Document object that is expected to contain the field
+   * @param fieldID - ID of the field to check
+   */
+  determineLegacyField (document: I_OpenedDocument| I_ShortenedDocument, fieldID: string) : string | number | [] | false | I_FieldRelationship {
+    const fieldData = document?.extraFields
+
+    // Fizzle if field doesnt exist
+    if (!fieldData) {
+      return false
+    }
+
+    const documentBlueprint = this.SGET_blueprint(document.type)
+
+    const legacyField = documentBlueprint.extraFields.find(f => f.id === fieldID)?.isLegacy as unknown as string
+    return (legacyField)
+  }
+
+  /**
    * Retrieves array length of requested field. If the field doesn't exist or isn't array, returns false instead
    * @param document - Document object that is expected to contain the field
    * @param fieldID - ID of the field to check

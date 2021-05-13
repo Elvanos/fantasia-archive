@@ -153,6 +153,42 @@ export const religionsBlueprint: I_Blueprint = {
       type: "break",
       sizing: 12
     },
+    {
+      id: "succedingRelGroup",
+      name: "Succeeding Teachings/Religious groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-ankh",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "religions",
+        connectedField: "preceedingRelGroup"
+      }
+    },
+    {
+      id: "preceedingRelGroup",
+      name: "Preceding Teachings/Religious groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-ankh",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "religions",
+        connectedField: "succedingRelGroup"
+      }
+    },
+    {
+      id: "creationTime",
+      name: "Date of creation",
+      type: "text",
+      icon: "mdi-timer-sand-empty",
+      sizing: 2
+    },
+    {
+      id: "endTIme",
+      name: "Date of end",
+      type: "text",
+      icon: "mdi-timer-sand-full",
+      sizing: 2
+    },
 
     {
       id: "headquarters",

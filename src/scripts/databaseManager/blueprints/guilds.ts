@@ -153,6 +153,44 @@ export const guildsBlueprint: I_Blueprint = {
       type: "break",
       sizing: 12
     },
+
+    {
+      id: "succedingOtherGroup",
+      name: "Succeeding Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "preceedingOtherGroup"
+      }
+    },
+    {
+      id: "preceedingOtherGroup",
+      name: "Preceding Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "succedingOtherGroup"
+      }
+    },
+    {
+      id: "creationTime",
+      name: "Date of creation",
+      type: "text",
+      icon: "mdi-timer-sand-empty",
+      sizing: 2
+    },
+    {
+      id: "endTIme",
+      name: "Date of end",
+      type: "text",
+      icon: "mdi-timer-sand-full",
+      sizing: 2
+    },
+
     {
       id: "headquarters",
       name: "Headquarters",

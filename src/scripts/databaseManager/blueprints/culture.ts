@@ -153,6 +153,43 @@ export const cultureBlueprint: I_Blueprint = {
       type: "break",
       sizing: 12
     },
+
+    {
+      id: "succedingCultures",
+      name: "Succeeding Cultures/Art",
+      type: "manyToManyRelationship",
+      icon: "fas fa-archway",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "culture",
+        connectedField: "preceedingCultures"
+      }
+    },
+    {
+      id: "preceedingCultures",
+      name: "Preceding Cultures/Art",
+      type: "manyToManyRelationship",
+      icon: "fas fa-archway",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "culture",
+        connectedField: "succedingCultures"
+      }
+    },
+    {
+      id: "creationTime",
+      name: "Date of creation",
+      type: "text",
+      icon: "mdi-timer-sand-empty",
+      sizing: 2
+    },
+    {
+      id: "endTIme",
+      name: "Date of end",
+      type: "text",
+      icon: "mdi-timer-sand-full",
+      sizing: 2
+    },
     {
       id: "traits",
       name: "Unique/Defining Features",

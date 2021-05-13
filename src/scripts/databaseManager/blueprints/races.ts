@@ -166,36 +166,58 @@ export const racesBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "evolvedIntoRaces",
+      name: "Evolved into Species/Races/Flora/Fauna",
+      type: "manyToManyRelationship",
+      icon: "fas fa-dragon",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "races",
+        connectedField: "evolvedFromRaces"
+      }
+    },
+    {
+      id: "evolvedFromRaces",
+      name: "Evolved from Species/Races/Flora/Fauna",
+      type: "manyToManyRelationship",
+      icon: "fas fa-dragon",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "races",
+        connectedField: "evolvedIntoRaces"
+      }
+    },
+    {
       id: "memberCount",
       name: "Estimated population",
       type: "text",
       icon: "mdi-account-group",
-      sizing: 2
+      sizing: 3
     },
     {
       id: "age",
       name: "Average lifespan",
       type: "text",
       icon: "mdi-timer-sand-empty",
-      sizing: 2
+      sizing: 3
     },
     {
       id: "ageAdult",
       name: "Average adulthood",
       type: "text",
       icon: "mdi-timer-sand",
-      sizing: 2
+      sizing: 3
     },
     {
       id: "ageOldest",
       name: "Oldest known",
       type: "text",
       icon: "mdi-timer-sand-full",
-      sizing: 2
+      sizing: 3
     },
     {
       id: "height",
-      name: "Average height",
+      name: "Average size",
       type: "text",
       icon: "mdi-human-male-height-variant",
       sizing: 2

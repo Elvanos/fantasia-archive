@@ -26,7 +26,7 @@
         v-for="field in localBlueprint.extraFields"
         :key="`${field.id}`"
         class="col-12 q-mb-md"
-        v-show="hasValueFieldFilter(field)"
+        v-show="hasValueFieldFilter(field) && !determineLegacyField(localDocument, field.id)"
       >
 
         <Field_Break
@@ -34,6 +34,7 @@
         v-if="field.type === 'break' && categoryFieldFilter(field.id)"
         :inputDataBluePrint="field"
         :inputDataValue="retrieveFieldValue(localDocument, field.id)"
+        :recursive="true"
         />
 
         <Field_Text

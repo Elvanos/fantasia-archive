@@ -13,6 +13,13 @@ export const currenciesBlueprint: I_Blueprint = {
       type: "manyToManyRelationship",
       icon: "mdi-sword",
       isLegacy: true,
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
+        <br>
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
       sizing: 12,
       relationshipSettings: {
         connectedObjectType: "items",

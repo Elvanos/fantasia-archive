@@ -133,7 +133,7 @@
       <div
         v-for="field in bluePrintData.extraFields"
         :key="`${field.id}`"
-        v-show="hasValueFieldFilter(field) || editMode"
+        v-show="(hasValueFieldFilter(field) || editMode) && checkForLegacyFieldValue(currentData, field)"
         :class="`
           col-12
           col-md-${determineSize_MD(field)}
@@ -141,6 +141,7 @@
           col-xl-${determineSize_XL(field)}
           q-mb-md
           documentColumnWrapper
+          ${(determineLegacyField(currentData, field.id)) ? 'isLegacy' : ''}
         `">
 
           <Field_Break
@@ -790,6 +791,33 @@ export default class PageDocumentDisplay extends BaseClass {
     )
   }
 
+  checkForLegacyFieldValue (document: I_OpenedDocument| I_ShortenedDocument, field: {id: string}) {
+    const isLegacyField = this.determineLegacyField(document, field.id)
+
+    if (!isLegacyField) {
+      return true
+    }
+
+    const value = this.retrieveFieldValue(this.currentData, field.id)
+
+    let hasValue = true
+
+    if (!value ||
+    (Array.isArray(value) && value.length === 0) ||
+    // @ts-ignore
+     (value?.value && value.value.length === 0) ||
+    // @ts-ignore
+     (value.value === null)) {
+      hasValue = false
+    }
+
+    if (isLegacyField && hasValue) {
+      return true
+    }
+
+    return false
+  }
+
   /**
    * Checks if the field in question
    */
@@ -1013,6 +1041,15 @@ export default class PageDocumentDisplay extends BaseClass {
 <style lang="scss">
 .documentColumnWrapper {
   flex-grow: 1;
+
+  &.isLegacy {
+    border: 1px dashed $primary;
+    padding: 30px;
+    margin-left: 20px;
+    max-width: 98%;
+    margin-top: 20px;
+    background-color: rgba($secondary, 0.15);
+  }
 }
 
 .separatorWrapper {

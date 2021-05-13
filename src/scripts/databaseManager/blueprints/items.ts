@@ -15,6 +15,13 @@ export const itemsBlueprint: I_Blueprint = {
       icon: "fas fa-hat-wizard",
       isLegacy: true,
       sizing: 6,
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
+        <br>
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
       relationshipSettings: {
         connectedObjectType: "magic",
         connectedField: "pairedItems"
@@ -27,6 +34,13 @@ export const itemsBlueprint: I_Blueprint = {
       icon: "fas fa-coins",
       sizing: 6,
       isLegacy: true,
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
+        <br>
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
       relationshipSettings: {
         connectedObjectType: "currencies",
         connectedField: "pairedItems"

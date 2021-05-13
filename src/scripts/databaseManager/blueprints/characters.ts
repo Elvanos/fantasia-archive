@@ -9,18 +9,18 @@ export const charactersBlueprint: I_Blueprint = {
   category: "World",
   extraFields: [
     {
-      id: "breakLegacyFields",
-      name: "Legacy fields",
-      type: "break",
-      sizing: 12,
-      isLegacy: true
-    },
-    {
       id: "pairedMagic",
       name: "Known Magic/Spells",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 6,
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
+        <br>
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
       isLegacy: true,
       relationshipSettings: {
         connectedObjectType: "magic",
@@ -32,6 +32,13 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Known Technologies/Sciences",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
+        <br>
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
       isLegacy: true,
       sizing: 6,
       relationshipSettings: {
@@ -46,6 +53,13 @@ export const charactersBlueprint: I_Blueprint = {
       icon: "mdi-sword",
       sizing: 12,
       isLegacy: true,
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
+        <br>
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
       predefinedListExtras: {
         affix: "Level",
         extraSelectValueList: [

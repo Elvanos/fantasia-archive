@@ -14,11 +14,13 @@ export const magicBlueprint: I_Blueprint = {
       icon: "mdi-account",
       sizing: 4,
       isLegacy: true,
-      tooltip:
-        `This field is meant to be used as a way to map out spell-users and their respected spells.
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
         <br>
-        For diplomatic/ideological connections between magical groups/institutions and characters, use the field below in the "Diplomatic relationships & Influences" section.
-        `,
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedMagic"
@@ -31,6 +33,13 @@ export const magicBlueprint: I_Blueprint = {
       icon: "mdi-sword",
       sizing: 4,
       isLegacy: true,
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
+        <br>
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
       relationshipSettings: {
         connectedObjectType: "items",
         connectedField: "pairedMagic"
@@ -182,6 +191,44 @@ export const magicBlueprint: I_Blueprint = {
       type: "break",
       sizing: 12
     },
+
+    {
+      id: "succedingMagicGroup",
+      name: "Succeeding Schools of Magic/Magical groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-hat-wizard",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "magic",
+        connectedField: "preceedingMagicGroup"
+      }
+    },
+    {
+      id: "preceedingMagicGroup",
+      name: "Preceding Schools of Magic/Magical groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-hat-wizard",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "magic",
+        connectedField: "succedingMagicGroup"
+      }
+    },
+    {
+      id: "creationTime",
+      name: "Date of creation",
+      type: "text",
+      icon: "mdi-timer-sand-empty",
+      sizing: 2
+    },
+    {
+      id: "endTIme",
+      name: "Date of end",
+      type: "text",
+      icon: "mdi-timer-sand-full",
+      sizing: 2
+    },
+
     {
       id: "headquarters",
       name: "Headquarters",

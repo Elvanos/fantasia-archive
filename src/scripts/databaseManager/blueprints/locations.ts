@@ -153,6 +153,43 @@ export const locationsBlueprint: I_Blueprint = {
       type: "break",
       sizing: 12
     },
+
+    {
+      id: "succedingLocations",
+      name: "Succeeding Locations/Geography",
+      type: "manyToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "preceedingLocations"
+      }
+    },
+    {
+      id: "preceedingLocations",
+      name: "Preceding Locations/Geography",
+      type: "manyToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "succedingLocations"
+      }
+    },
+    {
+      id: "creationTime",
+      name: "Date of creation",
+      type: "text",
+      icon: "mdi-timer-sand-empty",
+      sizing: 2
+    },
+    {
+      id: "endTIme",
+      name: "Date of end",
+      type: "text",
+      icon: "mdi-timer-sand-full",
+      sizing: 2
+    },
     {
       id: "traits",
       name: "Unusual features/Traits",

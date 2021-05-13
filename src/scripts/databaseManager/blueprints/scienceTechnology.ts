@@ -14,6 +14,13 @@ export const techBlueprint: I_Blueprint = {
       icon: "mdi-account",
       sizing: 6,
       isLegacy: true,
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
+        <br>
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedTech"
@@ -165,6 +172,44 @@ export const techBlueprint: I_Blueprint = {
       type: "break",
       sizing: 12
     },
+
+    {
+      id: "succedingTechGroup",
+      name: "Succeeding Sciences/Technological groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-wrench",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "tech",
+        connectedField: "preceedingTechGroup"
+      }
+    },
+    {
+      id: "preceedingTechGroup",
+      name: "Preceding Sciences/Technological groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-wrench",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "tech",
+        connectedField: "succedingTechGroup"
+      }
+    },
+    {
+      id: "creationTime",
+      name: "Date of creation",
+      type: "text",
+      icon: "mdi-timer-sand-empty",
+      sizing: 2
+    },
+    {
+      id: "endTIme",
+      name: "Date of end",
+      type: "text",
+      icon: "mdi-timer-sand-full",
+      sizing: 2
+    },
+
     {
       id: "headquarters",
       name: "Headquarters",

@@ -154,6 +154,42 @@ export const politicalGroupsBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
+      id: "succedingPolGroup",
+      name: "Succeeding Ideologies/Political groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-bank-outline",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "politicalGroups",
+        connectedField: "preceedingPolGroup"
+      }
+    },
+    {
+      id: "preceedingPolGroup",
+      name: "Preceding Ideologies/Political groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-bank-outline",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "politicalGroups",
+        connectedField: "succedingPolGroup"
+      }
+    },
+    {
+      id: "creationTime",
+      name: "Date of creation",
+      type: "text",
+      icon: "mdi-timer-sand-empty",
+      sizing: 2
+    },
+    {
+      id: "endTIme",
+      name: "Date of end",
+      type: "text",
+      icon: "mdi-timer-sand-full",
+      sizing: 2
+    },
+    {
       id: "headquarters",
       name: "Headquarters",
       type: "singleToNoneRelationship",
