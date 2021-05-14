@@ -174,7 +174,7 @@ export const many_changeRelationshipToAnotherObject = async (
 
     if (fieldType === "manyToSingleRelationship") {
       // @ts-ignore
-      const removedValues = await single_removeRelationshipFromAnotherObject(removedValue, {})
+      const removedValues = await single_removeRelationshipFromAnotherObject({}, removedValue)
       if (removedValues) {
         updatedDocuments.push(removedValues)
       }

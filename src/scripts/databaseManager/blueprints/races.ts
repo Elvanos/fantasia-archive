@@ -338,6 +338,28 @@ export const racesBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "pairedProducedFromResources",
+      name: "Resources/Materials produced from the Species/Race/Flora/Fauna",
+      type: "manyToManyRelationship",
+      icon: "mdi-gold",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "resources",
+        connectedField: "pairedProducedFromRaces"
+      }
+    },
+    {
+      id: "pairedUsedResourcesResources",
+      name: "Resources/Materials used by Species/Race/Flora/Fauna",
+      type: "manyToManyRelationship",
+      icon: "mdi-gold",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "resources",
+        connectedField: "pairedUsedResourcesRaces"
+      }
+    },
+    {
       id: "statsList",
       name: "Stats/Attributes",
       type: "list",
@@ -380,7 +402,7 @@ export const racesBlueprint: I_Blueprint = {
           "Minor",
           "Medium",
           "Severe",
-          "Imcapacitating",
+          "Incapacitating",
           "Deadly"
         ]
       }

@@ -27,10 +27,10 @@
         </q-item-section>
         <q-item-section>
           <span class="text-weight-medium">
-            {{(isReversed) ? localInput[index].affix : input.value}}
+            {{(isReversed) ? `${localInput[index].affix}:` : input.value}}
           </span>
           <span v-if="localInput[index].affix" class="inline-block q-ml-xs text-italic listNote">
-            {{(!isReversed) ? `(${localInput[index].affix})` : ` - ${input.value}`}}
+            {{(!isReversed) ? `(${localInput[index].affix})` : ` ${input.value}`}}
             </span>
         </q-item-section>
       </q-item>
@@ -177,7 +177,6 @@
                 clickable
                 v-ripple
                 v-close-popup
-                v-on="scope.itemEvents"
                 @click="localInput[index].affix = value"
                 >
                 <q-item-section>

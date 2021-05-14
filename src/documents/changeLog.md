@@ -19,6 +19,7 @@
 - Fixed a bug that was causing changed to document blueprints to not update properly
 - Fixed a bug affecting single-to-single and many-to-single relationships in case deleteted values were lingering in the connected data
 - Fixed a bug that was causing improper rendering of the project overview graph legends
+- Fixed a bug where the advanced search wasn't working properly for local relationship fields inside a document in the case of fields value search
 
 ### New features
 

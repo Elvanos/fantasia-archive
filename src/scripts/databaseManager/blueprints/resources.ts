@@ -411,6 +411,28 @@ export const resourcesBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "pairedProducedFromRaces",
+      name: "Produced from Species/Races/Flora/Fauna",
+      type: "manyToManyRelationship",
+      icon: "fas fa-dragon",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "races",
+        connectedField: "pairedProducedFromResources"
+      }
+    },
+    {
+      id: "pairedUsedResourcesRaces",
+      name: "Used by Species/Races/Flora/Fauna",
+      type: "manyToManyRelationship",
+      icon: "fas fa-dragon",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "races",
+        connectedField: "pairedUsedResourcesResources"
+      }
+    },
+    {
       id: "description",
       name: "Description & History",
       type: "wysiwyg",

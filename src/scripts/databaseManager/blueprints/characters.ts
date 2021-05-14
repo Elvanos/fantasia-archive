@@ -1098,7 +1098,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "possessedCurrencies",
-      name: "Whealth/Owned Currencies",
+      name: "Wealth/Owned Currencies",
       type: "manyToNoneRelationship",
       icon: "fas fa-coins",
       sizing: 6,

@@ -658,7 +658,7 @@ export default class Field_MultiRelationship extends FieldBase {
       this.filterList = extend(true, [], this.allTypeDocuments)
 
       // @ts-ignore
-      this.filterList = advancedDocumentFilter(needle, this.filterList, this.SGET_allBlueprints, this.filterList)
+      this.filterList = advancedDocumentFilter(needle, this.filterList, this.SGET_allBlueprints, this.SGET_allDocuments.docs)
         .filter((obj) => obj._id !== this.currentId)
 
       if (this.$refs[`multieRelationshipField${this.inputDataBluePrint.id}`] && this.filterList.length > 0) {
