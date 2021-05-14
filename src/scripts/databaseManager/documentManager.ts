@@ -12,7 +12,8 @@ export const saveDocument = async (
   allOpenedDocuments: I_OpenedDocument[],
   allDocuments: I_ShortenedDocument[],
   editModeAfterSave: boolean,
-  vueInstance: any
+  vueInstance: any,
+  disableLoading = false
 ) => {
   const loadingSetup = {
     message: "<h4>Saving document...</h4>",
@@ -26,8 +27,10 @@ export const saveDocument = async (
 
   // Time for cases when people want to auto-generate A LOT of documents
   const saveTimeout = setTimeout(() => {
+    if (!disableLoading) {
     // @ts-ignore
-    Loading.show(loadingSetup)
+      Loading.show(loadingSetup)
+    }
   }, 750)
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -398,7 +401,9 @@ export const saveDocument = async (
   documentCopy.editMode = editModeAfterSave
 
   clearTimeout(saveTimeout)
-  Loading.hide()
+  if (!disableLoading) {
+    Loading.hide()
+  }
 
   return { documentCopy, allOpenedDocuments }
 }

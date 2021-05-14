@@ -187,6 +187,28 @@ export const defaultKeybinds = [
     tooltip: "Save document without exiting edit mode"
   },
 
+  // Save document without exiting edit mode - CTRL + S
+  {
+    altKey: false,
+    ctrlKey: true,
+    shiftKey: true,
+    which: 83,
+    editable: true,
+    id: "saveDocumentMass",
+    tooltip: "Save all opened document with active changes"
+  },
+
+  // Save document and mark it as finished - NONE
+  {
+    altKey: false,
+    ctrlKey: false,
+    shiftKey: false,
+    which: false,
+    editable: true,
+    id: "saveDocumentTickFinish",
+    tooltip: "Save active document and mark it as finished"
+  },
+
   // Edit document - CTRL + E
   {
     altKey: false,

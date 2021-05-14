@@ -1,13 +1,10 @@
 ## THE GM BATCH START - 0.1.7
 
-- Add setting to hide labels in document preview/view
-
 - "Save all" keybind and "Save all and exit" option on the exiting
-- "Save and tick as finished" keybind
 
 - Export for MD/PDF/ODT/DOCX
 
-## THE GM BATCH END   - 0.1.7
+## THE GM BATCH END - 0.1.7
 
 ## PROJECT SETTINGS BATCH 1 START - 0.1.8
 

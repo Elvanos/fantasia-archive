@@ -61,7 +61,9 @@
             <router-view :key="$route.path" />
           </transition>
 
-          <q-page-sticky position="top-right" :offset="[18, 75]">
+          <q-page-sticky
+            style="z-index: 1000;"
+             position="top-right" :offset="[18, 75]">
             <q-btn
               icon="mdi-book-search-outline"
               color="red-13"

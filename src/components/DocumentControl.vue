@@ -184,6 +184,28 @@
             </q-tooltip>
           </q-btn>
 
+          <template
+            v-if="SGET_allOpenedDocuments.docs.length > 0  && this.$route.path !== '/project'"
+          >
+            <q-separator vertical inset color="accent" />
+
+            <q-btn
+              icon="mdi-content-save-settings-outline"
+              color="primary"
+              outline
+              @click="massSave"
+            >
+              <q-tooltip
+                :delay="500"
+                anchor="bottom left"
+                self="top middle"
+              >
+              Save all opened document with active changes
+              </q-tooltip>
+            </q-btn>
+
+          </template>
+
         </div>
 
         <div class="documentControl__right">
@@ -395,6 +417,20 @@ export default class DocumentControl extends BaseClass {
       }, 500)
     }
 
+    // Mass document save - CTRL + SHIFT + S
+    if (this.determineKeyBind("saveDocumentMass") && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
+      setTimeout(() => {
+        this.massSave().catch(e => console.log(e))
+      }, 500)
+    }
+
+    // Save document and mark it as finished - NONE
+    if (this.determineKeyBind("saveDocumentTickFinish") && !this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
+      setTimeout(() => {
+        this.saveCurrentDocument(false, true).catch(e => console.log(e))
+      }, 500)
+    }
+
     // Add new under parent - CTRL + SHIFT + N
     if (this.determineKeyBind("addUnderParent") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
       await this.sleep(100)
@@ -563,12 +599,12 @@ export default class DocumentControl extends BaseClass {
 
   documentsCopy = null as unknown as I_OpenedDocument[]
 
-  async saveCurrentDocument (editMode: boolean) {
+  async saveCurrentDocument (editMode: boolean, saveAsFinished = false) {
     if (document.activeElement && editMode === false) {
       (document.activeElement as HTMLElement).blur()
     }
 
-    const currentDoc = this.findRequestedOrActiveDocument()
+    const currentDoc = this.findRequestedOrActiveDocument() as I_OpenedDocument
 
     // @ts-ignore
     const isNew = currentDoc.isNew
@@ -576,13 +612,19 @@ export default class DocumentControl extends BaseClass {
     const allDocuments = this.SGET_allOpenedDocuments
 
     this.documentsCopy = extend(true, [], allDocuments.docs)
-
     if (currentDoc) {
+      const docCopy:I_OpenedDocument = extend(true, [], currentDoc)
+
+      if (saveAsFinished) {
+        const isFinishedInded = docCopy.extraFields.findIndex(e => e.id === "finishedSwitch")
+        docCopy.extraFields[isFinishedInded].value = true
+      }
+
       // @ts-ignore
       const savedDocument: {
         documentCopy: I_OpenedDocument,
         allOpenedDocuments: I_OpenedDocument[]
-      } = await saveDocument(currentDoc, this.documentsCopy, this.SGET_allDocuments.docs, editMode, this).catch(err => console.log(err))
+      } = await saveDocument(docCopy, this.documentsCopy, this.SGET_allDocuments.docs, editMode, this).catch(err => console.log(err))
 
       // Update the opened document
       const dataPass = { doc: savedDocument.documentCopy, treeAction: true }
@@ -668,6 +710,70 @@ export default class DocumentControl extends BaseClass {
 
   currentyEditable = false
   currentlyNew = false
+
+  openedDocsWithEdits: I_OpenedDocument[]= []
+
+  async massSave () {
+    this.openedDocsWithEdits = this.SGET_allOpenedDocuments.docs.filter(doc => doc.hasEdits)
+
+    const setup = {
+      message: "<h4>Saving project...</h4>",
+      spinnerColor: "primary",
+      messageColor: "cultured",
+      spinnerSize: 120,
+      backgroundColor: "dark",
+      // @ts-ignore
+      spinner: QSpinnerGears
+    }
+
+    // @ts-ignore
+    Loading.show(setup)
+    for (const document of this.openedDocsWithEdits) {
+      await this.saveOpenedDocument(document)
+    }
+
+    await this.sleep(3000)
+    Loading.hide()
+  }
+
+  async saveOpenedDocument (document: I_OpenedDocument) {
+    const docCopy:I_OpenedDocument = extend(true, [], document)
+    const allOpenedDocuments:I_OpenedDocument[] = extend(true, [], this.SGET_allOpenedDocuments)
+
+    // @ts-ignore
+    const isNew = document.isNew
+
+    // @ts-ignore
+    const savedDocument: {
+      documentCopy: I_OpenedDocument,
+      allOpenedDocuments: I_OpenedDocument[]
+    } = await saveDocument(docCopy, allOpenedDocuments, this.SGET_allDocuments.docs, false, this, true)
+
+    // Update the opened document
+    const dataPass = { doc: savedDocument.documentCopy, treeAction: true }
+    this.SSET_updateOpenedDocument(dataPass)
+
+    // Update document
+    if (!isNew) {
+      // @ts-ignore
+      this.SSET_updateDocument({ doc: this.mapShortDocument(savedDocument.documentCopy, this.SGET_allDocumentsByType(savedDocument.documentCopy.type).docs) })
+    }
+    // Add new document
+    else {
+      // @ts-ignore
+      this.SSET_addDocument({ doc: this.mapShortDocument(savedDocument.documentCopy, this.SGET_allDocumentsByType(savedDocument.documentCopy.type).docs) })
+    }
+
+    // Update all others
+    for (const doc of savedDocument.allOpenedDocuments) {
+      // Update the opened document
+      const dataPass = { doc: doc, treeAction: true }
+      this.SSET_updateOpenedDocument(dataPass)
+
+      // @ts-ignore
+      this.SSET_updateDocument({ doc: this.mapShortDocument(doc, this.SGET_allDocumentsByType(doc.type).docs) })
+    }
+  }
 }
 </script>
 

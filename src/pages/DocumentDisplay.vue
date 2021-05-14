@@ -133,7 +133,13 @@
       <div
         v-for="field in bluePrintData.extraFields"
         :key="`${field.id}`"
-        v-show="(hasValueFieldFilter(field) || editMode) && checkForLegacyFieldValue(currentData, field)"
+        v-show="
+          (retrieveFieldType(currentData, field.id) !== 'break' || !hideDocumentTitles) &&
+          (
+            (hasValueFieldFilter(field) || editMode)
+            && checkForLegacyFieldValue(currentData, field)
+          )
+          "
         :class="`
           col-12
           col-md-${determineSize_MD(field)}
@@ -331,9 +337,12 @@ export default class PageDocumentDisplay extends BaseClass {
     this.disableDocumentControlBar = options.disableDocumentControlBar
     this.isDarkMode = options.darkMode
     this.hideEmptyFields = options.hideEmptyFields
+    this.hideDocumentTitles = options.hideDocumentTitles
     this.preventAutoScroll = options.preventAutoScroll
     this.showDocumentID = options.showDocumentID
   }
+
+  hideDocumentTitles = false
 
   showDocumentID = false
 
@@ -969,11 +978,12 @@ export default class PageDocumentDisplay extends BaseClass {
     const openedDocumentsCopy: I_OpenedDocument[] = extend(true, [], allDocuments.docs)
 
     if (currentDoc) {
+      const docCopy:I_OpenedDocument = extend(true, [], currentDoc)
       // @ts-ignore
       const savedDocument: {
         documentCopy: I_OpenedDocument,
         allOpenedDocuments: I_OpenedDocument[]
-      } = await saveDocument(currentDoc, openedDocumentsCopy, this.SGET_allDocuments.docs, keepEditMode, this)
+      } = await saveDocument(docCopy, openedDocumentsCopy, this.SGET_allDocuments.docs, keepEditMode, this)
 
       // Update the opened document
       const dataPass = { doc: savedDocument.documentCopy, treeAction: true }

@@ -33,13 +33,16 @@
 - Added a whole category of items adding for lists
 - Added precise mode search to full-field search in the relationship search inputs
 - Added option: Prevent filled note board showing
+- Added an option to save all opened documents upon exiting app/closing project
 - Added `Other Names & Epithets` to `Chapters` document type
 - Revamped `Member count` field in all types of groups document types
 - Added `Follower/Subject count` field to all types of groups document types
 - Added dev option to the menu for quick document ID copying
 - Updated the legacy project repair tool to also transfer old stat fields into the new setup
-- Added keybind for toggling Developer tools
 - Added an checker tool for removal of legacy fields for the user
+- Added both keybind and a button for mass-saving of documents with edits
+- Added a keybind: "Save active document and mark it as finished"
+- Added a keybind: "Toggle Developer tools"
 
 ### QoL adjustments
 

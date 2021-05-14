@@ -179,6 +179,8 @@ export const importExistingProject = (vueRouter: any, Loading: any, loadingSetup
     // @ts-ignore
     optionsSnapShot.legacyFieldsCheck = true
     // @ts-ignore
+    optionsSnapShot.pre017check = true
+    // @ts-ignore
     vueInstance.SSET_options(optionsSnapShot)
 
     /*eslint-disable */
@@ -256,6 +258,8 @@ export const mergeExistingProject = (vueRouter: any, Loading: any, loadingSetup:
     const optionsSnapShot = extend(true, {}, vueInstance.SGET_options)
     // @ts-ignore
     optionsSnapShot.legacyFieldsCheck = true
+    // @ts-ignore
+    optionsSnapShot.pre017check = true
     // @ts-ignore
     vueInstance.SSET_options(optionsSnapShot)
 

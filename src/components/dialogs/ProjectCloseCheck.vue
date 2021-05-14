@@ -3,7 +3,9 @@
     v-model="dialogModel"
     @before-hide="triggerDialogClose"
     >
-    <q-card dark>
+    <q-card
+    class="documentCloseCheckDialog"
+     dark>
 
       <q-card-section class="row justify-center">
         <h6 class="text-center q-my-sm">You have unsaved documents opened!</h6>
@@ -14,7 +16,7 @@
 
       <q-card-section class="row q-mx-lg">
         <div class="q-mb-md text-bold">Affected documents:</div>
-        <q-list class="projectCloseDalogList">
+        <q-list class="projectCloseDialogList">
           <q-item
           v-for=" doc in openedDocsWithEdits"
           :key="doc._id"
@@ -35,16 +37,24 @@
 
       </q-card-section>
 
-      <q-card-actions align="around" class="q-mx-xl q-mt-lg q-mb-md">
+      <q-card-actions align="right" class="q-mx-xl q-mt-lg q-mb-md">
         <q-btn
           flat
           label="Cancel"
           color="accent"
+          class="q-mx-sm"
           v-close-popup />
+        <q-btn
+          outline
+          :label="saveAllLabelText"
+          color="primary"
+          class="q-mx-sm"
+          @click="determineMassSaveAction" />
         <q-btn
           outline
           :label="exitLabelText"
           color="secondary"
+          class="q-mx-sm"
           v-close-popup
           @click="determineModeAction" />
       </q-card-actions>
@@ -59,6 +69,9 @@ import { Component, Watch, Prop } from "vue-property-decorator"
 import DialogBase from "src/components/dialogs/_DialogBase"
 import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
 import { remote } from "electron"
+import { extend, QSpinnerGears, Loading } from "quasar"
+import { saveDocument } from "src/scripts/databaseManager/documentManager"
+
 @Component({
   components: { }
 })
@@ -93,6 +106,19 @@ export default class ProjectCloseCheck extends DialogBase {
   }
 
   /**
+   * Label text for the dialog
+   */
+  get saveAllLabelText () {
+    if (this.dialogMode === "appClose") {
+      return "Save all & exit FA"
+    }
+
+    if (this.dialogMode === "projectClose") {
+      return "Save all & close project"
+    }
+  }
+
+  /**
    * List of opened documents with edits in them
    */
   openedDocsWithEdits: I_OpenedDocument[]= []
@@ -123,6 +149,35 @@ export default class ProjectCloseCheck extends DialogBase {
     }
   }
 
+  async determineMassSaveAction () {
+    this.openedDocsWithEdits = this.SGET_allOpenedDocuments.docs.filter(doc => doc.hasEdits)
+
+    const setup = {
+      message: "<h4>Saving project...</h4>",
+      spinnerColor: "primary",
+      messageColor: "cultured",
+      spinnerSize: 120,
+      backgroundColor: "dark",
+      // @ts-ignore
+      spinner: QSpinnerGears
+    }
+
+    // @ts-ignore
+    Loading.show(setup)
+    for (const document of this.openedDocsWithEdits) {
+      await this.saveOpenedDocument(document)
+    }
+
+    if (this.dialogMode === "appClose") {
+      this.closeApp()
+    }
+    if (this.dialogMode === "projectClose") {
+      await this.sleep(3000)
+      Loading.hide()
+      this.closeProject()
+    }
+  }
+
   /**
    * Close the project and navigate to the intro screen
    */
@@ -142,12 +197,56 @@ export default class ProjectCloseCheck extends DialogBase {
   closeApp () {
     remote.getCurrentWindow().destroy()
   }
+
+  async saveOpenedDocument (document: I_OpenedDocument) {
+    const docCopy:I_OpenedDocument = extend(true, [], document)
+    const allOpenedDocuments:I_OpenedDocument[] = extend(true, [], this.SGET_allOpenedDocuments)
+
+    // @ts-ignore
+    const isNew = document.isNew
+
+    // @ts-ignore
+    const savedDocument: {
+      documentCopy: I_OpenedDocument,
+      allOpenedDocuments: I_OpenedDocument[]
+    } = await saveDocument(docCopy, allOpenedDocuments, this.SGET_allDocuments.docs, false, this, true)
+
+    // Update the opened document
+    const dataPass = { doc: savedDocument.documentCopy, treeAction: true }
+    this.SSET_updateOpenedDocument(dataPass)
+
+    // Update document
+    if (!isNew) {
+      // @ts-ignore
+      this.SSET_updateDocument({ doc: this.mapShortDocument(savedDocument.documentCopy, this.SGET_allDocumentsByType(savedDocument.documentCopy.type).docs) })
+    }
+    // Add new document
+    else {
+      // @ts-ignore
+      this.SSET_addDocument({ doc: this.mapShortDocument(savedDocument.documentCopy, this.SGET_allDocumentsByType(savedDocument.documentCopy.type).docs) })
+    }
+
+    // Update all others
+    for (const doc of savedDocument.allOpenedDocuments) {
+      // Update the opened document
+      const dataPass = { doc: doc, treeAction: true }
+      this.SSET_updateOpenedDocument(dataPass)
+
+      // @ts-ignore
+      this.SSET_updateDocument({ doc: this.mapShortDocument(doc, this.SGET_allDocumentsByType(doc.type).docs) })
+    }
+  }
 }
 </script>
 
 <style lang="scss">
 
-  .projectCloseDalogList {
+  .documentCloseCheckDialog {
+    width: 700px;
+    max-width: 700px !important;
+  }
+
+  .projectCloseDialogList {
     width: 100%;
   }
 

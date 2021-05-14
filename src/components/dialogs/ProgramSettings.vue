@@ -312,6 +312,23 @@
 
                   <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
+                      Hide document titles
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Hides the big section titles in the document view.
+                        <br>
+                        Please note that this may result into a relatively wild layout shifts which might make the document look unruly in some cases.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.hideDocumentTitles"
+                      />
+                  </div>
+
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
+                    <div class="optionTitle">
                       Prevent auto-scrolling
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
                       <q-tooltip :delay="500">
@@ -1052,6 +1069,7 @@ export default class ProgramSettings extends DialogBase {
     doubleDashDocCount: false,
     hideDeadCrossThrough: false,
     hidePlushes: false,
+    hideDocumentTitles: false,
     hideHierarchyTree: false,
     tagsAtTop: false,
     noTags: false,

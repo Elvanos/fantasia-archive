@@ -18,6 +18,7 @@ export interface OptionsStateInteface {
   disableDocumentToolTips: boolean
   doNotcollaseTreeOptions: boolean
   hideEmptyFields: boolean
+  hideDocumentTitles: boolean
   disableDocumentControlBar: boolean
   disableDocumentControlBarGuides: boolean
   disableCloseAftertSelectQuickSearch: boolean
@@ -58,6 +59,7 @@ function state (): OptionsStateInteface {
     hideDeadCrossThrough: false,
     doubleDashDocCount: false,
     hideWelcomeScreenSocials: false,
+    hideDocumentTitles: false,
     hidePlushes: false,
     hideHierarchyTree: false,
     noTags: false,

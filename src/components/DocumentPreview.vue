@@ -26,7 +26,7 @@
         v-for="field in localBlueprint.extraFields"
         :key="`${field.id}`"
         class="col-12 q-mb-md"
-        v-show="hasValueFieldFilter(field) && !determineLegacyField(localDocument, field.id)"
+        v-show="retrieveFieldType(localDocument, field.id) !== 'break' && hasValueFieldFilter(field) && !determineLegacyField(localDocument, field.id)"
       >
 
         <Field_Break
