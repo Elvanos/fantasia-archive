@@ -209,29 +209,19 @@ export const itemsBlueprint: I_Blueprint = {
       name: "Related to other Items",
       type: "manyToManyRelationship",
       icon: "mdi-sword",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "items",
         connectedField: "pairedItems"
       }
     },
-    {
-      id: "pairedConnectedProfessions",
-      name: "Commonly used by Occupations/Classes",
-      type: "manyToManyRelationship",
-      icon: "fab fa-pied-piper-hat",
-      sizing: 4,
-      relationshipSettings: {
-        connectedObjectType: "professions",
-        connectedField: "pairedConnectedItems"
-      }
-    },
+
     {
       id: "relatedCultures",
       name: "Connected to Cultures/Art",
       type: "manyToManyRelationship",
       icon: "fas fa-archway",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "culture",
         connectedField: "pairedItems"
@@ -426,7 +416,7 @@ export const itemsBlueprint: I_Blueprint = {
     },
     {
       id: "breakNotes",
-      name: "Connections - Story/Lore & World",
+      name: "Connections - Story/Lore, World & Details",
       type: "break",
       sizing: 12
     },
@@ -435,7 +425,7 @@ export const itemsBlueprint: I_Blueprint = {
       name: "Connected to Lore notes/Other notes",
       type: "manyToManyRelationship",
       icon: "mdi-script-text-outline",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "loreNotes",
         connectedField: "pairedConnectedItems"
@@ -446,7 +436,7 @@ export const itemsBlueprint: I_Blueprint = {
       name: "Connected to Characters",
       type: "manyToManyRelationship",
       icon: "mdi-account",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedConnectedItems"
@@ -457,7 +447,7 @@ export const itemsBlueprint: I_Blueprint = {
       name: "Connected to Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "locations",
         connectedField: "pairedConnectedItems"
@@ -468,16 +458,27 @@ export const itemsBlueprint: I_Blueprint = {
       name: "Connected to Species/Races/Flora/Fauna",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "races",
         connectedField: "pairedConnectedItems"
       }
     },
+    {
+      id: "pairedConnectedProfessions",
+      name: "Connected to by Occupations/Classes",
+      type: "manyToManyRelationship",
+      icon: "fab fa-pied-piper-hat",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "professions",
+        connectedField: "pairedConnectedItems"
+      }
+    },
 
     {
-      id: "breakWorld",
-      name: "Connections - World",
+      id: "breakPolitics",
+      name: "Connections - Groups/Teachings",
       type: "break",
       sizing: 12
     },

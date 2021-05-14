@@ -622,4 +622,30 @@ export default class BaseClass extends Vue {
 
     return Object.freeze(object)
   }
+
+  checkForLegacyDocuments () {
+    return this.SGET_allDocuments.docs.filter(doc => {
+      const localBlueprint = this.SGET_blueprint(doc.type)
+      let hasLegacyValue = false
+      for (const field of doc.extraFields) {
+        const pairedBlueprintField = localBlueprint.extraFields.find(e => e.id === field.id)
+        if (pairedBlueprintField && pairedBlueprintField.isLegacy) {
+          const value = field.value
+
+          if (!value ||
+            (Array.isArray(value) && value.length === 0) ||
+            // @ts-ignore
+            (value?.value?.length === 0) ||
+            // @ts-ignore
+            (value.value === null)) {
+            return false
+          }
+          hasLegacyValue = true
+          break
+        }
+      }
+
+      return hasLegacyValue
+    })
+  }
 }

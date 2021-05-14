@@ -10,7 +10,7 @@
            <span v-html="toolTip"/>
         </q-tooltip>
       </q-icon>
-      <q-icon v-if="isOneWayRelationship" name="mdi-arrow-right-bold" size="16px" class="documentLabelExtra">
+      <q-icon v-if="isOneWayRelationship" name="mdi-arrow-right-bold" size="16px" class="documentLabelExtra" color="amber-14">
         <q-tooltip :delay="500" v-if="!disableDocumentToolTips">
             This is a one-way relationship. <br> Editing this value <span class="text-secondary">WILL NOT</span> have any effect on the connected document/s.
             <br>
@@ -20,7 +20,7 @@
             Middle-clicking the linked document in non-edit mode will open it in new tab and not focus on it.
         </q-tooltip>
       </q-icon>
-      <q-icon v-if="!isOneWayRelationship" name="mdi-arrow-left-right-bold" size="16px" class="documentLabelExtra">
+      <q-icon v-if="!isOneWayRelationship" name="mdi-arrow-left-right-bold" size="16px" class="documentLabelExtra" color="teal-14">
          <q-tooltip :delay="500" v-if="!disableDocumentToolTips">
             This is a two-way relationship. <br> Editing this value <span class="text-secondary">WILL</span> also affect the connected document/s.
             <br>

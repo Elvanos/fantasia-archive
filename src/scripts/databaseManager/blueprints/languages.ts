@@ -242,7 +242,7 @@ export const languagesBlueprint: I_Blueprint = {
     },
     {
       id: "pairedCharacter",
-      name: "Prominent Speakers",
+      name: "Connected to Characters",
       type: "manyToManyRelationship",
       icon: "mdi-account",
       sizing: 4,
@@ -253,7 +253,7 @@ export const languagesBlueprint: I_Blueprint = {
     },
     {
       id: "pairedLocations",
-      name: "Spoken in Locations",
+      name: "Connected to Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 4,
@@ -264,7 +264,7 @@ export const languagesBlueprint: I_Blueprint = {
     },
     {
       id: "usedByRaces",
-      name: "Spoken by Species/Races/Flora/Fauna",
+      name: "Connected to Species/Races/Flora/Fauna",
       type: "manyToManyRelationship",
       icon: "fas fa-dragon",
       sizing: 4,

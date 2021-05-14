@@ -60,6 +60,25 @@
           >
             <router-view :key="$route.path" />
           </transition>
+
+          <q-page-sticky position="top-right" :offset="[18, 75]">
+            <q-btn
+              icon="mdi-book-search-outline"
+              color="red-13"
+              fab
+              v-if="legacyFieldsCheck"
+              @click="openLegacyDocuments"
+            >
+              <q-tooltip
+                :delay="500"
+                anchor="bottom middle"
+                self="top middle"
+              >
+                Check for documents with legacy values
+              </q-tooltip>
+            </q-btn>
+          </q-page-sticky>
+
           </q-page-container>
         </template>
     </q-splitter>
@@ -214,6 +233,8 @@ export default class DocumentLayout extends BaseClass {
     const options = this.SGET_options
     this.hideHierarchyTree = options.hideHierarchyTree
 
+    this.legacyFieldsCheck = options.legacyFieldsCheck
+
     // @ts-ignore
     this.pre017check = options.pre017check
 
@@ -224,6 +245,8 @@ export default class DocumentLayout extends BaseClass {
       this.splitterModel = 0
     }
   }
+
+  legacyFieldsCheck: boolean|undefined = true
 
   get limiterWidth () {
     return (!this.hideHierarchyTree) ? 374 : 0
@@ -249,6 +272,51 @@ export default class DocumentLayout extends BaseClass {
     this.optionsSnapShot = extend(true, {}, this.SGET_options)
     this.optionsSnapShot.pre017check = false
     this.SSET_options(this.optionsSnapShot)
+  }
+
+  openLegacyDocuments () {
+    const legacyDocs = this.checkForLegacyDocuments()
+    legacyDocs.forEach(doc => {
+      const dataPass = {
+        doc: doc,
+        treeAction: false
+      }
+
+      // @ts-ignore
+      this.SSET_addOpenedDocument(dataPass)
+    })
+
+    if (legacyDocs.length > 0) {
+      this.$q.notify({
+        group: false,
+        type: "warning",
+        timeout: 0,
+        html: true,
+        actions: [{ icon: "mdi-close", color: "black" }],
+        message: `
+        ${legacyDocs.length} documents with legacy field values found.
+        <br>
+        Please remap the legacy fields manually to ensure proper functioning of FA.
+        <br>
+        After the remapping is done, rerun the tool to re-check.
+        `
+      })
+    }
+
+    if (legacyDocs.length === 0) {
+      const optionsSnapShot = extend(true, {}, this.SGET_options)
+      // @ts-ignore
+      optionsSnapShot.legacyFieldsCheck = false
+      // @ts-ignore
+      this.SSET_options(optionsSnapShot)
+
+      this.$q.notify({
+        group: false,
+        type: "positive",
+        timeout: 3000,
+        message: "No legacy fields with active values found!"
+      })
+    }
   }
 
   /**

@@ -38,6 +38,8 @@
 - Added `Follower/Subject count` field to all types of groups document types
 - Added dev option to the menu for quick document ID copying
 - Updated the legacy project repair tool to also transfer old stat fields into the new setup
+- Added keybind for toggling Developer tools
+- Added an checker tool for removal of legacy fields for the user
 
 ### QoL adjustments
 
@@ -48,6 +50,7 @@
 - Updated selects to act as text input fields in case there are no prdefixed values in the list
 - Field labels received a facelift to look more appealing to look at when showing on smaller screens
 - Attempteds to "prettify" the display mode of the document fields in case the "Hide empty fields" option is ticked on
+- Added a tiny bit of color to help discern which relationship is one-way and which is two-way
 
 ## 0.1.6a
 

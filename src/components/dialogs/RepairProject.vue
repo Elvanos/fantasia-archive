@@ -181,6 +181,9 @@ export default class RepairProjectDialog extends DialogBase {
   }
 
   async remapDocument (document: I_ShortenedDocument, blueprint: I_Blueprint) {
+    // Fix any old, hanging icons
+    document.icon = blueprint.icon
+
     const statFieldIDS = [
       "strength",
       "constitution",
@@ -283,9 +286,6 @@ export default class RepairProjectDialog extends DialogBase {
       document.extraFields.splice(fieldIndex, 1)
     })
 
-    if (document._id === "e1e24951-e2af-4513-8e4c-50fb93fd94d9") {
-      console.log(document.extraFields)
-    }
     this.processedDocument++
 
     await this.sleep(25)

@@ -338,6 +338,17 @@ export const racesBlueprint: I_Blueprint = {
       }
     },
     {
+      id: "commonProfessions",
+      name: "Common Occupations/Classes",
+      type: "manyToManyRelationship",
+      icon: "fab fa-pied-piper-hat",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "professions",
+        connectedField: "commonRaces"
+      }
+    },
+    {
       id: "pairedProducedFromResources",
       name: "Resources/Materials produced from the Species/Race/Flora/Fauna",
       type: "manyToManyRelationship",

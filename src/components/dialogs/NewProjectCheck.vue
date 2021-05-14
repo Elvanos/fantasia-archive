@@ -65,7 +65,7 @@ import { Component, Watch } from "vue-property-decorator"
 import DialogBase from "src/components/dialogs/_DialogBase"
 import { retrieveCurrentProjectName, exportProject, createNewProject } from "src/scripts/projectManagement/projectManagent"
 
-import { Loading, QSpinnerGears } from "quasar"
+import { Loading, QSpinnerGears, extend } from "quasar"
 
 @Component({
   components: { }
@@ -149,6 +149,12 @@ export default class ImportProjectCheckDialog extends DialogBase {
       // @ts-ignore
       spinner: QSpinnerGears
     })
+
+    const optionsSnapShot = extend(true, {}, this.SGET_options)
+    // @ts-ignore
+    optionsSnapShot.legacyFieldsCheck = false
+    // @ts-ignore
+    this.SSET_options(optionsSnapShot)
 
     createNewProject(this.newProjectName, this.$router, this.$q, this).catch(e => console.log(e))
   }

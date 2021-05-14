@@ -6,6 +6,7 @@ import load from "pouchdb-load"
 import PouchDB from "pouchdb"
 import fs from "fs"
 import path from "path"
+import { extend } from "quasar"
 
 /**
    * Creates a brand new project and deleted any present data avaiable right now
@@ -174,6 +175,12 @@ export const importExistingProject = (vueRouter: any, Loading: any, loadingSetup
 
     }
 
+    const optionsSnapShot = extend(true, {}, vueInstance.SGET_options)
+    // @ts-ignore
+    optionsSnapShot.legacyFieldsCheck = true
+    // @ts-ignore
+    vueInstance.SSET_options(optionsSnapShot)
+
     /*eslint-disable */
     // @ts-ignore
     vueRouter.push({ path: "/" }).catch((e: {name: string}) => {
@@ -243,8 +250,14 @@ export const mergeExistingProject = (vueRouter: any, Loading: any, loadingSetup:
       const fileContents = fs.readFileSync(`${folderPath}/${file}`, { encoding: "utf8" })
       // @ts-ignore
       await window.FA_dbs[currentDBName].loadIt(fileContents)
-
     }
+
+    
+    const optionsSnapShot = extend(true, {}, vueInstance.SGET_options)
+    // @ts-ignore
+    optionsSnapShot.legacyFieldsCheck = true
+    // @ts-ignore
+    vueInstance.SSET_options(optionsSnapShot)
 
     /*eslint-disable */
     // @ts-ignore

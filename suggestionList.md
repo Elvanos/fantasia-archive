@@ -1,13 +1,7 @@
 ## THE GM BATCH START - 0.1.7
 
-- Add "Predecessors", "Successors", "Date of start", "Date of end" and "How long it lasted" fields to locations and all other groups
-
 - Add setting to hide labels in document preview/view
-- Add legacy field support & options
 
-- Add toggle for "Simple/Complex conditions" to show only one field for conditions
-
-- "Toggle dev tools" keybind
 - "Save all" keybind and "Save all and exit" option on the exiting
 - "Save and tick as finished" keybind
 

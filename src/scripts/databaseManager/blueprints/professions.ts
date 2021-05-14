@@ -249,7 +249,7 @@ export const professionsBlueprint: I_Blueprint = {
       name: "Commonly used Skills/Spells/Other",
       type: "manyToNoneRelationship",
       icon: "mdi-sword-cross",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "skills"
       }
@@ -259,9 +259,20 @@ export const professionsBlueprint: I_Blueprint = {
       name: "Commonly used Items",
       type: "manyToNoneRelationship",
       icon: "mdi-sword",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "items"
+      }
+    },
+    {
+      id: "commonRaces",
+      name: "Common Species/Races/Flora/Fauna",
+      type: "manyToManyRelationship",
+      icon: "fas fa-dragon",
+      sizing: 4,
+      relationshipSettings: {
+        connectedObjectType: "races",
+        connectedField: "commonProfessions"
       }
     },
     {
@@ -335,7 +346,7 @@ export const professionsBlueprint: I_Blueprint = {
       icon: "fas fa-journal-whills",
       sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "professions",
+        connectedObjectType: "myths",
         connectedField: "pairedProfessions"
       }
     },

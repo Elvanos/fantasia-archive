@@ -275,7 +275,7 @@ export default class DocumentPreview extends BaseClass {
     if (!value ||
     (Array.isArray(value) && value.length === 0) ||
     // @ts-ignore
-     (value?.value && value.value.length === 0) ||
+     (value?.value?.length === 0) ||
     // @ts-ignore
      (value.value === null)) {
       return false

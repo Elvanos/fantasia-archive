@@ -583,6 +583,11 @@ export default class AppControl extends BaseClass {
     if (this.determineKeyBind("navigateToProjectOverview") && this.projectExists && !this.isProjectPage) {
       this.navigateToProjectPage()
     }
+
+    // App options
+    if (this.determineKeyBind("toggleDeveloperTools")) {
+      this.toggleDevTools()
+    }
   }
 
   /****************************************************************/

@@ -344,25 +344,25 @@ export const resourcesBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "usedResources",
+      id: "usedProfessions",
       name: "Used by Occupations/Classes",
       type: "manyToManyRelationship",
       icon: "fab fa-pied-piper-hat",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "professions",
-        connectedField: "usedProfessions"
+        connectedField: "usedResources"
       }
     },
     {
-      id: "producedResources",
+      id: "producedProfessions",
       name: "Produced by Occupations/Classes",
       type: "manyToManyRelationship",
       icon: "fab fa-pied-piper-hat",
       sizing: 6,
       relationshipSettings: {
         connectedObjectType: "professions",
-        connectedField: "producedProfessions"
+        connectedField: "producedResources"
       }
     },
     {

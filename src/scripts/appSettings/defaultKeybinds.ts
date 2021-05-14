@@ -299,5 +299,16 @@ export const defaultKeybinds = [
     id: "collapseExpandeTreeNode",
     tooltip: "Collapse or open the focused category in the left hierarchical tree",
     note: "(while the hierarchical tree item is focused)"
+  },
+
+  // Toggle developer tools - CTRL + SHIFT + ALT + I
+  {
+    altKey: true,
+    ctrlKey: true,
+    shiftKey: true,
+    which: 73,
+    editable: true,
+    id: "toggleDeveloperTools",
+    tooltip: "Toggles the developer tools on/off"
   }
 ]
