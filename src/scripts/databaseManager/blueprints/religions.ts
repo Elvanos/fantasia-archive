@@ -8,6 +8,24 @@ export const religionsBlueprint: I_Blueprint = {
   category: "Groups/Teachings",
   extraFields: [
     {
+      id: "leaders",
+      name: "Leading Figures (legacy)",
+      type: "manyToNoneRelationship",
+      icon: "mdi-crown",
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
+        <br>
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
+      isLegacy: true,
+      sizing: 12,
+      relationshipSettings: {
+        connectedObjectType: "characters"
+      }
+    },
+    {
       id: "breakDocumentSettings",
       name: "Document settings",
       type: "break",
@@ -223,22 +241,25 @@ export const religionsBlueprint: I_Blueprint = {
       sizing: 3,
       tooltip: "The amount of people affected by/following this religious school/teaching."
     },
+
     {
-      id: "leaders",
+      id: "leadingCharacters",
       name: "Leading Figures",
-      type: "manyToNoneRelationship",
-      icon: "mdi-crown",
-      sizing: 4,
+      type: "manyToManyRelationship",
+      icon: "mdi-account",
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "characters"
+        connectedObjectType: "characters",
+        connectedField: "leadingReligiousLeaders"
       }
     },
+
     {
       id: "formReligion",
       name: "Form of religion",
       type: "multiSelect",
       icon: "fas fa-yin-yang",
-      sizing: 4,
+      sizing: 3,
       predefinedSelectValues: [
         "Cult",
         "Free-form faith",
@@ -254,7 +275,7 @@ export const religionsBlueprint: I_Blueprint = {
       name: "Type of religion",
       type: "multiSelect",
       icon: "fas fa-sun",
-      sizing: 4,
+      sizing: 3,
       predefinedSelectValues: [
         "Ancestor worship",
         "Animism",

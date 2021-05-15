@@ -29,7 +29,7 @@
           flat
           label="Export project"
           color="primary"
-          @click="commenceExport"
+          @click="commenceSave"
            />
           <q-btn
             flat
@@ -90,7 +90,7 @@ import { extend, Loading, QSpinnerGears } from "quasar"
 import { Component, Watch } from "vue-property-decorator"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
-import { retrieveCurrentProjectName, exportProject } from "src/scripts/projectManagement/projectManagent"
+import { retrieveCurrentProjectName, saveProject } from "src/scripts/projectManagement/projectManagent"
 
 import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
@@ -300,7 +300,7 @@ export default class RepairProjectDialog extends DialogBase {
   /**
    * Export the current project
    */
-  async commenceExport () {
+  async commenceSave () {
     const projectName = await retrieveCurrentProjectName()
     const setup = {
       message: "<h4>Exporting current project...</h4>",
@@ -311,7 +311,7 @@ export default class RepairProjectDialog extends DialogBase {
       // @ts-ignore
       spinner: QSpinnerGears
     }
-    exportProject(projectName, Loading, setup, this.$q)
+    saveProject(projectName, Loading, setup, this.$q)
   }
 }
 </script>

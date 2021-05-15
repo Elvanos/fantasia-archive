@@ -70,7 +70,7 @@
               v-if="!preventPreviewsTabs"
               :document-id="document._id"
               :external-close-trigger="documentPreviewClose"
-              :custom-delay="1500"
+              :custom-delay="1750"
             />
 
             <q-btn

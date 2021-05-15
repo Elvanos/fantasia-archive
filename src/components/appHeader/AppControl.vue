@@ -30,9 +30,9 @@
     />
 
     <!-- Import project dialog -->
-    <importProjectCheckDialog
-      :dialog-trigger="importProjectDialogTrigger"
-      @trigger-dialog-close="importProjectDialogClose"
+    <loadProjectCheckDialog
+      :dialog-trigger="loadProjectDialogTrigger"
+      @trigger-dialog-close="loadProjectDialogClose"
     />
 
     <!-- Merge project dialog -->
@@ -218,10 +218,10 @@
               active
               active-class="bg-gunmetal-light text-cultured"
               class="noHigh"
-              @click="commenceExport"
+              @click="commenceSave"
               :disable="!projectExists"
             >
-              <q-item-section>Export current project</q-item-section>
+              <q-item-section>Save current project</q-item-section>
               <q-item-section avatar>
                 <q-icon name="mdi-package-variant-closed" />
               </q-item-section>
@@ -233,9 +233,9 @@
               active
               active-class="bg-gunmetal-light text-cultured"
               class="noHigh"
-              @click="importProjectAssignUID"
+              @click="loadProjectAssignUID"
             >
-              <q-item-section>Import existing project</q-item-section>
+              <q-item-section>Load existing project</q-item-section>
               <q-item-section avatar>
                 <q-icon name="mdi-package-variant" />
               </q-item-section>
@@ -471,7 +471,7 @@ import { Component, Watch } from "vue-property-decorator"
 import BaseClass from "src/BaseClass"
 import projectCloseCheckDialog from "src/components/dialogs/ProjectCloseCheck.vue"
 import keybindCheatsheetDialog from "src/components/dialogs/KeybindCheatsheet.vue"
-import importProjectCheckDialog from "src/components/dialogs/ImportProjectCheck.vue"
+import loadProjectCheckDialog from "src/components/dialogs/LoadProjectCheck.vue"
 import mergeProjectCheckDialog from "src/components/dialogs/MergeProjectCheck.vue"
 import newProjectCheckDialog from "src/components/dialogs/NewProjectCheck.vue"
 import repairProjectDialog from "src/components/dialogs/RepairProject.vue"
@@ -485,7 +485,7 @@ import tipsTricksTriviaDialog from "src/components/dialogs/TipsTricksTrivia.vue"
 import licenseDialog from "src/components/dialogs/License.vue"
 
 import { Loading, QSpinnerGears } from "quasar"
-import { retrieveCurrentProjectName, exportProject } from "src/scripts/projectManagement/projectManagent"
+import { retrieveCurrentProjectName, saveProject } from "src/scripts/projectManagement/projectManagent"
 import { toggleDevTools } from "src/scripts/utilities/devTools"
 
 import appLogo from "src/assets/appLogo.png"
@@ -494,7 +494,7 @@ import appLogo from "src/assets/appLogo.png"
   components: {
     projectCloseCheckDialog,
     keybindCheatsheetDialog,
-    importProjectCheckDialog,
+    loadProjectCheckDialog,
     mergeProjectCheckDialog,
     newProjectCheckDialog,
     aboutAppDialog,
@@ -606,10 +606,10 @@ export default class AppControl extends BaseClass {
   // Export project action
   /****************************************************************/
 
-  async commenceExport () {
+  async commenceSave () {
     const projectName = await retrieveCurrentProjectName()
     const setup = {
-      message: "<h4>Exporting current project...</h4>",
+      message: "<h4>Saving current project...</h4>",
       spinnerColor: "primary",
       messageColor: "cultured",
       spinnerSize: 120,
@@ -617,7 +617,7 @@ export default class AppControl extends BaseClass {
       // @ts-ignore
       spinner: QSpinnerGears
     }
-    exportProject(projectName, Loading, setup, this.$q)
+    saveProject(projectName, Loading, setup, this.$q)
   }
 
   /****************************************************************/
@@ -637,13 +637,13 @@ export default class AppControl extends BaseClass {
   // Import project dialog
   /****************************************************************/
 
-  importProjectDialogTrigger: string | false = false
-  importProjectDialogClose () {
-    this.importProjectDialogTrigger = false
+  loadProjectDialogTrigger: string | false = false
+  loadProjectDialogClose () {
+    this.loadProjectDialogTrigger = false
   }
 
-  importProjectAssignUID () {
-    this.importProjectDialogTrigger = this.generateUID()
+  loadProjectAssignUID () {
+    this.loadProjectDialogTrigger = this.generateUID()
   }
 
   /****************************************************************/

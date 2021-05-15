@@ -63,7 +63,7 @@ export const createNewProject = async (projectName: string, vueRouter: any, quas
    * Open an file dialog asking the use for location where to export the project
    * @param projectName The name of the project to export
    */
-export const exportProject = (projectName: string, Loading: any, loadingSetup: any, quasar: any) => {
+export const saveProject = (projectName: string, Loading: any, loadingSetup: any, quasar: any) => {
   remote.dialog.showOpenDialog({
     properties: ["openDirectory"]
   }).then(async (result) => {
@@ -109,7 +109,7 @@ export const exportProject = (projectName: string, Loading: any, loadingSetup: a
       Loading.hide()
       quasar.notify({
         type: 'positive',
-        message: `Project succesfully exported`
+        message: `Project succesfully saved`
       })
     /* eslint-enable */
   }).catch(err => {
@@ -208,7 +208,7 @@ export const importExistingProject = (vueRouter: any, Loading: any, loadingSetup
 
     quasar.notify({
       type: 'positive',
-      message: `Project succesfully imported`
+      message: `Project succesfully loaded`
     })
 
     vueInstance.SSET_resetDocuments()

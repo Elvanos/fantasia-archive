@@ -13,7 +13,7 @@
           <div>
             Please note that the new project will <span class="text-bold text-secondary">COMPLETELY OVERWRITE</span> the currently opened project.
             <br>
-            If you haven't done so already, please export your current project first to prevent a <span class="text-bold text-secondary">FULL LOSS</span> of all your current project data!
+            If you haven't done so already, please save your current project first to prevent a <span class="text-bold text-secondary">FULL LOSS</span> of all your current project data!
           </div>
         </q-card-section>
 
@@ -42,9 +42,9 @@
           <q-btn
           flat
           v-if="projectExists"
-          label="Export project"
+          label="Save project"
           color="primary"
-          @click="commenceExport"
+          @click="commenceSave"
            />
           <q-btn
             flat
@@ -63,14 +63,14 @@
 import { Component, Watch } from "vue-property-decorator"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
-import { retrieveCurrentProjectName, exportProject, createNewProject } from "src/scripts/projectManagement/projectManagent"
+import { retrieveCurrentProjectName, saveProject, createNewProject } from "src/scripts/projectManagement/projectManagent"
 
 import { Loading, QSpinnerGears, extend } from "quasar"
 
 @Component({
   components: { }
 })
-export default class ImportProjectCheckDialog extends DialogBase {
+export default class NewProjectCheck extends DialogBase {
   /**
    * React to dialog opening request
    */
@@ -162,10 +162,10 @@ export default class ImportProjectCheckDialog extends DialogBase {
   /**
    * Export current project
    */
-  async commenceExport () {
+  async commenceSave () {
     const projectName = await retrieveCurrentProjectName()
     const setup = {
-      message: "<h4>Exporting current project...</h4>",
+      message: "<h4>Saving current project...</h4>",
       spinnerColor: "primary",
       messageColor: "cultured",
       spinnerSize: 120,
@@ -173,7 +173,7 @@ export default class ImportProjectCheckDialog extends DialogBase {
       // @ts-ignore
       spinner: QSpinnerGears
     }
-    exportProject(projectName, Loading, setup, this.$q)
+    saveProject(projectName, Loading, setup, this.$q)
   }
 }
 </script>

@@ -109,14 +109,14 @@
             color="primary"
             outline
             :disable="!projectExists"
-            @click="commenceExport"
+            @click="commenceSave"
           >
             <q-tooltip
               :delay="500"
               anchor="bottom middle"
               self="top middle"
             >
-             Export current project
+             Save current project
             </q-tooltip>
           </q-btn>
 
@@ -340,7 +340,7 @@ import { saveDocument } from "src/scripts/databaseManager/documentManager"
 import { createNewWithParent } from "src/scripts/documentActions/createNewWithParent"
 import { copyDocument } from "src/scripts/documentActions/copyDocument"
 
-import { retrieveCurrentProjectName, exportProject } from "src/scripts/projectManagement/projectManagent"
+import { retrieveCurrentProjectName, saveProject } from "src/scripts/projectManagement/projectManagent"
 
 @Component({
   components: {
@@ -533,10 +533,10 @@ export default class DocumentControl extends BaseClass {
   /****************************************************************/
   retrieveCurrentProjectName = retrieveCurrentProjectName
 
-  async commenceExport () {
+  async commenceSave () {
     const projectName = await retrieveCurrentProjectName()
     const setup = {
-      message: "<h4>Exporting current project...</h4>",
+      message: "<h4>Saving current project...</h4>",
       spinnerColor: "primary",
       messageColor: "cultured",
       spinnerSize: 120,
@@ -544,7 +544,7 @@ export default class DocumentControl extends BaseClass {
       // @ts-ignore
       spinner: QSpinnerGears
     }
-    exportProject(projectName, Loading, setup, this.$q)
+    saveProject(projectName, Loading, setup, this.$q)
   }
 
   /****************************************************************/
@@ -717,7 +717,7 @@ export default class DocumentControl extends BaseClass {
     this.openedDocsWithEdits = this.SGET_allOpenedDocuments.docs.filter(doc => doc.hasEdits)
 
     const setup = {
-      message: "<h4>Saving project...</h4>",
+      message: "<h4>Saving all opened documents...</h4>",
       spinnerColor: "primary",
       messageColor: "cultured",
       spinnerSize: 120,

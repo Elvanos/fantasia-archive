@@ -78,10 +78,11 @@
 - Tag management (coloring)
 - Drag/drop tree list
 - Add printing support
+- Support for muliple document types support in relationship fields
 
 ### Low priority
 
-- Horizonatal fields (title AND value next to each other. Might need a designer)
+- Horizontal fields (title AND value next to each other. Might need a designer)
 - Simple data imports (maybe?)
 - Vanity project-wide word count
 - Automatic thumbnail generation AND re-checking based on date

@@ -8,12 +8,11 @@ export const magicBlueprint: I_Blueprint = {
   category: "Groups/Teachings",
   extraFields: [
     {
-      id: "pairedCharacter",
-      name: "Magic/Spell Users",
-      type: "manyToManyRelationship",
-      icon: "mdi-account",
-      sizing: 4,
-      isLegacy: true,
+      id: "leaders",
+      name: "Leading Figures",
+      type: "manyToNoneRelationship",
+      icon: "mdi-crown",
+      sizing: 12,
       tooltip: `
         This field is obsolete and no longer serves any purpose.
         <br>
@@ -21,6 +20,25 @@ export const magicBlueprint: I_Blueprint = {
         <br>
         This field will automatically disappear once all data is gone from it.
       `,
+      isLegacy: true,
+      relationshipSettings: {
+        connectedObjectType: "characters"
+      }
+    },
+    {
+      id: "pairedCharacter",
+      name: "Magic/Spell Users",
+      type: "manyToManyRelationship",
+      icon: "mdi-account",
+      sizing: 12,
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
+        <br>
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
+      isLegacy: true,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedMagic"
@@ -31,8 +49,7 @@ export const magicBlueprint: I_Blueprint = {
       name: "Important items",
       type: "manyToManyRelationship",
       icon: "mdi-sword",
-      sizing: 4,
-      isLegacy: true,
+      sizing: 12,
       tooltip: `
         This field is obsolete and no longer serves any purpose.
         <br>
@@ -40,6 +57,7 @@ export const magicBlueprint: I_Blueprint = {
         <br>
         This field will automatically disappear once all data is gone from it.
       `,
+      isLegacy: true,
       relationshipSettings: {
         connectedObjectType: "items",
         connectedField: "pairedMagic"
@@ -261,16 +279,16 @@ export const magicBlueprint: I_Blueprint = {
       icon: "mdi-account-group-outline",
       sizing: 3,
       tooltip: "The amount of people affected by/following this magical group."
-
     },
     {
-      id: "leaders",
+      id: "leadingCharacters",
       name: "Leading Figures",
-      type: "manyToNoneRelationship",
-      icon: "mdi-crown",
-      sizing: 4,
+      type: "manyToManyRelationship",
+      icon: "mdi-account",
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "characters"
+        connectedObjectType: "characters",
+        connectedField: "leadingMagicalLeaders"
       }
     },
     {
@@ -278,7 +296,7 @@ export const magicBlueprint: I_Blueprint = {
       name: "Type",
       type: "multiSelect",
       icon: "fas fa-monument",
-      sizing: 4,
+      sizing: 3,
       predefinedSelectValues: [
         "Magical institution",
         "Magical teaching",
@@ -292,7 +310,7 @@ export const magicBlueprint: I_Blueprint = {
       name: "General schools of magic",
       type: "multiSelect",
       icon: "fas fa-hand-sparkles",
-      sizing: 4,
+      sizing: 3,
       predefinedSelectValues: [
         "Abjuration ",
         "Conjuration",
@@ -303,7 +321,7 @@ export const magicBlueprint: I_Blueprint = {
         "Necromancy",
         "Transmutation",
         "World alteration",
-        "Raw magical energy manipulation",
+        "Raw energy manipulation",
         "Other"
       ]
     },

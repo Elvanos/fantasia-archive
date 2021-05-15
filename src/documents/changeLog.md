@@ -46,6 +46,7 @@
 
 ### QoL adjustments
 
+- All "Export and Import" texts have been changed to "Save and Load" due to the inclusion of the new, actual, "Export" feature
 - Added a note about possible color searching in the advanced search cheatsheet popup window
 - Added input reseting after adding/selection in the relationship fields
 - Revamped the field order in all document types since `Other names` field moved to `Document settings` from `Basic information` as it is not a mandatory system field specially used in advanced search
@@ -54,6 +55,8 @@
 - Field labels received a facelift to look more appealing to look at when showing on smaller screens
 - Attempteds to "prettify" the display mode of the document fields in case the "Hide empty fields" option is ticked on
 - Added a tiny bit of color to help discern which relationship is one-way and which is two-way
+- Adjusted the single and multi relationship fields not showing suggestion popups when a value is removed the list
+- Adjusted the single relationship fields to hide the suggest list when a value is selected from the list
 
 ## 0.1.6a
 

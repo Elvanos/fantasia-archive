@@ -8,6 +8,24 @@ export const guildsBlueprint: I_Blueprint = {
   category: "Groups/Teachings",
   extraFields: [
     {
+      id: "leaders",
+      name: "Leading Figures (legacy)",
+      type: "manyToNoneRelationship",
+      icon: "mdi-crown",
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
+        <br>
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
+      isLegacy: true,
+      sizing: 12,
+      relationshipSettings: {
+        connectedObjectType: "characters"
+      }
+    },
+    {
       id: "breakDocumentSettings",
       name: "Document settings",
       type: "break",
@@ -225,13 +243,14 @@ export const guildsBlueprint: I_Blueprint = {
       tooltip: "The amount of people affected by/following this group/organization."
     },
     {
-      id: "leaders",
+      id: "leadingCharacters",
       name: "Leading Figures",
-      type: "manyToNoneRelationship",
-      icon: "mdi-crown",
+      type: "manyToManyRelationship",
+      icon: "mdi-account",
       sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "characters"
+        connectedObjectType: "characters",
+        connectedField: "leadingOtherLeaders"
       }
     },
     {

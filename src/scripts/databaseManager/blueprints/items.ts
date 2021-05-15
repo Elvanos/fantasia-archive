@@ -13,8 +13,6 @@ export const itemsBlueprint: I_Blueprint = {
       name: "Capable of utilizing Spells/Magic",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
-      isLegacy: true,
-      sizing: 6,
       tooltip: `
         This field is obsolete and no longer serves any purpose.
         <br>
@@ -22,6 +20,8 @@ export const itemsBlueprint: I_Blueprint = {
         <br>
         This field will automatically disappear once all data is gone from it.
       `,
+      isLegacy: true,
+      sizing: 12,
       relationshipSettings: {
         connectedObjectType: "magic",
         connectedField: "pairedItems"
@@ -32,8 +32,7 @@ export const itemsBlueprint: I_Blueprint = {
       name: "Connected to Currencies",
       type: "manyToManyRelationship",
       icon: "fas fa-coins",
-      sizing: 6,
-      isLegacy: true,
+      sizing: 12,
       tooltip: `
         This field is obsolete and no longer serves any purpose.
         <br>
@@ -41,6 +40,8 @@ export const itemsBlueprint: I_Blueprint = {
         <br>
         This field will automatically disappear once all data is gone from it.
       `,
+      isLegacy: true,
+
       relationshipSettings: {
         connectedObjectType: "currencies",
         connectedField: "pairedItems"

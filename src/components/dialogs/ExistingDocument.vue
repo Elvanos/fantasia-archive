@@ -60,6 +60,7 @@
                     :special-z-index="999999999"
                     :custom-anchor="'top start'"
                     :custom-self="'center right'"
+                    :custom-delay="1200"
                   />
                     <q-item-section avatar>
                       <q-icon

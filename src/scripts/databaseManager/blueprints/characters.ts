@@ -13,7 +13,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Known Magic/Spells",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
-      sizing: 6,
+      sizing: 12,
       tooltip: `
         This field is obsolete and no longer serves any purpose.
         <br>
@@ -40,7 +40,7 @@ export const charactersBlueprint: I_Blueprint = {
         This field will automatically disappear once all data is gone from it.
       `,
       isLegacy: true,
-      sizing: 6,
+      sizing: 12,
       relationshipSettings: {
         connectedObjectType: "tech",
         connectedField: "pairedCharacter"
@@ -52,7 +52,6 @@ export const charactersBlueprint: I_Blueprint = {
       type: "list",
       icon: "mdi-sword",
       sizing: 12,
-      isLegacy: true,
       tooltip: `
         This field is obsolete and no longer serves any purpose.
         <br>
@@ -60,6 +59,7 @@ export const charactersBlueprint: I_Blueprint = {
         <br>
         This field will automatically disappear once all data is gone from it.
       `,
+      isLegacy: true,
       predefinedListExtras: {
         affix: "Level",
         extraSelectValueList: [
@@ -1315,6 +1315,17 @@ export const charactersBlueprint: I_Blueprint = {
     },
 
     {
+      id: "leadingPoliticalLeaders",
+      name: "Leading Figure of Ideologies/Political groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-bank-outline",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "politicalGroups",
+        connectedField: "leadingCharacters"
+      }
+    },
+    {
       id: "pairedConnectionPolGroup",
       name: "Connected to Ideologies/Political groups",
       type: "manyToManyRelationship",
@@ -1330,7 +1341,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Member of Ideologies/Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
         connectedField: "pairedBelongingCharacter"
@@ -1341,7 +1352,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Ally of Ideologies/Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
         connectedField: "pairedAllyCharacter"
@@ -1352,13 +1363,24 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Enemy of Ideologies/Political groups",
       type: "manyToManyRelationship",
       icon: "mdi-bank-outline",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "politicalGroups",
         connectedField: "pairedEnemyCharacter"
       }
     },
 
+    {
+      id: "leadingOtherLeaders",
+      name: "Leading Figure of Organizations/Other groups",
+      type: "manyToManyRelationship",
+      icon: "mdi-account-group",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "guilds",
+        connectedField: "leadingCharacters"
+      }
+    },
     {
       id: "pairedConnectionOtherGroups",
       name: "Connected to Organizations/Other groups",
@@ -1375,7 +1397,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Member of Organizations/Other groups",
       type: "manyToManyRelationship",
       icon: "mdi-account-group",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "guilds",
         connectedField: "pairedBelongingCharacter"
@@ -1386,7 +1408,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Ally of Organizations/Other groups",
       type: "manyToManyRelationship",
       icon: "mdi-account-group",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "guilds",
         connectedField: "pairedAllyCharacter"
@@ -1397,13 +1419,24 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Enemy of Organizations/Other groups",
       type: "manyToManyRelationship",
       icon: "mdi-account-group",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "guilds",
         connectedField: "pairedEnemyCharacter"
       }
     },
 
+    {
+      id: "leadingReligiousLeaders",
+      name: "Leading Figure of Teachings/Religious groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-ankh",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "religions",
+        connectedField: "leadingCharacters"
+      }
+    },
     {
       id: "pairedConnectionRelGroup",
       name: "Connected to Teachings/Religious groups",
@@ -1420,7 +1453,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Member of Teachings/Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "religions",
         connectedField: "pairedBelongingCharacter"
@@ -1431,7 +1464,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Ally of Teachings/Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "religions",
         connectedField: "pairedAllyCharacter"
@@ -1442,10 +1475,22 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Enemy of Teachings/Religious groups",
       type: "manyToManyRelationship",
       icon: "fas fa-ankh",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "religions",
         connectedField: "pairedEnemyCharacter"
+      }
+    },
+
+    {
+      id: "leadingMagicalLeaders",
+      name: "Leading Figure of Schools of Magic/Magical groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-hat-wizard",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "magic",
+        connectedField: "leadingCharacters"
       }
     },
     {
@@ -1464,7 +1509,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Member of Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "magic",
         connectedField: "pairedBelongingCharacter"
@@ -1475,7 +1520,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Ally of Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "magic",
         connectedField: "pairedAllyCharacter"
@@ -1486,10 +1531,22 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Enemy of Schools of Magic/Magical groups",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "magic",
         connectedField: "pairedEnemyCharacter"
+      }
+    },
+
+    {
+      id: "leadingTechLeaders",
+      name: "Leading Figure of Sciences/Technological groups",
+      type: "manyToManyRelationship",
+      icon: "fas fa-wrench",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "tech",
+        connectedField: "leadingCharacters"
       }
     },
     {
@@ -1508,7 +1565,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Member of Sciences/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "tech",
         connectedField: "pairedBelongingCharacter"
@@ -1519,7 +1576,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Ally of Sciences/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "tech",
         connectedField: "pairedAllyCharacter"
@@ -1530,7 +1587,7 @@ export const charactersBlueprint: I_Blueprint = {
       name: "Enemy of Sciences/Technological groups",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
-      sizing: 6,
+      sizing: 4,
       relationshipSettings: {
         connectedObjectType: "tech",
         connectedField: "pairedEnemyCharacter"

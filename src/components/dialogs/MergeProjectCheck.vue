@@ -13,7 +13,7 @@
           <div>
             Please note that merging another project will cause <span class="text-bold text-secondary">IRREVERSIBLE CHANGES</span> to the currently opened project.
             <br>
-            If you haven't done so already, please export your current project first to prevent <span class="text-bold text-secondary">POSSIBLE COMPLICATIONS</span> concerning your current project data!
+            If you haven't done so already, please save your current project first to prevent <span class="text-bold text-secondary">POSSIBLE COMPLICATIONS</span> concerning your current project data!
           </div>
         </q-card-section>
 
@@ -25,9 +25,9 @@
           v-close-popup />
           <q-btn
           flat
-          label="Export project"
+          label="Save project"
           color="primary"
-          @click="commenceExport"
+          @click="commenceSave"
            />
           <q-btn
             flat
@@ -45,7 +45,7 @@
 import { Component, Watch } from "vue-property-decorator"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
-import { retrieveCurrentProjectName, exportProject, mergeExistingProject } from "src/scripts/projectManagement/projectManagent"
+import { retrieveCurrentProjectName, saveProject, mergeExistingProject } from "src/scripts/projectManagement/projectManagent"
 import { Loading, QSpinnerGears } from "quasar"
 
 @Component({
@@ -97,10 +97,10 @@ export default class MergeProjectCheckDialog extends DialogBase {
   /**
    * Export the current project
    */
-  async commenceExport () {
+  async commenceSave () {
     const projectName = await retrieveCurrentProjectName()
     const setup = {
-      message: "<h4>Exporting current project...</h4>",
+      message: "<h4>Saving current project...</h4>",
       spinnerColor: "primary",
       messageColor: "cultured",
       spinnerSize: 120,
@@ -108,7 +108,7 @@ export default class MergeProjectCheckDialog extends DialogBase {
       // @ts-ignore
       spinner: QSpinnerGears
     }
-    exportProject(projectName, Loading, setup, this.$q)
+    saveProject(projectName, Loading, setup, this.$q)
   }
 }
 </script>

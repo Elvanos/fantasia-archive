@@ -2,9 +2,9 @@
   <q-page class="column items-center justify-center">
 
     <!-- Import project dialog -->
-    <importProjectCheckDialog
-      :dialog-trigger="importProjectDialogTrigger"
-      @trigger-dialog-close="importProjectDialogClose"
+    <loadProjectCheckDialog
+      :dialog-trigger="loadProjectDialogTrigger"
+      @trigger-dialog-close="loadProjectDialogClose"
     />
 
     <!-- New project dialog -->
@@ -51,9 +51,9 @@
           :outline="isDarkMode"
           size="md"
           class="q-px-xl q-py-xs"
-          @click="importProjectAssignUID()"
+          @click="saveProjectAssignUID()"
         >
-        Import existing project
+        Load existing project
        </q-btn>
       </div>
 
@@ -104,7 +104,7 @@
 import { Component, Watch } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
-import importProjectCheckDialog from "src/components/dialogs/ImportProjectCheck.vue"
+import loadProjectCheckDialog from "src/components/dialogs/LoadProjectCheck.vue"
 import newProjectCheckDialog from "src/components/dialogs/NewProjectCheck.vue"
 import { shell } from "electron"
 
@@ -112,7 +112,7 @@ import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projec
 
 @Component({
   components: {
-    importProjectCheckDialog,
+    loadProjectCheckDialog,
     newProjectCheckDialog
   }
 })
@@ -212,13 +212,13 @@ export default class WelcomeScreen extends BaseClass {
   /****************************************************************/
   // IMPORT PROJECT DIALOG
   /****************************************************************/
-  importProjectDialogTrigger: string | false = false
-  importProjectDialogClose () {
-    this.importProjectDialogTrigger = false
+  loadProjectDialogTrigger: string | false = false
+  loadProjectDialogClose () {
+    this.loadProjectDialogTrigger = false
   }
 
-  importProjectAssignUID () {
-    this.importProjectDialogTrigger = this.generateUID()
+  saveProjectAssignUID () {
+    this.loadProjectDialogTrigger = this.generateUID()
   }
 }
 </script>

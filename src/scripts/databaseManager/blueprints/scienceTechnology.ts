@@ -8,12 +8,10 @@ export const techBlueprint: I_Blueprint = {
   category: "Groups/Teachings",
   extraFields: [
     {
-      id: "pairedCharacter",
-      name: "Technology/Science Users",
-      type: "manyToManyRelationship",
-      icon: "mdi-account",
-      sizing: 6,
-      isLegacy: true,
+      id: "leaders",
+      name: "Leading figures (legacy)",
+      type: "manyToNoneRelationship",
+      icon: "mdi-crown",
       tooltip: `
         This field is obsolete and no longer serves any purpose.
         <br>
@@ -21,6 +19,26 @@ export const techBlueprint: I_Blueprint = {
         <br>
         This field will automatically disappear once all data is gone from it.
       `,
+      isLegacy: true,
+      sizing: 12,
+      relationshipSettings: {
+        connectedObjectType: "characters"
+      }
+    },
+    {
+      id: "pairedCharacter",
+      name: "Technology/Science Users",
+      type: "manyToManyRelationship",
+      icon: "mdi-account",
+      sizing: 12,
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
+        <br>
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
+      isLegacy: true,
       relationshipSettings: {
         connectedObjectType: "characters",
         connectedField: "pairedTech"
@@ -243,14 +261,16 @@ export const techBlueprint: I_Blueprint = {
       sizing: 3,
       tooltip: "The amount of people affected by/following this scientific school/teaching."
     },
+
     {
-      id: "leaders",
-      name: "Leading figures",
-      type: "manyToNoneRelationship",
-      icon: "mdi-crown",
-      sizing: 4,
+      id: "leadingCharacters",
+      name: "Leading Figures",
+      type: "manyToManyRelationship",
+      icon: "mdi-account",
+      sizing: 6,
       relationshipSettings: {
-        connectedObjectType: "characters"
+        connectedObjectType: "characters",
+        connectedField: "leadingTechLeaders"
       }
     },
     {
@@ -258,7 +278,7 @@ export const techBlueprint: I_Blueprint = {
       name: "Type",
       type: "multiSelect",
       icon: "fas fa-cogs",
-      sizing: 4,
+      sizing: 3,
       predefinedSelectValues: [
         "Factory/Manufacture",
         "Invention",
@@ -275,7 +295,7 @@ export const techBlueprint: I_Blueprint = {
       name: "Scientific branches",
       type: "multiSelect",
       icon: "fas fa-vial",
-      sizing: 4,
+      sizing: 3,
       predefinedSelectValues: [
         "Agricultural science",
         "Astrology",
