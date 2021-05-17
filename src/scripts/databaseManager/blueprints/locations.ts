@@ -282,7 +282,7 @@ export const locationsBlueprint: I_Blueprint = {
       name: "Common Occupations/Classes",
       type: "manyToManyRelationship",
       icon: "fab fa-pied-piper-hat",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "professions",
         connectedField: "connectedLocations"
@@ -293,10 +293,21 @@ export const locationsBlueprint: I_Blueprint = {
       name: "Local Resources/Materials",
       type: "manyToManyRelationship",
       icon: "mdi-gold",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "resources",
         connectedField: "connectedLocations"
+      }
+    },
+    {
+      id: "neighbourLocations",
+      name: "Neighbouring Locations",
+      type: "manyToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 6,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "neighbourLocations"
       }
     },
     {
@@ -304,7 +315,7 @@ export const locationsBlueprint: I_Blueprint = {
       name: "Other connected Locations",
       type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
-      sizing: 4,
+      sizing: 6,
       relationshipSettings: {
         connectedObjectType: "locations",
         connectedField: "connectedLocations"

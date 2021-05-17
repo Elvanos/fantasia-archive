@@ -106,6 +106,7 @@ export const advancedDocumentFilter = (inputString: string, currentDocumentList:
         .filter(field => field.type !== "switch")
         .filter(field => field.id !== "name")
         .filter(field => field.id !== "parentDoc")
+        .filter(field => !field.isLegacy)
         .map(field => {
           const matchedField = doc.extraFields.find(sub => sub.id === field.id)
           let returnValue = matchedField?.value

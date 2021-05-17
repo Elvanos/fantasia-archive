@@ -3,7 +3,7 @@ export const loreNotesBlueprint: I_Blueprint = {
   _id: "loreNotes",
   order: 440,
   namePlural: "Lore notes/Other notes",
-  nameSingular: "Lore notes/Other note",
+  nameSingular: "Lore note/Other note",
   icon: "mdi-script-text-outline",
   category: "Story/Lore",
   extraFields: [

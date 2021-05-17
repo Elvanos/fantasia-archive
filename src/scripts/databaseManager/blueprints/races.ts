@@ -4,7 +4,7 @@ export const racesBlueprint: I_Blueprint = {
   _id: "races",
   order: 340,
   namePlural: "Species/Races/Flora/Fauna",
-  nameSingular: "Species/Races/Flora/Fauna",
+  nameSingular: "Species/Race/Flora/Fauna",
   icon: "fas fa-dragon",
   category: "World",
   extraFields: [

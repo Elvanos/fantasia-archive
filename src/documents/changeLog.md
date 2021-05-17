@@ -23,6 +23,7 @@
 
 ### New features
 
+- **Added export support for Markdown**
 - **Added on-the-fly relationship documents generation**
 - **Added stat/attribute support for multiple RPG systems**
 - **Added option to search through the `Other names` field via `@` modifier**
@@ -41,8 +42,10 @@
 - Updated the legacy project repair tool to also transfer old stat fields into the new setup
 - Added an checker tool for removal of legacy fields for the user
 - Added both keybind and a button for mass-saving of documents with edits
+- Added export option into the app menu
 - Added a keybind: "Save active document and mark it as finished"
 - Added a keybind: "Toggle Developer tools"
+- Added a keybind: "Export document"
 
 ### QoL adjustments
 

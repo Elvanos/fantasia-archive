@@ -220,6 +220,17 @@ export const defaultKeybinds = [
     tooltip: "Edit active document"
   },
 
+  // Export document - NONE
+  {
+    altKey: false,
+    ctrlKey: false,
+    shiftKey: false,
+    which: false,
+    editable: true,
+    id: "exportDocument",
+    tooltip: "Export current document"
+  },
+
   // Add a new document with current as parent - CTRL + SHIFT + N
   {
     altKey: false,

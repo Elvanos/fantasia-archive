@@ -15,6 +15,13 @@
       @trigger-dialog-close="deleteObjectDialogClose"
     />
 
+    <!-- Export project dialog -->
+    <exportProjectDialog
+      :dialog-trigger="exportProjectDialogTrigger"
+      :prepicked-ids="[currentData._id]"
+      @trigger-dialog-close="exportProjectDialogClose"
+    />
+
     <div class="row justify-start q-col-gutter-x-xl">
 
       <div
@@ -108,6 +115,46 @@
           </q-tooltip>
         </q-btn>
 
+        <q-separator
+          vertical
+          inset
+          :color="(isDarkMode) ? 'accent' : 'black'"
+          class="q-mr-md"
+        />
+
+        <q-btn
+          :color="(hasEdits) ? 'secondary' : 'primary'"
+          icon="mdi-database-export-outline"
+          @click="exportProjectAssignUID"
+          :outline="isDarkMode"
+          class="q-mr-md"
+          v-if="!currentData.isNew"
+        >
+          <q-tooltip
+            :delay="500"
+            anchor="bottom middle"
+            self="top middle"
+          >
+            Export current project
+            <span class="text-secondary" v-if="hasEdits">
+              <br>
+              <br>
+              Document has active edits.
+              <br>
+              These will not be exported.
+              <br>
+              Please save first.
+            </span>
+          </q-tooltip>
+        </q-btn>
+
+        <q-separator
+          vertical
+          inset
+          :color="(isDarkMode) ? 'accent' : 'black'"
+          class="q-mr-md"
+          />
+
         <q-btn
           color="secondary"
           icon="mdi-text-box-remove-outline"
@@ -126,7 +173,7 @@
       </div>
 
       <div class="col-12 q-mt-xl justify-end" v-if="showDocumentID">
-        <q-input style="width: 100%;" readonly outlined label="Document ID" stack-label @click="copyID" ref="idCopy" v-model="currentData._id">
+        <q-input style="width: 375px;" readonly outlined label="Document ID" stack-label @click="copyID" ref="idCopy" v-model="currentData._id">
         </q-input>
       </div>
 
@@ -290,6 +337,7 @@ import { copyDocument } from "src/scripts/documentActions/copyDocument"
 
 import { saveDocument } from "src/scripts/databaseManager/documentManager"
 import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentCheck.vue"
+import exportProjectDialog from "src/components/dialogs/ExportProject.vue"
 
 import Field_Break from "src/components/fields/Field_Break.vue"
 import Field_Text from "src/components/fields/Field_Text.vue"
@@ -319,6 +367,7 @@ import Field_Tags from "src/components/fields/Field_Tags.vue"
     Field_Wysiwyg,
     Field_Tags,
 
+    exportProjectDialog,
     deleteDocumentCheckDialog
   }
 })
@@ -897,6 +946,19 @@ export default class PageDocumentDisplay extends BaseClass {
 
   deleteObjectAssignUID () {
     this.deleteObjectDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
+  // Export project dialog
+  /****************************************************************/
+
+  exportProjectDialogTrigger: string | false = false
+  exportProjectDialogClose () {
+    this.exportProjectDialogTrigger = false
+  }
+
+  exportProjectAssignUID () {
+    this.exportProjectDialogTrigger = this.generateUID()
   }
 
   /****************************************************************/

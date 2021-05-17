@@ -38,6 +38,13 @@
       @trigger-dialog-close="tipsTricksDialogClose"
     />
 
+    <!-- Export project dialog -->
+    <exportProjectDialog
+      :dialog-trigger="exportProjectDialogTrigger"
+      :prepicked-ids="[prepickedID]"
+      @trigger-dialog-close="exportProjectDialogClose"
+    />
+
     <q-page-sticky position="top-right"
       class="documentControl bg-dark"
       :class="{'fullScreen': hideHierarchyTree}"
@@ -294,6 +301,35 @@
             </q-tooltip>
           </q-btn>
 
+           <q-separator vertical inset color="accent"
+            v-if="!currentlyNew && SGET_allOpenedDocuments.docs.length > 0  && this.$route.path !== '/project'"
+          />
+
+          <q-btn
+            :color="(!hasEdits) ? 'secondary' : 'primary'"
+            icon="mdi-database-export-outline"
+            @click="commenceExport"
+            outline
+            v-if="!currentlyNew && SGET_allOpenedDocuments.docs.length > 0  && this.$route.path !== '/project'"
+            >
+              <q-tooltip
+                :delay="500"
+                anchor="bottom middle"
+                self="top middle"
+              >
+                Export current project
+                <span class="text-secondary" v-if="!hasEdits">
+                  <br>
+                  <br>
+                  Document has active edits.
+                  <br>
+                  These will not be exported.
+                  <br>
+                  Please save first.
+                </span>
+              </q-tooltip>
+            </q-btn>
+
           <q-separator vertical inset color="accent"
             v-if="!currentlyNew && SGET_allOpenedDocuments.docs.length > 0  && this.$route.path !== '/project'"
           />
@@ -333,6 +369,7 @@ import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentChec
 import advancedSearchGuideDialog from "src/components/dialogs/AdvancedSearchGuide.vue"
 import keybindCheatsheetDialog from "src/components/dialogs/KeybindCheatsheet.vue"
 import tipsTricksTriviaDialog from "src/components/dialogs/TipsTricksTrivia.vue"
+import exportProjectDialog from "src/components/dialogs/ExportProject.vue"
 
 import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
 import { extend, Loading, QSpinnerGears } from "quasar"
@@ -349,7 +386,8 @@ import { retrieveCurrentProjectName, saveProject } from "src/scripts/projectMana
     deleteDocumentCheckDialog,
     advancedSearchGuideDialog,
     keybindCheatsheetDialog,
-    tipsTricksTriviaDialog
+    tipsTricksTriviaDialog,
+    exportProjectDialog
   }
 })
 export default class DocumentControl extends BaseClass {
@@ -398,8 +436,13 @@ export default class DocumentControl extends BaseClass {
       this.deleteObjectAssignUID()
     }
 
+    // Export document - NONE
+    if (this.determineKeyBind("exportDocument") && this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
+      this.commenceExport()
+    }
+
     // Edit document - CTRL + E
-    if (this.determineKeyBind("editDocument") && this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
+    if (this.determineKeyBind("editDocument") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
       this.toggleEditMode()
     }
 
@@ -487,6 +530,19 @@ export default class DocumentControl extends BaseClass {
 
   deleteObjectAssignUID () {
     this.deleteObjectDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
+  // Export project dialog
+  /****************************************************************/
+
+  exportProjectDialogTrigger: string | false = false
+  exportProjectDialogClose () {
+    this.exportProjectDialogTrigger = false
+  }
+
+  exportProjectAssignUID () {
+    this.exportProjectDialogTrigger = this.generateUID()
   }
 
   /****************************************************************/
@@ -773,6 +829,16 @@ export default class DocumentControl extends BaseClass {
       // @ts-ignore
       this.SSET_updateDocument({ doc: this.mapShortDocument(doc, this.SGET_allDocumentsByType(doc.type).docs) })
     }
+  }
+
+  prepickedID = ""
+
+  commenceExport () {
+    const currentDocument = this.findRequestedOrActiveDocument()
+    // @ts-ignore
+    this.prepickedID = currentDocument._id
+
+    this.exportProjectAssignUID()
   }
 }
 </script>

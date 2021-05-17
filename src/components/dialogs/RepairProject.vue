@@ -15,7 +15,7 @@
             If you are working with project created (or added via Merge) before version 0.1.7, this process might significantly improve your performance.
             <br>
             <br>
-            However, before proceeding, please export your current project first to prevent a <span class="text-bold text-secondary">POSSIBLE CORRUPTION</span> of your current project data!
+            However, before proceeding, please save your current project first to prevent a <span class="text-bold text-secondary">POSSIBLE CORRUPTION</span> of your current project data!
           </div>
         </q-card-section>
 
@@ -27,7 +27,7 @@
           v-close-popup />
           <q-btn
           flat
-          label="Export project"
+          label="Save project"
           color="primary"
           @click="commenceSave"
            />
@@ -298,12 +298,12 @@ export default class RepairProjectDialog extends DialogBase {
   }
 
   /**
-   * Export the current project
+   * Save the current project
    */
   async commenceSave () {
     const projectName = await retrieveCurrentProjectName()
     const setup = {
-      message: "<h4>Exporting current project...</h4>",
+      message: "<h4>Saving current project...</h4>",
       spinnerColor: "primary",
       messageColor: "cultured",
       spinnerSize: 120,

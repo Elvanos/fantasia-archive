@@ -11,7 +11,11 @@ export default class FieldBase extends BaseClass {
   /**
    * Blueprint data for the specific field
    */
-  @Prop({ default: [] }) readonly inputDataBluePrint!: I_ExtraFields
+  @Prop({
+    default () {
+      return []
+    }
+  }) readonly inputDataBluePrint!: I_ExtraFields
 
   /**
    * Determines if the document is curently in edit mode or not

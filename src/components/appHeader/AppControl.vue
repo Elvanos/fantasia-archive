@@ -89,6 +89,12 @@
       @trigger-dialog-close="repairProjectDialogClose"
     />
 
+    <!-- Export project dialog -->
+    <exportProjectDialog
+      :dialog-trigger="exportProjectDialogTrigger"
+      @trigger-dialog-close="exportProjectDialogClose"
+    />
+
     <q-btn-group
       flat
       class="AppControl__buttons"
@@ -241,21 +247,6 @@
               </q-item-section>
             </q-item>
 
-            <q-item
-              v-close-popup
-              clickable
-              active
-              active-class="bg-gunmetal-light text-cultured"
-              class="noHigh"
-              @click="mergeProjectAssignUID"
-              :disable="!projectExists"
-            >
-              <q-item-section>Merge another project into the current one</q-item-section>
-              <q-item-section avatar>
-                <q-icon name="mdi-folder-plus-outline" />
-              </q-item-section>
-            </q-item>
-
             <q-separator dark />
 
             <q-item clickable>
@@ -265,6 +256,38 @@
               </q-item-section>
               <q-menu anchor="top end" self="top start">
                 <q-list class="bg-gunmetal text-accent">
+
+                  <q-item
+                    v-close-popup
+                    clickable
+                    active
+                    active-class="bg-gunmetal-light text-cultured"
+                    class="noHigh"
+                    @click="mergeProjectAssignUID"
+                    :disable="!projectExists"
+                  >
+                    <q-item-section>Merge another project into the current one</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-folder-plus-outline" />
+                    </q-item-section>
+                  </q-item>
+
+                   <q-item
+                    v-close-popup
+                    clickable
+                    active
+                    active-class="bg-gunmetal-light text-cultured"
+                    class="noHigh"
+                    @click="exportProjectAssignUID"
+                    :disable="!projectExists"
+                  >
+                    <q-item-section>Export project/documents</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-database-export-outline" />
+                    </q-item-section>
+                  </q-item>
+
+                  <q-separator dark />
 
                   <q-item
                     v-close-popup
@@ -483,6 +506,7 @@ import newDocumentDialog from "src/components/dialogs/NewDocument.vue"
 import existingDocumentDialog from "src/components/dialogs/ExistingDocument.vue"
 import tipsTricksTriviaDialog from "src/components/dialogs/TipsTricksTrivia.vue"
 import licenseDialog from "src/components/dialogs/License.vue"
+import exportProjectDialog from "src/components/dialogs/ExportProject.vue"
 
 import { Loading, QSpinnerGears } from "quasar"
 import { retrieveCurrentProjectName, saveProject } from "src/scripts/projectManagement/projectManagent"
@@ -505,7 +529,8 @@ import appLogo from "src/assets/appLogo.png"
     existingDocumentDialog,
     tipsTricksTriviaDialog,
     licenseDialog,
-    repairProjectDialog
+    repairProjectDialog,
+    exportProjectDialog
   }
 })
 export default class AppControl extends BaseClass {
@@ -657,6 +682,19 @@ export default class AppControl extends BaseClass {
 
   mergeProjectAssignUID () {
     this.mergeProjectDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
+  // Export project dialog
+  /****************************************************************/
+
+  exportProjectDialogTrigger: string | false = false
+  exportProjectDialogClose () {
+    this.exportProjectDialogTrigger = false
+  }
+
+  exportProjectAssignUID () {
+    this.exportProjectDialogTrigger = this.generateUID()
   }
 
   /****************************************************************/

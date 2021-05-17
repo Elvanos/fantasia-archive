@@ -118,7 +118,12 @@ export default class NewProjectCheck extends DialogBase {
     "*",
     "?",
     "'",
-    "\""
+    "\"",
+    "#",
+    "%",
+    "$",
+    "!",
+    "@"
   ]
 
   get isInvalid () {

@@ -303,7 +303,8 @@ a {
 }
 
 .existingDocumentPopup,
-.newDocumentPopup {
+.newDocumentPopup,
+.exportDialog {
   .q-checkbox__bg {
     border-color: #d4d0c9 !important;
     background: transparent !important;

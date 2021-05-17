@@ -562,8 +562,8 @@ export default class BaseClass extends Vue {
     const parentDocInDB = (list.find(p => p._id === parentDoc?._id))
 
     if (!parentDoc || (parentDoc && !parentDocInDB)) {
-      const singleBlueprintName = this.SGET_allBlueprints.find(e => e._id === document.type)?.nameSingular
-      hierarchicalString += singleBlueprintName
+      const pluralBlueprintName = this.SGET_allBlueprints.find(e => e._id === document.type)?.namePlural
+      hierarchicalString += pluralBlueprintName
       return hierarchicalString
     }
 

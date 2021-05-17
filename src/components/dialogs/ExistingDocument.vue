@@ -9,7 +9,7 @@
         class="existingDocumentPopup"
       >
 
-      <q-card-section class="row items-center">
+        <q-card-section class="row items-center">
           <h6 class="text-center q-my-sm">Open existing document</h6>
         </q-card-section>
 
