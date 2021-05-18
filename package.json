@@ -17,7 +17,6 @@
     "apexcharts": "^3.26.0",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
-    "electron-pdf": "^10.0.2",
     "html-parse-stringify": "^3.0.1",
     "json2md": "^1.10.0",
     "lodash": "^4.17.21",
