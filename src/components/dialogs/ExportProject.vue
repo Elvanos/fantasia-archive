@@ -240,6 +240,9 @@ import { remote } from "electron"
 import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
 // @ts-ignore
 import json2md from "json2md/lib/index.js"
+import PDFkit from "pdfkit"
+// @ts-ignore
+import htmlParseStringify from "html-parse-stringify/dist/html-parse-stringify.modern.js"
 import DialogBase from "src/components/dialogs/_DialogBase"
 import { uid, extend } from "quasar"
 import fs from "fs-extra"
@@ -248,6 +251,7 @@ import documentPreview from "src/components/DocumentPreview.vue"
 import { I_ExportObject } from "src/interfaces/I_ExportObject"
 import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
+import { I_HtmlParserNode } from "src/interfaces/I_HtmlParserNode"
 import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
 
 @Component({
@@ -282,7 +286,7 @@ export default class ExportProject extends DialogBase {
   }
 
   resetLocalData () {
-    this.selectedExportFormat = "Markdown - MD"
+    this.selectedExportFormat = "Adobe Reader - PDF"
     this.exportWholeProject = false
     this.includeTags = false
     this.includeHierarchyPath = false
@@ -300,13 +304,13 @@ export default class ExportProject extends DialogBase {
   })) readonly prepickedIds!: string[]
 
   exportFormats = [
+    "Adobe Reader - PDF",
     "Markdown - MD"
-    // "Adobe Reader - PDF",
     // "Open office document - ODT",
     // "MS Word document - DOCX"
   ]
 
-  selectedExportFormat = "Markdown - MD"
+  selectedExportFormat = "Adobe Reader - PDF"
 
   exportWholeProject = false
 
@@ -489,6 +493,11 @@ export default class ExportProject extends DialogBase {
           this.exportFile_MD(exportObject, exportPath)
         }
 
+        // PDF
+        if (this.selectedExportFormat === "Adobe Reader - PDF") {
+          this.exportFile_PDF(exportObject, exportPath)
+        }
+
         await this.sleep(10)
         this.exportedDocuments++
       }
@@ -647,8 +656,6 @@ export default class ExportProject extends DialogBase {
             })
             .filter(e => e !== " ")
 
-          console.log(valuesToMap)
-          console.log(mappedValues)
           returnValue = mappedValues
         }
 
@@ -697,63 +704,7 @@ export default class ExportProject extends DialogBase {
     return mappedFields
   }
 
-  exportFile_MD (input: I_ExportObject, exportPath: string) {
-    // Build the proper JSON file for export
-    const JSONExport: any[] = []
-
-    // Name/Title
-    JSONExport.push({ h1: input.name })
-    if (input.isCategory) {
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      JSONExport[0] = `${JSONExport[0]} - Category`
-    }
-
-    // Document type
-    JSONExport.push({ h2: "Document type" })
-    JSONExport.push({ ul: [input.documentType] })
-
-    // Document type
-    if (!this.hideDeadInformation) {
-      JSONExport.push({ h2: "Status" })
-      JSONExport.push({ ul: [(input.isDead) ? "Dead/Gone/Destroyed" : "Active/Alive"] })
-    }
-
-    // Hierarchy path
-    if (this.includeHierarchyPath) {
-      JSONExport.push({ h2: "Hierarchical path" })
-      JSONExport.push({ ul: [input.hierarchicalPath] })
-    }
-
-    // Tags
-    if (this.includeTags) {
-      JSONExport.push({ h2: "Tags" })
-      JSONExport.push({ ul: (Array.isArray(input.tags) ? input.tags : []) })
-    }
-
-    // Other fields
-    input.fieldValues.forEach(field => {
-      if (field.type === "break") {
-        JSONExport.push({ hr: "" })
-        JSONExport.push({ h1: field.label })
-      }
-      else if (field.type === "wysiwyg") {
-        JSONExport.push({ h2: field.label })
-        JSONExport.push({ p: field.value })
-      }
-      else {
-        JSONExport.push({ h2: field.label })
-        if (Array.isArray(field.value)) {
-          JSONExport.push({ ul: field.value })
-        }
-        else {
-          JSONExport.push({ ul: [field.value] })
-        }
-      }
-    })
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    let mdContent: string = json2md(JSONExport)
-
+  fixExportPaths (exportPath: string, input: I_ExportObject) {
     const reservedCharacterList = [
       "/",
       ">",
@@ -809,13 +760,332 @@ export default class ExportProject extends DialogBase {
       exportFileName = `_${exportFileName}`
     }
 
+    return { documentDirectory, exportFileName }
+  }
+
+  exportFile_MD (input: I_ExportObject, exportPath: string) {
+    // Build the proper JSON file for export
+    const JSONExport: any[] = []
+
+    // Name/Title
+    JSONExport.push({ h1: input.name })
+    if (input.isCategory) {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      JSONExport[0] = `${JSONExport[0]} - Category`
+    }
+
+    // Document type
+    JSONExport.push({ h2: "Document type" })
+    JSONExport.push({ ul: [input.documentType] })
+
+    // Status
+    if (!this.hideDeadInformation) {
+      JSONExport.push({ h2: "Status" })
+      JSONExport.push({ ul: [(input.isDead) ? "Dead/Gone/Destroyed" : "Active/Alive"] })
+    }
+
+    // Hierarchy path
+    if (this.includeHierarchyPath) {
+      JSONExport.push({ h2: "Hierarchical path" })
+      JSONExport.push({ ul: [input.hierarchicalPath] })
+    }
+
+    // Tags
+    if (this.includeTags) {
+      JSONExport.push({ h2: "Tags" })
+      JSONExport.push({ ul: (Array.isArray(input.tags) ? input.tags : []) })
+    }
+
+    // Other fields
+    input.fieldValues.forEach(field => {
+      if (field.type === "break") {
+        JSONExport.push({ hr: "" })
+        JSONExport.push({ h1: field.label })
+      }
+      else if (field.type === "wysiwyg") {
+        JSONExport.push({ h2: field.label })
+        JSONExport.push({ p: field.value })
+      }
+      else {
+        JSONExport.push({ h2: field.label })
+        if (Array.isArray(field.value)) {
+          JSONExport.push({ ul: field.value })
+        }
+        else {
+          JSONExport.push({ ul: [field.value] })
+        }
+      }
+    })
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    let mdContent: string = json2md(JSONExport)
+
     // Fix double-empty lines
     var EOL = mdContent.match(/\r\n/gm) ? "\r\n" : "\n"
     var regExp = new RegExp("(" + EOL + "){3,}", "gm")
     mdContent = mdContent.replace(regExp, EOL + EOL)
 
+    const { documentDirectory, exportFileName } = this.fixExportPaths(exportPath, input)
+
     // Write the file
     fs.writeFileSync(`${documentDirectory}/${exportFileName}.md`, mdContent)
+  }
+
+  exportFile_PDF (input: I_ExportObject, exportPath: string) {
+    const { documentDirectory, exportFileName } = this.fixExportPaths(exportPath, input)
+
+    const textFont = 11
+    const subTitleFont = 15
+    const listPadding = 60
+    const textPadding = 40
+    const blockquotePadding = 85
+
+    const paragraphOptions = {
+      lineGap: 3,
+      paragraphGap: 8
+    }
+
+    const doc = new PDFkit({ size: "A4" })
+
+    // Start stream
+    doc.pipe(fs.createWriteStream(`${documentDirectory}/${exportFileName}.pdf`))
+
+    // Name/Title
+    let title = input.name
+    if (input.isCategory) {
+      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+      title = `${title} - Category`
+    }
+    doc.font("Times-Bold").fillColor("#18303a").fontSize(20)
+      .text(title, { align: "center" })
+
+    // Next line
+    doc.fontSize(textFont).moveDown().moveDown()
+
+    // Document type
+    doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
+      .text("Document type", textPadding, undefined, paragraphOptions)
+    doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
+      .list([input.documentType], listPadding, undefined, paragraphOptions)
+      .moveDown()
+
+    // Status
+    if (!this.hideDeadInformation) {
+      doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
+        .text("Status", textPadding, undefined, paragraphOptions)
+      doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
+        .list([((input.isDead) ? "Dead/Gone/Destroyed" : "Active/Alive")], listPadding, undefined, paragraphOptions)
+        .moveDown()
+    }
+
+    // Hierarchy path
+    if (this.includeHierarchyPath) {
+      doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
+        .text("Hierarchical path", textPadding, undefined, paragraphOptions)
+      doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
+        .list([input.hierarchicalPath], listPadding)
+        .moveDown()
+    }
+
+    // Tags
+    if (this.includeTags) {
+      doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
+        .text("Tags", textPadding, undefined, paragraphOptions)
+      doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
+        .list((Array.isArray(input.tags) ? input.tags : []), listPadding, undefined, paragraphOptions)
+        .moveDown()
+    }
+
+    // Other fields
+    input.fieldValues.forEach(field => {
+      if (field.type === "break") {
+        doc.moveDown()
+          .font("Times-Bold").fillColor("#000000").fontSize(subTitleFont)
+          .text(field.label, textPadding, undefined, paragraphOptions)
+          .moveDown()
+      }
+      else if (field.type === "wysiwyg") {
+        doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
+          .text(field.label, textPadding, undefined, paragraphOptions)
+          .moveDown()
+
+        // @ts-ignore
+        const returnList = this.buildPDFWysiwygContent(field.value)
+
+        doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
+
+        const wysiwygOptions: {[key:string]: any} = extend(true, {}, paragraphOptions)
+
+        returnList.forEach(node => {
+          if (node.type === "text") {
+            // Italic
+            wysiwygOptions.oblique = node.attrs.italic
+
+            // Underline
+            wysiwygOptions.underline = node.attrs.underline
+
+            // Bold
+            doc.font((node?.attrs?.bold) ? "Times-Bold" : "Times-Roman")
+
+            // Continued
+            wysiwygOptions.continued = node.attrs.continued
+
+            // Align
+            wysiwygOptions.align = (node?.attrs?.align) ? node.attrs.align : "left"
+            // Padding
+            const wysiwygPadding = (node?.attrs?.blockquotePadding) ? blockquotePadding : listPadding
+
+            // @ts-ignore
+            doc.text(node.content, wysiwygPadding, undefined, wysiwygOptions)
+          }
+          if (node.type === "br") {
+            doc.moveDown()
+          }
+        })
+        // @ts-ignore
+        doc.moveDown()
+      }
+      else {
+        doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
+          .text(field.label, textPadding, undefined, paragraphOptions)
+        doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
+          .list((Array.isArray(field.value) ? field.value : [field.value]), listPadding, undefined, paragraphOptions)
+          .moveDown()
+      }
+    })
+
+    doc.end()
+  }
+
+  buildPDFWysiwygContent (input: string) {
+    const returnNodeList: I_HtmlParserNode[] = []
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    const parsedHTML: I_HtmlParserNode = htmlParseStringify.parse(`<div>${input}</div>`)
+
+    const processNodeStyles = (styleSting: string) => {
+      // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
+      const alignMatch = styleSting.match(/text-align:\s*([^;}]*)/)
+      if (alignMatch) {
+        return alignMatch[1]
+      }
+      else {
+        return false
+      }
+    }
+
+    const processNode = (node: I_HtmlParserNode) => {
+      // ------------- NODE EXTRA ATTRIBUTES ------------------
+      let nodeStyles: false|string = false
+      if (node?.attrs?.style) {
+        const snapshot: {style:string} = extend(true, {}, node.attrs)
+        nodeStyles = (processNodeStyles(snapshot.style)) ? snapshot.style : false
+      }
+
+      let parentIsBlockquote = false
+      if (node.parentNode?.attrs?.blockquotePadding) {
+        parentIsBlockquote = true
+      }
+
+      node.attrs = {}
+      node.attrs.continued = false
+
+      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+      const nextNode = node.selfNodeList[node.selfIndex + 1]
+
+      // If next if bold, italic or underline
+      if (nextNode) {
+        if ((nextNode.type === "tag" && nextNode.name === "i") ||
+        (nextNode.type === "tag" && nextNode.name === "b") ||
+        (nextNode.type === "tag" && nextNode.name === "u")
+        ) {
+          node.attrs.continued = true
+        }
+      }
+
+      // Text align
+      if (nodeStyles) {
+        const textAlign = processNodeStyles(nodeStyles)
+        if (textAlign && textAlign !== "left") {
+          node.attrs.align = textAlign
+        }
+      }
+      else if (node.parentNode?.attrs?.align && node.parentNode?.attrs?.align !== "left") {
+        node.attrs.align = node.parentNode.attrs.align
+      }
+
+      // Text modifier - Italic
+      if ((node.type === "tag" && node.name === "i") || node?.parentNode?.attrs.italic === true) {
+        node.attrs.italic = true
+        node.attrs.continued = true
+      }
+      else {
+        node.attrs.italic = false
+      }
+
+      // Text modifier - Bold
+      if ((node.type === "tag" && node.name === "b") || node?.parentNode?.attrs.bold === true) {
+        node.attrs.bold = true
+        node.attrs.continued = true
+      }
+      else {
+        node.attrs.bold = false
+      }
+
+      // Text modifier - Underline
+      if ((node.type === "tag" && node.name === "u") || node?.parentNode?.attrs.underline === true) {
+        node.attrs.underline = true
+        node.attrs.continued = true
+      }
+      else {
+        node.attrs.underline = false
+      }
+
+      // If it is the last one, obviously dont continue anything
+      if (!nextNode && node.type !== "text") {
+        node.isLast = true
+      }
+
+      // Don't continue is this lack a continuing node
+      if (node.parentNode?.isLast && !nextNode) {
+        node.attrs.continued = false
+      }
+
+      // Extra padding for blockquotes
+      if ((node.type === "tag" && node.name === "blockquote") || parentIsBlockquote) {
+        node.attrs.blockquotePadding = true
+      }
+
+      // ------------- NODE PROCESSING ----------------------
+
+      // Return text node value OR a break
+      if ((node.type === "text" && node.content) || node.type === "br") {
+        const returnNode = node
+        // @ts-ignore
+        returnNode.content = returnNode.content.replace(/&nbsp;/g, "").replace(/(\r\n|\n|\r)/gm, "")
+        returnNodeList.push(returnNode)
+      }
+
+      // Process subnodes
+      else if (node?.children?.length > 0) {
+        node.children.forEach((childNode, i) => {
+          childNode.selfIndex = i
+          childNode.selfNodeList = node.children
+          childNode.parentNode = node
+
+          processNode(childNode)
+        })
+      }
+    }
+
+    // Generate return value
+    parsedHTML[0].selfNodeList = [parsedHTML[0]]
+    parsedHTML[0].selfIndex = 0
+    parsedHTML[0].attrs = {}
+    processNode(parsedHTML[0])
+
+    return returnNodeList
   }
 }
 </script>

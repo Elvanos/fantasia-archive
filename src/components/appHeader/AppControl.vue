@@ -192,7 +192,7 @@
               active-class="bg-gunmetal-light text-cultured"
               class="noHigh"
               @click="SSET_setNoteCorkboardWindowVisible"
-              :disable="!projectExists"
+              :disable="!projectExists || isFrontpage"
             >
               <q-item-section>Show note board</q-item-section>
               <q-item-section avatar>
@@ -225,7 +225,7 @@
               active-class="bg-gunmetal-light text-cultured"
               class="noHigh"
               @click="commenceSave"
-              :disable="!projectExists"
+              :disable="!projectExists || isFrontpage"
             >
               <q-item-section>Save current project</q-item-section>
               <q-item-section avatar>
@@ -264,7 +264,7 @@
                     active-class="bg-gunmetal-light text-cultured"
                     class="noHigh"
                     @click="mergeProjectAssignUID"
-                    :disable="!projectExists"
+                    :disable="!projectExists || isFrontpage"
                   >
                     <q-item-section>Merge another project into the current one</q-item-section>
                     <q-item-section avatar>
@@ -279,7 +279,7 @@
                     active-class="bg-gunmetal-light text-cultured"
                     class="noHigh"
                     @click="exportProjectAssignUID"
-                    :disable="!projectExists"
+                    :disable="!projectExists || isFrontpage"
                   >
                     <q-item-section>Export project/documents</q-item-section>
                     <q-item-section avatar>
