@@ -8,6 +8,7 @@
 /* eslint-env node */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { configure } = require("quasar/wrappers")
+const StringReplacePlugin = require("string-replace-webpack-plugin");
 
 module.exports = configure(function (ctx) {
   return {
@@ -85,6 +86,37 @@ module.exports = configure(function (ctx) {
               }
           })
         }
+
+        cfg.module.rules.push({
+          enforce: 'pre',
+          test: /unicode-properties[\/\\]unicode-properties/,
+          loader: StringReplacePlugin.replace({
+            replacements: [
+              {
+                pattern: "var fs = _interopDefault(require('fs'));",
+                replacement: function () {
+                  return "var fs = require('fs');";
+                }
+              }
+            ]
+          })
+        })
+        cfg.module.rules.push({test: /unicode-properties[\/\\]unicode-properties/, loader: "transform-loader?brfs"})
+        cfg.module.rules.push({test: /pdfkit[/\\]js[/\\]/, loader: "transform-loader?brfs"})
+        cfg.module.rules.push({test: /fontkit[\/\\]index.js$/, loader: "transform-loader?brfs"})
+        cfg.module.rules.push({test: /linebreak[\/\\]src[\/\\]linebreaker.js/, loader: "transform-loader?brfs"}  )
+
+        cfg.plugins = [
+          ...cfg.plugins
+          ,new StringReplacePlugin()
+        ]
+
+        cfg.resolve.alias = {
+          ...cfg.resolve.alias,
+          'unicode-properties': 'unicode-properties/unicode-properties.cjs.js',
+          'pdfkit': 'pdfkit/js/pdfkit.js'
+        }
+        
       }
     },
 
