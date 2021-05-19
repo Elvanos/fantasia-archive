@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        os: [ubuntu-18.04, windows-latest, macOS-latest]
 
     steps:
     - name: Check out the code
@@ -33,7 +33,7 @@ jobs:
         npm run build
     
     - name: Upload Linux Artifact
-      if: ${{ matrix.os == 'ubuntu-latest' }}
+      if: ${{ matrix.os == 'ubuntu-18.04' }}
       uses: actions/upload-artifact@v2.2.3
       with:
         # Artifact name
