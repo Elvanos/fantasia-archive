@@ -240,7 +240,8 @@ import { remote } from "electron"
 import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
 // @ts-ignore
 import json2md from "json2md/lib/index.js"
-import PDFkit from "pdfkit"
+// @ts-ignore
+import PDFkit from "pdfkit/js/pdfkit.standalone.js"
 // @ts-ignore
 import htmlParseStringify from "html-parse-stringify/dist/html-parse-stringify.modern.js"
 import DialogBase from "src/components/dialogs/_DialogBase"
@@ -845,6 +846,9 @@ export default class ExportProject extends DialogBase {
       paragraphGap: 8
     }
 
+    /*eslint-disable */
+  
+
     const doc = new PDFkit({ size: "A4" })
 
     // Start stream
@@ -955,6 +959,7 @@ export default class ExportProject extends DialogBase {
     })
 
     doc.end()
+     /* eslint-enable */
   }
 
   buildPDFWysiwygContent (input: string) {
