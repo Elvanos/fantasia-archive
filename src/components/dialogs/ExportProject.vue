@@ -241,7 +241,7 @@ import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projec
 // @ts-ignore
 import json2md from "json2md/lib/index.js"
 // @ts-ignore
-import PDFkit from "pdfkit/js/pdfkit.standalone.js"
+import PDFkit from "pdfkit"
 // @ts-ignore
 import htmlParseStringify from "html-parse-stringify/dist/html-parse-stringify.modern.js"
 import DialogBase from "src/components/dialogs/_DialogBase"
