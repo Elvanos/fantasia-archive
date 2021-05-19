@@ -2,4 +2,5 @@
 declare module "fs" {
   export class Dir {}
   export type OpenDirOptions = {}
+  export type RmDirOptions = {}
 }

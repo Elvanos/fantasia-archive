@@ -38,6 +38,15 @@ function createWindow () {
       }
   })
 
+  mainWindow.webContents.on('did-frame-finish-load', () => {
+      mainWindow.webContents.once('devtools-opened', () => {
+        mainWindow.webContents.focus()
+      })
+      // open electron debug
+      console.log('Opening dev tools')
+      mainWindow.webContents.openDevTools()
+    })
+
   mainWindow.setMenu(null)
   mainWindow.maximize()
 
