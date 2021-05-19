@@ -241,9 +241,9 @@ import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projec
 // @ts-ignore
 import json2md from "json2md/lib/index.js"
 // @ts-ignore
-import PDFkit from "pdfkit/js/pdfkit.standalone.js"
+// import PDFkit from "pdfkit/js/pdfkit.standalone.js"
 // @ts-ignore
-import htmlParseStringify from "html-parse-stringify/dist/html-parse-stringify.modern.js"
+// import htmlParseStringify from "html-parse-stringify/dist/html-parse-stringify.modern.js"
 import DialogBase from "src/components/dialogs/_DialogBase"
 import { uid, extend } from "quasar"
 import fs from "fs-extra"
@@ -848,7 +848,8 @@ export default class ExportProject extends DialogBase {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    const doc: I_PDFKitDocument = new PDFkit({ size: "A4" })
+    const doc: I_PDFKitDocument = "" as unknown as I_PDFKitDocument
+    // new PDFkit({ size: "A4" })
 
     // Start stream
     doc.pipe(fs.createWriteStream(`${documentDirectory}/${exportFileName}.pdf`))
@@ -964,7 +965,8 @@ export default class ExportProject extends DialogBase {
     const returnNodeList: I_HtmlParserNode[] = []
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    const parsedHTML: I_HtmlParserNode = htmlParseStringify.parse(`<div>${input}</div>`)
+    const parsedHTML: I_HtmlParserNode = "" as unknown as I_HtmlParserNode
+    // htmlParseStringify.parse(`<div>${input}</div>`)
 
     const processNodeStyles = (styleSting: string) => {
       // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
