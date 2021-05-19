@@ -13,10 +13,6 @@
     "build": "quasar build -m electron"
   },
   "dependencies": {
-    "@quasar/app": "^2.0.0",
-    "@quasar/quasar-app-extension-qmarkdown": "^1.4.1",
-    "@quasar/quasar-app-extension-qwindow": "^1.0.0-beta.7",
-    "@quasar/extras": "^1.0.0",
     "apexcharts": "^3.26.0",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
@@ -37,7 +33,11 @@
     "vue-i18n": "^8.0.0",
     "vue-property-decorator": "^8.3.0",
     "vuex-class": "^0.3.2",
-    "quasar-app-extension-qdraggabletree": "0.0.5"
+    "quasar-app-extension-qdraggabletree": "0.0.5",
+    "@quasar/app": "^2.0.0",
+    "@quasar/quasar-app-extension-qmarkdown": "^1.4.1",
+    "@quasar/quasar-app-extension-qwindow": "^1.0.0-beta.7",
+    "@quasar/extras": "^1.0.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.166",
