@@ -240,7 +240,8 @@ import { remote } from "electron"
 import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
 // @ts-ignore
 import json2md from "json2md/lib/index.js"
-import PDFkit from "pdfkit"
+// @ts-ignore
+import PDFkit from "pdfkit/js/pdfkit.standalone.js"
 // @ts-ignore
 import htmlParseStringify from "html-parse-stringify/dist/html-parse-stringify.modern.js"
 import DialogBase from "src/components/dialogs/_DialogBase"
@@ -251,6 +252,7 @@ import documentPreview from "src/components/DocumentPreview.vue"
 import { I_ExportObject } from "src/interfaces/I_ExportObject"
 import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
+import { I_PDFKitDocument } from "src/interfaces/I_PDFKitDocument"
 import { I_HtmlParserNode } from "src/interfaces/I_HtmlParserNode"
 import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
 
@@ -845,7 +847,8 @@ export default class ExportProject extends DialogBase {
       paragraphGap: 8
     }
 
-    const doc = new PDFkit({ size: "A4" })
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    const doc: I_PDFKitDocument = new PDFkit({ size: "A4" })
 
     // Start stream
     doc.pipe(fs.createWriteStream(`${documentDirectory}/${exportFileName}.pdf`))
