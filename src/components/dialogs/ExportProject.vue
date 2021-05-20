@@ -4,7 +4,6 @@
     v-model="dialogModel"
     @before-hide="triggerDialogClose"
     :persistent="exportOngoing"
-
     >
     <q-card
       v-if="!exportOngoing"
@@ -549,7 +548,7 @@ export default class ExportProject extends DialogBase {
           this.exportFile_PDF(exportObject, exportPath)
         }
 
-        await this.sleep(10)
+        await this.sleep(5)
         this.exportedDocuments++
       }
 
@@ -726,7 +725,7 @@ export default class ExportProject extends DialogBase {
           id: field.id
         }
       })
-      .filter(field => field.value.length > 0 || field.type === "break")
+      .filter(field => field?.value?.length > 0 || field.type === "break")
 
     // Map empty breaks
     const idsToRemove = []
@@ -1009,6 +1008,7 @@ export default class ExportProject extends DialogBase {
           if (node.type === "text") {
             const wysiwygOptions: {[key:string]: any} = extend(true, {}, paragraphOptions)
             wysiwygOptions.baseline = "alphabetic"
+            wysiwygOptions.width = 400
 
             doc.fontSize(textFont)
 
@@ -1025,8 +1025,6 @@ export default class ExportProject extends DialogBase {
             if (node?.attrs?.hasHeadingFontSize) {
               // @ts-ignore
               doc.fontSize(node.attrs.nodeHeadingSize)
-              // @ts-ignore
-              wysiwygOptions.lineGap = node.attrs.nodeHeadingSize / 3
               doc.font("Times-Bold")
             }
 
@@ -1034,8 +1032,6 @@ export default class ExportProject extends DialogBase {
             if (node?.attrs?.hasSpecialFontSize) {
               // @ts-ignore
               doc.fontSize(node.attrs.specialFontSize)
-              // @ts-ignore
-              wysiwygOptions.lineGap = node.attrs.specialFontSize / 3
             }
 
             // Continued
@@ -1043,6 +1039,7 @@ export default class ExportProject extends DialogBase {
 
             // Align
             wysiwygOptions.align = (node?.attrs?.align) ? node.attrs.align : "left"
+
             // Padding
             const wysiwygPadding = (node?.attrs?.blockquotePadding) ? blockquotePadding : listPadding
 
@@ -1274,11 +1271,17 @@ export default class ExportProject extends DialogBase {
       // Text modifier - Font size
       if ((node.type === "tag" && node.name === "font") || node?.parentNode?.attrs.hasSpecialFontSize === true) {
         node.attrs.hasSpecialFontSize = true
+
         // @ts-ignore
         node.attrs.specialFontSize = (nodeFontSize)
           // @ts-ignore
           ? processNodeFontSize(nodeFontSize)
           : node?.parentNode?.attrs?.specialFontSize
+
+        // Fix buggy "font" tag shenaningans
+        if (!nodeFontSize) {
+          node.attrs.specialFontSize = 11
+        }
         node.attrs.continued = true
       }
       else {
@@ -1291,13 +1294,6 @@ export default class ExportProject extends DialogBase {
        (node.isLast && nextParentNode?.type === "tag" && blockTagList.includes(nextParentNode?.name)) ||
        (node.isLast && node.parentNode?.isLast)
       ) {
-        if (node.content === "great and brilliant Lord Demarcus Katari'") {
-          console.log((node.parentNode?.isLast && !nextNode))
-          console.log((nextNode && nextNode.type === "tag" && blockTagList.includes(nextNode.name)))
-          console.log((node.isLast && nextParentNode?.type === "tag" && blockTagList.includes(nextParentNode?.name)))
-          console.log((node.isLast && node.parentNode?.isLast))
-        }
-
         node.attrs.continued = false
       }
 
@@ -1307,12 +1303,27 @@ export default class ExportProject extends DialogBase {
       }
 
       // ------------- NODE PROCESSING ----------------------
+      if ((node.type === "tag" && node.name === "li")) {
+        const returnNode = {
+          type: "text",
+          content: "     • ",
+          attrs: {
+            continued: true
+          }
+        }
+        // @ts-ignore
+        returnNodeList.push(returnNode)
+      }
 
       // Return text node value OR a break
       if ((node.type === "text" && node.content)) {
         const returnNode = node
         // @ts-ignore
-        returnNode.content = returnNode.content.replace(/&nbsp;/g, "").replace(/(\r\n|\n|\r)/gm, "")
+        returnNode.content = returnNode.content
+          .replace(/&nbsp;/g, "")
+          .replace(/(\r\n|\n|\r)/gm, "")
+          .replace(/&amp;/g, "&")
+
         if (node.attrs.isSpan) {
           returnNode.content = returnNode.content + " "
         }
@@ -1324,10 +1335,6 @@ export default class ExportProject extends DialogBase {
           childNode.selfIndex = i
           childNode.selfNodeList = node.children.filter(subNode => subNode.name !== "br")
           childNode.parentNode = node
-
-          if (node.name === "span") {
-            console.log((childNode))
-          }
 
           processNode(childNode)
         })
