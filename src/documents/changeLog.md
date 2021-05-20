@@ -24,6 +24,7 @@
 ### New features
 
 - **Added export support for Markdown**
+- **Added export support for PDF**
 - **Added on-the-fly relationship documents generation**
 - **Added stat/attribute support for multiple RPG systems**
 - **Added option to search through the `Other names` field via `@` modifier**
@@ -60,6 +61,8 @@
 - Added a tiny bit of color to help discern which relationship is one-way and which is two-way
 - Adjusted the single and multi relationship fields not showing suggestion popups when a value is removed the list
 - Adjusted the single relationship fields to hide the suggest list when a value is selected from the list
+- Adjust font sizes for titles and "sizes" in text editor field to be actually useable without looks ridiculous
+- Rearanged the menu and added a new `Tools` category to make finding stuff a bit easier
 
 ## 0.1.6a
 

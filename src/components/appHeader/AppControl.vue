@@ -144,6 +144,168 @@
               active
               active-class="bg-gunmetal-light text-cultured"
               class="noHigh"
+              @click="newProjectAssignUID"
+            >
+              <q-item-section>New project</q-item-section>
+               <q-item-section avatar>
+                <q-icon name="mdi-plus" />
+              </q-item-section>
+            </q-item>
+
+            <q-separator dark />
+
+            <q-item
+              v-close-popup
+              clickable
+              active
+              active-class="bg-gunmetal-light text-cultured"
+              class="noHigh"
+              @click="commenceSave"
+              :disable="!projectExists || isFrontpage"
+            >
+              <q-item-section>Save current project</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-package-variant-closed" />
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              v-close-popup
+              clickable
+              active
+              active-class="bg-gunmetal-light text-cultured"
+              class="noHigh"
+              @click="loadProjectAssignUID"
+            >
+              <q-item-section>Load existing project</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-package-variant" />
+              </q-item-section>
+            </q-item>
+
+            <q-separator dark />
+
+            <q-item
+              v-close-popup
+              clickable
+              active
+              active-class="bg-gunmetal-light text-cultured"
+              class="noHigh"
+              @click="exportProjectAssignUID"
+              :disable="!projectExists || isFrontpage"
+            >
+              <q-item-section>Export project/documents</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-database-export-outline" />
+              </q-item-section>
+            </q-item>
+
+            <q-separator dark />
+
+            <q-item
+              v-close-popup
+              clickable
+              active
+              active-class="bg-gunmetal-light text-cultured"
+              class="noHigh"
+              @click="navigateToProjectPage"
+              :disable="!projectExists || isProjectPage"
+            >
+              <q-item-section>Show project overview</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-chart-bar" />
+              </q-item-section>
+            </q-item>
+
+            <q-item
+              v-close-popup
+              clickable
+              active
+              active-class="bg-gunmetal-light text-cultured"
+              class="noHigh"
+              @click="projectCloseCheckDialogAssignUID"
+              :disable="!projectExists || isFrontpage"
+            >
+              <q-item-section>Close project</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-exit-to-app" />
+              </q-item-section>
+            </q-item>
+
+              <q-separator dark />
+
+            <q-item clickable>
+              <q-item-section>Advanced project tools</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="keyboard_arrow_right" />
+              </q-item-section>
+              <q-menu anchor="top end" self="top start">
+                <q-list class="bg-gunmetal text-accent">
+
+                  <q-item
+                    v-close-popup
+                    clickable
+                    active
+                    active-class="bg-gunmetal-light text-cultured"
+                    class="noHigh"
+                    @click="mergeProjectAssignUID"
+                    :disable="!projectExists || isFrontpage"
+                  >
+                    <q-item-section>Merge another project into the current one</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-folder-plus-outline" />
+                    </q-item-section>
+                  </q-item>
+
+                  <q-separator dark />
+
+                  <q-item
+                    v-close-popup
+                    clickable
+                    active
+                    active-class="bg-gunmetal-light text-cultured"
+                    class="noHigh"
+                    @click="repairProjectAssignUID"
+                    :disable="!projectExists || isFrontpage"
+                  >
+                    <q-item-section>Repair legacy project</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-wrench" />
+                    </q-item-section>
+                  </q-item>
+
+                </q-list>
+              </q-menu>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </q-btn>
+
+      <!-- Tools button-->
+      <q-btn
+        flat
+        :ripple="false"
+        dark
+        size='md'
+        no-caps
+       >
+        Tools
+
+        <q-menu
+          @show="checkProjectStatus"
+          anchor="bottom left"
+          class="bg-gunmetal-light"
+          dark
+          square
+          >
+          <q-list class="bg-gunmetal-light" dark>
+
+             <q-item
+              v-close-popup
+              clickable
+              active
+              active-class="bg-gunmetal-light text-cultured"
+              class="noHigh"
               @click="newObjectAssignUID"
               :disable="!projectExists || isFrontpage"
             >
@@ -202,163 +364,6 @@
 
             <q-separator dark />
 
-             <q-item
-              v-close-popup
-              clickable
-              active
-              active-class="bg-gunmetal-light text-cultured"
-              class="noHigh"
-              @click="newProjectAssignUID"
-            >
-              <q-item-section>New project</q-item-section>
-               <q-item-section avatar>
-                <q-icon name="mdi-plus" />
-              </q-item-section>
-            </q-item>
-
-            <q-separator dark />
-
-            <q-item
-              v-close-popup
-              clickable
-              active
-              active-class="bg-gunmetal-light text-cultured"
-              class="noHigh"
-              @click="commenceSave"
-              :disable="!projectExists || isFrontpage"
-            >
-              <q-item-section>Save current project</q-item-section>
-              <q-item-section avatar>
-                <q-icon name="mdi-package-variant-closed" />
-              </q-item-section>
-            </q-item>
-
-            <q-item
-              v-close-popup
-              clickable
-              active
-              active-class="bg-gunmetal-light text-cultured"
-              class="noHigh"
-              @click="loadProjectAssignUID"
-            >
-              <q-item-section>Load existing project</q-item-section>
-              <q-item-section avatar>
-                <q-icon name="mdi-package-variant" />
-              </q-item-section>
-            </q-item>
-
-            <q-separator dark />
-
-            <q-item clickable>
-              <q-item-section>Advanced project tools</q-item-section>
-              <q-item-section avatar>
-                <q-icon name="keyboard_arrow_right" />
-              </q-item-section>
-              <q-menu anchor="top end" self="top start">
-                <q-list class="bg-gunmetal text-accent">
-
-                  <q-item
-                    v-close-popup
-                    clickable
-                    active
-                    active-class="bg-gunmetal-light text-cultured"
-                    class="noHigh"
-                    @click="mergeProjectAssignUID"
-                    :disable="!projectExists || isFrontpage"
-                  >
-                    <q-item-section>Merge another project into the current one</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="mdi-folder-plus-outline" />
-                    </q-item-section>
-                  </q-item>
-
-                   <q-item
-                    v-close-popup
-                    clickable
-                    active
-                    active-class="bg-gunmetal-light text-cultured"
-                    class="noHigh"
-                    @click="exportProjectAssignUID"
-                    :disable="!projectExists || isFrontpage"
-                  >
-                    <q-item-section>Export project/documents</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="mdi-database-export-outline" />
-                    </q-item-section>
-                  </q-item>
-
-                  <q-separator dark />
-
-                  <q-item
-                    v-close-popup
-                    clickable
-                    active
-                    active-class="bg-gunmetal-light text-cultured"
-                    class="noHigh"
-                    @click="repairProjectAssignUID"
-                    :disable="!projectExists || isFrontpage"
-                  >
-                    <q-item-section>Repair legacy project</q-item-section>
-                    <q-item-section avatar>
-                      <q-icon name="mdi-wrench" />
-                    </q-item-section>
-                  </q-item>
-
-                </q-list>
-              </q-menu>
-            </q-item>
-
-            <q-separator dark />
-
-            <q-item
-              v-close-popup
-              clickable
-              active
-              active-class="bg-gunmetal-light text-cultured"
-              class="noHigh"
-              @click="navigateToProjectPage"
-              :disable="!projectExists || isProjectPage"
-            >
-              <q-item-section>Show project overview</q-item-section>
-              <q-item-section avatar>
-                <q-icon name="mdi-chart-bar" />
-              </q-item-section>
-            </q-item>
-
-            <q-item
-              v-close-popup
-              clickable
-              active
-              active-class="bg-gunmetal-light text-cultured"
-              class="noHigh"
-              @click="projectCloseCheckDialogAssignUID"
-              :disable="!projectExists || isFrontpage"
-            >
-              <q-item-section>Close project</q-item-section>
-              <q-item-section avatar>
-                <q-icon name="mdi-exit-to-app" />
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-menu>
-      </q-btn>
-
-      <!-- Help button-->
-      <q-btn
-        flat
-        :ripple="false"
-        dark
-        size='md'
-        no-caps
-       >
-        Help, Settings & Info
-        <q-menu
-          anchor="bottom left"
-          class="bg-gunmetal-light"
-          dark
-          square
-        >
-          <q-list class="bg-gunmetal-light" dark>
             <q-item
               @click="programSettingsDialogAssignUID"
               v-close-popup
@@ -373,7 +378,26 @@
               </q-item-section>
             </q-item>
 
-            <q-separator dark />
+          </q-list>
+        </q-menu>
+      </q-btn>
+
+      <!-- Help button-->
+      <q-btn
+        flat
+        :ripple="false"
+        dark
+        size='md'
+        no-caps
+       >
+        Help & Info
+        <q-menu
+          anchor="bottom left"
+          class="bg-gunmetal-light"
+          dark
+          square
+        >
+          <q-list class="bg-gunmetal-light" dark>
 
             <q-item
               @click="keybindsDialogAssignUID"

@@ -1,14 +1,15 @@
 ## THE GM BATCH START - 0.1.7
 
-- "Save all" keybind and "Save all and exit" option on the exiting
-
-- Export for MD/PDF/ODT/DOCX
+- Add `Font` and `hX` elements to PDF support... maybe something else
+Suggestion: In Species/Races/Flora/Fauna docs, move Related Species/Races/Flora/Fauna and Characters of Species/Races/Flora/Fauna down and move the text fields (Description & History and Traditions & Customs) up. I have a lot of characters and have to scroll quite a bit to get down to the text fields to read them.
 
 ## THE GM BATCH END - 0.1.7
 
 ## PROJECT SETTINGS BATCH 1 START - 0.1.8
 
 - Add `SHIFT + ENTER` add mode to relationship searches to add documents without deleting the entered text
+- Rewrite document display algortithmn and add option to show description (text editor fields) on top of the section (under break)
+- Breaks/titles in lists
 - Pin document preview floating window
 - Project setting dialog/options
 - Project rename
@@ -71,6 +72,7 @@
 
 ### High priority
 
+- Export for ODT/DOCX
 - Dynamic table field
 - Add subtabs (character stats, general info, etc)
 - Global text find/replace
@@ -82,6 +84,7 @@
 
 ### Low priority
 
+- Double decimals (dates) in order field
 - Horizontal fields (title AND value next to each other. Might need a designer)
 - Simple data imports (maybe?)
 - Vanity project-wide word count

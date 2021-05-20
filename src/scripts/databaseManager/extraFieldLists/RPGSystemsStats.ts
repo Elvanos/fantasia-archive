@@ -524,6 +524,74 @@ export const RPGSystemsStats = [
       "Reflexes (ref) - Speed (spd)"
     ]
   },
+  {
+    title: "Fallout",
+    values: [
+      "Strength",
+      "Perception",
+      "Endurance",
+      "Charisma",
+      "Intelligence",
+      "Agility",
+      "Luck"
+    ]
+  },
+  {
+    title: "Star Trek Adventures - Personnel (Modiphius 2d20 System)",
+    values: [
+      "Control - Attribute",
+      "Daring  - Attribute",
+      "Fitness - Attribute",
+      "Insight  - Attribute",
+      "Presence - Attribute",
+      "Reason - Attribute",
+      "Command - Discipline",
+      "Conn - Discipline",
+      "Security - Discipline",
+      "Engineering - Discipline",
+      "Science - Discipline",
+      "Medicine - Discipline"
+    ]
+  },
+  {
+    title: "Star Trek Adventures - Ships (Modiphius 2d20 System)",
+    values: [
+      "Engines - Systems",
+      "Structure - Systems",
+      "Computers - Systems",
+      "Sensors - Systems",
+      "Weapons - Systems",
+      "Communications - Systems",
+      "Command - Department",
+      "Conn - Department",
+      "Security - Department",
+      "Engineering - Department",
+      "Science - Department",
+      "Medicine - Department"
+    ]
+  },
+  {
+    title: "Warhammer 40k (Dark Heresy 2)",
+    values: [
+      "Weapon Skill",
+      "Ballistic Skill",
+      "Strength",
+      "Toughness",
+      "Agility",
+      "Intelligence",
+      "Perception",
+      "Willpower",
+      "Fellowship",
+      "Psy Rating",
+      "Wounds",
+      "Fatigue",
+      "Insanity",
+      "Corruption",
+      "Influence",
+      "Profit Factor",
+      "Infamy"
+    ]
+  },
 
   "Absorption",
   "Alertness",

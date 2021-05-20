@@ -4,7 +4,7 @@ export interface I_HtmlParserNode {
   voidElement: boolean;
   name: string;
   attrs: {
-    [key: string]: string|boolean
+    [key: string]: string|boolean|number
   };
   children: I_HtmlParserNode[];
   selfIndex?: number;

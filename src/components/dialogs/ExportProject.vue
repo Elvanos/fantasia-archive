@@ -19,16 +19,41 @@
         <div class="row justify-center">
           <div class="col-4">
             <div class="q-mx-lg">
-              <q-select
-                class="exportTypeSelect"
-                dark
-                popup-content-class="menuResizer"
-                :options="exportFormats"
-                label="Export file format"
-                filled
-                input-debounce="0"
-                v-model="selectedExportFormat"
-              />
+
+              <div class="row">
+                <div class="col">
+                  <q-select
+                    class="exportTypeSelect"
+                    dark
+                    popup-content-class="menuResizer"
+                    :options="exportFormats"
+                    label="Export file format"
+                    filled
+                    input-debounce="0"
+                    v-model="selectedExportFormat"
+                  />
+                </div>
+                <div class="col-auto self-center q-ml-sm" v-if="selectedExportFormat === 'Adobe Reader - PDF'">
+                   <q-icon name="mdi-alert-circle" size="20px">
+                      <q-tooltip :delay="500">
+                        Please note that the PDF export doesn't play nice
+                        <br>
+                        with underlined text if different parts of the same paragraph
+                        <br>
+                        have increased/decreased font sizes
+                        <br>
+                        OR
+                        <br>
+                        if you have underlines in headings.
+                        <br>
+                        <br>
+                        If your document contains such text,
+                        <br>
+                        then the result might not very appealing aesthetically.
+                      </q-tooltip>
+                    </q-icon>
+                </div>
+              </div>
 
               <q-checkbox
                 class="q-mt-lg"
@@ -40,12 +65,29 @@
               <q-checkbox
                 class="q-mt-lg"
                 dark color="primary"
+                v-model="writerMode"
+                label="Export only text editors and document name?"
+              />
+
+              <q-checkbox
+                class="q-mt-lg"
+                dark color="primary"
+                v-if='writerMode'
+                v-model="writerModeTitles"
+                label="Include text editor field titles?"
+              />
+
+              <q-checkbox
+                class="q-mt-lg"
+                v-if='!writerMode'
+                dark color="primary"
                 v-model="includeTags"
                 label="Include tags in the export?"
               />
 
               <q-checkbox
                 class="q-mt-lg"
+                v-if='!writerMode'
                 dark color="primary"
                 v-model="includeHierarchyPath"
                 label="Include hierarchical path in the export?"
@@ -53,13 +95,14 @@
 
               <q-checkbox
                 class="q-mt-lg"
+                v-if='!writerMode'
                 dark color="primary"
                 v-model="includeIsDead"
                 label="Include dead/gone/destroyed documents in the export?"
               />
 
               <q-checkbox
-                v-if="includeIsDead"
+                v-if='!writerMode && includeIsDead'
                 class="q-mt-lg"
                 dark color="primary"
                 v-model="hideDeadInformation"
@@ -294,6 +337,8 @@ export default class ExportProject extends DialogBase {
     this.includeHierarchyPath = false
     this.hideDeadInformation = false
     this.includeIsDead = true
+    this.writerMode = false
+    this.writerModeTitles = false
     this.exportDocumentsModel = []
     this.exportOngoing = false
     this.exportList = []
@@ -315,6 +360,10 @@ export default class ExportProject extends DialogBase {
   selectedExportFormat = "Adobe Reader - PDF"
 
   exportWholeProject = false
+
+  writerMode = false
+
+  writerModeTitles = false
 
   includeTags = false
 
@@ -776,39 +825,68 @@ export default class ExportProject extends DialogBase {
       JSONExport[0] = `${JSONExport[0]} - Category`
     }
 
-    // Document type
-    JSONExport.push({ h2: "Document type" })
-    JSONExport.push({ ul: [input.documentType] })
+    if (!this.writerMode) {
+      // Document type
+      JSONExport.push({ h2: "Document type" })
+      JSONExport.push({ ul: [input.documentType] })
+    }
 
+    if (!this.writerMode) {
     // Status
-    if (!this.hideDeadInformation) {
-      JSONExport.push({ h2: "Status" })
-      JSONExport.push({ ul: [(input.isDead) ? "Dead/Gone/Destroyed" : "Active/Alive"] })
+      if (!this.hideDeadInformation) {
+        JSONExport.push({ h2: "Status" })
+        JSONExport.push({ ul: [(input.isDead) ? "Dead/Gone/Destroyed" : "Active/Alive"] })
+      }
     }
 
+    if (!this.writerMode) {
     // Hierarchy path
-    if (this.includeHierarchyPath) {
-      JSONExport.push({ h2: "Hierarchical path" })
-      JSONExport.push({ ul: [input.hierarchicalPath] })
+      if (this.includeHierarchyPath) {
+        JSONExport.push({ h2: "Hierarchical path" })
+        JSONExport.push({ ul: [input.hierarchicalPath] })
+      }
     }
 
+    if (!this.writerMode) {
     // Tags
-    if (this.includeTags) {
-      JSONExport.push({ h2: "Tags" })
-      JSONExport.push({ ul: (Array.isArray(input.tags) ? input.tags : []) })
+      if (this.includeTags) {
+        JSONExport.push({ h2: "Tags" })
+        JSONExport.push({ ul: (Array.isArray(input.tags) ? input.tags : []) })
+      }
     }
 
     // Other fields
     input.fieldValues.forEach(field => {
-      if (field.type === "break") {
+      if (field.type === "break" && !this.writerMode) {
         JSONExport.push({ hr: "" })
         JSONExport.push({ h1: field.label })
       }
       else if (field.type === "wysiwyg") {
-        JSONExport.push({ h2: field.label })
-        JSONExport.push({ p: field.value })
+        if (!this.writerMode || this.writerModeTitles) {
+          JSONExport.push({ h2: field.label })
+        }
+
+        let localValue = field.value as unknown as string
+
+        var replacements = [
+          [/\*/g, "\\*", "asterisks"],
+          [/#/g, "\\#", "number signs"],
+          [/\(/g, "\\(", "parentheses"],
+          [/\)/g, "\\)", "parentheses"],
+          [/\[/g, "\\[", "square brackets"],
+          [/\]/g, "\\]", "square brackets"],
+          [/_/g, "\\_", "underscores"]
+        ]
+
+        // Escape special Characters
+        replacements.forEach(rep => {
+          // @ts-ignore
+          localValue = localValue.replace(rep[0], rep[1])
+        })
+
+        JSONExport.push({ p: localValue })
       }
-      else {
+      else if (!this.writerMode) {
         JSONExport.push({ h2: field.label })
         if (Array.isArray(field.value)) {
           JSONExport.push({ ul: field.value })
@@ -865,62 +943,75 @@ export default class ExportProject extends DialogBase {
     // Next line
     doc.fontSize(textFont).moveDown().moveDown()
 
-    // Document type
-    doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
-      .text("Document type", textPadding, undefined, paragraphOptions)
-    doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
-      .list([input.documentType], listPadding, undefined, paragraphOptions)
-      .moveDown()
+    if (!this.writerMode) {
+      // Document type
+      doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
+        .text("Document type", textPadding, undefined, paragraphOptions)
+      doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
+        .list([input.documentType], listPadding, undefined, paragraphOptions)
+        .moveDown()
+    }
 
+    if (!this.writerMode) {
     // Status
-    if (!this.hideDeadInformation) {
-      doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
-        .text("Status", textPadding, undefined, paragraphOptions)
-      doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
-        .list([((input.isDead) ? "Dead/Gone/Destroyed" : "Active/Alive")], listPadding, undefined, paragraphOptions)
-        .moveDown()
+      if (!this.hideDeadInformation) {
+        doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
+          .text("Status", textPadding, undefined, paragraphOptions)
+        doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
+          .list([((input.isDead) ? "Dead/Gone/Destroyed" : "Active/Alive")], listPadding, undefined, paragraphOptions)
+          .moveDown()
+      }
     }
 
-    // Hierarchy path
-    if (this.includeHierarchyPath) {
-      doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
-        .text("Hierarchical path", textPadding, undefined, paragraphOptions)
-      doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
-        .list([input.hierarchicalPath], listPadding)
-        .moveDown()
+    if (!this.writerMode) {
+      // Hierarchy path
+      if (this.includeHierarchyPath) {
+        doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
+          .text("Hierarchical path", textPadding, undefined, paragraphOptions)
+        doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
+          .list([input.hierarchicalPath], listPadding)
+          .moveDown()
+      }
     }
 
+    if (!this.writerMode) {
     // Tags
-    if (this.includeTags) {
-      doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
-        .text("Tags", textPadding, undefined, paragraphOptions)
-      doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
-        .list((Array.isArray(input.tags) ? input.tags : []), listPadding, undefined, paragraphOptions)
-        .moveDown()
+      if (this.includeTags) {
+        doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
+          .text("Tags", textPadding, undefined, paragraphOptions)
+        doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
+          .list((Array.isArray(input.tags) ? input.tags : []), listPadding, undefined, paragraphOptions)
+          .moveDown()
+      }
     }
 
     // Other fields
     input.fieldValues.forEach(field => {
-      if (field.type === "break") {
+      if (field.type === "break" && !this.writerMode) {
         doc.moveDown()
           .font("Times-Bold").fillColor("#000000").fontSize(subTitleFont)
           .text(field.label, textPadding, undefined, paragraphOptions)
           .moveDown()
       }
       else if (field.type === "wysiwyg") {
-        doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
-          .text(field.label, textPadding, undefined, paragraphOptions)
-          .moveDown()
+        if (!this.writerMode || this.writerModeTitles) {
+          doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
+            .text(field.label, textPadding, undefined, paragraphOptions)
+            .moveDown()
+        }
 
         // @ts-ignore
         const returnList = this.buildPDFWysiwygContent(field.value)
 
         doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
 
-        const wysiwygOptions: {[key:string]: any} = extend(true, {}, paragraphOptions)
-
         returnList.forEach(node => {
           if (node.type === "text") {
+            const wysiwygOptions: {[key:string]: any} = extend(true, {}, paragraphOptions)
+            wysiwygOptions.baseline = "alphabetic"
+
+            doc.fontSize(textFont)
+
             // Italic
             wysiwygOptions.oblique = node.attrs.italic
 
@@ -929,6 +1020,23 @@ export default class ExportProject extends DialogBase {
 
             // Bold
             doc.font((node?.attrs?.bold) ? "Times-Bold" : "Times-Roman")
+
+            // Heading font sizing
+            if (node?.attrs?.hasHeadingFontSize) {
+              // @ts-ignore
+              doc.fontSize(node.attrs.nodeHeadingSize)
+              // @ts-ignore
+              wysiwygOptions.lineGap = node.attrs.nodeHeadingSize / 3
+              doc.font("Times-Bold")
+            }
+
+            // Custom font sizing
+            if (node?.attrs?.hasSpecialFontSize) {
+              // @ts-ignore
+              doc.fontSize(node.attrs.specialFontSize)
+              // @ts-ignore
+              wysiwygOptions.lineGap = node.attrs.specialFontSize / 3
+            }
 
             // Continued
             wysiwygOptions.continued = node.attrs.continued
@@ -948,7 +1056,7 @@ export default class ExportProject extends DialogBase {
         // @ts-ignore
         doc.moveDown()
       }
-      else {
+      else if (!this.writerMode) {
         doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
           .text(field.label, textPadding, undefined, paragraphOptions)
         doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
@@ -961,6 +1069,27 @@ export default class ExportProject extends DialogBase {
   }
 
   buildPDFWysiwygContent (input: string) {
+    const blockTagList = [
+      "div",
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+      "li",
+      "blockquote"
+    ]
+
+    const headingsList = [
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6"
+    ]
+
     const returnNodeList: I_HtmlParserNode[] = []
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
@@ -977,12 +1106,72 @@ export default class ExportProject extends DialogBase {
       }
     }
 
+    const processHeadingFontSize = (heading: string) => {
+      switch (heading) {
+        case "h1":
+          return 24
+
+        case "h2":
+          return 20
+
+        case "h3":
+          return 18
+
+        case "h4":
+          return 16
+
+        case "h5":
+          return 14
+
+        case "h6":
+          return 12
+
+        default:
+          return 11
+      }
+    }
+
+    const processNodeFontSize = (fontString: string) => {
+      const fontNumber = parseInt(fontString)
+      switch (fontNumber) {
+        case 1:
+          return 7
+
+        case 2:
+          return 9
+
+        case 3:
+          return 11
+
+        case 4:
+          return 13
+
+        case 5:
+          return 16
+
+        case 6:
+          return 19
+
+        case 7:
+          return 23
+
+        default:
+          return 11
+      }
+    }
+
     const processNode = (node: I_HtmlParserNode) => {
       // ------------- NODE EXTRA ATTRIBUTES ------------------
       let nodeStyles: false|string = false
       if (node?.attrs?.style) {
         const snapshot: {style:string} = extend(true, {}, node.attrs)
         nodeStyles = (processNodeStyles(snapshot.style)) ? snapshot.style : false
+      }
+
+      let nodeFontSize: false|string = false
+      if (node?.attrs?.size) {
+        const snapshot: {size:string} = extend(true, {}, node.attrs)
+        nodeFontSize = (snapshot.size) || false
       }
 
       let parentIsBlockquote = false
@@ -997,11 +1186,39 @@ export default class ExportProject extends DialogBase {
       // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
       const nextNode = node.selfNodeList[node.selfIndex + 1]
 
+      // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+      const nextParentNode = node?.parentNode?.selfNodeList[node?.parentNode?.selfIndex + 1]
+
+      // If it is the last one, obviously dont continue anything
+      if (!nextNode) {
+        node.isLast = true
+      }
+
+      // Text modifier - Headings
+      if ((node.type === "tag" && headingsList.includes(node.name)) || node?.parentNode?.attrs.hasHeadingFontSize === true) {
+        node.attrs.hasHeadingFontSize = true
+
+        if (headingsList.includes(node.name)) {
+          node.attrs.nodeHeadingSize = processHeadingFontSize(node.name)
+        }
+        else if (node?.parentNode?.attrs?.nodeHeadingSize) {
+          node.attrs.nodeHeadingSize = node?.parentNode?.attrs?.nodeHeadingSize
+        }
+
+        node.attrs.continued = false
+      }
+      else {
+        node.attrs.hasHeadingFontSize = false
+      }
+
       // If next if bold, italic or underline
       if (nextNode) {
         if ((nextNode.type === "tag" && nextNode.name === "i") ||
         (nextNode.type === "tag" && nextNode.name === "b") ||
-        (nextNode.type === "tag" && nextNode.name === "u")
+        (nextNode.type === "tag" && nextNode.name === "u") ||
+        (nextNode.type === "tag" && nextNode.name === "font") ||
+        (nextNode.type === "tag" && nextNode.name === "span")
         ) {
           node.attrs.continued = true
         }
@@ -1016,6 +1233,15 @@ export default class ExportProject extends DialogBase {
       }
       else if (node.parentNode?.attrs?.align && node.parentNode?.attrs?.align !== "left") {
         node.attrs.align = node.parentNode.attrs.align
+      }
+
+      // Temporary fix for spans
+      if ((node.type === "tag" && node.name === "span") || node?.parentNode?.attrs.isSpan === true) {
+        node.attrs.isSpan = true
+        node.attrs.continued = true
+      }
+      else {
+        node.attrs.isSpan = false
       }
 
       // Text modifier - Italic
@@ -1045,13 +1271,33 @@ export default class ExportProject extends DialogBase {
         node.attrs.underline = false
       }
 
-      // If it is the last one, obviously dont continue anything
-      if (!nextNode && node.type !== "text") {
-        node.isLast = true
+      // Text modifier - Font size
+      if ((node.type === "tag" && node.name === "font") || node?.parentNode?.attrs.hasSpecialFontSize === true) {
+        node.attrs.hasSpecialFontSize = true
+        // @ts-ignore
+        node.attrs.specialFontSize = (nodeFontSize)
+          // @ts-ignore
+          ? processNodeFontSize(nodeFontSize)
+          : node?.parentNode?.attrs?.specialFontSize
+        node.attrs.continued = true
+      }
+      else {
+        node.attrs.hasSpecialFontSize = false
       }
 
-      // Don't continue is this lack a continuing node
-      if (node.parentNode?.isLast && !nextNode) {
+      // Don't continue is this lack a continuing node OR if next node is 'div'
+      if ((node.parentNode?.isLast && !nextNode) ||
+       (nextNode && nextNode.type === "tag" && blockTagList.includes(nextNode.name)) ||
+       (node.isLast && nextParentNode?.type === "tag" && blockTagList.includes(nextParentNode?.name)) ||
+       (node.isLast && node.parentNode?.isLast)
+      ) {
+        if (node.content === "great and brilliant Lord Demarcus Katari'") {
+          console.log((node.parentNode?.isLast && !nextNode))
+          console.log((nextNode && nextNode.type === "tag" && blockTagList.includes(nextNode.name)))
+          console.log((node.isLast && nextParentNode?.type === "tag" && blockTagList.includes(nextParentNode?.name)))
+          console.log((node.isLast && node.parentNode?.isLast))
+        }
+
         node.attrs.continued = false
       }
 
@@ -1063,19 +1309,25 @@ export default class ExportProject extends DialogBase {
       // ------------- NODE PROCESSING ----------------------
 
       // Return text node value OR a break
-      if ((node.type === "text" && node.content) || node.type === "br") {
+      if ((node.type === "text" && node.content)) {
         const returnNode = node
         // @ts-ignore
         returnNode.content = returnNode.content.replace(/&nbsp;/g, "").replace(/(\r\n|\n|\r)/gm, "")
+        if (node.attrs.isSpan) {
+          returnNode.content = returnNode.content + " "
+        }
         returnNodeList.push(returnNode)
       }
-
       // Process subnodes
       else if (node?.children?.length > 0) {
         node.children.forEach((childNode, i) => {
           childNode.selfIndex = i
-          childNode.selfNodeList = node.children
+          childNode.selfNodeList = node.children.filter(subNode => subNode.name !== "br")
           childNode.parentNode = node
+
+          if (node.name === "span") {
+            console.log((childNode))
+          }
 
           processNode(childNode)
         })
@@ -1083,9 +1335,10 @@ export default class ExportProject extends DialogBase {
     }
 
     // Generate return value
-    parsedHTML[0].selfNodeList = [parsedHTML[0]]
+    parsedHTML[0].selfNodeList = [parsedHTML[0]].filter(subNode => subNode.name !== "br")
     parsedHTML[0].selfIndex = 0
     parsedHTML[0].attrs = {}
+
     processNode(parsedHTML[0])
 
     return returnNodeList

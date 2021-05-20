@@ -10,6 +10,13 @@
       @trigger-dialog-close="deleteObjectDialogClose"
     />
 
+    <!-- Export project dialog -->
+    <exportProjectDialog
+      :dialog-trigger="exportProjectDialogTrigger"
+      :prepicked-ids="[prepickedID]"
+      @trigger-dialog-close="exportProjectDialogClose"
+    />
+
     <div
       class="treeSearchWrapper"
       :class="{'fullWidth': disableDocumentControlBar}"
@@ -252,6 +259,13 @@
                     </q-item-section>
                   </q-item>
                   <q-separator dark />
+                  <q-item clickable v-close-popup @click="commenceExport(prop.node)">
+                    <q-item-section>Export document</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-database-export-outline" />
+                    </q-item-section>
+                  </q-item>
+                  <q-separator dark />
                   <q-item clickable v-close-popup @click="deleteTabDocument(prop.node)">
                     <q-item-section class="text-secondary"><b>Delete this document</b></q-item-section>
                     <q-item-section avatar class="text-secondary">
@@ -309,10 +323,12 @@ import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projec
 import { createNewWithParent } from "src/scripts/documentActions/createNewWithParent"
 import { copyDocumentName, copyDocumentTextColor, copyDocumentBackgroundColor } from "src/scripts/documentActions/uniqueFieldCopy"
 import { copyDocument } from "src/scripts/documentActions/copyDocument"
+import exportProjectDialog from "src/components/dialogs/ExportProject.vue"
 
 @Component({
   components: {
     deleteDocumentCheckDialog,
+    exportProjectDialog,
     documentPreview: () => import("src/components/DocumentPreview.vue")
   }
 })
@@ -1134,6 +1150,27 @@ export default class ObjectTree extends BaseClass {
   /****************************************************************/
   addNewUnderParent (currentDoc: I_OpenedDocument) {
     createNewWithParent(currentDoc, this)
+  }
+
+  /****************************************************************/
+  // Export project dialog
+  /****************************************************************/
+
+  exportProjectDialogTrigger: string | false = false
+  exportProjectDialogClose () {
+    this.exportProjectDialogTrigger = false
+  }
+
+  exportProjectAssignUID () {
+    this.exportProjectDialogTrigger = this.generateUID()
+  }
+
+  prepickedID = ""
+
+  commenceExport (node: {_id: string}) {
+    this.prepickedID = node._id
+
+    this.exportProjectAssignUID()
   }
 
   /****************************************************************/

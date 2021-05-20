@@ -585,7 +585,7 @@ export default class DocumentControl extends BaseClass {
   }
 
   /****************************************************************/
-  // Export project
+  // Save project
   /****************************************************************/
   retrieveCurrentProjectName = retrieveCurrentProjectName
 

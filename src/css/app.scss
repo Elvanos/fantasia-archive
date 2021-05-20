@@ -190,6 +190,70 @@ a {
   > div {
     margin: 12.5px 0;
   }
+
+  font[size="1"] {
+    font-size: 10px;
+  }
+
+  font[size="2"] {
+    font-size: 13px;
+  }
+
+  font[size="3"] {
+    font-size: 16px;
+  }
+
+  font[size="4"] {
+    font-size: 20px;
+  }
+
+  font[size="5"] {
+    font-size: 24px;
+  }
+
+  font[size="6"] {
+    font-size: 28px;
+  }
+
+  font[size="7"] {
+    font-size: 34px;
+  }
+
+  h1 {
+    font-size: 50px;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  h2 {
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  h3 {
+    font-size: 35px;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  h4 {
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 1.8;
+  }
+
+  h5 {
+    font-size: 25px;
+    font-weight: 400;
+    line-height: 1.8;
+  }
+
+  h6 {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.8;
+  }
 }
 
 .q-editor__toolbars-container {
@@ -692,4 +756,74 @@ body .q-tooltip {
   position: absolute;
   right: 0;
   top: 0;
+}
+
+font[size="1"] {
+  font-size: 10px;
+}
+
+font[size="2"] {
+  font-size: 13px;
+}
+
+font[size="3"] {
+  font-size: 16px;
+}
+
+font[size="4"] {
+  font-size: 20px;
+}
+
+font[size="5"] {
+  font-size: 24px;
+}
+
+font[size="6"] {
+  font-size: 28px;
+}
+
+font[size="7"] {
+  font-size: 34px;
+}
+
+.q-menu.q-position-engine .q-list {
+  h1 {
+    font-size: 50px;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  h2 {
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  h3 {
+    font-size: 35px;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  h4 {
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 1.8;
+  }
+
+  h5 {
+    font-size: 25px;
+    font-weight: 400;
+    line-height: 1.8;
+  }
+
+  h6 {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.8;
+  }
+
+  .text-no-wrap {
+    font-size: 16px;
+  }
 }
