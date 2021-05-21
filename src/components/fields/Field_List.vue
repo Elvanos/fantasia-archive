@@ -27,10 +27,10 @@
         </q-item-section>
         <q-item-section>
           <span class="text-weight-medium">
-            {{(isReversed) ? `${localInput[index].affix}:` : input.value}}
+            {{mapFieldValue(input, index, 1)}}
           </span>
           <span v-if="localInput[index].affix" class="inline-block q-ml-xs text-italic listNote">
-            {{(!isReversed) ? `(${localInput[index].affix})` : ` ${input.value}`}}
+            {{mapFieldValue(input, index, 2)}}
             </span>
         </q-item-section>
       </q-item>
@@ -416,6 +416,39 @@ export default class Field_List extends FieldBase {
   get isReversed () {
     // @ts-ignore
     return (this.inputDataBluePrint?.predefinedListExtras?.reverse)
+  }
+
+  mapFieldValue (input: {value: string}, index: number, positition: 1|2) {
+    let returnString = ""
+
+    // If reversed
+    if (this.isReversed) {
+      if (positition === 1) {
+        returnString += this.localInput[index].affix
+        if (input.value) {
+          returnString += ":"
+        }
+      }
+
+      // If having second input
+      if (input.value && positition === 2) {
+        returnString += `${input.value}`
+      }
+    }
+    // If non-reverse
+    else {
+      if (positition === 1) {
+        returnString += input.value
+      }
+
+      // If having second input
+      if (this.localInput[index] && positition === 2) {
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+        returnString += `(${this.localInput[index].affix})`
+      }
+    }
+
+    return returnString
   }
 
   /**

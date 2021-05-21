@@ -8,6 +8,11 @@ declare module "*.png"{
   export default content
 }
 
+declare module "*.ttf"{
+  const content: string
+  export default content
+}
+
 interface Window {
   FA_dbs: PouchDB.Static[]
 }

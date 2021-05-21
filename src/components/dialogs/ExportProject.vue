@@ -289,6 +289,7 @@ import htmlParseStringify from "html-parse-stringify/dist/html-parse-stringify.m
 import DialogBase from "src/components/dialogs/_DialogBase"
 import { uid, extend } from "quasar"
 import fs from "fs-extra"
+import path from "path"
 import documentPreview from "src/components/DocumentPreview.vue"
 
 import { I_ExportObject } from "src/interfaces/I_ExportObject"
@@ -297,6 +298,9 @@ import { I_Blueprint } from "src/interfaces/I_Blueprint"
 import { I_PDFKitDocument } from "src/interfaces/I_PDFKitDocument"
 import { I_HtmlParserNode } from "src/interfaces/I_HtmlParserNode"
 import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
+
+import RobotoRegular from "src/assets/fonts/Roboto-Regular.ttf"
+import RobotoBold from "src/assets/fonts/Roboto-Bold.ttf"
 
 @Component({
   components: {
@@ -638,8 +642,8 @@ export default class ExportProject extends DialogBase {
           }
           else {
             returnValue = (field.predefinedListExtras?.reverse)
-              ? returnValue.map((e: {value: string, affix: string}) => `${e.affix} (${e.value})`)
-              : returnValue.map((e: {value: string, affix: string}) => `${e.value}: ${e.affix}`)
+              ? returnValue.map((e: {value: string, affix: string}) => `${e.affix}: ${e.value}`)
+              : returnValue.map((e: {value: string, affix: string}) => `${e.value} (${e.affix})`)
           }
         }
 
@@ -924,8 +928,19 @@ export default class ExportProject extends DialogBase {
       paragraphGap: 8
     }
 
+    const normalFont = RobotoRegular
+    const boldFont = RobotoBold
+
+    console.log(path.resolve(__dirname, "../../assets/fonts/Roboto-Regular.ttf"))
+
+    const normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Regular.ttf"))
+    const boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Bold.ttf"))
+
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const doc: I_PDFKitDocument = new PDFkit({ size: "A4" })
+
+    doc.registerFont("Roboto-Regular", normalFontContents)
+    doc.registerFont("Roboto-Bold", boldFontContents)
 
     // Start stream
     doc.pipe(fs.createWriteStream(`${documentDirectory}/${exportFileName}.pdf`))
@@ -936,7 +951,7 @@ export default class ExportProject extends DialogBase {
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
       title = `${title} - Category`
     }
-    doc.font("Times-Bold").fillColor("#18303a").fontSize(20)
+    doc.font("Roboto-Bold").fillColor("#18303a").fontSize(20)
       .text(title, { align: "center" })
 
     // Next line
@@ -944,9 +959,9 @@ export default class ExportProject extends DialogBase {
 
     if (!this.writerMode) {
       // Document type
-      doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
+      doc.font("Roboto-Bold").fillColor("#000000").fontSize(textFont)
         .text("Document type", textPadding, undefined, paragraphOptions)
-      doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
+      doc.font("Roboto-Regular").fillColor("#000000").fontSize(textFont)
         .list([input.documentType], listPadding, undefined, paragraphOptions)
         .moveDown()
     }
@@ -954,9 +969,9 @@ export default class ExportProject extends DialogBase {
     if (!this.writerMode) {
     // Status
       if (!this.hideDeadInformation) {
-        doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
+        doc.font("Roboto-Bold").fillColor("#000000").fontSize(textFont)
           .text("Status", textPadding, undefined, paragraphOptions)
-        doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
+        doc.font("Roboto-Regular").fillColor("#000000").fontSize(textFont)
           .list([((input.isDead) ? "Dead/Gone/Destroyed" : "Active/Alive")], listPadding, undefined, paragraphOptions)
           .moveDown()
       }
@@ -965,9 +980,9 @@ export default class ExportProject extends DialogBase {
     if (!this.writerMode) {
       // Hierarchy path
       if (this.includeHierarchyPath) {
-        doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
+        doc.font("Roboto-Bold").fillColor("#000000").fontSize(textFont)
           .text("Hierarchical path", textPadding, undefined, paragraphOptions)
-        doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
+        doc.font("Roboto-Regular").fillColor("#000000").fontSize(textFont)
           .list([input.hierarchicalPath], listPadding)
           .moveDown()
       }
@@ -976,9 +991,9 @@ export default class ExportProject extends DialogBase {
     if (!this.writerMode) {
     // Tags
       if (this.includeTags) {
-        doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
+        doc.font("Roboto-Bold").fillColor("#000000").fontSize(textFont)
           .text("Tags", textPadding, undefined, paragraphOptions)
-        doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
+        doc.font("Roboto-Regular").fillColor("#000000").fontSize(textFont)
           .list((Array.isArray(input.tags) ? input.tags : []), listPadding, undefined, paragraphOptions)
           .moveDown()
       }
@@ -988,13 +1003,13 @@ export default class ExportProject extends DialogBase {
     input.fieldValues.forEach(field => {
       if (field.type === "break" && !this.writerMode) {
         doc.moveDown()
-          .font("Times-Bold").fillColor("#000000").fontSize(subTitleFont)
+          .font("Roboto-Bold").fillColor("#000000").fontSize(subTitleFont)
           .text(field.label, textPadding, undefined, paragraphOptions)
           .moveDown()
       }
       else if (field.type === "wysiwyg") {
         if (!this.writerMode || this.writerModeTitles) {
-          doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
+          doc.font("Roboto-Bold").fillColor("#000000").fontSize(textFont)
             .text(field.label, textPadding, undefined, paragraphOptions)
             .moveDown()
         }
@@ -1002,7 +1017,7 @@ export default class ExportProject extends DialogBase {
         // @ts-ignore
         const returnList = this.buildPDFWysiwygContent(field.value)
 
-        doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
+        doc.font("Roboto-Regular").fillColor("#000000").fontSize(textFont)
 
         returnList.forEach(node => {
           if (node.type === "text") {
@@ -1019,13 +1034,13 @@ export default class ExportProject extends DialogBase {
             wysiwygOptions.underline = node.attrs.underline
 
             // Bold
-            doc.font((node?.attrs?.bold) ? "Times-Bold" : "Times-Roman")
+            doc.font((node?.attrs?.bold) ? boldFont : normalFont)
 
             // Heading font sizing
             if (node?.attrs?.hasHeadingFontSize) {
               // @ts-ignore
               doc.fontSize(node.attrs.nodeHeadingSize)
-              doc.font("Times-Bold")
+              doc.font("Roboto-Bold")
             }
 
             // Custom font sizing
@@ -1054,9 +1069,9 @@ export default class ExportProject extends DialogBase {
         doc.moveDown()
       }
       else if (!this.writerMode) {
-        doc.font("Times-Bold").fillColor("#000000").fontSize(textFont)
+        doc.font("Roboto-Bold").fillColor("#000000").fontSize(textFont)
           .text(field.label, textPadding, undefined, paragraphOptions)
-        doc.font("Times-Roman").fillColor("#000000").fontSize(textFont)
+        doc.font("Roboto-Regular").fillColor("#000000").fontSize(textFont)
           .list((Array.isArray(field.value) ? field.value : [field.value]), listPadding, undefined, paragraphOptions)
           .moveDown()
       }
