@@ -552,8 +552,20 @@ export default class ExportProject extends DialogBase {
 
         // PDF
         if (this.selectedExportFormat === "Adobe Reader - PDF") {
-          const normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Regular.ttf"))
-          const boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Bold.ttf"))
+          let normalFontContents = null
+          let boldFontContents = null
+          // Check if we are running dev or production mode and load accordingly
+          // If Prod
+          // @ts-ignore
+          if (process?.mainModule?.filename?.indexOf("app.asar") < -1) {
+            normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../resources/app.asar//fonts/Roboto-Regular.ttf"))
+            boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../resources/app.asar//fonts/Roboto-Bold.ttf"))
+          }
+          // If dev
+          else {
+            normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Regular.ttf"))
+            boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Bold.ttf"))
+          }
 
           this.exportFile_PDF(exportObject, exportPath, normalFontContents, boldFontContents)
         }
