@@ -38,7 +38,9 @@ jobs:
       with:
         # Artifact name
         name: Linux_FA ${{ github.event.inputs.version }}
-        path: dist/electron/Packaged/
+        path: |
+          dist/electron/Packaged/*.snap
+          dist/electron/Packaged/*.AppImage
         
     - name: Upload MacOS Artifact
       if: ${{ matrix.os == 'macOS-latest' }}
@@ -46,7 +48,7 @@ jobs:
       with:
         # Artifact name
         name: Mac_FA ${{ github.event.inputs.version }}
-        path: dist/electron/Packaged/
+        path: dist/electron/Packaged/*.dmg
     
     - name: Upload Windows Artifact
       if: ${{ matrix.os == 'windows-latest' }}
@@ -54,5 +56,5 @@ jobs:
       with:
         # Artifact name
         name: Windows_FA ${{ github.event.inputs.version }}
-        path: dist/electron/Packaged/
+        path: dist/electron/Packaged/*.exe
     
