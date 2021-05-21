@@ -25,6 +25,9 @@ app.whenReady().then(() => {
           win.webContents.on('did-frame-finish-load', () => {
             win.webContents.once('devtools-opened', () => {
               win.webContents.focus()
+
+              win["isDev"] = true
+
             })
             // open electron debug
             console.log('Opening dev tools')

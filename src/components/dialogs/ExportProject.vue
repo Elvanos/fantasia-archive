@@ -539,6 +539,27 @@ export default class ExportProject extends DialogBase {
         return this.SGET_allDocuments.docs.find(subDoc => subDoc._id === doc._id)
       })
 
+      let normalFontContents = null
+      let boldFontContents = null
+
+      // @ts-ignore
+      const isDev = remote.getCurrentWindow().isDev
+
+      console.log(isDev)
+
+      // Check if we are running dev or production mode and load accordingly
+      // If Prod
+      // @ts-ignore
+      if (!isDev) {
+        normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../resources/app.asar//fonts/Roboto-Regular.ttf"))
+        boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../resources/app.asar//fonts/Roboto-Bold.ttf"))
+      }
+      // If dev
+      else {
+        normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Regular.ttf"))
+        boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Bold.ttf"))
+      }
+
       for (const document of this.exportList) {
         this.currentDocName = document.label
 
@@ -552,21 +573,6 @@ export default class ExportProject extends DialogBase {
 
         // PDF
         if (this.selectedExportFormat === "Adobe Reader - PDF") {
-          let normalFontContents = null
-          let boldFontContents = null
-          // Check if we are running dev or production mode and load accordingly
-          // If Prod
-          // @ts-ignore
-          if (process?.mainModule?.filename?.indexOf("app.asar") < -1) {
-            normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../resources/app.asar//fonts/Roboto-Regular.ttf"))
-            boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../resources/app.asar//fonts/Roboto-Bold.ttf"))
-          }
-          // If dev
-          else {
-            normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Regular.ttf"))
-            boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Bold.ttf"))
-          }
-
           this.exportFile_PDF(exportObject, exportPath, normalFontContents, boldFontContents)
         }
 

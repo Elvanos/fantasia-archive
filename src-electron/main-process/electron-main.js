@@ -43,6 +43,8 @@ function createWindow () {
 
   mainWindow.loadURL(process.env.APP_URL)
 
+  mainWindow["isDev"] = false
+
   mainWindow.on('closed', () => {
     mainWindow = null
   })
