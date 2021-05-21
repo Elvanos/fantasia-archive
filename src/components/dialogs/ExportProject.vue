@@ -308,6 +308,9 @@ import RobotoBold from "src/assets/fonts/Roboto-Bold.ttf"
   }
 })
 export default class ExportProject extends DialogBase {
+  RobotoRegular = RobotoRegular
+  RobotoBold = RobotoBold
+
   /**
    * React to dialog opening request
    */
@@ -549,7 +552,10 @@ export default class ExportProject extends DialogBase {
 
         // PDF
         if (this.selectedExportFormat === "Adobe Reader - PDF") {
-          this.exportFile_PDF(exportObject, exportPath)
+          const normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Regular.ttf"))
+          const boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Bold.ttf"))
+
+          this.exportFile_PDF(exportObject, exportPath, normalFontContents, boldFontContents)
         }
 
         await this.sleep(5)
@@ -914,7 +920,7 @@ export default class ExportProject extends DialogBase {
     fs.writeFileSync(`${documentDirectory}/${exportFileName}.md`, mdContent)
   }
 
-  exportFile_PDF (input: I_ExportObject, exportPath: string) {
+  exportFile_PDF (input: I_ExportObject, exportPath: string, normalFontContents : any, boldFontContents: any) {
     const { documentDirectory, exportFileName } = this.fixExportPaths(exportPath, input)
 
     const textFont = 11
@@ -927,14 +933,6 @@ export default class ExportProject extends DialogBase {
       lineGap: 3,
       paragraphGap: 8
     }
-
-    const normalFont = RobotoRegular
-    const boldFont = RobotoBold
-
-    console.log(path.resolve(__dirname, "../../assets/fonts/Roboto-Regular.ttf"))
-
-    const normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Regular.ttf"))
-    const boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Bold.ttf"))
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const doc: I_PDFKitDocument = new PDFkit({ size: "A4" })
@@ -1034,7 +1032,7 @@ export default class ExportProject extends DialogBase {
             wysiwygOptions.underline = node.attrs.underline
 
             // Bold
-            doc.font((node?.attrs?.bold) ? boldFont : normalFont)
+            doc.font((node?.attrs?.bold) ? "Roboto-Bold" : "Roboto-Regular")
 
             // Heading font sizing
             if (node?.attrs?.hasHeadingFontSize) {
