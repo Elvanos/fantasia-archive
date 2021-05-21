@@ -655,7 +655,7 @@ export default class ExportProject extends DialogBase {
       if (!isDev) {
         if (this.useFallbackFont) {
           normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../resources/app.asar/fonts/ArialUnicodeMS.ttf"))
-          boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../resources/app.asar/fonts/ArialUnicodeMS.ttf"))
+          boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../resources/app.asar/fonts/ArialUnicodeMS-Bold.ttf"))
         }
         else {
           normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../resources/app.asar/fonts/Roboto-Regular.ttf"))
@@ -666,10 +666,10 @@ export default class ExportProject extends DialogBase {
       else {
         if (this.useFallbackFont) {
           normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/ArialUnicodeMS.ttf"))
-          boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Bold.ttf"))
+          boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/ArialUnicodeMS-Bold.ttf"))
         }
         else {
-          normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/ArialUnicodeMS.ttf"))
+          normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Regular.ttf"))
           boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Bold.ttf"))
         }
       }
