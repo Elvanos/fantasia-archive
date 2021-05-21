@@ -35,15 +35,20 @@
                 <div class="col-auto self-center q-ml-sm" v-if="selectedExportFormat === 'Adobe Reader - PDF'">
                    <q-icon name="mdi-alert-circle" size="20px">
                       <q-tooltip :delay="500">
-                        Please note that the PDF export doesn't play nice
-                        <br>
-                        with underlined text if different parts of the same paragraph
-                        <br>
-                        have increased/decreased font sizes
+                        Please note that the PDF export doesn't play nice with:
+                        <ul>
+                          <li>
+                            With underlined text if different parts of the same paragraph have increased/decreased font sizes
+                          </li>
+                        </ul>
+
                         <br>
                         OR
                         <br>
-                        if you have underlines in headings.
+                        if you have underlines in headings
+                        <br>
+                        OR
+
                         <br>
                         <br>
                         If your document contains such text,
@@ -54,59 +59,153 @@
                 </div>
               </div>
 
-              <q-checkbox
-                class="q-mt-lg"
-                dark color="primary"
-                v-model="exportWholeProject"
-                label="Export whole project?"
-              />
+              <q-list class="exportSettings">
 
-              <q-checkbox
-                class="q-mt-lg"
-                dark color="primary"
-                v-model="writerMode"
-                label="Export only text editors and document name?"
-              />
+                <q-item v-if="selectedExportFormat === 'Adobe Reader - PDF'">
+                  <q-item-section side>
+                    <q-icon name="mdi-help-circle" size="18px">
+                      <q-tooltip :delay="500">
+                        If the exported document doesn't show some characters properly.
+                        <br>
+                        Try turning this on and exporting again.
+                      </q-tooltip>
+                    </q-icon>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-checkbox
+                      dark color="primary"
+                      v-model="useFallbackFont"
+                      label="Use high-compatibility font?"
+                    />
+                  </q-item-section>
+                </q-item>
 
-              <q-checkbox
-                class="q-mt-lg"
-                dark color="primary"
-                v-if='writerMode'
-                v-model="writerModeTitles"
-                label="Include text editor field titles?"
-              />
+                <q-item>
+                  <q-item-section side>
+                    <q-icon name="mdi-help-circle" size="18px">
+                      <q-tooltip :delay="500">
+                        Automatically exports all documents in your project.
+                      </q-tooltip>
+                    </q-icon>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-checkbox
+                      dark color="primary"
+                      v-model="exportWholeProject"
+                      label="Export whole project?"
+                    />
+                  </q-item-section>
+                </q-item>
 
-              <q-checkbox
-                class="q-mt-lg"
-                v-if='!writerMode'
-                dark color="primary"
-                v-model="includeTags"
-                label="Include tags in the export?"
-              />
+                <q-item>
+                  <q-item-section side>
+                    <q-icon name="mdi-help-circle" size="18px">
+                      <q-tooltip :delay="500">
+                      This setting exports ONLY the main document name.
+                      <br>
+                      And text editors with content.
+                      </q-tooltip>
+                    </q-icon>
+                  </q-item-section>
+                  <q-item-section>
+                  <q-checkbox
+                    dark color="primary"
+                    v-model="writerMode"
+                    label="Use writer mode?"
+                    />
+                  </q-item-section>
+                </q-item>
 
-              <q-checkbox
-                class="q-mt-lg"
-                v-if='!writerMode'
-                dark color="primary"
-                v-model="includeHierarchyPath"
-                label="Include hierarchical path in the export?"
-              />
+                <q-item v-if='writerMode'>
+                  <q-item-section side>
+                    <q-icon name="mdi-help-circle" size="18px">
+                      <q-tooltip :delay="500">
+                        Determines if the text editors should have their respective titles or not.
+                      </q-tooltip>
+                    </q-icon>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-checkbox
+                      dark color="primary"
+                      v-model="writerModeTitles"
+                      label="Include text editor field titles?"
+                      />
+                  </q-item-section>
+                </q-item>
 
-              <q-checkbox
-                class="q-mt-lg"
-                v-if='!writerMode'
-                dark color="primary"
-                v-model="includeIsDead"
-                label="Include dead/gone/destroyed documents in the export?"
-              />
+                <q-item v-if='!writerMode'>
+                  <q-item-section side>
+                    <q-icon name="mdi-help-circle" size="18px">
+                      <q-tooltip :delay="500">
+                      Determines if tags will be included in the export or not.
+                      </q-tooltip>
+                    </q-icon>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-checkbox
+                      dark color="primary"
+                      v-model="includeTags"
+                      label="Include tags in the export?"
+                      />
+                  </q-item-section>
+                </q-item>
 
-              <q-checkbox
-                v-if='!writerMode && includeIsDead'
-                class="q-mt-lg"
-                dark color="primary"
-                v-model="hideDeadInformation"
-                label="Hide dead/gone/destroyed status in the exported documents?"
-              />
+                <q-item v-if='!writerMode'>
+                  <q-item-section side>
+                    <q-icon name="mdi-help-circle" size="18px">
+                      <q-tooltip :delay="500">
+                        Determines if hierarchical path will be included in the export or not.
+                      </q-tooltip>
+                    </q-icon>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-checkbox
+                      dark color="primary"
+                      v-model="includeHierarchyPath"
+                      label="Include hierarchical path in the export?"
+                      />
+                  </q-item-section>
+                </q-item>
+
+                <q-item v-if='!writerMode'>
+                  <q-item-section side>
+                    <q-icon name="mdi-help-circle" size="18px">
+                      <q-tooltip :delay="500">
+                        Determines if documents with status "Dead/Gone/Destroyed"
+                        <br>
+                        will be included in the export or not.
+                      </q-tooltip>
+                    </q-icon>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-checkbox
+                      dark color="primary"
+                      v-model="includeIsDead"
+                      label="Include dead/gone/destroyed documents in the export?"
+                      />
+                  </q-item-section>
+                </q-item>
+
+                <q-item v-if='!writerMode && includeIsDead'>
+                  <q-item-section side>
+                    <q-icon name="mdi-help-circle" size="18px">
+                      <q-tooltip :delay="500">
+                        Determines if the status "Dead/Gone/Destroyed"
+                        <br>
+                        should be excluded from the exported documents.
+                      </q-tooltip>
+                    </q-icon>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-checkbox
+                      dark color="primary"
+                      v-model="hideDeadInformation"
+                      label="Hide dead/gone/destroyed status in the exported documents?"
+                    />
+                  </q-item-section>
+                </q-item>
+
+              </q-list>
 
             </div>
           </div>
@@ -301,6 +400,7 @@ import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFi
 
 import RobotoRegular from "src/assets/fonts/Roboto-Regular.ttf"
 import RobotoBold from "src/assets/fonts/Roboto-Bold.ttf"
+import ArialFallback from "src/assets/fonts/ArialUnicodeMS.ttf"
 
 @Component({
   components: {
@@ -310,6 +410,7 @@ import RobotoBold from "src/assets/fonts/Roboto-Bold.ttf"
 export default class ExportProject extends DialogBase {
   RobotoRegular = RobotoRegular
   RobotoBold = RobotoBold
+  ArialFallback = ArialFallback
 
   /**
    * React to dialog opening request
@@ -345,6 +446,7 @@ export default class ExportProject extends DialogBase {
     this.includeIsDead = true
     this.writerMode = false
     this.writerModeTitles = false
+    this.useFallbackFont = false
     this.exportDocumentsModel = []
     this.exportOngoing = false
     this.exportList = []
@@ -378,6 +480,8 @@ export default class ExportProject extends DialogBase {
   hideDeadInformation = false
 
   includeIsDead = true
+
+  useFallbackFont = false
 
   setDocumentPreviewClose () {
     this.documentPreviewClose = uid()
@@ -545,19 +649,29 @@ export default class ExportProject extends DialogBase {
       // @ts-ignore
       const isDev = remote.getCurrentWindow().isDev
 
-      console.log(isDev)
-
       // Check if we are running dev or production mode and load accordingly
       // If Prod
       // @ts-ignore
       if (!isDev) {
-        normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../resources/app.asar//fonts/Roboto-Regular.ttf"))
-        boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../resources/app.asar//fonts/Roboto-Bold.ttf"))
+        if (this.useFallbackFont) {
+          normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../resources/app.asar/fonts/ArialUnicodeMS.ttf"))
+          boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../resources/app.asar/fonts/ArialUnicodeMS.ttf"))
+        }
+        else {
+          normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../resources/app.asar/fonts/Roboto-Regular.ttf"))
+          boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../resources/app.asar/fonts/Roboto-Bold.ttf"))
+        }
       }
       // If dev
       else {
-        normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Regular.ttf"))
-        boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Bold.ttf"))
+        if (this.useFallbackFont) {
+          normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/ArialUnicodeMS.ttf"))
+          boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Bold.ttf"))
+        }
+        else {
+          normalFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/ArialUnicodeMS.ttf"))
+          boldFontContents = fs.readFileSync(path.resolve(__dirname, "../../assets/fonts/Roboto-Bold.ttf"))
+        }
       }
 
       for (const document of this.exportList) {
@@ -576,7 +690,7 @@ export default class ExportProject extends DialogBase {
           this.exportFile_PDF(exportObject, exportPath, normalFontContents, boldFontContents)
         }
 
-        await this.sleep(5)
+        await this.sleep(10)
         this.exportedDocuments++
       }
 
@@ -665,9 +779,24 @@ export default class ExportProject extends DialogBase {
             returnValue = returnValue.map((e: {value: string}) => `${e.value}`)
           }
           else {
-            returnValue = (field.predefinedListExtras?.reverse)
-              ? returnValue.map((e: {value: string, affix: string}) => `${e.affix}: ${e.value}`)
-              : returnValue.map((e: {value: string, affix: string}) => `${e.value} (${e.affix})`)
+            if (field.predefinedListExtras?.reverse) {
+              returnValue = returnValue.map((e: {value: string, affix: string}) => {
+                let returnString = e.affix
+                if (e.value) {
+                  returnString = `${returnString}: ${e.value}`
+                }
+                return returnString
+              })
+            }
+            else {
+              returnValue = returnValue.map((e: {value: string, affix: string}) => {
+                let returnString = e.value
+                if (e.affix) {
+                  returnString = `${e.value} (${e.affix})`
+                }
+                return returnString
+              })
+            }
           }
         }
 
@@ -1393,6 +1522,13 @@ export default class ExportProject extends DialogBase {
 
   h6 {
     display: block;
+  }
+
+  .exportSettings {
+    .q-item {
+      padding-right: 0;
+      padding-left: 0;
+    }
   }
 }
 </style>
