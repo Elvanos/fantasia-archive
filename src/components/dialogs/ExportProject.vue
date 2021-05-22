@@ -61,6 +61,73 @@
 
               <q-list class="exportSettings">
 
+                <q-item>
+                  <q-item-section side>
+                    <q-icon name="mdi-help-circle" size="18px">
+                      <q-tooltip :delay="500">
+                        Determines if the export should output a corresponding
+                        <br>
+                        folder structure to how FA structures the document types.
+                        <br>
+                        If this is ticked on, only the file/s will be exported
+                        <br>
+                        with no folders included.
+                      </q-tooltip>
+                    </q-icon>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-checkbox
+                      dark
+                      :class="{'highlight': noFolderMode}"
+                      color="primary"
+                      v-model="noFolderMode"
+                      label="No-folder export?"
+                    />
+                  </q-item-section>
+                </q-item>
+
+                <q-item>
+                  <q-item-section side>
+                    <q-icon name="mdi-help-circle" size="18px">
+                      <q-tooltip :delay="500">
+                        Automatically exports all documents in your project.
+                      </q-tooltip>
+                    </q-icon>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-checkbox
+                      :class="{'warning': noFolderMode && exportWholeProject}"
+                      dark color="primary"
+                      v-model="exportWholeProject"
+                      label="Export whole project?"
+                    />
+                  </q-item-section>
+                </q-item>
+
+                <q-item v-if="exportWholeProject">
+                  <q-item-section side>
+                    <q-icon name="mdi-help-circle" size="18px">
+                      <q-tooltip :delay="500">
+                        Some projects can have overlapping names for multiple documents.
+                        <br>
+                        Normally, this would results in the contents of the documents overwriting each other.
+                        <br>
+                        If this is turned on, documents will also receive their unique IDs
+                        <br>
+                        attached to their file names - preventing any overwriting.
+                      </q-tooltip>
+                    </q-icon>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-checkbox
+                      :class="{'warning': !useSafetyMode}"
+                      dark color="primary"
+                      v-model="useSafetyMode"
+                      label="Use safety export mode?"
+                    />
+                  </q-item-section>
+                </q-item>
+
                 <q-item v-if="selectedExportFormat === 'Adobe Reader - PDF'">
                   <q-item-section side>
                     <q-icon name="mdi-help-circle" size="18px">
@@ -76,23 +143,6 @@
                       dark color="primary"
                       v-model="useFallbackFont"
                       label="Use high-compatibility font?"
-                    />
-                  </q-item-section>
-                </q-item>
-
-                <q-item>
-                  <q-item-section side>
-                    <q-icon name="mdi-help-circle" size="18px">
-                      <q-tooltip :delay="500">
-                        Automatically exports all documents in your project.
-                      </q-tooltip>
-                    </q-icon>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-checkbox
-                      dark color="primary"
-                      v-model="exportWholeProject"
-                      label="Export whole project?"
                     />
                   </q-item-section>
                 </q-item>
@@ -217,15 +267,28 @@
              >
               <div
                 style="height: 100%; line-height: 2;"
-                class="column justify-center items-center"
+                class="column justify-center items-center text-center"
                 v-if="exportWholeProject"
               >
-                Please note that:
-                <span class="text-bold text-secondary">
-                  The more documents, the slower export.
+
+                <span class="text-bold text-secondary" v-if="noFolderMode && exportWholeProject">
+                  <br>
+                  ALL of your documents will dumped RIGHT where you export. NO folder will be generated!
+                  <br>
+                </span>
+
+                <span class="text-bold text-secondary" v-if="!useSafetyMode && exportWholeProject">
+                  <br>
+                  Please condider turning the safety export mode ON before exporting to avoid data loss!
+                  <br>
+                </span>
+
+                <span>
+                  <br>
+                  FA currently needs to generate individual files for <span class="text-bold text-primary">{{SGET_allDocuments.docs.length}} </span> documents.
                 </span>
                 <span>
-                  FA currently needs to generate individual files for <span class="text-bold text-primary">{{SGET_allDocuments.docs.length}} </span> documents.
+                  Estimated export time: <span class="text-bold text-primary">{{(SGET_allDocuments.docs.length / 25 + 2).toFixed(1)}} - {{(SGET_allDocuments.docs.length / 15 + 2).toFixed(1)}} </span> seconds.
                 </span>
               </div>
               <q-select
@@ -339,15 +402,15 @@
       </q-card-section>
 
       <q-card-actions align="right" class="q-mb-lg q-mr-xl">
-          <q-btn flat label="Cancel" color="accent" v-close-popup class="q-mr-lg" />
-           <q-btn
-            :flat="!exportWholeProject && exportDocumentsModel.length === 0"
-            :outline="exportWholeProject || exportDocumentsModel.length > 0"
-            label="Export"
-            color="primary"
-            :disable="!exportWholeProject && exportDocumentsModel.length === 0"
-            @click="exportDocuments"
-           />
+        <q-btn flat label="Cancel" color="accent" v-close-popup class="q-mr-lg" />
+          <q-btn
+          :flat="!exportWholeProject && exportDocumentsModel.length === 0"
+          :outline="exportWholeProject || exportDocumentsModel.length > 0"
+          label="Export"
+          color="primary"
+          :disable="!exportWholeProject && exportDocumentsModel.length === 0"
+          @click="exportDocuments"
+          />
       </q-card-actions>
     </q-card>
 
@@ -434,6 +497,8 @@ export default class ExportProject extends DialogBase {
           return this.prepickedIds.includes(doc._id)
         })
       }
+
+      this.noFolderMode = this.prepickedNoFolderMode
     }
   }
 
@@ -449,6 +514,7 @@ export default class ExportProject extends DialogBase {
     this.useFallbackFont = false
     this.exportDocumentsModel = []
     this.exportOngoing = false
+    this.useSafetyMode = true
     this.exportList = []
   }
 
@@ -457,6 +523,8 @@ export default class ExportProject extends DialogBase {
       return []
     }
   })) readonly prepickedIds!: string[]
+
+  @Prop(({ default: false })) readonly prepickedNoFolderMode!: boolean
 
   exportFormats = [
     "Adobe Reader - PDF",
@@ -482,6 +550,10 @@ export default class ExportProject extends DialogBase {
   includeIsDead = true
 
   useFallbackFont = false
+
+  useSafetyMode = true
+
+  noFolderMode = false
 
   setDocumentPreviewClose () {
     this.documentPreviewClose = uid()
@@ -622,7 +694,7 @@ export default class ExportProject extends DialogBase {
 
       const projectName: string = await retrieveCurrentProjectName()
 
-      const exportPath = `${folderPath}/${projectName} - Export`
+      const exportPath = this.noFolderMode ? folderPath : `${folderPath}/${projectName} - Export`
 
       if (!fs.existsSync(exportPath)) {
         fs.mkdirSync(exportPath)
@@ -711,6 +783,7 @@ export default class ExportProject extends DialogBase {
 
     const exportObject = {
       name: input.extraFields.find(e => e.id === "name")?.value,
+      id: input._id,
       documentType: matchingBlueprint.nameSingular,
       documentDirectory: matchingBlueprint.namePlural,
       isCategory: input.extraFields.find(e => e.id === "categorySwitch")?.value,
@@ -945,7 +1018,7 @@ export default class ExportProject extends DialogBase {
       exportFileDirectory = exportFileDirectory.replace(char, "-")
       exportFileDirectory = exportFileDirectory.replace(char, "-")
     })
-    const documentDirectory = `${exportPath}/${exportFileDirectory}`
+    const documentDirectory = (this.noFolderMode) ? exportPath : `${exportPath}/${exportFileDirectory}`
 
     // Create directory
     if (!fs.existsSync(documentDirectory)) {
@@ -953,7 +1026,9 @@ export default class ExportProject extends DialogBase {
     }
 
     // Fix invalid characters in document file name
-    let exportFileName = input.name
+    let exportFileName = (this.useSafetyMode && this.exportWholeProject)
+      ? `${input.name} (${input.id})`
+      : input.name
     reservedCharacterList.forEach(char => {
       exportFileName = exportFileName.replace(char, "-")
       exportFileName = exportFileName.replace(char, "-")

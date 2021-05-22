@@ -373,6 +373,32 @@ a {
     border-color: #d4d0c9 !important;
     background: transparent !important;
   }
+
+  .q-checkbox__svg,
+  .q-checkbox__svg path,
+  .q-checkbox__bg {
+    transition: 0.3s all ease-in;
+  }
+
+  .q-checkbox.highlight {
+    .q-checkbox__svg,
+    .q-checkbox__svg path,
+    .q-checkbox__bg,
+    .q-checkbox__inner::before {
+      border-color: $primary !important;
+      color: $primary !important;
+    }
+  }
+
+  .q-checkbox.warning {
+    .q-checkbox__svg,
+    .q-checkbox__svg path,
+    .q-checkbox__bg,
+    .q-checkbox__inner::before {
+      border-color: $secondary !important;
+      color: $secondary !important;
+    }
+  }
 }
 
 .tagSelect,

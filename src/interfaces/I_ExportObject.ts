@@ -1,4 +1,5 @@
 export interface I_ExportObject{
+  id: string
   name: string
   documentType: string
   documentDirectory: string

@@ -42,6 +42,7 @@
     <exportProjectDialog
       :dialog-trigger="exportProjectDialogTrigger"
       :prepicked-ids="[prepickedID]"
+      :prepicked-no-folder-mode="true"
       @trigger-dialog-close="exportProjectDialogClose"
     />
 
