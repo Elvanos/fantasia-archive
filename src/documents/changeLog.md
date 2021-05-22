@@ -54,7 +54,7 @@
 - All "Export and Import" texts have been changed to "Save and Load" due to the inclusion of the new, actual, "Export" feature
 - Added a note about possible color searching in the advanced search cheatsheet popup window
 - Added input resetting after adding/selection in the relationship fields
-- Revamped the field order in all document types since the `Other names` field moved to `Document settings` from `Basic information` as it is not a mandatory system field specially used in advanced search
+- Revamped the field order in all document types since the `Other names` field moved to `Document settings` from `Basic information` as it is now a mandatory system field specially used in advanced search
 - Added tooltips to `Member count` and `Follower/Subject count` fields in all groups document types
 - Updated selects to act as text input fields in case there are no prefixed values in the list
 - Field labels received a facelift to look more appealing to look at when showing on smaller screens

@@ -38,22 +38,15 @@
                         Please note that the PDF export doesn't play nice with:
                         <ul>
                           <li>
-                            With underlined text if different parts of the same paragraph have increased/decreased font sizes
+                            Underlined text if different parts of the same paragraph have increased/decreased font sizes.
+                          </li>
+                          <li>
+                            Underlines in headings.
+                          </li>
+                          <li>
+                            Currently custom fonts and nestes lists are not supported.
                           </li>
                         </ul>
-
-                        <br>
-                        OR
-                        <br>
-                        if you have underlines in headings
-                        <br>
-                        OR
-
-                        <br>
-                        <br>
-                        If your document contains such text,
-                        <br>
-                        then the result might not very appealing aesthetically.
                       </q-tooltip>
                     </q-icon>
                 </div>
@@ -1594,12 +1587,17 @@ export default class ExportProject extends DialogBase {
   max-width: calc(100vw - 100px) !important;
   margin-top: 100px;
   align-self: flex-start;
+  max-height: calc(100vh - 160px) !important;
 
   h6 {
     display: block;
   }
 
   .exportSettings {
+    max-height: calc(100vh - 405px);
+    overflow-x: auto;
+    padding-right: 20px;
+
     .q-item {
       padding-right: 0;
       padding-left: 0;
