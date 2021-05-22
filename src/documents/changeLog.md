@@ -8,7 +8,8 @@
 ### Known issues
 
 - Creating a brand new project can very occasionally get stuck. Restarting the app fixes this.
-- Importing existing project can very occasionally get stuck. Restarting the app fixes this.
+- Loading existing project can very occasionally get stuck. Restarting the app fixes this.
+- Saving documents can sometimes leave it in edit mode instead of closing it (data gets saved anyway).
 
 ### Bugfixes & Optimizations
 
@@ -16,8 +17,8 @@
 - Fixed a limiter for advanced search that was throwing errors in rare cases
 - Fixed a bug that was causing single-to-single relationship notes not properly saving
 - Fixed the notes window showing on top of popup overlay
-- Fixed a bug that was causing changed to document blueprints to not update properly
-- Fixed a bug affecting single-to-single and many-to-single relationships in case deleteted values were lingering in the connected data
+- Fixed a bug that was causing changes to document blueprints to not update properly
+- Fixed a bug affecting single-to-single and many-to-single relationships in case deleted values were lingering in the connected data
 - Fixed a bug that was causing improper rendering of the project overview graph legends
 - Fixed a bug where the advanced search wasn't working properly for local relationship fields inside a document in the case of fields value search
 
@@ -35,13 +36,13 @@
 - Added a whole category of items adding for lists
 - Added precise mode search to full-field search in the relationship search inputs
 - Added option: Prevent filled note board showing
-- Added an option to save all opened documents upon exiting app/closing project
+- Added an option to save all opened documents upon exiting the app/closing project
 - Added `Other Names & Epithets` to `Chapters` document type
 - Revamped `Member count` field in all types of groups document types
 - Added `Follower/Subject count` field to all types of groups document types
 - Added dev option to the menu for quick document ID copying
 - Updated the legacy project repair tool to also transfer old stat fields into the new setup
-- Added an checker tool for removal of legacy fields for the user
+- Added a checker tool for the removal of legacy fields for the user
 - Added both keybind and a button for mass-saving of documents with edits
 - Added export option into the app menu
 - Added a keybind: "Save active document and mark it as finished"
@@ -52,17 +53,17 @@
 
 - All "Export and Import" texts have been changed to "Save and Load" due to the inclusion of the new, actual, "Export" feature
 - Added a note about possible color searching in the advanced search cheatsheet popup window
-- Added input reseting after adding/selection in the relationship fields
-- Revamped the field order in all document types since `Other names` field moved to `Document settings` from `Basic information` as it is not a mandatory system field specially used in advanced search
+- Added input resetting after adding/selection in the relationship fields
+- Revamped the field order in all document types since the `Other names` field moved to `Document settings` from `Basic information` as it is not a mandatory system field specially used in advanced search
 - Added tooltips to `Member count` and `Follower/Subject count` fields in all groups document types
-- Updated selects to act as text input fields in case there are no prdefixed values in the list
+- Updated selects to act as text input fields in case there are no prefixed values in the list
 - Field labels received a facelift to look more appealing to look at when showing on smaller screens
-- Attempteds to "prettify" the display mode of the document fields in case the "Hide empty fields" option is ticked on
+- Attempted to "prettify" the display mode of the document fields in case the "Hide empty fields" option is ticked on
 - Added a tiny bit of color to help discern which relationship is one-way and which is two-way
-- Adjusted the single and multi relationship fields not showing suggestion popups when a value is removed the list
+- Adjusted the single and multi relationship fields not showing suggestion popups when a value has removed the list
 - Adjusted the single relationship fields to hide the suggest list when a value is selected from the list
-- Adjust font sizes for titles and "sizes" in text editor field to be actually useable without looks ridiculous
-- Rearanged the menu and added a new `Tools` category to make finding stuff a bit easier
+- Adjust font sizes for titles and "sizes" in the text editor field to be actually useable without looks ridiculous
+- Rearranged the menu and added a new `Tools` category to make finding stuff a bit easier
 
 ## 0.1.6a
 

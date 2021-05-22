@@ -1,9 +1,3 @@
-## THE GM BATCH START - 0.1.7
-
-- Add `Font` and `hX` elements to PDF support... maybe something else
-Suggestion: In Species/Races/Flora/Fauna docs, move Related Species/Races/Flora/Fauna and Characters of Species/Races/Flora/Fauna down and move the text fields (Description & History and Traditions & Customs) up. I have a lot of characters and have to scroll quite a bit to get down to the text fields to read them.
-
-## THE GM BATCH END - 0.1.7
 
 ## PROJECT SETTINGS BATCH 1 START - 0.1.8
 
