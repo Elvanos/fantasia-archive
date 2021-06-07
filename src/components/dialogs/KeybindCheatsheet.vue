@@ -20,23 +20,43 @@
               dark
               :thumb-style="thumbStyle"
               style="max-height: calc(100vh - 260px); height: 775px; width: 100%;">
-              <q-markup-table
+              <q-table
                 dark
                 flat
+                :filter="filter"
+                hide-bottom
+                :pagination.sync="pagination"
+                :rows-per-page-options="[0]"
+                :virtual-scroll-sticky-size-start="48"
+                row-key="id"
+                :data="localCheatSheet"
+                :columns="keybindListCollums"
               >
-                <thead>
-                  <tr>
-                    <th class="text-left">Action</th>
-                    <th class="text-left">Keybind</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="keybind in localCheatSheet" :key="keybind.id">
-                    <td class="text-left" v-html="keybind.tooltip"/>
-                    <td class="text-left" v-html="retrieveKeybindString(keybind)"/>
-                  </tr>
-                </tbody>
-              </q-markup-table>
+              <template v-slot:top-right>
+                <q-input clearable dark dense debounce="300" v-model="filter" placeholder="Filter the keybinds">
+                  <template v-slot:prepend>
+                    <q-icon name="search" />
+                  </template>
+                </q-input>
+              </template>
+              <template v-slot:body="props">
+                <q-tr :props="props">
+                  <q-td
+                    key="name"
+                    :props="props"
+                    v-html="props.row.name"
+                  >
+                  </q-td>
+                   <q-td
+                    key="keybind"
+                    :props="props"
+                    v-html="props.row.keybind"
+                  >
+                  </q-td>
+                </q-tr>
+              </template>
+
+              </q-table>
             </q-scroll-area>
           </div>
        </q-card-section>
@@ -73,6 +93,7 @@ export default class KeybindCheatsheet extends DialogBase {
       this.dialogModel = true
 
       // Remap the cheetcheet based on available input settings
+      // @ts-ignore
       this.localCheatSheet = this.SGET_getCurrentKeyBindData.defaults.map((bind, index) => {
         const userKb = this.SGET_getCurrentKeyBindData.userKeybinds.find(userKb => userKb.id === bind.id)
         const mappedKeybind = (
@@ -100,7 +121,11 @@ export default class KeybindCheatsheet extends DialogBase {
             note: bind.note
           }
 
-        return mappedKeybind
+        return {
+          name: mappedKeybind.tooltip,
+          id: mappedKeybind.id,
+          keybind: this.retrieveKeybindString(mappedKeybind)
+        }
       })
     }
   }
@@ -109,6 +134,39 @@ export default class KeybindCheatsheet extends DialogBase {
    * Local, remaped cheatsheet
    */
   localCheatSheet: I_KeyPressObject[] = []
+
+  /**
+   * Keybinds table string filter
+   */
+  filter = ""
+
+  /**
+   * Keybinds table pagination settings
+   */
+  pagination = {
+    rowsPerPage: 0
+  }
+
+  /**
+   * Keybinds table settings
+   */
+  keybindListCollums = [
+    {
+      name: "name",
+      required: true,
+      label: "Action",
+      align: "left",
+      field: (row: {name: string}) => row.name,
+      format: (val: string) => `${val}`,
+      sortable: true
+    },
+    {
+      name: "keybind",
+      align: "left",
+      label: "Keybind",
+      field: "userKeybind"
+    }
+  ]
 }
 </script>
 

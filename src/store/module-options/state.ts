@@ -2,6 +2,7 @@ export interface OptionsStateInteface {
   _id: string,
   _rev?: string,
   darkMode: boolean
+  agressiveRelationshipFilter: boolean
   preventFilledNoteBoardPopup: boolean
   preventAutoScroll: boolean
   hideAdvSearchCheatsheetButton: boolean
@@ -52,6 +53,7 @@ function state (): OptionsStateInteface {
   return {
     _id: "settings",
     darkMode: false,
+    agressiveRelationshipFilter: false,
     preventFilledNoteBoardPopup: false,
     preventAutoScroll: false,
     hideAdvSearchCheatsheetButton: false,

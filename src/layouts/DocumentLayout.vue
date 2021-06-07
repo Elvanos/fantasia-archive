@@ -27,7 +27,7 @@
       v-model="splitterModel"
       unit="px"
       emit-immediately
-      :class="{splitterClass, 'splitterHidden': hideHierarchyTree}"
+      :class="{splitterClass, 'splitterHidden': (hideHierarchyTree || SGET_getDocumentPreviewVisible !== '')}"
       @input="onChange"
       :limits="[limiterWidth, Infinity]"
       class="pageSplitter"
@@ -240,11 +240,13 @@ export default class DocumentLayout extends BaseClass {
     // @ts-ignore
     this.pre017check = options.pre017check
 
-    if (options.treeWidth && !this.hideHierarchyTree) {
-      this.splitterModel = options.treeWidth
-    }
-    else {
-      this.splitterModel = 0
+    if (this.SGET_getDocumentPreviewVisible === "") {
+      if (options.treeWidth && !this.hideHierarchyTree) {
+        this.splitterModel = options.treeWidth
+      }
+      else {
+        this.splitterModel = 0
+      }
     }
   }
 
@@ -255,6 +257,16 @@ export default class DocumentLayout extends BaseClass {
   }
 
   hideHierarchyTree = false
+
+  @Watch("SGET_getDocumentPreviewVisible")
+  reactToPreviewVisibilityChange () {
+    if (this.SGET_getDocumentPreviewVisible !== "" && !this.hideHierarchyTree) {
+      this.splitterModel = 600
+    }
+    else if (this.SGET_options.treeWidth && !this.hideHierarchyTree) {
+      this.splitterModel = this.SGET_options.treeWidth
+    }
+  }
 
   /****************************************************************/
   // OPTTION UPDATER
@@ -296,9 +308,9 @@ export default class DocumentLayout extends BaseClass {
         html: true,
         actions: [{ icon: "mdi-close", color: "black" }],
         message: `
-        ${legacyDocs.length} documents with legacy field values found.
+        ${legacyDocs.length} documents with legacy field values found and opened in your to tabs.
         <br>
-        Please remap the legacy fields manually to ensure proper functioning of FA.
+        Please go through they one by one and remap the legacy fields manually to ensure proper functioning of FA.
         <br>
         After the remapping is done, rerun the tool to re-check.
         `

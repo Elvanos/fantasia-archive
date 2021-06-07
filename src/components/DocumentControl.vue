@@ -38,14 +38,6 @@
       @trigger-dialog-close="tipsTricksDialogClose"
     />
 
-    <!-- Export project dialog -->
-    <exportProjectDialog
-      :dialog-trigger="exportProjectDialogTrigger"
-      :prepicked-ids="[prepickedID]"
-      :prepicked-no-folder-mode="true"
-      @trigger-dialog-close="exportProjectDialogClose"
-    />
-
     <q-page-sticky position="top-right"
       class="documentControl bg-dark"
       :class="{'fullScreen': hideHierarchyTree}"
@@ -208,7 +200,7 @@
                 anchor="bottom left"
                 self="top middle"
               >
-              Save all opened document with active changes
+              Save all opened documents with active changes
               </q-tooltip>
             </q-btn>
 
@@ -269,6 +261,23 @@
           </q-btn>
 
           <q-btn
+            icon="mdi-file-search-outline"
+            color="primary"
+            outline
+            @click="openThisDocumentInSidebar"
+            v-if="!currentlyNew && SGET_allOpenedDocuments.docs.length > 0  && this.$route.path !== '/project'"
+          >
+            <q-tooltip
+              :delay="500"
+              max-width="500px"
+              anchor="bottom left"
+              self="top middle"
+            >
+              Preview document in split-view mode
+            </q-tooltip>
+          </q-btn>
+
+          <q-btn
             icon="mdi-file-tree"
             color="primary"
             outline
@@ -309,7 +318,7 @@
           <q-btn
             :color="(!hasEdits) ? 'secondary' : 'primary'"
             icon="mdi-database-export-outline"
-            @click="commenceExport"
+            @click="triggerExport"
             outline
             v-if="!currentlyNew && SGET_allOpenedDocuments.docs.length > 0  && this.$route.path !== '/project'"
             >
@@ -370,7 +379,6 @@ import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentChec
 import advancedSearchGuideDialog from "src/components/dialogs/AdvancedSearchGuide.vue"
 import keybindCheatsheetDialog from "src/components/dialogs/KeybindCheatsheet.vue"
 import tipsTricksTriviaDialog from "src/components/dialogs/TipsTricksTrivia.vue"
-import exportProjectDialog from "src/components/dialogs/ExportProject.vue"
 
 import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
 import { extend, Loading, QSpinnerGears } from "quasar"
@@ -387,8 +395,7 @@ import { retrieveCurrentProjectName, saveProject } from "src/scripts/projectMana
     deleteDocumentCheckDialog,
     advancedSearchGuideDialog,
     keybindCheatsheetDialog,
-    tipsTricksTriviaDialog,
-    exportProjectDialog
+    tipsTricksTriviaDialog
   }
 })
 export default class DocumentControl extends BaseClass {
@@ -428,8 +435,13 @@ export default class DocumentControl extends BaseClass {
     }
 
     // Quick open existing document
-    if (this.determineKeyBind("quickExistingDocument") && !this.SGET_getDialogsState) {
-      this.existingObjectAssignUID()
+    if (this.determineKeyBind("openDocInSide") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
+      this.openThisDocumentInSidebar()
+    }
+
+    // Delete dialog - CTRL + D
+    if (this.determineKeyBind("deleteDocument") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
+      this.deleteObjectAssignUID()
     }
 
     // Delete dialog - CTRL + D
@@ -439,7 +451,7 @@ export default class DocumentControl extends BaseClass {
 
     // Export document - NONE
     if (this.determineKeyBind("exportDocument") && this.currentyEditable && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
-      this.commenceExport()
+      this.triggerExport()
     }
 
     // Edit document - CTRL + E
@@ -534,19 +546,6 @@ export default class DocumentControl extends BaseClass {
   }
 
   /****************************************************************/
-  // Export project dialog
-  /****************************************************************/
-
-  exportProjectDialogTrigger: string | false = false
-  exportProjectDialogClose () {
-    this.exportProjectDialogTrigger = false
-  }
-
-  exportProjectAssignUID () {
-    this.exportProjectDialogTrigger = this.generateUID()
-  }
-
-  /****************************************************************/
   // New document dialog
   /****************************************************************/
 
@@ -610,6 +609,14 @@ export default class DocumentControl extends BaseClass {
   addNewUnderParent () {
     const currentDoc = this.findRequestedOrActiveDocument() as I_OpenedDocument
     createNewWithParent(currentDoc, this)
+  }
+
+  /****************************************************************/
+  // Open current document in sidebar
+  /****************************************************************/
+  openThisDocumentInSidebar () {
+    const currentDoc = this.findRequestedOrActiveDocument() as I_OpenedDocument
+    this.openDocumentPreviewPanel(currentDoc._id)
   }
 
   /****************************************************************/
@@ -832,14 +839,12 @@ export default class DocumentControl extends BaseClass {
     }
   }
 
-  prepickedID = ""
-
-  commenceExport () {
+  triggerExport () {
     const currentDocument = this.findRequestedOrActiveDocument()
     // @ts-ignore
-    this.prepickedID = currentDocument._id
+    const prepickedID = currentDocument._id
 
-    this.exportProjectAssignUID()
+    this.SSET_setExportDialogState([prepickedID])
   }
 }
 </script>

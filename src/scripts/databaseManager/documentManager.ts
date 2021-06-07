@@ -11,7 +11,7 @@ export const saveDocument = async (
   document: I_OpenedDocument,
   allOpenedDocuments: I_OpenedDocument[],
   allDocuments: I_ShortenedDocument[],
-  editModeAfterSave: boolean,
+  editModeAfterSave: boolean | null,
   vueInstance: any,
   disableLoading = false
 ) => {
@@ -398,7 +398,9 @@ export const saveDocument = async (
   await window.FA_dbs[document.type].put(documentCopy)
 
   // Set edit mode for frontend
-  documentCopy.editMode = editModeAfterSave
+  if (editModeAfterSave !== null) {
+    documentCopy.editMode = editModeAfterSave
+  }
 
   clearTimeout(saveTimeout)
   if (!disableLoading) {

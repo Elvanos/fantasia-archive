@@ -10,12 +10,21 @@
       @trigger-dialog-close="deleteObjectDialogClose"
     />
 
-    <!-- Export project dialog -->
-    <exportProjectDialog
-      :dialog-trigger="exportProjectDialogTrigger"
-      :prepicked-ids="[prepickedID]"
-      :prepicked-no-folder-mode="true"
-      @trigger-dialog-close="exportProjectDialogClose"
+    <!-- Rename tag dialog -->
+    <renameTagDialog
+      :dialog-trigger="renameTagDialogTrigger"
+      :document-id-list="toRenameTagDocumentIdList"
+      :target-tag="toRenameTag"
+      :all-tags="allTags"
+      @trigger-dialog-close="renameTagDialogClose"
+    />
+
+    <!-- Delete tag dialog -->
+    <deleteTagDialog
+      :dialog-trigger="deleteTagDialogTrigger"
+      :document-id-list="toDeleteTagDocumentIdList"
+      :target-tag="toDeleteTag"
+      @trigger-dialog-close="deleteTagDialogClose"
     />
 
     <div
@@ -28,6 +37,7 @@
         dark
         debounce="200"
         v-model="treeFilter"
+        :disable="SGET_getDocumentPreviewVisible !== ''"
         label="Filter document tree..."
       >
         <template v-slot:append>
@@ -247,6 +257,12 @@
                       <q-icon name="mdi-pencil" />
                     </q-item-section>
                   </q-item>
+                  <q-item clickable v-close-popup @click="openDocumentPreviewPanel(prop.node._id)">
+                    <q-item-section>Preview document in split-view mode</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-file-search-outline" />
+                    </q-item-section>
+                  </q-item>
                   <q-item clickable v-close-popup @click="addNewUnderParent(prop.node)">
                     <q-item-section>Create new document with this document as parent</q-item-section>
                     <q-item-section avatar>
@@ -260,7 +276,7 @@
                     </q-item-section>
                   </q-item>
                   <q-separator dark />
-                  <q-item clickable v-close-popup @click="commenceExport(prop.node)">
+                  <q-item clickable v-close-popup @click="triggerExport(prop.node)">
                     <q-item-section>Export document</q-item-section>
                     <q-item-section avatar>
                       <q-icon name="mdi-database-export-outline" />
@@ -277,6 +293,61 @@
 
               </q-list>
 
+                <q-list class="bg-gunmetal-light text-accent" v-if="prop.node.isTag">
+
+                  <q-item clickable v-close-popup @click="recursivelyExpandNodeDownwards(prop.node.key, true)">
+                    <q-item-section>Expand all under this node</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-expand-all-outline" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item clickable v-close-popup @click="collapseAllNodesForce(prop.node)">
+                    <q-item-section>Collapse all under this node</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-collapse-all-outline" />
+                    </q-item-section>
+                  </q-item>
+                  <template v-if="!prop.node.isTagWrapper">
+                    <q-separator dark />
+                      <q-item clickable>
+                        <q-item-section>Add new document to this tag</q-item-section>
+                        <q-item-section avatar>
+                          <q-icon name="keyboard_arrow_right" />
+                        </q-item-section>
+                          <q-menu anchor="top end" self="top start">
+                          <q-list class="bg-gunmetal text-accent">
+
+                            <q-item
+                              v-for="newObject in newObjectList"
+                              :key="newObject._id"
+                              v-close-popup
+                              clickable
+                              active-class="bg-gunmetal-light text-cultured"
+                              @click="processNodeNewUnderTag(prop.node, newObject)"
+                            >
+                              <q-item-section>{{newObject.specialLabel}}</q-item-section>
+                              <q-item-section avatar>
+                                <q-icon :name="newObject.icon" />
+                              </q-item-section>
+                            </q-item>
+
+                          </q-list>
+                        </q-menu>
+                    </q-item>
+                    <q-item clickable v-close-popup @click="renameTag(prop.node)">
+                      <q-item-section>Rename tag</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-tag-multiple" />
+                      </q-item-section>
+                    </q-item>
+                     <q-item clickable v-close-popup @click="deleteTag(prop.node)">
+                      <q-item-section class="text-secondary"><b>Delete tag</b></q-item-section>
+                      <q-item-section avatar class="text-secondary">
+                        <q-icon name="mdi-tag-off-outline" />
+                      </q-item-section>
+                    </q-item>
+                  </template>
+                </q-list>
             </q-menu>
         </div>
         </div>
@@ -312,11 +383,22 @@
 </template>
 
 <script lang="ts">
+
+interface NewObjectDocument {
+  label: string
+  icon: string
+  order: number
+  _id: string
+  specialLabel: string
+}
+
 import { Component, Watch } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
 import { I_ExtraDocumentFields, I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentCheck.vue"
+import renameTagDialog from "src/components/dialogs/RenameTag.vue"
+import deleteTagDialog from "src/components/dialogs/DeleteTag.vue"
 
 import { extend, colors, uid } from "quasar"
 import { tagListBuildFromBlueprints } from "src/scripts/utilities/tagListBuilder"
@@ -324,12 +406,12 @@ import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projec
 import { createNewWithParent } from "src/scripts/documentActions/createNewWithParent"
 import { copyDocumentName, copyDocumentTextColor, copyDocumentBackgroundColor } from "src/scripts/documentActions/uniqueFieldCopy"
 import { copyDocument } from "src/scripts/documentActions/copyDocument"
-import exportProjectDialog from "src/components/dialogs/ExportProject.vue"
 
 @Component({
   components: {
     deleteDocumentCheckDialog,
-    exportProjectDialog,
+    renameTagDialog,
+    deleteTagDialog,
     documentPreview: () => import("src/components/DocumentPreview.vue")
   }
 })
@@ -616,6 +698,11 @@ export default class ObjectTree extends BaseClass {
   }
 
   /**
+   * List of all possible new objects
+   */
+  newObjectList:NewObjectDocument[] = []
+
+  /**
    * Builds a brand new sparkling hearchy tree out of available data
    */
   buildCurrentObjectTree () {
@@ -630,6 +717,26 @@ export default class ObjectTree extends BaseClass {
     let treeObject: any[] = []
 
     let allTreeDocuments: I_ShortenedDocument[] = []
+
+    // @ts-ignore
+    this.newObjectList = this.SGET_allBlueprints.map(blueprint => {
+      return {
+        label: blueprint.namePlural,
+        icon: blueprint.icon,
+        order: blueprint.order,
+        _id: blueprint._id,
+        specialLabel: blueprint.nameSingular
+      }
+    }).sort((a, b) => {
+      if (a.order < b.order) {
+        return 1
+      }
+
+      if (a.order > b.order) {
+        return -1
+      }
+      return 0
+    })
 
     // Process all documents, build hieararchy out of the and sort them via name and custom order
     for (const blueprint of allBlueprings) {
@@ -753,6 +860,8 @@ export default class ObjectTree extends BaseClass {
       let allTagsCategories = 0
       let allTagsDocuments = 0
 
+      this.allTags = tagList
+
       let tagNodeList = tagList.map((tag: string) => {
         const tagDocs = allTreeDocuments
           .filter(doc => {
@@ -784,7 +893,7 @@ export default class ObjectTree extends BaseClass {
           allCount: allCount,
           documentCount: documentCount,
           categoryCount: categoryCount,
-          isRoot: true,
+          isRoot: !this.compactTags,
           isTag: true,
           children: this.sortDocuments(tagDocs)
         }
@@ -802,6 +911,7 @@ export default class ObjectTree extends BaseClass {
             documentCount: allTagsDocuments,
             categoryCount: allTagsCategories,
             isTag: true,
+            isTagWrapper: true,
             // @ts-ignore
             children: tagNodeList.map(e => {
               e.isRoot = false
@@ -809,6 +919,13 @@ export default class ObjectTree extends BaseClass {
             })
           }
         ]
+
+        if (this.firstTimeRender) {
+          this.expandedTreeNodes = [...new Set([
+            ...this.expandedTreeNodes,
+            "tagList"
+          ])]
+        }
       }
 
       treeObject = [...tagNodeList, ...treeObject]
@@ -877,6 +994,24 @@ export default class ObjectTree extends BaseClass {
       // @ts-ignore
       this.addNewObjectRoute(routeObject)
     }
+  }
+
+  processNodeNewUnderTag (node: {
+    key: string
+    _id: string
+    children: []
+    type: string
+    isRoot: boolean
+    label: string
+    specialLabel: string|boolean
+  }, documentType: {_id: string}) {
+    const routeObject = {
+      _id: documentType._id,
+      tag: node.label
+    }
+
+    // @ts-ignore
+    this.addNewObjectRoute(routeObject)
   }
 
   buildTreeExpands (newDocs: I_OpenedDocument[]) {
@@ -959,7 +1094,7 @@ export default class ObjectTree extends BaseClass {
     }
   }
 
-  recursivelyExpandNodeDownwards (nodeID: string) {
+  recursivelyExpandNodeDownwards (nodeID: string, tagParent = false) {
     const treeDOM = this.$refs.tree as unknown as {
       setExpanded: (key:string, state: boolean)=> void
       getNodeByKey: (key:string)=> void
@@ -971,16 +1106,16 @@ export default class ObjectTree extends BaseClass {
       nodeID
     ])]
 
-    const currentTreeNode = (treeDOM.getNodeByKey(nodeID)) as unknown as {children: any[], type: string}
+    const currentTreeNode = (treeDOM.getNodeByKey(nodeID)) as unknown as {children: any[], type: string, isTag: boolean}
 
     // Dig into the upper hierarchy
     if (currentTreeNode?.children && currentTreeNode?.children.length > 0) {
       for (const child of currentTreeNode.children) {
-        this.recursivelyExpandNodeDownwards(child.key)
+        this.recursivelyExpandNodeDownwards(child.key, tagParent)
       }
     }
     // If we are at the top of the tree, expand the top category
-    else if (currentTreeNode?.type) {
+    else if (currentTreeNode?.type && !tagParent) {
       // @ts-ignore
       this.expandedTreeNodes = [...new Set([
         ...this.expandedTreeNodes,
@@ -1153,25 +1288,8 @@ export default class ObjectTree extends BaseClass {
     createNewWithParent(currentDoc, this)
   }
 
-  /****************************************************************/
-  // Export project dialog
-  /****************************************************************/
-
-  exportProjectDialogTrigger: string | false = false
-  exportProjectDialogClose () {
-    this.exportProjectDialogTrigger = false
-  }
-
-  exportProjectAssignUID () {
-    this.exportProjectDialogTrigger = this.generateUID()
-  }
-
-  prepickedID = ""
-
-  commenceExport (node: {_id: string}) {
-    this.prepickedID = node._id
-
-    this.exportProjectAssignUID()
+  triggerExport (node: {_id: string}) {
+    this.SSET_setExportDialogState([node._id])
   }
 
   /****************************************************************/
@@ -1196,11 +1314,59 @@ export default class ObjectTree extends BaseClass {
     this.deleteObjectAssignUID()
   }
 
+  /****************************************************************/
+  // Rename tag dialog
+  /****************************************************************/
+
+  renameTagDialogTrigger: string | false = false
+  renameTagDialogClose () {
+    this.renameTagDialogTrigger = false
+  }
+
+  renameTagAssignUID () {
+    this.renameTagDialogTrigger = this.generateUID()
+  }
+
+  renameTag (node: { label: string, children: { _id: string}[]}) {
+    this.toRenameTag = node.label
+    this.toRenameTagDocumentIdList = node.children.map(child => child._id)
+
+    this.renameTagAssignUID()
+  }
+
+  toRenameTag = ""
+  toRenameTagDocumentIdList: string[] = []
+
+  /****************************************************************/
+  // Delete tag dialog
+  /****************************************************************/
+
+  deleteTagDialogTrigger: string | false = false
+  deleteTagDialogClose () {
+    this.deleteTagDialogTrigger = false
+  }
+
+  deleteTagAssignUID () {
+    this.deleteTagDialogTrigger = this.generateUID()
+  }
+
+  deleteTag (node: { label: string, children: { _id: string}[]}) {
+    this.toDeleteTag = node.label
+    this.toDeleteTagDocumentIdList = node.children.map(child => child._id)
+
+    this.deleteTagAssignUID()
+  }
+
+  toDeleteTag = ""
+  toDeleteTagDocumentIdList: string[] = []
+
   setDocumentPreviewClose () {
     this.documentPreviewClose = uid()
   }
 
   documentPreviewClose = ""
+
+  allTags: string[] = []
 }
 </script>
 

@@ -1,10 +1,11 @@
 <template>
  <q-tooltip
-  content-class="documentPreviewWrapper"
+  content-class="documentPreviewWrapper tooltip"
   :content-style="`z-index: ${specialZIndex} !important;`"
   :delay="customDelay"
   max-width="700px"
   max-height="600px"
+  v-if="displayMode === 'tooltip'"
   :target="customTarget"
   :offset="[0, 0]"
   :anchor="customAnchor"
@@ -157,6 +158,143 @@
     </div>
 
   </q-tooltip>
+
+  <div
+  class="documentPreviewWrapper"
+  v-else
+  @mouseenter="disableScroll"
+  @mouseleave="enableScroll"
+  >
+    <div
+      v-if="localBlueprint"
+      class="documentPreviewContent -fullsize"
+    >
+     <div
+        v-for="field in localBlueprint.extraFields"
+        :key="`${field.id}`"
+        class="col-12 q-mb-md"
+        v-show="retrieveFieldType(localDocument, field.id) !== 'break' && hasValueFieldFilter(field) && !determineLegacyField(localDocument, field.id)"
+      >
+
+        <Field_Break
+        class="inputWrapper break"
+        v-if="field.type === 'break' && categoryFieldFilter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(localDocument, field.id)"
+        />
+
+        <Field_Text
+        class="inputWrapper"
+        v-if="field.type === 'text' && categoryFieldFilter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(localDocument, field.id)"
+        :isNew="false"
+        :editMode="false"
+        />
+
+        <Field_Number
+        class="inputWrapper"
+        v-if="field.type === 'number' && categoryFieldFilter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(localDocument, field.id)"
+        :isNew="false"
+        :editMode="false"
+        />
+
+        <Field_Switch
+        class="inputWrapper"
+        v-if="field.type === 'switch' && categoryFieldFilter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(localDocument, field.id)"
+        :isNew="false"
+        :editMode="false"
+        />
+
+        <Field_ColorPicker
+        class="inputWrapper"
+        v-if="field.type === 'colorPicker' && categoryFieldFilter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(localDocument, field.id)"
+        :isNew="false"
+        :editMode="false"
+        />
+
+        <Field_List
+        class="inputWrapper"
+        v-if="field.type === 'list' && categoryFieldFilter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(localDocument, field.id)"
+        :isNew="false"
+        :editMode="false"
+        />
+
+        <Field_SingleSelect
+        class="inputWrapper"
+        v-if="field.type === 'singleSelect' && categoryFieldFilter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(localDocument, field.id)"
+        :isNew="false"
+        :editMode="false"
+        />
+
+        <Field_MultiSelect
+        class="inputWrapper"
+        v-if="field.type === 'multiSelect' && categoryFieldFilter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(localDocument, field.id)"
+        :isNew="false"
+        :editMode="false"
+        />
+
+        <Field_SingleRelationship
+        class="inputWrapper"
+        v-if="(field.type === 'singleToNoneRelationship' || field.type === 'singleToSingleRelationship' || field.type === 'singleToManyRelationship') && categoryFieldFilter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(localDocument, field.id)"
+        :isNew="false"
+        :editMode="false"
+        :current-id="localDocument._id"
+        :side-document-preview="true"
+        @set-new-parent-id="setOtherContentSidebar"
+        />
+
+        <Field_MultiRelationship
+        class="inputWrapper"
+        v-if="(field.type === 'manyToNoneRelationship' || field.type ===
+        'manyToSingleRelationship' || field.type === 'manyToManyRelationship') && categoryFieldFilter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(localDocument, field.id)"
+        :isNew="false"
+        :editMode="false"
+        :current-id="localDocument._id"
+        :side-document-preview="true"
+        @set-new-parent-id="setOtherContentSidebar"
+        />
+
+        <Field_Wysiwyg
+        class="inputWrapper"
+        v-if="field.type === 'wysiwyg' && categoryFieldFilter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="(retrieveFieldValue(localDocument, field.id)) ? retrieveFieldValue(localDocument, field.id) : ''"
+        :isNew="false"
+        :editMode="false"
+        :current-id="localDocument._id"
+        />
+
+        <Field_Tags
+        class="inputWrapper"
+        v-if="field.type === 'tags' && categoryFieldFilter(field.id)"
+        :inputDataBluePrint="field"
+        :inputDataValue="retrieveFieldValue(localDocument, field.id)"
+        :isNew="false"
+        :editMode="false"
+        />
+
+     </div>
+
+    </div>
+
+  </div>
 </template>
 
 <script lang="ts">
@@ -215,9 +353,22 @@ export default class DocumentPreview extends BaseClass {
    */
   @Prop() readonly documentId!: string
 
+  /**
+   * Display mode of the document preview
+   */
+  @Prop({ default: "tooltip" }) readonly displayMode!: string
+
   setOtherContent (id:string) {
     this.hasOtherContent = true
     this.setNewDocumentID(id).catch(e => console.log(e))
+  }
+
+  setOtherContentSidebar (id:string) {
+    this.openDocumentPreviewPanel(id)
+
+    document.querySelectorAll(".documentPreviewWrapper").forEach(e => {
+      e.scrollTop = 0
+    })
   }
 
   async setNewDocumentID (id: string) {
@@ -231,7 +382,7 @@ export default class DocumentPreview extends BaseClass {
 
       await this.$nextTick()
 
-      document.querySelectorAll(".documentPreviewWrapper").forEach(e => {
+      document.querySelectorAll(".documentPreviewWrapper.tooltip").forEach(e => {
         e.scrollTop = 0
       })
     }
@@ -422,9 +573,24 @@ export default class DocumentPreview extends BaseClass {
 .documentPreviewWrapper.no-pointer-events {
   pointer-events: all !important;
   padding: 0 !important;
-  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.45);
   height: 600px;
   background-color: map-get($customColors, 'gunmetal-lighter') !important;
+}
+
+body:not(.body--dark) {
+  .documentPreviewContent.-fullsize {
+    background-color: #fff !important;
+    color: darken($dark, 12.5) !important;
+
+    .text-primary {
+      color: var(--q-color-primary) !important;
+    }
+  }
+}
+
+body.body--dark .documentPreviewContent.-fullsize {
+  background-color: lighten(#303742, 5) !important;
 }
 
 .documentPreviewContent {

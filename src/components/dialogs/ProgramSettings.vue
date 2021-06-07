@@ -97,6 +97,27 @@
                       />
                   </div>
 
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
+                    <div class="optionTitle">
+                      Aggressive relationships selection
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Turns on the aggressive autosuggest mode for all relationship searches across the app in the document edit mode.
+                        <br>
+                        Without this turned on, after filtering, the first item in the list does not get automatically selected.
+                        <br>
+                        Turning this on adds this functionality - allowing for much more convenient selection of
+                        <br>
+                        existing documents while sacrificng a bit of convenience to create new ones on-the-fly.
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.agressiveRelationshipFilter"
+                      />
+                  </div>
+
                   <div class="col-12">
                     <div class="text-bold q-mt-xl">
                       Accessibility
@@ -1063,6 +1084,7 @@ export default class ProgramSettings extends DialogBase {
     _id: "settings",
     darkMode: false,
     preventFilledNoteBoardPopup: false,
+    agressiveRelationshipFilter: false,
     preventAutoScroll: false,
     textShadow: false,
     hideAdvSearchCheatsheetButton: false,

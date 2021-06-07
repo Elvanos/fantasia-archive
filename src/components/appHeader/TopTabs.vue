@@ -140,6 +140,12 @@
                   </q-item-section>
                 </q-item>
                 <q-separator dark />
+                <q-item clickable v-if="!document.isNew"  v-close-popup @click="openDocumentPreviewPanel(document._id)">
+                  <q-item-section>Preview document in split-view mode</q-item-section>
+                  <q-item-section avatar>
+                    <q-icon name="mdi-file-search-outline" />
+                  </q-item-section>
+                </q-item>
                 <q-item v-if="!document.isNew" clickable v-close-popup @click="addNewUnderParent(document)">
                   <q-item-section>Create new document with this document as parent</q-item-section>
                   <q-item-section avatar>

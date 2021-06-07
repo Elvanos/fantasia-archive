@@ -712,6 +712,54 @@ body .q-tooltip {
   }
 }
 
+.docPreviewWindow {
+  position: fixed !important;
+  top: 95px !important;
+  z-index: 2 !important;
+  width: 600px !important;
+  height: calc(100vh - 95px) !important;
+
+  .q-window__body {
+    height: calc(100vh - 95px) !important;
+  }
+
+  .documentPreviewWrapper {
+    height: calc(100vh - 95px) !important;
+    overflow: auto;
+  }
+
+  .documentPreviewContent.-fullsize {
+    width: 100% !important;
+    max-width: inherit !important;
+    max-height: inherit !important;
+    min-height: calc(100vh - 95px);
+  }
+
+  &.-noBar {
+    top: 40px !important;
+    height: calc(100vh - 40px) !important;
+
+    .documentPreviewWrapper {
+      height: calc(100vh - 40px) !important;
+    }
+
+    .q-window__body {
+      height: calc(100vh - 40px) !important;
+    }
+
+    .documentPreviewContent.-fullsize {
+      min-height: calc(100vh - 40px);
+    }
+  }
+
+  .previewCloseButton {
+    position: absolute;
+    z-index: 100;
+    right: 5px;
+    top: 5px;
+  }
+}
+
 .corkboardInput {
   height: 100%;
   width: 100%;

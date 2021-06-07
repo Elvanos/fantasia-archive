@@ -63,6 +63,17 @@ export default class BaseClass extends Vue {
   @FloatingWindows.Getter("getNoteCorkboardhWindowVisible") SGET_getNoteCorkboardhWindowVisible!: string
   @FloatingWindows.Mutation("setNoteCorkboardWindowVisible") SSET_setNoteCorkboardWindowVisible!: () => void
 
+  @FloatingWindows.Getter("getDocumentPreviewVisible") SGET_getDocumentPreviewVisible!: string
+  @FloatingWindows.Mutation("setDocumentPreviewWindowVisible") SSET_setDocumentPreviewWindowVisible!: (input:boolean) => void
+
+  @FloatingWindows.Getter("getDocumentPreviewWindowID") SGET_getDocumentPreviewWindowID!: string
+  @FloatingWindows.Mutation("setDocumentPreviewWindowID") SSET_setDocumentPreviewWindowID!: (input: string) => void
+
+  openDocumentPreviewPanel (id: string) {
+    this.SSET_setDocumentPreviewWindowID(id)
+    this.SSET_setDocumentPreviewWindowVisible(true)
+  }
+
   /****************************************************************/
   // KEYBINDS MANAGEMENT
   /****************************************************************/
@@ -250,10 +261,11 @@ export default class BaseClass extends Vue {
    */
   addNewObjectRoute (newObject: I_NewObjectTrigger) {
     const parentID = (newObject?.parent) || ""
+    const tag = (newObject?.tag) || ""
 
     this.$router.push({
       path: `/project/display-content/${newObject._id}/${uid()}`,
-      query: { parent: parentID }
+      query: { parent: parentID, tag: tag }
     }).catch((e: {name: string}) => {
       const errorName : string = e.name
       if (errorName === "NavigationDuplicated") {
@@ -497,6 +509,8 @@ export default class BaseClass extends Vue {
   }
 
   @Dialogs.Getter("getDialogsState") SGET_getDialogsState!: boolean
+  @Dialogs.Getter("getExportDialogState") SGET_getExportDialogState!: {prepickedValue: string[]}
+  @Dialogs.Mutation("setExportDialogState") SSET_setExportDialogState!: (input: string[]) => void
 
   /**
    * Refreshes the route

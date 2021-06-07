@@ -1,25 +1,19 @@
 
 ## PROJECT SETTINGS BATCH 1 START - 0.1.8
 
-- Add `SHIFT + ENTER` add mode to relationship searches to add documents without deleting the entered text
 - Rewrite document display algortithmn and add option to show description (text editor fields) on top of the section (under break)
 - Breaks/titles in lists
+
+- Fix "isDead" class styling in light mode in sie preview and main document body
+
 - Pin document preview floating window
+
 - Project setting dialog/options
 - Project rename
 - List of last saved documents on project overview
 
-- Add option for project graph to filter out categories or show them separately
-
 - Selective export per field basis
 - Templates for exports
-
-- Mass tag rename/deletion (done via document saving!)
-- Context menu for tags
-  - Collapse/expand all top level "tags" mega-category
-  - Add new document type under tag
-  - Delete tag (unsets for all docs)
-  - Rename tag (resaves all docs with new tag)
 
 - New text editor (TipTap2)?
   - Simple @ mentions
@@ -32,6 +26,7 @@
 ## TRANSLATION SUPPORT START - 0.1.9
 
 - Settings search
+- Add option for project graph to filter out categories or show them separately
 
 - Add color support (text and background) to view and edit mode of document display
   - Add a toggle option for it (default off)

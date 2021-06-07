@@ -3,6 +3,37 @@
 
 ---
 
+## 0.1.8
+
+### Known issues
+
+- Creating a brand new project can very occasionally get stuck. Restarting the app fixes this.
+- Loading existing project can very occasionally get stuck. Restarting the app fixes this.
+- Saving documents can sometimes leave it in edit mode instead of closing it (data gets saved anyway).
+
+### Bugfixes & Optimizations
+
+- Fixed a few bug with the export project window not properly displaying on top of other windows/popups
+- Fixed a typo in "Save all opened documents with active changes" keybind
+
+### New features
+
+- Added export functionality to relationships inside document previews
+- Added option: Aggressive relationships selection
+- Fantasia (the mascot) learned how to cook!
+- Added context, right-click menu to the hierarchy tree to tags
+  - Collapse/Expand all
+  - Rename tag
+  - Delete tag
+  - Add new document to this tag
+
+### QoL adjustments
+
+- Added search to keybinds cheatsheet
+- Added hierarchical tree auto-expand to top-tag pseudo-category on startup in order to unify the behavior with how rest of FA modules work right now
+- Set non-aggressive relationships selection as default to make setting up new project a little easier for users
+- Reworded the legacy field warning message.
+
 ## 0.1.7
 
 ### Known issues

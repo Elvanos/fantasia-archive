@@ -1,11 +1,6 @@
 <template>
   <div>
-    <!-- Export project dialog -->
-      <exportProjectDialog
-        :dialog-trigger="exportProjectDialogTrigger"
-        :prepicked-ids="[prepickedID]"
-        @trigger-dialog-close="exportProjectDialogClose"
-      />
+
     <q-dialog
       no-route-dismiss
       v-model="dialogModel"
@@ -197,6 +192,12 @@
                       <q-icon name="mdi-pencil" />
                     </q-item-section>
                   </q-item>
+                  <q-item clickable @click="openDocumentPreviewPanel(opt._id)">
+                      <q-item-section>Preview document in split-view mode</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-file-search-outline" />
+                      </q-item-section>
+                    </q-item>
                   <q-item clickable @click="addNewUnderParent(opt)">
                     <q-item-section>Create new document with this document as parent</q-item-section>
                     <q-item-section avatar>
@@ -210,7 +211,7 @@
                     </q-item-section>
                   </q-item>
                   <q-separator dark />
-                  <q-item clickable v-close-popup @click="commenceExport(opt)">
+                  <q-item clickable v-close-popup @click="triggerExport(opt)">
                     <q-item-section>Export document</q-item-section>
                     <q-item-section avatar>
                       <q-icon name="mdi-database-export-outline" />
@@ -248,7 +249,6 @@ import { extend, uid } from "quasar"
 import { createNewWithParent } from "src/scripts/documentActions/createNewWithParent"
 import { copyDocumentName, copyDocumentTextColor, copyDocumentBackgroundColor } from "src/scripts/documentActions/uniqueFieldCopy"
 import { copyDocument } from "src/scripts/documentActions/copyDocument"
-import exportProjectDialog from "src/components/dialogs/ExportProject.vue"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
@@ -256,8 +256,7 @@ import documentPreview from "src/components/DocumentPreview.vue"
 
 @Component({
   components: {
-    documentPreview,
-    exportProjectDialog
+    documentPreview
   }
 })
 export default class ExistingDocumentDialog extends DialogBase {
@@ -612,28 +611,12 @@ export default class ExistingDocumentDialog extends DialogBase {
 
   documentPreviewClose = ""
 
-  prepickedID = ""
-
-  /****************************************************************/
-  // Export project dialog
-  /****************************************************************/
-
-  exportProjectDialogTrigger: string | false = false
-  exportProjectDialogClose () {
-    this.exportProjectDialogTrigger = false
-  }
-
-  exportProjectAssignUID () {
-    this.exportProjectDialogTrigger = this.generateUID()
-  }
-
-  commenceExport (node: {_id: string}) {
+  async triggerExport (node: {_id: string}) {
     this.dialogModel = false
 
-    // @ts-ignore
-    this.prepickedID = node._id
+    await this.sleep(100)
 
-    this.exportProjectAssignUID()
+    this.SSET_setExportDialogState([node._id])
   }
 }
 </script>

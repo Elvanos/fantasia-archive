@@ -2,7 +2,45 @@
   <div id="q-app">
     <appWindowButtons />
     <router-view />
-     <q-window
+
+    <q-window
+      v-model="documentPreviewWindowVisible"
+      no-resize
+      dark
+      headless
+      ref="documentPreviewWindow"
+      @input="refreshDocumentPreviewWindow"
+      no-move
+      :content-class="{'bg-gunmetal-light text-accent docPreviewWindow': true, '-noBar': disableDocumentControlBar}"
+    >
+      <div class="fit">
+        <q-btn
+          icon="mdi-close"
+          color="secondary"
+          round
+          flat
+          size="md"
+          class="previewCloseButton"
+          @click="refreshDocumentPreviewWindow(false)"
+        >
+          <q-tooltip
+            :delay="500"
+            anchor="bottom middle"
+            self="top middle"
+          >
+            Close document preview
+          </q-tooltip>
+        </q-btn>
+
+        <documentPreview
+          :document-id="documentPreviewElementID"
+          :display-mode="'document'"
+        />
+
+      </div>
+    </q-window>
+
+    <q-window
       v-model="advSearchWindowVisible"
       no-resize
       dark
@@ -34,23 +72,24 @@
       :actions="['pin', 'close']"
       content-class="bg-gunmetal-light text-accent noteBoardWindow"
     >
-    <form
-    class="corkboardInput"
-    autocorrect="off"
-    autocapitalize="off"
-    autocomplete="off"
-    spellcheck="false"
-    >
-      <q-input
+      <form
+      class="corkboardInput"
+      autocorrect="off"
+      autocapitalize="off"
+      autocomplete="off"
+      spellcheck="false"
+      >
+        <q-input
 
-      v-model="corkboardContent"
-      filled
-      dark
-      @keyup="processCorkboardInput"
-      type="textarea"
-    />
-    </form>
+        v-model="corkboardContent"
+        filled
+        dark
+        @keyup="processCorkboardInput"
+        type="textarea"
+      />
+      </form>
     </q-window>
+
   </div>
 </template>
 
@@ -66,9 +105,10 @@ import { tipsTricks } from "src/scripts/utilities/tipsTricks"
 import { shell } from "electron"
 import { summonAllPlusheForms } from "src/scripts/utilities/plusheMascot"
 import { saveCorkboard, retrieveCorkboard } from "src/scripts/projectManagement/projectManagent"
-
+import documentPreview from "src/components/DocumentPreview.vue"
 @Component({
   components: {
+    documentPreview: documentPreview,
     appWindowButtons: appWindowButtons
   }
 })
@@ -309,7 +349,12 @@ export default class App extends BaseClass {
       colors.setBrand("dark", "#18303a")
       colors.setBrand("primary", "#e8bb50")
     }
+
+    this.disableDocumentControlBar = options.disableDocumentControlBar
+    this.refreshDocumentPreviewWindow()
   }
+
+  disableDocumentControlBar = false
 
   /**
    * Hides the mascot... nooo :(
@@ -323,7 +368,7 @@ export default class App extends BaseClass {
 
   advSearchWindowVisible = false
 
-  @Watch("SGET_getNoteCorkboardhWindowVisible")
+  @Watch("SGET_getNoteCorkboardWindowVisible")
   onCorkboardWindowOpen () {
     this.corkboardWindowVisible = true
   }
@@ -373,13 +418,51 @@ export default class App extends BaseClass {
     }
   }
 
+  documentPreviewWindowVisible = false
+  documentPreviewElementID = ""
+
+  @Watch("SGET_getDocumentPreviewWindowID")
+  reactToPreviewIDChange () {
+    this.refreshDocumentPreviewWindow()
+  }
+
+  @Watch("SGET_getDocumentPreviewVisible")
+  reactToPreviewVisibilityChange () {
+    if (this.SGET_getDocumentPreviewVisible !== "") {
+      this.refreshDocumentPreviewWindow()
+    }
+  }
+
+  refreshDocumentPreviewWindow (input = true) {
+    this.documentPreviewElementID = this.SGET_getDocumentPreviewWindowID
+    const newOpenString = this.SGET_getDocumentPreviewVisible
+
+    if (!input || newOpenString.length === 0) {
+      this.SSET_setDocumentPreviewWindowVisible(false)
+      this.documentPreviewWindowVisible = false
+    }
+    else {
+      this.documentPreviewWindowVisible = true
+    }
+
+    if (this.documentPreviewWindowVisible) {
+      /* eslint-disable */
+      //@ts-ignore
+      this.$refs.documentPreviewWindow.setX(0)
+      //@ts-ignore
+      this.$refs.documentPreviewWindow.setY(95)
+      //@ts-ignore
+      /* eslint-enable */
+    }
+  }
+
   /****************************************************************/
   // Local keybinds
   /****************************************************************/
 
   @Watch("SGET_getCurrentKeyBindData", { deep: true })
   processKeyPush () {
-    // Toggle the Advanced search cheatsheet
+  // Toggle the Advanced search cheatsheet
     if (this.determineKeyBind("toggleAdvSearchCheatsheet")) {
       this.advSearchWindowVisible = !this.advSearchWindowVisible
     }

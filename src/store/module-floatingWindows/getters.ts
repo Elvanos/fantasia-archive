@@ -6,8 +6,14 @@ const getters: GetterTree<FloatingWindowsStateInteface, StateInterface> = {
   getAdvSearchWindowVisible (context) {
     return context.advSearchWindowVisible
   },
-  getNoteCorkboardhWindowVisible (context) {
+  getNoteCorkboardWindowVisible (context) {
     return context.noteCorkboardWindowVisible
+  },
+  getDocumentPreviewVisible (context) {
+    return context.documentPreviewVisible
+  },
+  getDocumentPreviewWindowID (context) {
+    return context.documentPreviewWindowID
   }
 }
 

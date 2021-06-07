@@ -12,7 +12,7 @@
           <div>
             The document will be deleted <span class="text-bold text-secondary">FOREVER</span> with no way to retrieve it.
             <br>
-            <span class="text-caption">(unless a previous export of the project exists from earlier time that cointains it)</span>
+            <span class="text-caption">(unless a previous save of the project exists from earlier time that cointains it)</span>
             <br>
             <br>
 

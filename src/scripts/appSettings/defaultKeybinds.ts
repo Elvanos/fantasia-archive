@@ -195,7 +195,7 @@ export const defaultKeybinds = [
     which: 83,
     editable: true,
     id: "saveDocumentMass",
-    tooltip: "Save all opened document with active changes"
+    tooltip: "Save all opened documents with active changes"
   },
 
   // Save document and mark it as finished - NONE
@@ -218,6 +218,17 @@ export const defaultKeybinds = [
     editable: true,
     id: "editDocument",
     tooltip: "Edit active document"
+  },
+
+  // Open active document in side-view - CTRL + SHIFT + O
+  {
+    altKey: false,
+    ctrlKey: true,
+    shiftKey: true,
+    which: 79,
+    editable: true,
+    id: "openDocInSide",
+    tooltip: "Open active document in side-view"
   },
 
   // Export document - NONE

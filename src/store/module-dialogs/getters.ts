@@ -6,6 +6,9 @@ const getters: GetterTree<DialogsStateInterface, StateInterface> = {
 
   getDialogsState (state) {
     return state.dialogExists
+  },
+  getExportDialogState (state) {
+    return state.exportDialog
   }
 }
 

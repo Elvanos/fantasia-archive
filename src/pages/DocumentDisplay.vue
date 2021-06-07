@@ -15,14 +15,6 @@
       @trigger-dialog-close="deleteObjectDialogClose"
     />
 
-    <!-- Export project dialog -->
-    <exportProjectDialog
-      :dialog-trigger="exportProjectDialogTrigger"
-      :prepicked-ids="[currentData._id]"
-      :prepicked-no-folder-mode="true"
-      @trigger-dialog-close="exportProjectDialogClose"
-    />
-
     <div class="row justify-start q-col-gutter-x-xl">
 
       <div
@@ -82,6 +74,24 @@
           </q-tooltip>
         </q-btn>
 
+         <q-btn
+            icon="mdi-file-search-outline"
+            color="primary"
+            class="q-mr-md"
+            :outline="isDarkMode"
+            @click="openThisDocumentInSidebar"
+            v-if="!currentData.isNew"
+          >
+            <q-tooltip
+              :delay="500"
+              max-width="500px"
+              anchor="bottom middle"
+              self="top middle"
+            >
+              Preview document in split-view mode
+            </q-tooltip>
+          </q-btn>
+
         <q-btn
           color="primary"
           icon="mdi-file-tree"
@@ -126,7 +136,7 @@
         <q-btn
           :color="(hasEdits) ? 'secondary' : 'primary'"
           icon="mdi-database-export-outline"
-          @click="exportProjectAssignUID"
+          @click="triggerExport"
           :outline="isDarkMode"
           class="q-mr-md"
           v-if="!currentData.isNew"
@@ -338,7 +348,6 @@ import { copyDocument } from "src/scripts/documentActions/copyDocument"
 
 import { saveDocument } from "src/scripts/databaseManager/documentManager"
 import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentCheck.vue"
-import exportProjectDialog from "src/components/dialogs/ExportProject.vue"
 
 import Field_Break from "src/components/fields/Field_Break.vue"
 import Field_Text from "src/components/fields/Field_Text.vue"
@@ -368,7 +377,6 @@ import Field_Tags from "src/components/fields/Field_Tags.vue"
     Field_Wysiwyg,
     Field_Tags,
 
-    exportProjectDialog,
     deleteDocumentCheckDialog
   }
 })
@@ -801,6 +809,21 @@ export default class PageDocumentDisplay extends BaseClass {
             currentExtraFields.push({ id: field.id, value: "" })
           }
         }
+        else if (field.id === "tags") {
+          if (this.$route.query?.tag) {
+            // Check if the objects exists in a database
+            const tag = this.$route.query.tag as string
+            currentExtraFields.push(
+              {
+                id: "tags",
+                value: [tag]
+              }
+            )
+          }
+          else {
+            currentExtraFields.push({ id: field.id, value: "" })
+          }
+        }
         else {
           currentExtraFields.push({ id: field.id, value: "" })
         }
@@ -950,19 +973,6 @@ export default class PageDocumentDisplay extends BaseClass {
   }
 
   /****************************************************************/
-  // Export project dialog
-  /****************************************************************/
-
-  exportProjectDialogTrigger: string | false = false
-  exportProjectDialogClose () {
-    this.exportProjectDialogTrigger = false
-  }
-
-  exportProjectAssignUID () {
-    this.exportProjectDialogTrigger = this.generateUID()
-  }
-
-  /****************************************************************/
   // ADD NEW DOCUMENT UNDER PARENT
   /****************************************************************/
   addNewUnderParent () {
@@ -1081,6 +1091,14 @@ export default class PageDocumentDisplay extends BaseClass {
     }
   }
 
+  /****************************************************************/
+  // Open current document in sidebar
+  /****************************************************************/
+  openThisDocumentInSidebar () {
+    const currentDoc = this.findRequestedOrActiveDocument() as I_OpenedDocument
+    this.openDocumentPreviewPanel(currentDoc._id)
+  }
+
   copyID () {
     const copyText = this.$refs.idCopy
 
@@ -1094,6 +1112,11 @@ export default class PageDocumentDisplay extends BaseClass {
       type: "positive",
       message: "Document ID Copied"
     })
+  }
+
+  triggerExport () {
+    const localId = this.currentData._id
+    this.SSET_setExportDialogState([localId])
   }
 }
 </script>

@@ -10,6 +10,14 @@ const mutation: MutationTree<FloatingWindowsStateInteface> = {
 
   setNoteCorkboardWindowVisible (state: FloatingWindowsStateInteface) {
     state.noteCorkboardWindowVisible = uid()
+  },
+
+  setDocumentPreviewWindowVisible (state: FloatingWindowsStateInteface, input: boolean) {
+    state.documentPreviewVisible = (input) ? uid() : ""
+  },
+
+  setDocumentPreviewWindowID (state: FloatingWindowsStateInteface, input: string) {
+    state.documentPreviewWindowID = input
   }
 }
 

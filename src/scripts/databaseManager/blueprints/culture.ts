@@ -323,7 +323,7 @@ export const cultureBlueprint: I_Blueprint = {
     },
     {
       id: "traditions",
-      name: "Connected Traditions & Customs to the myth, legend or story",
+      name: "Connected Traditions & Customs to the Culture/Art",
       type: "wysiwyg",
       icon: "mdi-book-open-page-variant-outline",
       sizing: 12

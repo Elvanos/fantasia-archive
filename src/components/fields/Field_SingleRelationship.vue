@@ -56,7 +56,7 @@
         </div>
 
         <div
-          v-if="recursive"
+          v-if="recursive || sideDocumentPreview"
           class="relationshipChangeParent q-btn q-btn-item non-selectable no-outline q-btn--flat q-btn--round text-primary q-btn--actionable q-focusable q-hoverable q-btn--wrap q-btn--dense"
           @click.stop.prevent.left="setNewParentId(localInput._id)"
           v-ripple
@@ -140,6 +140,12 @@
                         <q-icon name="mdi-pencil" />
                       </q-item-section>
                     </q-item>
+                    <q-item clickable @click="openDocumentPreviewPanel(localInput._id)">
+                      <q-item-section>Preview document in split-view mode</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-file-search-outline" />
+                      </q-item-section>
+                    </q-item>
                     <q-item clickable @click="addNewUnderParent(fixGetCorrectDocument(localInput))">
                       <q-item-section>Create new document with this document as parent</q-item-section>
                       <q-item-section avatar>
@@ -152,6 +158,13 @@
                         <q-icon color="primary" name="mdi-content-copy" />
                       </q-item-section>
                     </q-item>
+                    <q-separator dark />
+                      <q-item clickable v-close-popup @click="triggerExport(localInput)">
+                        <q-item-section>Export document</q-item-section>
+                        <q-item-section avatar>
+                          <q-icon name="mdi-database-export-outline" />
+                        </q-item-section>
+                      </q-item>
                   </template>
                 </q-list>
 
@@ -295,6 +308,12 @@
                         <q-icon name="mdi-pencil" />
                       </q-item-section>
                     </q-item>
+                    <q-item clickable @click="openDocumentPreviewPanel(scope.opt._id)">
+                      <q-item-section>Preview document in split-view mode</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-file-search-outline" />
+                      </q-item-section>
+                    </q-item>
                     <q-item clickable @click="addNewUnderParent(fixGetCorrectDocument(scope.opt))">
                       <q-item-section>Create new document with this document as parent</q-item-section>
                       <q-item-section avatar>
@@ -305,6 +324,13 @@
                       <q-item-section>Copy this document</q-item-section>
                       <q-item-section avatar>
                         <q-icon color="primary" name="mdi-content-copy" />
+                      </q-item-section>
+                    </q-item>
+                    <q-separator dark />
+                    <q-item clickable v-close-popup @click="triggerExport(scope.opt)">
+                      <q-item-section>Export document</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-database-export-outline" />
                       </q-item-section>
                     </q-item>
                   </template>
@@ -407,6 +433,12 @@
                         <q-icon name="mdi-pencil" />
                       </q-item-section>
                     </q-item>
+                    <q-item clickable @click="openDocumentPreviewPanel(opt._id)">
+                      <q-item-section>Preview document in split-view mode</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-file-search-outline" />
+                      </q-item-section>
+                    </q-item>
                     <q-item clickable @click="addNewUnderParent(opt)">
                       <q-item-section>Create new document with this document as parent</q-item-section>
                       <q-item-section avatar>
@@ -417,6 +449,13 @@
                       <q-item-section>Copy this document</q-item-section>
                       <q-item-section avatar>
                         <q-icon color="primary" name="mdi-content-copy" />
+                      </q-item-section>
+                    </q-item>
+                    <q-separator dark />
+                    <q-item clickable v-close-popup @click="triggerExport(opt)">
+                      <q-item-section>Export document</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-database-export-outline" />
                       </q-item-section>
                     </q-item>
                   </template>
@@ -472,7 +511,9 @@ import { I_FieldRelationship, I_RelationshipPairSingle } from "src/interfaces/I_
 import { createNewWithParent } from "src/scripts/documentActions/createNewWithParent"
 import { copyDocumentName, copyDocumentTextColor, copyDocumentBackgroundColor } from "src/scripts/documentActions/uniqueFieldCopy"
 import { copyDocument } from "src/scripts/documentActions/copyDocument"
+import { namespace } from "vuex-class"
 
+const Dialogs = namespace("dialogsModule")
 @Component({
   components: {
     documentPreview: () => import("src/components/DocumentPreview.vue")
@@ -489,6 +530,11 @@ export default class Field_SingleRelationship extends FieldBase {
    * Prevent document preview in already existing previews
    */
   @Prop({ default: false }) readonly recursive!: true
+
+  /**
+   * Prevent document preview in already existing previews
+   */
+  @Prop({ default: false }) readonly sideDocumentPreview!: true
 
   /**
    * Already existing value in the input field (IF one is there right now)
@@ -602,8 +648,12 @@ export default class Field_SingleRelationship extends FieldBase {
     /*eslint-disable */
     // @ts-ignore 
     this.$refs[`singleRelationshipField${this.inputDataBluePrint.id}`].setOptionIndex(-1)
-    // @ts-ignore 
-    this.$refs[`singleRelationshipField${this.inputDataBluePrint.id}`].moveOptionSelection(1, true) 
+
+    if(this.agressiveRelationshipFilter){
+      // @ts-ignore 
+      this.$refs[`singleRelationshipField${this.inputDataBluePrint.id}`].moveOptionSelection(1, true) 
+    }
+  
     /* eslint-enable */
   }
 
@@ -984,6 +1034,23 @@ export default class Field_SingleRelationship extends FieldBase {
   @Emit()
   setNewParentId (id: string) {
     return id
+  }
+
+  /**
+   * Set the currently open-ness dialog state
+   */
+  @Dialogs.Mutation("setDialogState") SSET_setDialogState!: (input: boolean) => void
+
+  triggerExport (node: {_id: string}) {
+    this.SSET_setDialogState(false)
+    /*eslint-disable */
+    // @ts-ignore 
+    if(this.$refs[`singleRelationshipField${this.inputDataBluePrint.id}`]){
+      // @ts-ignore 
+      this.$refs[`singleRelationshipField${this.inputDataBluePrint.id}`].hidePopup() 
+    }
+    /* eslint-enable */
+    this.SSET_setExportDialogState([node._id])
   }
 }
 </script>

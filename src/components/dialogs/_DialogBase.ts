@@ -1,4 +1,4 @@
-import { Component, Prop, Emit } from "vue-property-decorator"
+import { Component, Prop, Emit, Watch } from "vue-property-decorator"
 import BaseClass from "src/BaseClass"
 
 import { namespace } from "vuex-class"
@@ -16,6 +16,13 @@ export default class DialogBase extends BaseClass {
    * Set the currently open-ness dialog state
    */
   @Dialogs.Mutation("setDialogState") SSET_setDialogState!: (input: boolean) => void
+
+  @Watch("SGET_getDialogsState")
+  reactToDialogStateClose () {
+    if (!this.SGET_getDialogsState) {
+      this.dialogModel = false
+    }
+  }
 
   /**
    * The current model for the specific dialog being opened

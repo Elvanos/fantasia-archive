@@ -51,7 +51,10 @@ export default class FieldBase extends BaseClass {
     this.hideDeadCrossThrough = this.SGET_options.hideDeadCrossThrough
     this.hideAdvSearchCheatsheetButton = this.SGET_options.hideAdvSearchCheatsheetButton
     this.preventPreviewsDocuments = this.SGET_options.preventPreviewsDocuments
+    this.agressiveRelationshipFilter = this.SGET_options.agressiveRelationshipFilter
   }
+
+  agressiveRelationshipFilter = false
 
   /**
    * Hides the advanced search cheatsheet help button in relationship type fields.

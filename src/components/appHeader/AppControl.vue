@@ -29,7 +29,7 @@
       @trigger-dialog-close="keybindsDialogClose"
     />
 
-    <!-- Import project dialog -->
+    <!-- Load project dialog -->
     <loadProjectCheckDialog
       :dialog-trigger="loadProjectDialogTrigger"
       @trigger-dialog-close="loadProjectDialogClose"
@@ -91,6 +91,7 @@
 
     <!-- Export project dialog -->
     <exportProjectDialog
+      :prepicked-ids="exportIDlist"
       :dialog-trigger="exportProjectDialogTrigger"
       @trigger-dialog-close="exportProjectDialogClose"
     />
@@ -191,7 +192,7 @@
               active
               active-class="bg-gunmetal-light text-cultured"
               class="noHigh"
-              @click="exportProjectAssignUID"
+              @click="triggerExport([])"
               :disable="!projectExists || isFrontpage"
             >
               <q-item-section>Export project/documents</q-item-section>
@@ -717,6 +718,19 @@ export default class AppControl extends BaseClass {
     this.exportProjectDialogTrigger = false
   }
 
+  @Watch("SGET_getExportDialogState", { deep: true })
+  onSettingsChange () {
+    const exportState = this.SGET_getExportDialogState
+
+    this.exportIDlist = exportState.prepickedValue
+    this.exportProjectAssignUID()
+  }
+
+  triggerExport (IDlist: string[]) {
+    this.SSET_setExportDialogState(IDlist)
+  }
+
+  exportIDlist: string[]= []
   exportProjectAssignUID () {
     this.exportProjectDialogTrigger = this.generateUID()
   }
