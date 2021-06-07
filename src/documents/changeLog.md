@@ -18,6 +18,7 @@
 
 ### New features
 
+- **Added document preview floating window**
 - Added export functionality to relationships inside document previews
 - Added option: Aggressive relationships selection
 - Fantasia (the mascot) learned how to cook!

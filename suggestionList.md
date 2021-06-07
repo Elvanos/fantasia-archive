@@ -6,8 +6,6 @@
 
 - Fix "isDead" class styling in light mode in sie preview and main document body
 
-- Pin document preview floating window
-
 - Project setting dialog/options
 - Project rename
 - List of last saved documents on project overview
