@@ -24,9 +24,8 @@
     </q-list>
 
     <q-input
-      v-if="editMode && extraInput.length === 0"
+      v-if="editMode && (!inputDataBluePrint.predefinedSelectValues || inputDataBluePrint.predefinedSelectValues.length === 0)"
       v-model="localInput"
-      class="q-mr-lg"
       :ref="`singleSelectField${this.inputDataBluePrint.id}`"
       dense
       autogrow
@@ -36,7 +35,7 @@
       >
     </q-input>
     <q-select
-      v-if="editMode && extraInput.length > 0"
+      v-if="editMode && inputDataBluePrint.predefinedSelectValues && inputDataBluePrint.predefinedSelectValues.length > 0"
       style="width: 100%;"
       dense
       dark

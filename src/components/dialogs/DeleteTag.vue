@@ -4,7 +4,7 @@
       @before-hide="triggerDialogClose"
       no-route-dismiss
       >
-      <q-card dark class="renameTagDialog">
+      <q-card dark class="deleteTagDialog">
          <q-card-section class="column justify-center items-center">
           <h6 class="text-center q-my-sm">Delete <span class="text-bold text-primary">{{targetTag}}</span>?</h6>
         </q-card-section>
@@ -132,7 +132,7 @@ export default class DeleteTagPrompt extends DialogBase {
 
 <style lang="scss">
 
-.renameTagDialog {
+.deleteTagDialog {
   min-width: 700px;
 
   .q-field__messages {

@@ -435,13 +435,13 @@ export default class DocumentControl extends BaseClass {
     }
 
     // Quick open existing document
-    if (this.determineKeyBind("openDocInSide") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
-      this.openThisDocumentInSidebar()
+    if (this.determineKeyBind("quickExistingDocument") && !this.SGET_getDialogsState) {
+      this.existingObjectAssignUID()
     }
 
-    // Delete dialog - CTRL + D
-    if (this.determineKeyBind("deleteDocument") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
-      this.deleteObjectAssignUID()
+    // Quick open existing document
+    if (this.determineKeyBind("openDocInSide") && !this.currentlyNew && this.SGET_allOpenedDocuments.docs.length > 0 && !this.SGET_getDialogsState && this.$route.path !== "/project") {
+      this.openThisDocumentInSidebar()
     }
 
     // Delete dialog - CTRL + D

@@ -901,3 +901,8 @@ font[size="7"] {
     font-size: 16px;
   }
 }
+
+.q-list--dense > .q-item,
+.q-item--dense {
+  min-height: 42px !important;
+}

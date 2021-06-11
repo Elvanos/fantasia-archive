@@ -1,10 +1,7 @@
 
 ## PROJECT SETTINGS BATCH 1 START - 0.1.8
 
-- Rewrite document display algortithmn and add option to show description (text editor fields) on top of the section (under break)
 - Breaks/titles in lists
-
-- Fix "isDead" class styling in light mode in sie preview and main document body
 
 - Project setting dialog/options
 - Project rename

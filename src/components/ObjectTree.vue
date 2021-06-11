@@ -27,6 +27,13 @@
       @trigger-dialog-close="deleteTagDialogClose"
     />
 
+    <!-- Delete tag dialog -->
+    <massDeleteDocumentsCheckDialog
+      :dialog-trigger="massDocumentDelteDialogTrigger"
+      :prepicked-ids="toDeleteIDs"
+      @trigger-dialog-close="massDocumentDelteDialogClose"
+    />
+
     <div
       class="treeSearchWrapper"
       :class="{'fullWidth': disableDocumentControlBar}"
@@ -197,7 +204,7 @@
               context-menu
             >
 
-              <q-list class="bg-gunmetal-light text-accent" v-if="!prop.node.isTag">
+              <q-list class="bg-gunmetal-light text-accent" v-if="!prop.node.isTag" dense>
 
                 <template v-if="prop.node.isRoot || prop.node.children.length > 0 || prop.node.isModule">
                   <q-item clickable v-close-popup @click="recursivelyExpandNodeDownwards(prop.node.key)">
@@ -220,6 +227,19 @@
                     <q-item-section>Add new document of type: {{prop.node.label}}</q-item-section>
                     <q-item-section avatar>
                       <q-icon name="mdi-plus" />
+                    </q-item-section>
+                  </q-item>
+
+                  <q-separator dark />
+                    <q-item
+                    clickable
+                    v-close-popup
+                    @click="massDeleteDocuments(prop.node)"
+                    v-if="prop.node.children && prop.node.children.length > 1"
+                    >
+                    <q-item-section class="text-secondary"><b>Delete documents belonging under this</b></q-item-section>
+                     <q-item-section avatar class="text-secondary">
+                      <q-icon name="mdi-text-box-remove-outline" />
                     </q-item-section>
                   </q-item>
                 </template>
@@ -289,11 +309,23 @@
                       <q-icon name="mdi-text-box-remove-outline" />
                     </q-item-section>
                   </q-item>
+
+                  <q-item
+                    clickable
+                    v-close-popup
+                    @click="massDeleteDocuments(prop.node)"
+                    v-if="prop.node.children && prop.node.children.length > 0"
+                    >
+                    <q-item-section class="text-secondary"><b>Delete documents belonging under this</b></q-item-section>
+                     <q-item-section avatar class="text-secondary">
+                      <q-icon name="mdi-text-box-remove-outline" />
+                    </q-item-section>
+                  </q-item>
                 </template>
 
               </q-list>
 
-                <q-list class="bg-gunmetal-light text-accent" v-if="prop.node.isTag">
+                <q-list class="bg-gunmetal-light text-accent" v-if="prop.node.isTag" dense>
 
                   <q-item clickable v-close-popup @click="recursivelyExpandNodeDownwards(prop.node.key, true)">
                     <q-item-section>Expand all under this node</q-item-section>
@@ -315,7 +347,7 @@
                           <q-icon name="keyboard_arrow_right" />
                         </q-item-section>
                           <q-menu anchor="top end" self="top start">
-                          <q-list class="bg-gunmetal text-accent">
+                          <q-list class="bg-gunmetal text-accent" dense>
 
                             <q-item
                               v-for="newObject in newObjectList"
@@ -346,6 +378,18 @@
                         <q-icon name="mdi-tag-off-outline" />
                       </q-item-section>
                     </q-item>
+                    <q-separator dark />
+                    <q-item
+                    clickable
+                    v-close-popup
+                    @click="massDeleteDocuments(prop.node)"
+                    v-if="prop.node.children && prop.node.children.length > 0"
+                    >
+                    <q-item-section class="text-secondary"><b>Delete documents belonging under this</b></q-item-section>
+                     <q-item-section avatar class="text-secondary">
+                      <q-icon name="mdi-text-box-remove-outline" />
+                    </q-item-section>
+                  </q-item>
                   </template>
                 </q-list>
             </q-menu>
@@ -399,6 +443,7 @@ import { I_ExtraDocumentFields, I_OpenedDocument, I_ShortenedDocument } from "sr
 import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentCheck.vue"
 import renameTagDialog from "src/components/dialogs/RenameTag.vue"
 import deleteTagDialog from "src/components/dialogs/DeleteTag.vue"
+import massDeleteDocumentsCheckDialog from "src/components/dialogs/MassDeleteDocumentsCheck.vue"
 
 import { extend, colors, uid } from "quasar"
 import { tagListBuildFromBlueprints } from "src/scripts/utilities/tagListBuilder"
@@ -412,6 +457,7 @@ import { copyDocument } from "src/scripts/documentActions/copyDocument"
     deleteDocumentCheckDialog,
     renameTagDialog,
     deleteTagDialog,
+    massDeleteDocumentsCheckDialog,
     documentPreview: () => import("src/components/DocumentPreview.vue")
   }
 })
@@ -1367,6 +1413,47 @@ export default class ObjectTree extends BaseClass {
   documentPreviewClose = ""
 
   allTags: string[] = []
+
+  /****************************************************************/
+  // Mass delete documents dialog
+  /****************************************************************/
+
+  massDocumentDelteDialogTrigger: string | false = false
+  massDocumentDelteDialogClose () {
+    this.massDocumentDelteDialogTrigger = false
+  }
+
+  massDocumentDelteDialogAssignUID () {
+    this.massDocumentDelteDialogTrigger = this.generateUID()
+  }
+
+  flatten (data: { children: { _id: string}[]}) {
+    /*eslint-disable */
+    // @ts-ignore
+    return data.reduce((r, { children, ...rest }) => {
+      r.push(rest)
+      if (children) {
+        // @ts-ignore
+        r.push(...this.flatten(children))
+      }
+      return r
+    }, [])
+    /* eslint-enable */
+  }
+
+  toDeleteIDs: string[] = []
+
+  massDeleteDocuments (node: { children: { _id: string}[]}) {
+    /*eslint-disable */
+    // @ts-ignore
+    const toDeleteDocumentIDs: string[] = (this.flatten(node.children))
+      .filter((e: {extraFields?: string}) => e?.extraFields)
+      .map((e: {_id: string}) => e._id)
+    /* eslint-enable */
+
+    this.toDeleteIDs = toDeleteDocumentIDs
+    this.massDocumentDelteDialogAssignUID()
+  }
 }
 </script>
 

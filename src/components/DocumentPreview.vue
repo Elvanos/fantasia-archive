@@ -586,6 +586,10 @@ body:not(.body--dark) {
     .text-primary {
       color: var(--q-color-primary) !important;
     }
+
+    .isDead {
+      text-decoration-color: #000;
+    }
   }
 }
 

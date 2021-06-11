@@ -15,6 +15,7 @@
 
 - Fixed a few bug with the export project window not properly displaying on top of other windows/popups
 - Fixed a typo in "Save all opened documents with active changes" keybind
+- Fixed a bug that was causing the predefined select list sometimes completely disappear along with whole select in the single-select field when filtering (eg: Sex field)
 
 ### New features
 
@@ -33,7 +34,9 @@
 - Added search to keybinds cheatsheet
 - Added hierarchical tree auto-expand to top-tag pseudo-category on startup in order to unify the behavior with how rest of FA modules work right now
 - Set non-aggressive relationships selection as default to make setting up new project a little easier for users
-- Reworded the legacy field warning message.
+- Reworded the legacy field warning message
+- Compacted the right-click menus across the app to make them a little easier to use
+- Optimized document display view to only show titles for sections that actually have content in case the document is tagged as finished or if options are set to only display filled field values
 
 ## 0.1.7
 

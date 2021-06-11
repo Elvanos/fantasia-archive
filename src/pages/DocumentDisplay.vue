@@ -195,6 +195,7 @@
           (retrieveFieldType(currentData, field.id) !== 'break' || !hideDocumentTitles) &&
           (
             (hasValueFieldFilter(field) || editMode)
+            && (checkBreakSectionValues(field) || editMode)
             && checkForLegacyFieldValue(currentData, field)
           )
           "
@@ -871,6 +872,36 @@ export default class PageDocumentDisplay extends BaseClass {
         ignoredList.includes(currentFieldID)
       ) || (isCategory && currentFieldID === "categoryDescription")
     )
+  }
+
+  checkBreakSectionValues (field: any) {
+    // If this isnt break, let it through
+    if (field.type !== "break") {
+      return true
+    }
+
+    console.log("")
+    console.log(field)
+
+    // If this is a break, keep checking following field either until a filled value if found (in which case, elt it through) or until anothe break OR end of the list is found - in which case, deny it
+    const fullFieldLength = this.bluePrintData.extraFields.length
+    let matchedIndex = this.bluePrintData.extraFields.findIndex(f => f.id === field.id)
+    let matchedField = this.bluePrintData.extraFields[matchedIndex + 1]
+    while (matchedField.type !== "break" || matchedIndex + 1 === fullFieldLength) {
+      matchedField = this.bluePrintData.extraFields[matchedIndex + 1]
+      console.log(matchedField)
+      if (!matchedField || matchedField.type === "break") {
+        return false
+      }
+      const hasValue = this.hasValueFieldFilter(matchedField)
+      console.log(hasValue)
+      if (hasValue) {
+        return true
+      }
+      matchedIndex++
+    }
+
+    return false
   }
 
   checkForLegacyFieldValue (document: I_OpenedDocument| I_ShortenedDocument, field: {id: string}) {

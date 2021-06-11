@@ -33,7 +33,6 @@
       class="pageSplitter"
       >
       <template
-        v-if="!hideHierarchyTree"
        #before>
         <!-- Left drawer -->
         <q-drawer
@@ -45,7 +44,7 @@
           show-if-above
           >
             <objectTree
-
+              v-if="!hideHierarchyTree"
             />
         </q-drawer>
       </template>
@@ -240,32 +239,33 @@ export default class DocumentLayout extends BaseClass {
     // @ts-ignore
     this.pre017check = options.pre017check
 
-    if (this.SGET_getDocumentPreviewVisible === "") {
-      if (options.treeWidth && !this.hideHierarchyTree) {
-        this.splitterModel = options.treeWidth
-      }
-      else {
-        this.splitterModel = 0
-      }
-    }
+    this.resizeTreeWrapper()
   }
 
   legacyFieldsCheck: boolean|undefined = true
 
   get limiterWidth () {
-    return (!this.hideHierarchyTree) ? 374 : 0
+    return (!this.hideHierarchyTree && this.SGET_getDocumentPreviewVisible === "") ? 374 : 0
   }
 
   hideHierarchyTree = false
 
-  @Watch("SGET_getDocumentPreviewVisible")
-  reactToPreviewVisibilityChange () {
-    if (this.SGET_getDocumentPreviewVisible !== "" && !this.hideHierarchyTree) {
+  @Watch("limiterWidth")
+  resizeTreeWrapper () {
+    if (this.SGET_getDocumentPreviewVisible !== "") {
       this.splitterModel = 600
+    }
+    else if (this.hideHierarchyTree) {
+      this.splitterModel = 0
     }
     else if (this.SGET_options.treeWidth && !this.hideHierarchyTree) {
       this.splitterModel = this.SGET_options.treeWidth
     }
+  }
+
+  @Watch("SGET_getDocumentPreviewVisible")
+  reactToPreviewVisibilityChange () {
+    this.resizeTreeWrapper()
   }
 
   /****************************************************************/

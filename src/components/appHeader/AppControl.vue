@@ -96,6 +96,12 @@
       @trigger-dialog-close="exportProjectDialogClose"
     />
 
+    <!-- Delete tag dialog -->
+    <massDeleteDocumentsCheckDialog
+      :dialog-trigger="massDocumentDelteDialogTrigger"
+      @trigger-dialog-close="massDocumentDelteDialogClose"
+    />
+
     <q-btn-group
       flat
       class="AppControl__buttons"
@@ -333,6 +339,20 @@
 
             <q-separator dark />
 
+            <q-item
+              clickable
+              v-close-popup
+              @click="massDocumentDelteDialogAssignUID"
+              :disable="!projectExists || isFrontpage"
+              >
+              <q-item-section class="text-secondary"><b>Mass delete documents</b></q-item-section>
+              <q-item-section avatar class="text-secondary">
+                <q-icon name="mdi-text-box-remove-outline" />
+              </q-item-section>
+            </q-item>
+
+            <q-separator dark />
+
               <q-item
               v-close-popup
               clickable
@@ -532,6 +552,7 @@ import existingDocumentDialog from "src/components/dialogs/ExistingDocument.vue"
 import tipsTricksTriviaDialog from "src/components/dialogs/TipsTricksTrivia.vue"
 import licenseDialog from "src/components/dialogs/License.vue"
 import exportProjectDialog from "src/components/dialogs/ExportProject.vue"
+import massDeleteDocumentsCheckDialog from "src/components/dialogs/MassDeleteDocumentsCheck.vue"
 
 import { Loading, QSpinnerGears } from "quasar"
 import { retrieveCurrentProjectName, saveProject } from "src/scripts/projectManagement/projectManagent"
@@ -555,7 +576,8 @@ import appLogo from "src/assets/appLogo.png"
     tipsTricksTriviaDialog,
     licenseDialog,
     repairProjectDialog,
-    exportProjectDialog
+    exportProjectDialog,
+    massDeleteDocumentsCheckDialog
   }
 })
 export default class AppControl extends BaseClass {
@@ -876,6 +898,19 @@ export default class AppControl extends BaseClass {
 
   repairProjectAssignUID () {
     this.repairProjectDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
+  // Mass delete documents dialog
+  /****************************************************************/
+
+  massDocumentDelteDialogTrigger: string | false = false
+  massDocumentDelteDialogClose () {
+    this.massDocumentDelteDialogTrigger = false
+  }
+
+  massDocumentDelteDialogAssignUID () {
+    this.massDocumentDelteDialogTrigger = this.generateUID()
   }
 }
 </script>
