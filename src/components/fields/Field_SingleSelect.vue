@@ -191,6 +191,7 @@ export default class Field_SingleSelect extends FieldBase {
   .q-item {
     padding-right: 10px;
     padding-left: 10px;
+    min-height: 32px !important;
   }
 
   .q-item__section {

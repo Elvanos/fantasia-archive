@@ -1,11 +1,8 @@
 
 ## PROJECT SETTINGS BATCH 1 START - 0.1.8
 
-- Breaks/titles in lists
-
 - Project setting dialog/options
 - Project rename
-- List of last saved documents on project overview
 
 - Selective export per field basis
 - Templates for exports

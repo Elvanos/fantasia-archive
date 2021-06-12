@@ -143,7 +143,7 @@ export const removeCurrentProject = async () => {
  * Opens a dialog to let user pick whatever project they wish to open and lets them select a directory
  * @param vueRouter The vue router object
  */
-export const importExistingProject = (vueRouter: any, Loading: any, loadingSetup: any, quasar: any, vueInstance: any) => {
+export const loadExistingProject = (vueRouter: any, Loading: any, loadingSetup: any, quasar: any, vueInstance: any) => {
   /*eslint-disable */
   remote.dialog.showOpenDialog({
     properties: ["openDirectory"]
@@ -314,7 +314,7 @@ export const retrieveCurrentProjectName = async () => {
   const projectData = await window.FA_dbs["project-data"].allDocs({ include_docs: true })
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return projectData?.rows[0]?.id
+  return (projectData?.rows[0]?.id) || ""
 }
 
 /**
@@ -350,4 +350,45 @@ export const retrieveCorkboard = async (): Promise<string> => {
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return (projectData.rows[0]?.doc.corkboardText) || ""
+}
+
+/**
+ * Update last opened documents
+ */
+export const updateLastOpenedDocuments = async (newDocID: string) => {
+  if (!window.FA_dbs) {
+    // @ts-ignore
+    window.FA_dbs = {}
+  }
+  window.FA_dbs["project-data"] = new PouchDB("project-data")
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  const projectData = await window.FA_dbs["project-data"].allDocs({ include_docs: true })
+
+  if (!projectData.rows[0].doc.lastOpenedDocList) {
+    projectData.rows[0].doc.lastOpenedDocList = []
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  projectData.rows[0].doc.lastOpenedDocList = [...new Set([
+    newDocID,
+    ...projectData.rows[0].doc.lastOpenedDocList
+  ])].slice(0, 50)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  window.FA_dbs["project-data"].put(projectData.rows[0].doc).catch(() => console.log())
+}
+
+/**
+ * Retrieve last opened document IDListr
+ */
+export const retrieveLastOpenedDocuments = async (): Promise<string[]> => {
+  if (!window.FA_dbs) {
+    // @ts-ignore
+    window.FA_dbs = {}
+  }
+  window.FA_dbs["project-data"] = new PouchDB("project-data")
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  const projectData = await window.FA_dbs["project-data"].allDocs({ include_docs: true })
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  return (projectData.rows[0]?.doc?.lastOpenedDocList) || []
 }

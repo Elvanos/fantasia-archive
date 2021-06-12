@@ -8,6 +8,7 @@ import { I_NewObjectTrigger } from "src/interfaces/I_NewObjectTrigger"
 import { uid, colors, extend } from "quasar"
 import { I_FieldRelationship } from "src/interfaces/I_FieldRelationship"
 import { I_KeyPressObject } from "src/interfaces/I_KeypressObject"
+import { ProjectInterface } from "./store/module-project/state"
 
 const Blueprints = namespace("blueprintsModule")
 const AllDocuments = namespace("allDocumentsModule")
@@ -16,6 +17,7 @@ const Keybinds = namespace("keybindsModule")
 const Options = namespace("optionsModule")
 const Dialogs = namespace("dialogsModule")
 const FloatingWindows = namespace("floatingWindowsModule")
+const Project = namespace("projectModule")
 
 @Component
 export default class BaseClass extends Vue {
@@ -52,6 +54,18 @@ export default class BaseClass extends Vue {
   stripTags (input: string) {
     return (input) ? input.replace(/<[^>]+>/g, "") : input
   }
+
+  /****************************************************************/
+  // PROJECT
+  /****************************************************************/
+
+  @Project.Getter("getProjectData") SGET_getProjectData!: ProjectInterface
+
+  @Project.Getter("getProjectLoadedStatus") SGET_getProjectLoadedStatus!: boolean
+  @Project.Action("setProjecLoadingState") SSET_setProjecLoadingState!: (input: boolean) => void
+
+  @Project.Getter("getProjectName") SGET_getProjectName!: string
+  @Project.Action("setProjectName") SSET_setProjectName!: (input: string) => void
 
   /****************************************************************/
   // FLOATING WINDOWS
@@ -306,7 +320,7 @@ export default class BaseClass extends Vue {
    * Open a new route for an already existing object
    * @param existingObject An already existing object passed in
    */
-  openExistingDocumentRoute (existingObject:I_OpenedDocument | I_FieldRelationship) {
+  openExistingDocumentRoute (existingObject:I_OpenedDocument | I_FieldRelationship | I_ShortenedDocument) {
     this.$router.push({ path: existingObject.url }).catch((e: {name: string}) => {
       const errorName : string = e.name
       if (errorName === "NavigationDuplicated") {

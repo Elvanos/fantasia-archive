@@ -17,22 +17,36 @@
       class="fieldList_list"
       dense>
       <q-item v-for="(input,index) in localInput" :key="index">
-        <q-item-section
-          class="fieldList_itemDot"
-          side>
-          <q-icon
-            color="primary"
-            name="mdi-menu-right"
-             />
-        </q-item-section>
-        <q-item-section>
-          <span class="text-weight-medium">
-            {{mapFieldValue(input, index, 1)}}
-          </span>
-          <span v-if="localInput[index].affix" class="inline-block q-ml-xs text-italic listNote">
-            {{mapFieldValue(input, index, 2)}}
+        <template v-if="input.type !== 'title'">
+          <q-item-section
+            class="fieldList_itemDot"
+            side>
+            <q-icon
+              color="primary"
+              name="mdi-menu-right"
+              />
+          </q-item-section>
+          <q-item-section>
+            <span class="text-weight-medium">
+              {{mapFieldValue(input, index, 1)}}
             </span>
-        </q-item-section>
+            <span v-if="localInput[index].affix" class="inline-block q-ml-xs text-italic listNote">
+              {{mapFieldValue(input, index, 2)}}
+              </span>
+          </q-item-section>
+        </template>
+
+        <template v-if="input.type === 'title'">
+          <q-item-section class="q-ml-sm q-mt-md">
+            <span
+            class="text-weight-bolder"
+            :class="{'text-gunmetal-medium': !isDarkMode, 'text-satin-sheen-gold-bright': isDarkMode}"
+            >
+              {{input.value}}
+            </span>
+          </q-item-section>
+        </template>
+
       </q-item>
     </q-list>
 
@@ -86,7 +100,7 @@
           Move the item one place down
           </q-tooltip>
         </q-btn>
-      <template v-if="isReversed">
+      <template v-if="isReversed && localInput[index].type !== 'title'">
          <q-input
           v-if="hasExtraInput && localExtraInput.length === 0"
           style="min-width: 350px; width: 350px; max-width: 350px;"
@@ -200,7 +214,7 @@
         </q-input>
       </template>
 
-      <template v-if="!isReversed">
+      <template v-if="!isReversed && localInput[index].type !== 'title'">
         <q-input
           v-model="localInput[index].value"
           class="grow-1 q-mr-lg"
@@ -312,6 +326,25 @@
           </template>
         </q-select>
       </template>
+      <template v-if="localInput[index].type === 'title'">
+        <q-icon name="mdi-format-title" size="22px" class="q-mr-sm q-mt-sm">
+          <q-tooltip :delay="500">
+            This line is a title and will show as such in the view mode.
+          </q-tooltip>
+        </q-icon>
+        <q-input
+          v-model="localInput[index].value"
+          class="grow-1 q-mr-lg listTitleInput"
+          :class="`listField_input${index}_${inputDataBluePrint.id}`"
+          dense
+          :bg-color="(isDarkMode)? 'blue-grey-14': 'cyan-1'"
+          autogrow
+          @keydown="processInput"
+          :outlined="!isDarkMode"
+          :filled="isDarkMode"
+          >
+        </q-input>
+      </template>
 
       <div style="width: 60px; align-self: center; height: 35px;" class="justify-end flex">
         <q-btn
@@ -334,11 +367,22 @@
       <div class="col justify-end flex">
         <q-btn
         color="primary"
+        icon="mdi-format-title"
+        class="q-mr-lg"
+        :outline="isDarkMode"
+        @click="addNewInput(undefined, 'title')" >
+          <q-tooltip :delay="500">
+            Add new title
+          </q-tooltip>
+        </q-btn>
+
+        <q-btn
+        color="primary"
         icon="mdi-plus"
         :outline="isDarkMode"
         @click="addNewInput()" >
           <q-tooltip :delay="500">
-            Add new
+            Add new item
           </q-tooltip>
         </q-btn>
       </div>
@@ -397,6 +441,7 @@ export default class Field_List extends FieldBase {
   localInput = [] as {
     value: string
     affix?: string
+    type?: "input" | "title"
   }[]
 
   /**
@@ -540,13 +585,23 @@ export default class Field_List extends FieldBase {
   /**
    * Adds new row to the input list
    */
-  async addNewInput (affixValue = "") {
-    this.localInput.push({
-      value: "",
-      affix: affixValue
-    })
+  async addNewInput (affixValue = "", type: "input"|"title" = "input") {
+    if (type === "input") {
+      this.localInput.push({
+        value: "",
+        affix: affixValue,
+        type: type
+      })
+    }
+    else if (type === "title") {
+      this.localInput.push({
+        value: affixValue,
+        affix: "",
+        type: type
+      })
+    }
 
-    const targetRefStringNamer = (!this.isReversed)
+    const targetRefStringNamer = (!this.isReversed || type === "title")
       ? `.listField_input${this.localInput.length - 1}_${this.inputDataBluePrint.id}`
       : `.listField_prefix${this.localInput.length - 1}_${this.inputDataBluePrint.id}`
 
@@ -612,6 +667,8 @@ export default class Field_List extends FieldBase {
       // @ts-ignore
       .find((e: {title: string}) => e.title === categoryTitle)
 
+    await this.addNewInput(targetCategory.title, "title")
+
     for (const value of targetCategory.values) {
       await this.addNewInput(value)
     }
@@ -628,6 +685,7 @@ export default class Field_List extends FieldBase {
   .q-item {
     padding-right: 10px;
     padding-left: 0;
+    min-height: 32px !important;
   }
 
   .q-item__section {
@@ -640,6 +698,10 @@ export default class Field_List extends FieldBase {
   .fieldList_itemDot {
     padding-right: 10px;
   }
+}
+
+.listTitleInput textarea {
+  font-weight: 600;
 }
 
 .list_specialItem {

@@ -104,7 +104,7 @@ import { colors } from "quasar"
 import { tipsTricks } from "src/scripts/utilities/tipsTricks"
 import { shell } from "electron"
 import { summonAllPlusheForms } from "src/scripts/utilities/plusheMascot"
-import { saveCorkboard, retrieveCorkboard } from "src/scripts/projectManagement/projectManagent"
+import { saveCorkboard, retrieveCorkboard, retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
 import documentPreview from "src/components/DocumentPreview.vue"
 @Component({
   components: {
@@ -133,6 +133,10 @@ export default class App extends BaseClass {
     await this.loadSettings()
 
     await this.loadCorkboardCotent()
+
+    const currentProjectName = await retrieveCurrentProjectName()
+
+    this.SSET_setProjectName(currentProjectName)
 
     // Load the popup hint on
     this.loadHintPopup()

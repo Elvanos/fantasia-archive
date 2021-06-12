@@ -16,17 +16,22 @@
 - Fixed a few bug with the export project window not properly displaying on top of other windows/popups
 - Fixed a typo in "Save all opened documents with active changes" keybind
 - Fixed a bug that was causing the predefined select list sometimes completely disappear along with whole select in the single-select field when filtering (eg: Sex field)
+- Slightly improved performance when loading the project for the first time
 
 ### New features
 
-- **Added document preview floating window**
+- **Added document preview in split-view mode**
+- **Added mass document deletion tool**
+- **Added support for showing of last opened document list**
 - Added export functionality to relationships inside document previews
 - Added option: Aggressive relationships selection
 - Fantasia (the mascot) learned how to cook!
+- Added support for custom subtitles in list fields
 - Added context, right-click menu to the hierarchy tree to tags
+  - Preview in split-view mode
   - Collapse/Expand all
   - Rename tag
-  - Delete tag
+  - Delete tag  
   - Add new document to this tag
 
 ### QoL adjustments

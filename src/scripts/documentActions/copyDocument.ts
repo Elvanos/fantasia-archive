@@ -1,7 +1,7 @@
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
-import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
+import { I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 
-export const copyDocument = (currentDoc: I_OpenedDocument, newDocumentID: string, documentBlueprint: I_Blueprint) : I_OpenedDocument => {
+export const copyDocument = (currentDoc: I_OpenedDocument | I_ShortenedDocument, newDocumentID: string, documentBlueprint: I_Blueprint) : I_OpenedDocument => {
   currentDoc._id = newDocumentID
   currentDoc.isNew = true
   currentDoc.editMode = true
@@ -32,6 +32,7 @@ export const copyDocument = (currentDoc: I_OpenedDocument, newDocumentID: string
     delete (currentDoc.sticker)
   }
 
+  // @ts-ignore
   delete (currentDoc._rev)
 
   const documentNameIndex = currentDoc.extraFields.findIndex(e => e.id === "name")
@@ -53,5 +54,6 @@ export const copyDocument = (currentDoc: I_OpenedDocument, newDocumentID: string
     return field
   })
 
+  // @ts-ignore
   return currentDoc
 }

@@ -555,7 +555,7 @@ import exportProjectDialog from "src/components/dialogs/ExportProject.vue"
 import massDeleteDocumentsCheckDialog from "src/components/dialogs/MassDeleteDocumentsCheck.vue"
 
 import { Loading, QSpinnerGears } from "quasar"
-import { retrieveCurrentProjectName, saveProject } from "src/scripts/projectManagement/projectManagent"
+import { saveProject } from "src/scripts/projectManagement/projectManagent"
 import { toggleDevTools } from "src/scripts/utilities/devTools"
 
 import appLogo from "src/assets/appLogo.png"
@@ -591,11 +591,6 @@ export default class AppControl extends BaseClass {
   toggleDevTools = toggleDevTools
 
   /**
-   * Retrieves the current project name
-   */
-  retrieveCurrentProjectName = retrieveCurrentProjectName
-
-  /**
    * Just an image
    */
   appLogo = appLogo
@@ -619,18 +614,13 @@ export default class AppControl extends BaseClass {
    */
   isProjectPage = true
 
-  /**
-   * Current project name
-   */
-  projectName = ""
-
   created () {
-    this.checkProjectStatus().catch(e => console.log(e))
+    this.checkProjectStatus()
   }
 
-  async checkProjectStatus () {
-    this.projectName = await retrieveCurrentProjectName()
-    this.projectExists = !!(await retrieveCurrentProjectName())
+  @Watch("SGET_getProjectName")
+  checkProjectStatus () {
+    this.projectExists = (this.SGET_getProjectName.length > 0)
     this.isFrontpage = (this.$route.path === "/")
     this.isProjectPage = (this.$route.path === "/project")
   }
@@ -675,11 +665,10 @@ export default class AppControl extends BaseClass {
   }
 
   /****************************************************************/
-  // Export project action
+  // Save project action
   /****************************************************************/
-
-  async commenceSave () {
-    const projectName = await retrieveCurrentProjectName()
+  commenceSave () {
+    const projectName = this.SGET_getProjectName
     const setup = {
       message: "<h4>Saving current project...</h4>",
       spinnerColor: "primary",

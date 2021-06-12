@@ -362,6 +362,7 @@ import Field_SingleRelationship from "src/components/fields/Field_SingleRelation
 import Field_MultiRelationship from "src/components/fields/Field_MultiRelationship.vue"
 import Field_Wysiwyg from "src/components/fields/Field_Wysiwyg.vue"
 import Field_Tags from "src/components/fields/Field_Tags.vue"
+import { updateLastOpenedDocuments } from "src/scripts/projectManagement/projectManagent"
 
 @Component({
   components: {
@@ -463,9 +464,9 @@ export default class PageDocumentDisplay extends BaseClass {
    */
   @Watch("$route", { immediate: true, deep: true })
   async onUrlChange () {
-    window.removeEventListener("scroll", this.watchPageScroll)
-    window.removeEventListener("scroll", this.watchPageScroll)
-    window.removeEventListener("scroll", this.watchPageScroll)
+    // window.removeEventListener("scroll", this.watchPageScroll)
+    // window.removeEventListener("scroll", this.watchPageScroll)
+    // window.removeEventListener("scroll", this.watchPageScroll)
 
     await this.sleep(50)
     const doc = this.findRequestedOrActiveDocument() as I_OpenedDocument
@@ -477,11 +478,11 @@ export default class PageDocumentDisplay extends BaseClass {
 
     window.scrollTo({ top: scrollTop, behavior: "auto" })
 
-    window.removeEventListener("scroll", this.watchPageScroll)
-    window.removeEventListener("scroll", this.watchPageScroll)
-    window.removeEventListener("scroll", this.watchPageScroll)
+    // window.removeEventListener("scroll", this.watchPageScroll)
+    // window.removeEventListener("scroll", this.watchPageScroll)
+    // window.removeEventListener("scroll", this.watchPageScroll)
 
-    window.addEventListener("scroll", this.watchPageScroll)
+    // window.addEventListener("scroll", this.watchPageScroll)
   }
 
   decounceScrollTimer = false as any
@@ -524,7 +525,7 @@ export default class PageDocumentDisplay extends BaseClass {
   /**
    * Watches on changes of the opened documents in order to load proper blueprint and object data
    */
-  @Watch("SGET_allOpenedDocuments", { immediate: true, deep: true })
+  @Watch("SGET_allOpenedDocuments", { deep: true })
   async onDocChange () {
     this.checkHasEdits()
 
@@ -594,6 +595,10 @@ export default class PageDocumentDisplay extends BaseClass {
     // Attempts to add current document to list
     const dataPass = { doc: dataCopy, treeAction: false }
     this.SSET_addOpenedDocument(dataPass)
+
+    if (!this.currentData.isNew) {
+      updateLastOpenedDocuments(this.currentData._id).catch(e => console.log(e))
+    }
   }
 
   /**
@@ -880,21 +885,18 @@ export default class PageDocumentDisplay extends BaseClass {
       return true
     }
 
-    console.log("")
-    console.log(field)
-
     // If this is a break, keep checking following field either until a filled value if found (in which case, elt it through) or until anothe break OR end of the list is found - in which case, deny it
     const fullFieldLength = this.bluePrintData.extraFields.length
     let matchedIndex = this.bluePrintData.extraFields.findIndex(f => f.id === field.id)
     let matchedField = this.bluePrintData.extraFields[matchedIndex + 1]
     while (matchedField.type !== "break" || matchedIndex + 1 === fullFieldLength) {
       matchedField = this.bluePrintData.extraFields[matchedIndex + 1]
-      console.log(matchedField)
+
       if (!matchedField || matchedField.type === "break") {
         return false
       }
+
       const hasValue = this.hasValueFieldFilter(matchedField)
-      console.log(hasValue)
       if (hasValue) {
         return true
       }

@@ -34,7 +34,7 @@
             label="Load project"
             color="primary"
             v-close-popup
-            @click="saveProject()" />
+            @click="loadProject()" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -45,7 +45,7 @@
 import { Component, Watch } from "vue-property-decorator"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
-import { retrieveCurrentProjectName, saveProject, importExistingProject } from "src/scripts/projectManagement/projectManagent"
+import { saveProject, loadExistingProject } from "src/scripts/projectManagement/projectManagent"
 import { Loading, QSpinnerGears } from "quasar"
 
 @Component({
@@ -56,15 +56,15 @@ export default class LoadProjectCheck extends DialogBase {
    * React to dialog opening request
    */
   @Watch("dialogTrigger")
-  async checkForOpenedProject (val: string|false) {
+  checkForOpenedProject (val: string|false) {
     if (val) {
-      const projectName = await retrieveCurrentProjectName()
+      const projectName = this.SGET_getProjectName
 
-      if (projectName) {
+      if (projectName.length > 0) {
         this.openDialog()
       }
       else {
-        this.saveProject()
+        this.loadProject()
       }
     }
   }
@@ -81,9 +81,9 @@ export default class LoadProjectCheck extends DialogBase {
   }
 
   /**
-  * Import a new project
+  * Load a new project
   */
-  saveProject () {
+  loadProject () {
     const setup = {
       message: "<h4>Loading selected project...</h4>",
       spinnerColor: "primary",
@@ -94,14 +94,15 @@ export default class LoadProjectCheck extends DialogBase {
       spinner: QSpinnerGears
     }
 
-    importExistingProject(this.$router, Loading, setup, this.$q, this)
+    this.SSET_setProjecLoadingState(false)
+    loadExistingProject(this.$router, Loading, setup, this.$q, this)
   }
 
   /**
    * Export the current project
    */
-  async commenceSave () {
-    const projectName = await retrieveCurrentProjectName()
+  commenceSave () {
+    const projectName = this.SGET_getProjectName
     const setup = {
       message: "<h4>Saving current project...</h4>",
       spinnerColor: "primary",

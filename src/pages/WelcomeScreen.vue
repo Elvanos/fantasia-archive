@@ -108,8 +108,6 @@ import loadProjectCheckDialog from "src/components/dialogs/LoadProjectCheck.vue"
 import newProjectCheckDialog from "src/components/dialogs/NewProjectCheck.vue"
 import { shell } from "electron"
 
-import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
-
 @Component({
   components: {
     loadProjectCheckDialog,
@@ -158,8 +156,13 @@ export default class WelcomeScreen extends BaseClass {
    * Get project name upon creation
    * For the purposes of this component, we only check if the project exists via this
    */
-  async created () {
-    this.projectExists = await retrieveCurrentProjectName()
+  created () {
+    this.checkProjectStatus()
+  }
+
+  @Watch("SGET_getProjectName")
+  checkProjectStatus () {
+    this.projectExists = (this.SGET_getProjectName.length > 0)
   }
 
   /**

@@ -1069,7 +1069,7 @@ table {
     position: relative;
 
     > .q-item {
-      min-height: 32px;
+      min-height: 32px !important;
       padding-top: 2px;
       padding-bottom: 2px;
     }

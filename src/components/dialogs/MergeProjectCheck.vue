@@ -45,7 +45,7 @@
 import { Component, Watch } from "vue-property-decorator"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
-import { retrieveCurrentProjectName, saveProject, mergeExistingProject } from "src/scripts/projectManagement/projectManagent"
+import { saveProject, mergeExistingProject } from "src/scripts/projectManagement/projectManagent"
 import { Loading, QSpinnerGears } from "quasar"
 
 @Component({
@@ -56,11 +56,11 @@ export default class MergeProjectCheckDialog extends DialogBase {
    * React to dialog opening request
    */
   @Watch("dialogTrigger")
-  async checkForOpenedProject (val: string|false) {
+  checkForOpenedProject (val: string|false) {
     if (val) {
-      const projectName = await retrieveCurrentProjectName()
+      const projectName = this.SGET_getProjectName
 
-      if (projectName) {
+      if (projectName.length > 0) {
         this.openDialog()
       }
     }
@@ -91,14 +91,15 @@ export default class MergeProjectCheckDialog extends DialogBase {
       spinner: QSpinnerGears
     }
 
+    this.SSET_setProjecLoadingState(false)
     mergeExistingProject(this.$router, Loading, setup, this.$q, this)
   }
 
   /**
    * Export the current project
    */
-  async commenceSave () {
-    const projectName = await retrieveCurrentProjectName()
+  commenceSave () {
+    const projectName = this.SGET_getProjectName
     const setup = {
       message: "<h4>Saving current project...</h4>",
       spinnerColor: "primary",

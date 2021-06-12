@@ -90,7 +90,7 @@ import { extend, Loading, QSpinnerGears } from "quasar"
 import { Component, Watch } from "vue-property-decorator"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
-import { retrieveCurrentProjectName, saveProject } from "src/scripts/projectManagement/projectManagent"
+import { saveProject } from "src/scripts/projectManagement/projectManagent"
 
 import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
@@ -300,8 +300,8 @@ export default class RepairProjectDialog extends DialogBase {
   /**
    * Save the current project
    */
-  async commenceSave () {
-    const projectName = await retrieveCurrentProjectName()
+  commenceSave () {
+    const projectName = this.SGET_getProjectName
     const setup = {
       message: "<h4>Saving current project...</h4>",
       spinnerColor: "primary",

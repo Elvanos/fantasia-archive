@@ -28,11 +28,16 @@ export interface I_ShortenedDocument{
   hierarchicalPath?: string
   isCategory?: boolean
   isMinor?: boolean
+  isDead?: boolean
   parentDoc: string | false
   children: I_ShortenedDocument[]
   extraFields: I_ExtraDocumentFields[]
   color?: string
   tags?: string[]
+
+  isNew?: boolean
+  editMode?: boolean
+  hasEdits?: boolean
 
   activeTypeSearch?: boolean
   filteredOut?: boolean

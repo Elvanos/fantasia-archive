@@ -103,6 +103,7 @@ export default class Field_Number extends FieldBase {
   .q-item {
     padding-right: 10px;
     padding-left: 10px;
+    min-height: 32px !important;
   }
 }
 </style>

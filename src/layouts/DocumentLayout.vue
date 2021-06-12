@@ -128,6 +128,8 @@ export default class DocumentLayout extends BaseClass {
 
     // Unfuck the rendering by giving the app some time to load first
     await this.$nextTick()
+
+    this.SSET_setProjecLoadingState(true)
   }
 
   /**

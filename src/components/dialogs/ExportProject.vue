@@ -434,7 +434,6 @@
 
 import { Component, Watch, Prop } from "vue-property-decorator"
 import { remote } from "electron"
-import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
 // @ts-ignore
 import json2md from "json2md/lib/index.js"
 // @ts-ignore
@@ -685,7 +684,7 @@ export default class ExportProject extends DialogBase {
         return
       }
 
-      const projectName: string = await retrieveCurrentProjectName()
+      const projectName: string = this.SGET_getProjectName
 
       const exportPath = this.noFolderMode ? folderPath : `${folderPath}/${projectName} - Export`
 

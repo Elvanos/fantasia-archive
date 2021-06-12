@@ -9,7 +9,7 @@
           <h6 class="text-center q-my-sm">New project</h6>
         </q-card-section>
 
-        <q-card-section class="row justify-center q-mx-xl" v-if="projectExists">
+        <q-card-section class="row justify-center q-mx-xl" v-if="oldProjectName.length > 0">
           <div>
             Please note that the new project will <span class="text-bold text-secondary">COMPLETELY OVERWRITE</span> the currently opened project.
             <br>
@@ -41,7 +41,7 @@
           v-close-popup />
           <q-btn
           flat
-          v-if="projectExists"
+          v-if="oldProjectName.length > 0"
           label="Save project"
           color="primary"
           @click="commenceSave"
@@ -63,7 +63,7 @@
 import { Component, Watch } from "vue-property-decorator"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
-import { retrieveCurrentProjectName, saveProject, createNewProject } from "src/scripts/projectManagement/projectManagent"
+import { saveProject, createNewProject } from "src/scripts/projectManagement/projectManagent"
 
 import { Loading, QSpinnerGears, extend } from "quasar"
 
@@ -83,7 +83,9 @@ export default class NewProjectCheck extends DialogBase {
       this.SSET_setDialogState(true)
       this.dialogModel = true
       this.newProjectName = ""
-      this.projectExists = await retrieveCurrentProjectName()
+      this.oldProjectName = this.SGET_getProjectName
+
+      await this.sleep(300)
 
       /*eslint-disable */
       // @ts-ignore
@@ -95,7 +97,7 @@ export default class NewProjectCheck extends DialogBase {
   /**
    * Determines if any project currently exists or not
    */
-  projectExists: undefined | string | boolean = false
+  oldProjectName = ""
 
   /**
    * Model for the new project name
@@ -161,14 +163,17 @@ export default class NewProjectCheck extends DialogBase {
     // @ts-ignore
     this.SSET_options(optionsSnapShot)
 
+    this.SSET_setProjectName(this.newProjectName)
+    this.SSET_setProjecLoadingState(false)
+
     createNewProject(this.newProjectName, this.$router, this.$q, this).catch(e => console.log(e))
   }
 
   /**
    * Export current project
    */
-  async commenceSave () {
-    const projectName = await retrieveCurrentProjectName()
+  commenceSave () {
+    const projectName = this.SGET_getProjectName
     const setup = {
       message: "<h4>Saving current project...</h4>",
       spinnerColor: "primary",

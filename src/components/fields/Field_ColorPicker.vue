@@ -132,6 +132,10 @@ export default class Field_ColorPicker extends FieldBase {
   display: flex;
   margin-left: -15px;
 
+  .q-item {
+    min-height: 32px !important;
+  }
+
   .colorIndicator {
     margin-right: 15px;
   }

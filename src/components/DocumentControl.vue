@@ -386,7 +386,7 @@ import { saveDocument } from "src/scripts/databaseManager/documentManager"
 import { createNewWithParent } from "src/scripts/documentActions/createNewWithParent"
 import { copyDocument } from "src/scripts/documentActions/copyDocument"
 
-import { retrieveCurrentProjectName, saveProject } from "src/scripts/projectManagement/projectManagent"
+import { saveProject } from "src/scripts/projectManagement/projectManagent"
 
 @Component({
   components: {
@@ -415,9 +415,14 @@ export default class DocumentControl extends BaseClass {
 
   hideHierarchyTree = false
 
-  async created () {
-    this.projectName = await retrieveCurrentProjectName()
-    this.projectExists = !!(await retrieveCurrentProjectName())
+  created () {
+    this.checkProjectStatus()
+  }
+
+  @Watch("SGET_getProjectName")
+  checkProjectStatus () {
+    this.projectName = this.SGET_getProjectName
+    this.projectExists = (this.SGET_getProjectName.length > 0)
   }
 
   /****************************************************************/
@@ -587,10 +592,8 @@ export default class DocumentControl extends BaseClass {
   /****************************************************************/
   // Save project
   /****************************************************************/
-  retrieveCurrentProjectName = retrieveCurrentProjectName
-
-  async commenceSave () {
-    const projectName = await retrieveCurrentProjectName()
+  commenceSave () {
+    const projectName = this.SGET_getProjectName
     const setup = {
       message: "<h4>Saving current project...</h4>",
       spinnerColor: "primary",

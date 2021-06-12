@@ -262,6 +262,7 @@ export default class Field_MultiSelect extends FieldBase {
   .q-item {
     padding-right: 10px;
     padding-left: 0;
+    min-height: 32px !important;
   }
 
   .q-item__section {

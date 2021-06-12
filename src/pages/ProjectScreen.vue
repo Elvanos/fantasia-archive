@@ -1,6 +1,6 @@
 <template>
   <q-page
-  class="column items-center justify-center no-wrap"
+  class="column items-center justify-center no-wrap projectScreen"
   :class="{
     'q-pb-xl q-pl-xl q-pr-xl': disableDocumentControlBar,
     'q-pa-xl': !disableDocumentControlBar,
@@ -10,6 +10,14 @@
       <newDocumentDialog
         :dialog-trigger="newObjectDialogTrigger"
         @trigger-dialog-close="newObjectDialogClose"
+      />
+
+      <!-- Delele document dialog -->
+      <deleteDocumentCheckDialog
+        :dialog-trigger="deleteObjectDialogTrigger"
+        :document-id="toDeleteID"
+        :document-type="toDeleteType"
+        @trigger-dialog-close="deleteObjectDialogClose"
       />
 
       <div class="col-12">
@@ -42,6 +50,7 @@
 
       </div>
 
+    <div class="projectContentWrapper">
       <div class="documentGraphParent">
         <q-card
           dark
@@ -119,6 +128,173 @@
         </q-card>
       </div>
 
+      <div class="lastOpenedList" v-if="allDocuments > 0">
+        <q-card
+          dark
+        >
+          <transition
+            enter-active-class="animated fadeIn"
+            leave-active-class="animated fadeOut"
+            :duration="600"
+            >
+              <q-card-section
+                v-show="!graphDataLoaded"
+                transition-show="scale"
+                transition-hide="scale"
+                style="height: 500px;"
+                class="flex justify-center flex-center"
+              >
+                <q-spinner-gears
+                  color="primary"
+                  size="160px"
+                />
+              </q-card-section>
+            </transition>
+
+          <transition
+            enter-active-class="animated fadeIn"
+            leave-active-class="animated fadeOut"
+            :duration="600"
+            >
+            <q-card-section
+              v-show="graphDataShowing"
+            >
+
+              <h5 class="q-px-md q-mt-lg q-mb-xs">Last opened</h5>
+
+              <q-list
+                v-if="lastOpenedDocuments.length > 0"
+                class="q-pa-md lastOpenedListInner"
+                >
+                <div
+                  v-for="single in lastOpenedDocuments"
+                  :key="single._id"
+                  class="lastOpenedItem"
+                >
+
+                <q-item
+                  clickable
+                  class="text-accent q-px-sm"
+                  @mouseleave="setDocumentPreviewClose"
+                  :to="single.url"
+                >
+                  <documentPreview
+                    v-if="!preventPreviewsDocuments"
+                    :custom-anchor="'center left'"
+                    :custom-self="'center right'"
+                    :document-id="single._id"
+                    :external-close-trigger="documentPreviewClose"
+                  />
+                  <q-item-section avatar class="q-px-sm">
+                    <q-icon
+                      :size="((single.icon.includes('fas') || single.icon.includes('fab')) ? '16px': '21px')"
+                      :name="(single.isCategory) ? 'fas fa-folder-open' : single.icon"
+                    />
+                  </q-item-section>
+                  <q-item-section
+                    >
+                      <span class="text-weight-medium">
+                        <span class="isDeadIndicator" v-if="single.isDead">
+                          †
+                        </span>
+                        <span :class="{'isDead': (single.isDead && !hideDeadCrossThrough)}">
+                            {{stripTags(single.label)}}
+                        </span>
+                      </span>
+                  </q-item-section>
+                  <q-menu
+                    touch-position
+                    context-menu
+                    auto-close
+                    separate-close-popup
+                  >
+
+                    <q-list class="bg-gunmetal-light text-accent">
+
+                      <template>
+                        <q-item clickable @click="copyName(single)">
+                          <q-item-section>Copy name</q-item-section>
+                          <q-item-section avatar>
+                            <q-icon name="mdi-text-recognition" />
+                          </q-item-section>
+                        </q-item>
+                        <q-item clickable @click="copyTextColor(single)">
+                          <q-item-section>Copy text color</q-item-section>
+                          <q-item-section avatar>
+                            <q-icon name="mdi-eyedropper" />
+                          </q-item-section>
+                        </q-item>
+                        <q-item clickable @click="copyBackgroundColor(single)">
+                          <q-item-section>Copy background color</q-item-section>
+                          <q-item-section avatar>
+                            <q-icon name="mdi-format-color-fill" />
+                          </q-item-section>
+                        </q-item>
+                        <q-separator dark />
+                        <q-item clickable @click="openExistingInput(single)">
+                          <q-item-section>Open document</q-item-section>
+                          <q-item-section avatar>
+                            <q-icon name="mdi-book-open-page-variant-outline" />
+                          </q-item-section>
+                        </q-item>
+                        <q-item clickable @click="editExistingInput(single)">
+                          <q-item-section>Edit document</q-item-section>
+                          <q-item-section avatar>
+                            <q-icon name="mdi-pencil" />
+                          </q-item-section>
+                        </q-item>
+                        <q-item clickable @click="openDocumentPreviewPanel(single._id)">
+                          <q-item-section>Preview document in split-view mode</q-item-section>
+                          <q-item-section avatar>
+                            <q-icon name="mdi-file-search-outline" />
+                          </q-item-section>
+                        </q-item>
+                        <q-item clickable @click="addNewUnderParent(single)">
+                          <q-item-section>Create new document with this document as parent</q-item-section>
+                          <q-item-section avatar>
+                            <q-icon color="primary" name="mdi-file-tree" />
+                          </q-item-section>
+                        </q-item>
+                        <q-item clickable @click="copyTargetDocument(single)">
+                          <q-item-section>Copy this document</q-item-section>
+                          <q-item-section avatar>
+                            <q-icon color="primary" name="mdi-content-copy" />
+                          </q-item-section>
+                        </q-item>
+                        <q-separator dark />
+                        <q-item clickable v-close-popup @click="triggerExport(single)">
+                          <q-item-section>Export document</q-item-section>
+                          <q-item-section avatar>
+                            <q-icon name="mdi-database-export-outline" />
+                          </q-item-section>
+                        </q-item>
+                        <q-separator dark />
+                        <q-item clickable v-close-popup @click="deleteTabDocument(single)">
+                          <q-item-section class="text-secondary"><b>Delete this document</b></q-item-section>
+                          <q-item-section avatar class="text-secondary">
+                            <q-icon name="mdi-text-box-remove-outline" />
+                          </q-item-section>
+                        </q-item>
+                      </template>
+                    </q-list>
+
+                  </q-menu>
+
+                </q-item>
+
+                <q-separator dark />
+
+                </div>
+
+              </q-list>
+            </q-card-section>
+          </transition>
+
+        </q-card>
+
+      </div>
+    </div>
+
   </q-page>
 </template>
 
@@ -126,15 +302,23 @@
 import { Component, Watch } from "vue-property-decorator"
 
 import BaseClass from "src/BaseClass"
-import { Loading, colors } from "quasar"
+import { Loading, colors, uid, extend } from "quasar"
 import newDocumentDialog from "src/components/dialogs/NewDocument.vue"
-import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
+import { retrieveLastOpenedDocuments } from "src/scripts/projectManagement/projectManagent"
 import { tipsTricks } from "src/scripts/utilities/tipsTricks"
 import { summonAllPlusheForms } from "src/scripts/utilities/plusheMascot"
+import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
+import { copyDocumentBackgroundColor, copyDocumentName, copyDocumentTextColor } from "src/scripts/documentActions/uniqueFieldCopy"
+import { copyDocument } from "src/scripts/documentActions/copyDocument"
+import { createNewWithParent } from "src/scripts/documentActions/createNewWithParent"
+import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentCheck.vue"
+import documentPreview from "src/components/DocumentPreview.vue"
 
 @Component({
   components: {
-    newDocumentDialog
+    newDocumentDialog,
+    deleteDocumentCheckDialog,
+    documentPreview
   }
 })
 export default class ProjectScreen extends BaseClass {
@@ -151,7 +335,14 @@ export default class ProjectScreen extends BaseClass {
     this.hideTooltipsProject = options.hideTooltipsProject
     this.hidePlushes = options.hidePlushes
     this.disableDocumentControlBar = options.disableDocumentControlBar
+
+    this.hideDeadCrossThrough = this.SGET_options.hideDeadCrossThrough
+    this.preventPreviewsDocuments = this.SGET_options.preventPreviewsDocuments
   }
+
+  hideDeadCrossThrough = false
+
+  preventPreviewsDocuments = false
 
   /**
    * Hides the mascot... nooo :(
@@ -175,13 +366,30 @@ export default class ProjectScreen extends BaseClass {
   /**
    * Setup of the page
    */
-  async created () {
-    this.projectName = await retrieveCurrentProjectName()
-    this.loadGraphData().catch(e => console.log(e))
+  created () {
+    this.projectName = this.SGET_getProjectName
     Loading.hide()
 
     this.tipTrickMessage = tipsTricks[Math.floor(Math.random() * tipsTricks.length)]
     this.plusheForm = summonAllPlusheForms[Math.floor(Math.random() * summonAllPlusheForms.length)]
+
+    if (this.SGET_getProjectLoadedStatus) {
+      this.loadGraphData().catch(e => console.log(e))
+      this.loadLastOpenedList().catch(e => console.log(e))
+    }
+  }
+
+  @Watch("SGET_getProjectName")
+  checkProjectStatus () {
+    this.projectName = this.SGET_getProjectName
+  }
+
+  @Watch("SGET_getProjectLoadedStatus")
+  reactToProjectLoaded () {
+    if (this.SGET_getProjectLoadedStatus) {
+      this.loadGraphData().catch(e => console.log(e))
+      this.loadLastOpenedList().catch(e => console.log(e))
+    }
   }
 
   /**
@@ -222,12 +430,6 @@ export default class ProjectScreen extends BaseClass {
    * Loads graph data
    */
   async loadGraphData () {
-    if (this.SGET_allDocumentsFirstRunState) {
-      await this.sleep(1000)
-      this.loadGraphData().catch(e => console.log(e))
-      return
-    }
-
     this.populateChartOptions()
 
     const allBlueprings = this.SGET_allBlueprints
@@ -248,6 +450,98 @@ export default class ProjectScreen extends BaseClass {
     this.graphDataShowing = true
   }
 
+  /****************************************************************/
+  // Add new document under parent
+  /****************************************************************/
+  addNewUnderParent (currentDoc: I_ShortenedDocument) {
+    createNewWithParent(currentDoc, this)
+  }
+
+  @Watch("SGET_allDocuments", { deep: true })
+  reactToAllDocumentListChange () {
+    if (!this.SGET_allDocumentsFirstRunState) {
+      this.loadLastOpenedList().catch(e => console.log(e))
+    }
+  }
+
+  /**
+   * Loads graph data
+   */
+  async loadLastOpenedList () {
+    const idList = await retrieveLastOpenedDocuments()
+    this.lastOpenedDocuments = idList.map(id => this.SGET_document(id)).filter(e => (e))
+  }
+
+  lastOpenedDocuments: I_ShortenedDocument[] = []
+
+  copyName (currentDoc: I_ShortenedDocument) {
+    copyDocumentName(currentDoc)
+  }
+
+  copyTextColor (currentDoc: I_ShortenedDocument) {
+    copyDocumentTextColor(currentDoc)
+  }
+
+  copyBackgroundColor (currentDoc: I_ShortenedDocument) {
+    copyDocumentBackgroundColor(currentDoc)
+  }
+
+  documentPass = null as unknown as I_ShortenedDocument
+
+  copyTargetDocument (currentDoc: I_ShortenedDocument) {
+    this.documentPass = extend(true, {}, currentDoc)
+
+    const blueprint = this.SGET_blueprint(this.documentPass.type)
+    const newDocument = copyDocument(this.documentPass, this.generateUID(), blueprint)
+
+    const dataPass = {
+      doc: newDocument,
+      treeAction: false
+    }
+
+    // @ts-ignore
+    this.SSET_addOpenedDocument(dataPass)
+    this.$router.push({
+      path: newDocument.url
+    }).catch((e: {name: string}) => {
+      const errorName : string = e.name
+      if (errorName === "NavigationDuplicated") {
+        return
+      }
+      console.log(e)
+    })
+  }
+
+  /**
+   * Opened the existing input
+   */
+  openExistingInput (e: I_ShortenedDocument) {
+    // @ts-ignore
+    e = (Array.isArray(e)) ? e[0] : e
+    this.openExistingDocumentRoute(e)
+  }
+
+  /**
+   * Opened the existing input in two modes
+   * Either as a focus with closure of the dialog.
+   * Or as a background tab without closing of the dialog.
+   */
+  editExistingInput (e: I_ShortenedDocument) {
+    // @ts-ignore
+    e = (Array.isArray(e)) ? e[0] : e
+    // @ts-ignore
+    this.openExistingDocumentRouteWithEdit(e)
+  }
+
+  triggerExport (node: {_id: string}) {
+    this.SSET_setExportDialogState([node._id])
+  }
+
+  setDocumentPreviewClose () {
+    this.documentPreviewClose = uid()
+  }
+
+  documentPreviewClose = ""
   /**
    * Graph series data
    */
@@ -393,10 +687,37 @@ export default class ProjectScreen extends BaseClass {
   newObjectAssignUID () {
     this.newObjectDialogTrigger = this.generateUID()
   }
+
+  /****************************************************************/
+  // Delete dialog
+  /****************************************************************/
+
+  deleteObjectDialogTrigger: string | false = false
+  deleteObjectDialogClose () {
+    this.deleteObjectDialogTrigger = false
+  }
+
+  deleteObjectAssignUID () {
+    this.deleteObjectDialogTrigger = this.generateUID()
+  }
+
+  toDeleteID = ""
+  toDeleteType = ""
+
+  deleteTabDocument (targetDocument: I_ShortenedDocument) {
+    this.toDeleteID = targetDocument._id
+    this.toDeleteType = targetDocument.type
+    this.deleteObjectAssignUID()
+  }
 }
 </script>
 
 <style lang="scss">
+
+.projectScreen {
+  max-width: 1450px;
+  margin: auto;
+}
 
 .mascotWrapper {
   height: 135px;
@@ -406,8 +727,7 @@ export default class ProjectScreen extends BaseClass {
 }
 
 .hintWrapper {
-  max-width: calc(100% - 110px);
-  width: 950px;
+  width: 100%;
   display: flex;
   align-items: center;
   padding: 15px 20px;
@@ -453,20 +773,41 @@ body.body--dark {
   }
 }
 
+.projectContentWrapper {
+  width: 100%;
+  display: flex;
+}
+
 .documentGraphParent {
   min-height: 525px;
   max-height: 525px;
   overflow-x: auto;
   overflow-y: hidden;
   max-width: calc(100% - 110px);
-  width: 950px;
+  width: 990px;
 }
 
 .documentGraphWrapper {
   min-height: 525px;
   max-height: 525px;
   overflow: hidden;
-  width: 950px;
+  width: 990px;
+}
+
+.lastOpenedList {
+  width: 334px;
+  margin-left: 30px;
+  flex-grow: 0;
+  flex-shrink: 0;
+
+  > div {
+    height: 100%;
+  }
+}
+
+.lastOpenedListInner {
+  max-height: 425px;
+  overflow: auto;
 }
 
 .docCountLabel {
@@ -488,5 +829,13 @@ body.body--dark {
   position: relative;
   margin-top: 10px;
   font-weight: 500;
+}
+
+.lastOpenedItem {
+  position: relative;
+
+  .q-item__section--avatar {
+    min-width: 44px;
+  }
 }
 </style>

@@ -1,9 +1,9 @@
-import { I_OpenedDocument } from "src/interfaces/I_OpenedDocument"
+import { I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 
 /**
  * Toggles dev tools in the current window
  */
-export const createNewWithParent = (currentDoc: I_OpenedDocument, callingComponent: any) => {
+export const createNewWithParent = (currentDoc: I_OpenedDocument | I_ShortenedDocument, callingComponent: any) => {
   if (currentDoc) {
     const routeObject = {
       _id: currentDoc.type,

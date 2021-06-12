@@ -148,6 +148,7 @@ export default class Field_Text extends FieldBase {
   .q-item {
     padding-right: 10px;
     padding-left: 10px;
+    min-height: 32px !important;
   }
 }
 </style>

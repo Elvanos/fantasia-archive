@@ -447,7 +447,6 @@ import massDeleteDocumentsCheckDialog from "src/components/dialogs/MassDeleteDoc
 
 import { extend, colors, uid } from "quasar"
 import { tagListBuildFromBlueprints } from "src/scripts/utilities/tagListBuilder"
-import { retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
 import { createNewWithParent } from "src/scripts/documentActions/createNewWithParent"
 import { copyDocumentName, copyDocumentTextColor, copyDocumentBackgroundColor } from "src/scripts/documentActions/uniqueFieldCopy"
 import { copyDocument } from "src/scripts/documentActions/copyDocument"
@@ -488,11 +487,13 @@ export default class ObjectTree extends BaseClass {
   /**
    * Load all blueprints and build the tree out of them
    */
-  async created () {
-    this.projectName = await retrieveCurrentProjectName()
+  created () {
+    this.checkProjectStatus()
+  }
 
-    // Unfuck the rendering by giving the app some time to load first
-    await this.$nextTick()
+  @Watch("SGET_getProjectName")
+  checkProjectStatus () {
+    this.projectName = this.SGET_getProjectName
   }
 
   tagsAtTop = false
@@ -748,10 +749,21 @@ export default class ObjectTree extends BaseClass {
    */
   newObjectList:NewObjectDocument[] = []
 
+  @Watch("SGET_getProjectLoadedStatus")
+  reactToProjectLoaded () {
+    if (this.SGET_getProjectLoadedStatus) {
+      this.buildCurrentObjectTree()
+    }
+  }
+
   /**
    * Builds a brand new sparkling hearchy tree out of available data
    */
   buildCurrentObjectTree () {
+    if (!this.SGET_getProjectLoadedStatus) {
+      return
+    }
+
     this.hierarchicalTree = []
 
     const moduleCategories: {
