@@ -98,8 +98,14 @@
 
     <!-- Delete tag dialog -->
     <massDeleteDocumentsCheckDialog
-      :dialog-trigger="massDocumentDelteDialogTrigger"
-      @trigger-dialog-close="massDocumentDelteDialogClose"
+      :dialog-trigger="massDocumentDeleteDialogTrigger"
+      @trigger-dialog-close="massDocumentDeleteDialogClose"
+    />
+
+    <!-- Project settings dialog -->
+    <projectSettingsdDialog
+      :dialog-trigger="projectSettingsDialogTrigger"
+      @trigger-dialog-close="projectSettingsDialogClose"
     />
 
     <q-btn-group
@@ -239,7 +245,22 @@
               </q-item-section>
             </q-item>
 
-              <q-separator dark />
+            <q-separator dark />
+
+            <q-item
+              v-close-popup
+              clickable
+              active
+              active-class="bg-gunmetal-light text-cultured"
+              class="noHigh"
+              @click="projectSettingsDialogAssignUID"
+              :disable="!projectExists || isFrontpage"
+            >
+              <q-item-section>Project settings</q-item-section>
+              <q-item-section avatar>
+                <q-icon name="mdi-book-cog-outline" />
+              </q-item-section>
+            </q-item>
 
             <q-item clickable>
               <q-item-section>Advanced project tools</q-item-section>
@@ -342,7 +363,7 @@
             <q-item
               clickable
               v-close-popup
-              @click="massDocumentDelteDialogAssignUID"
+              @click="massDocumentDeleteDialogAssignUID"
               :disable="!projectExists || isFrontpage"
               >
               <q-item-section class="text-secondary"><b>Mass delete documents</b></q-item-section>
@@ -553,6 +574,7 @@ import tipsTricksTriviaDialog from "src/components/dialogs/TipsTricksTrivia.vue"
 import licenseDialog from "src/components/dialogs/License.vue"
 import exportProjectDialog from "src/components/dialogs/ExportProject.vue"
 import massDeleteDocumentsCheckDialog from "src/components/dialogs/MassDeleteDocumentsCheck.vue"
+import projectSettingsdDialog from "src/components/dialogs/ProjectSettings.vue"
 
 import { Loading, QSpinnerGears } from "quasar"
 import { saveProject } from "src/scripts/projectManagement/projectManagent"
@@ -577,7 +599,8 @@ import appLogo from "src/assets/appLogo.png"
     licenseDialog,
     repairProjectDialog,
     exportProjectDialog,
-    massDeleteDocumentsCheckDialog
+    massDeleteDocumentsCheckDialog,
+    projectSettingsdDialog
   }
 })
 export default class AppControl extends BaseClass {
@@ -893,13 +916,26 @@ export default class AppControl extends BaseClass {
   // Mass delete documents dialog
   /****************************************************************/
 
-  massDocumentDelteDialogTrigger: string | false = false
-  massDocumentDelteDialogClose () {
-    this.massDocumentDelteDialogTrigger = false
+  massDocumentDeleteDialogTrigger: string | false = false
+  massDocumentDeleteDialogClose () {
+    this.massDocumentDeleteDialogTrigger = false
   }
 
-  massDocumentDelteDialogAssignUID () {
-    this.massDocumentDelteDialogTrigger = this.generateUID()
+  massDocumentDeleteDialogAssignUID () {
+    this.massDocumentDeleteDialogTrigger = this.generateUID()
+  }
+
+  /****************************************************************/
+  // Project settings dialog
+  /****************************************************************/
+
+  projectSettingsDialogTrigger: string | false = false
+  projectSettingsDialogClose () {
+    this.projectSettingsDialogTrigger = false
+  }
+
+  projectSettingsDialogAssignUID () {
+    this.projectSettingsDialogTrigger = this.generateUID()
   }
 }
 </script>

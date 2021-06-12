@@ -51,10 +51,14 @@
       </div>
 
     <div class="projectContentWrapper">
-      <div class="documentGraphParent">
+      <div
+        class="documentGraphParent"
+        :class="{'-fullsize': !graphDataShowing}"
+        >
         <q-card
           dark
           class="documentGraphWrapper"
+          :class="{'-fullsize': !graphDataShowing}"
         >
           <transition
             enter-active-class="animated fadeIn"
@@ -128,7 +132,7 @@
         </q-card>
       </div>
 
-      <div class="lastOpenedList" v-if="allDocuments > 0">
+      <div class="lastOpenedList" v-if="allDocuments > 0 && graphDataShowing">
         <q-card
           dark
         >
@@ -785,6 +789,11 @@ body.body--dark {
   overflow-y: hidden;
   max-width: calc(100% - 110px);
   width: 990px;
+
+  &.-fullsize {
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 .documentGraphWrapper {
@@ -792,6 +801,10 @@ body.body--dark {
   max-height: 525px;
   overflow: hidden;
   width: 990px;
+
+  &.-fullsize {
+    width: 100%;
+  }
 }
 
 .lastOpenedList {

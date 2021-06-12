@@ -22,7 +22,10 @@ export const createNewProject = async (projectName: string, vueRouter: any, quas
   }
 
   window.FA_dbs["project-data"] = new PouchDB("project-data")
-  const newProject = { _id: projectName }
+  const newProject = {
+    _id: "projectSetup",
+    projectName: projectName
+  }
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   window.FA_dbs["project-data"].put(newProject)
@@ -314,7 +317,28 @@ export const retrieveCurrentProjectName = async () => {
   const projectData = await window.FA_dbs["project-data"].allDocs({ include_docs: true })
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return (projectData?.rows[0]?.id) || ""
+
+  const projectName: string = (projectData?.rows[0]?.doc?.projectName) || projectData?.rows[0]?.doc?._id
+
+  return (projectName) || ""
+}
+
+/**
+ * Change current project name
+ */
+export const changeCurrentProjectSettings = async (input: {projectName: string}) => {
+  if (!window.FA_dbs) {
+    // @ts-ignore
+    window.FA_dbs = {}
+  }
+  window.FA_dbs["project-data"] = new PouchDB("project-data")
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  const projectData = await window.FA_dbs["project-data"].allDocs({ include_docs: true })
+
+  projectData.rows[0].doc.projectName = input.projectName
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  await window.FA_dbs["project-data"].put(projectData.rows[0].doc)
 }
 
 /**

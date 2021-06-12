@@ -74,7 +74,7 @@ export default class BaseClass extends Vue {
   @FloatingWindows.Getter("getAdvSearchWindowVisible") SGET_getAdvSearchWindowVisible!: string
   @FloatingWindows.Mutation("setAdvSearchWindowVisible") SSET_setAdvSearchWindowVisible!: () => void
 
-  @FloatingWindows.Getter("getNoteCorkboardhWindowVisible") SGET_getNoteCorkboardhWindowVisible!: string
+  @FloatingWindows.Getter("getNoteCorkboardWindowVisible") SGET_getNoteCorkboardWindowVisible!: string
   @FloatingWindows.Mutation("setNoteCorkboardWindowVisible") SSET_setNoteCorkboardWindowVisible!: () => void
 
   @FloatingWindows.Getter("getDocumentPreviewVisible") SGET_getDocumentPreviewVisible!: string
