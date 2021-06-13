@@ -1,9 +1,6 @@
 
 ## PROJECT SETTINGS BATCH 1 START - 0.1.8
 
-- Project setting dialog/options
-- Project rename
-
 - Selective export per field basis
 - Templates for exports
 

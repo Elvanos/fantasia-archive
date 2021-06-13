@@ -5,6 +5,7 @@ export interface I_ExtraFields {
   sizing: number
   tooltip?: string
   isLegacy?: boolean
+  isSpoiler?: boolean
   type:
   "text" |
   "number" |

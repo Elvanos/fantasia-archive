@@ -231,14 +231,25 @@
                   </q-item>
 
                   <q-separator dark />
-                    <q-item
+                  <q-item
+                    clickable
+                    v-close-popup
+                    @click="massExportDocuments(prop.node)"
+                    v-if="prop.node.children && prop.node.children.length > 1"
+                    >
+                    <q-item-section>Export documents belonging under this</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-database-export" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item
                     clickable
                     v-close-popup
                     @click="massDeleteDocuments(prop.node)"
                     v-if="prop.node.children && prop.node.children.length > 1"
                     >
                     <q-item-section class="text-secondary"><b>Delete documents belonging under this</b></q-item-section>
-                     <q-item-section avatar class="text-secondary">
+                      <q-item-section avatar class="text-secondary">
                       <q-icon name="mdi-text-box-remove-outline" />
                     </q-item-section>
                   </q-item>
@@ -300,6 +311,17 @@
                     <q-item-section>Export document</q-item-section>
                     <q-item-section avatar>
                       <q-icon name="mdi-database-export-outline" />
+                    </q-item-section>
+                  </q-item>
+                  <q-item
+                    clickable
+                    v-close-popup
+                    @click="massExportDocuments(prop.node)"
+                    v-if="prop.node.children && prop.node.children.length > 0"
+                    >
+                    <q-item-section>Export documents belonging under this</q-item-section>
+                    <q-item-section avatar>
+                      <q-icon name="mdi-database-export" />
                     </q-item-section>
                   </q-item>
                   <q-separator dark />
@@ -379,6 +401,17 @@
                       </q-item-section>
                     </q-item>
                     <q-separator dark />
+                    <q-item
+                      clickable
+                      v-close-popup
+                      @click="massExportDocuments(prop.node)"
+                      v-if="prop.node.children && prop.node.children.length > 0"
+                      >
+                      <q-item-section>Export documents belonging under this</q-item-section>
+                      <q-item-section avatar>
+                        <q-icon name="mdi-database-export" />
+                      </q-item-section>
+                    </q-item>
                     <q-item
                     clickable
                     v-close-popup
@@ -1348,6 +1381,17 @@ export default class ObjectTree extends BaseClass {
 
   triggerExport (node: {_id: string}) {
     this.SSET_setExportDialogState([node._id])
+  }
+
+  massExportDocuments (node: { children: { _id: string}[]}) {
+    /*eslint-disable */
+    // @ts-ignore
+    const exExportIDs: string[] = (this.flatten(node.children))
+      .filter((e: {extraFields?: string}) => e?.extraFields)
+      .map((e: {_id: string}) => e._id)
+    /* eslint-enable */
+
+    this.SSET_setExportDialogState(exExportIDs)
   }
 
   /****************************************************************/

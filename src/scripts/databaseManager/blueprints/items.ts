@@ -537,6 +537,26 @@ export const itemsBlueprint: I_Blueprint = {
         connectedObjectType: "tech",
         connectedField: "pairedConnectedItems"
       }
+    },
+    {
+      id: "breakDetails",
+      name: "Secrets/Spoilers/DM notes",
+      type: "break",
+      sizing: 12,
+      isSpoiler: true
+    },
+    {
+      id: "spoilerNotes",
+      name: "Secrets/Spoilers/DM notes",
+      type: "wysiwyg",
+      icon: "fas fa-mask",
+      sizing: 12,
+      isSpoiler: true,
+      tooltip:
+        `This field will not export by default when using the Export document functionality.
+        <br>
+        Instead it needs to be manually included if the user wishes to export it.
+        `
     }
   ]
 }

@@ -22,7 +22,7 @@
               <div class="row">
                 <div class="col">
                   <q-select
-                    class="exportTypeSelect"
+                    class="exportTypeSelect q-mb-md"
                     dark
                     popup-content-class="menuResizer"
                     :options="exportFormats"
@@ -58,6 +58,29 @@
                   <q-item-section side>
                     <q-icon name="mdi-help-circle" size="18px">
                       <q-tooltip :delay="500">
+                        Determines if the export should append a unique text string
+                        <br>
+                        at the end of the output files to prevent overriding
+                        <br>
+                        of the file content if multiple documents with the same name exist.
+                      </q-tooltip>
+                    </q-icon>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-checkbox
+                      dark
+                      :class="{'highlight': useCompatibilityMode}"
+                      color="primary"
+                      v-model="useCompatibilityMode"
+                      label="Use unique-indentifier export-mode?"
+                    />
+                  </q-item-section>
+                </q-item>
+
+                <q-item>
+                  <q-item-section side>
+                    <q-icon name="mdi-help-circle" size="18px">
+                      <q-tooltip :delay="500">
                         Determines if the export should output a corresponding
                         <br>
                         folder structure to how FA structures the document types.
@@ -75,6 +98,27 @@
                       color="primary"
                       v-model="noFolderMode"
                       label="No-folder export?"
+                    />
+                  </q-item-section>
+                </q-item>
+
+                <q-item>
+                  <q-item-section side>
+                    <q-icon name="mdi-help-circle" size="18px">
+                      <q-tooltip :delay="500">
+                        Determines if the spoiler fields
+                        <br>
+                        should be included in the export.
+                      </q-tooltip>
+                    </q-icon>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-checkbox
+                      dark
+                      :class="{'warning': includeSpoilers}"
+                      color="primary"
+                      v-model="includeSpoilers"
+                      label="Include spoilers?"
                     />
                   </q-item-section>
                 </q-item>
@@ -527,6 +571,8 @@ export default class ExportProject extends DialogBase {
 
   selectedExportFormat = "Adobe Reader - PDF"
 
+  useCompatibilityMode = true
+
   exportWholeProject = false
 
   writerMode = false
@@ -540,6 +586,8 @@ export default class ExportProject extends DialogBase {
   hideDeadInformation = false
 
   includeIsDead = true
+
+  includeSpoilers = false
 
   useFallbackFont = false
 
@@ -816,6 +864,7 @@ export default class ExportProject extends DialogBase {
       .filter(field => field.id !== "documentBackgroundColor")
       .filter(field => field.id !== "breakDocumentSettings")
       .filter(field => !field.isLegacy)
+      .filter(field => !field.isSpoiler || this.includeSpoilers)
       .filter(field => {
         if (input.extraFields.find(e => e.id === "categorySwitch")?.value) {
           if (catIgnoreList.includes(field.id)) {
@@ -1131,7 +1180,10 @@ export default class ExportProject extends DialogBase {
     const { documentDirectory, exportFileName } = this.fixExportPaths(exportPath, input)
 
     // Write the file
-    fs.writeFileSync(`${documentDirectory}/${exportFileName}.md`, mdContent)
+    const finalExportPath = (this.useCompatibilityMode)
+      ? `${documentDirectory}/${exportFileName}-${input.id}.md`
+      : `${documentDirectory}/${exportFileName}.md`
+    fs.writeFileSync(finalExportPath, mdContent)
   }
 
   exportFile_PDF (input: I_ExportObject, exportPath: string, normalFontContents : any, boldFontContents: any) {
@@ -1155,7 +1207,12 @@ export default class ExportProject extends DialogBase {
     doc.registerFont("Roboto-Bold", boldFontContents)
 
     // Start stream
-    doc.pipe(fs.createWriteStream(`${documentDirectory}/${exportFileName}.pdf`))
+
+    // Write the file
+    const finalExportPath = (this.useCompatibilityMode)
+      ? `${documentDirectory}/${exportFileName}-${input.id}.pdf`
+      : `${documentDirectory}/${exportFileName}.pdf`
+    doc.pipe(fs.createWriteStream(finalExportPath))
 
     // Name/Title
     let title = input.name
@@ -1593,7 +1650,7 @@ export default class ExportProject extends DialogBase {
   }
 
   .exportSettings {
-    max-height: calc(100vh - 405px);
+    max-height: calc(100vh - 420px);
     overflow-x: auto;
     padding-right: 20px;
 

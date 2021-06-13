@@ -23,10 +23,16 @@
 - **Added document preview in split-view mode**
 - **Added mass document deletion tool**
 - **Added support for showing of last opened document list**
+- **Added first iteration of the Project settings**
+- Added project renaming support from inside the app
 - Added export functionality to relationships inside document previews
 - Added option: Aggressive relationships selection
 - Fantasia (the mascot) learned how to cook!
+- Added unique-identified option for exports
+- Added new spoiler/secrets/DM notes field to all document types
+- Added spoiler-free export option for exports
 - Added support for custom subtitles in list fields
+- Added support for mass-exports to the hierarchy tree
 - Added context, right-click menu to the hierarchy tree to tags
   - Preview in split-view mode
   - Collapse/Expand all
