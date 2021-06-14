@@ -17,6 +17,7 @@
 - Fixed a typo in "Save all opened documents with active changes" keybind
 - Fixed a bug that was causing the predefined select list sometimes completely disappear along with whole select in the single-select field when filtering (eg: Sex field)
 - Slightly improved performance when loading the project for the first time
+- Fixed a bug in PDF export that was causing export crashes in case of line breaks present in the list/relationship field notes
 
 ### New features
 

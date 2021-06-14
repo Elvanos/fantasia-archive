@@ -141,30 +141,6 @@
                   </q-item-section>
                 </q-item>
 
-                <q-item v-if="exportWholeProject">
-                  <q-item-section side>
-                    <q-icon name="mdi-help-circle" size="18px">
-                      <q-tooltip :delay="500">
-                        Some projects can have overlapping names for multiple documents.
-                        <br>
-                        Normally, this would results in the contents of the documents overwriting each other.
-                        <br>
-                        If this is turned on, documents will also receive their unique IDs
-                        <br>
-                        attached to their file names - preventing any overwriting.
-                      </q-tooltip>
-                    </q-icon>
-                  </q-item-section>
-                  <q-item-section>
-                    <q-checkbox
-                      :class="{'warning': !useSafetyMode}"
-                      dark color="primary"
-                      v-model="useSafetyMode"
-                      label="Use safety export mode?"
-                    />
-                  </q-item-section>
-                </q-item>
-
                 <q-item v-if="selectedExportFormat === 'Adobe Reader - PDF'">
                   <q-item-section side>
                     <q-icon name="mdi-help-circle" size="18px">
@@ -314,10 +290,9 @@
                   <br>
                 </span>
 
-                <span class="text-bold text-secondary" v-if="!useSafetyMode && exportWholeProject">
+                <span class="text-bold text-secondary" v-if="!useCompatibilityMode && exportWholeProject">
                   <br>
-                  Please condider turning the safety export mode ON before exporting to avoid data loss!
-                  <br>
+                  Please condider turning the unique-indentifier mode ON before exporting to avoid data loss!
                 </span>
 
                 <span>
@@ -541,6 +516,8 @@ export default class ExportProject extends DialogBase {
   resetLocalData () {
     this.selectedExportFormat = "Adobe Reader - PDF"
     this.exportWholeProject = false
+    this.useCompatibilityMode = true
+    this.includeSpoilers = false
     this.includeTags = false
     this.includeHierarchyPath = false
     this.hideDeadInformation = false
@@ -550,7 +527,6 @@ export default class ExportProject extends DialogBase {
     this.useFallbackFont = false
     this.exportDocumentsModel = []
     this.exportOngoing = false
-    this.useSafetyMode = true
     this.exportList = []
   }
 
@@ -590,8 +566,6 @@ export default class ExportProject extends DialogBase {
   includeSpoilers = false
 
   useFallbackFont = false
-
-  useSafetyMode = true
 
   noFolderMode = false
 
@@ -890,7 +864,10 @@ export default class ExportProject extends DialogBase {
         // Build string out of lists
         if (field.type === "list" && Array.isArray(returnValue)) {
           if (!field.predefinedListExtras) {
-            returnValue = returnValue.map((e: {value: string}) => `${e.value}`)
+            returnValue = returnValue.map((e: {value: string}) => {
+              const returnString = e.value.replace(/(\r\n|\n|\r)/gm, "")
+              return returnString
+            })
           }
           else {
             if (field.predefinedListExtras?.reverse) {
@@ -899,6 +876,7 @@ export default class ExportProject extends DialogBase {
                 if (e.value) {
                   returnString = `${returnString}: ${e.value}`
                 }
+                returnString = returnString.replace(/(\r\n|\n|\r)/gm, "")
                 return returnString
               })
             }
@@ -908,6 +886,7 @@ export default class ExportProject extends DialogBase {
                 if (e.affix) {
                   returnString = `${e.value} (${e.affix})`
                 }
+                returnString = returnString.replace(/(\r\n|\n|\r)/gm, "")
                 return returnString
               })
             }
@@ -936,8 +915,7 @@ export default class ExportProject extends DialogBase {
               // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
               localReturnValue = `${localReturnValue} (${matchedNote.value})`
             }
-
-            returnValue = localReturnValue
+            returnValue = localReturnValue.replace(/(\r\n|\n|\r)/gm, "")
           }
           else {
             returnValue = ""
@@ -970,7 +948,7 @@ export default class ExportProject extends DialogBase {
                   // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                   localReturnValue = `${localReturnValue} (${matchedNote.value})`
                 }
-
+                localReturnValue = localReturnValue.replace(/(\r\n|\n|\r)/gm, "")
                 return localReturnValue
               }
               return " "
@@ -1067,9 +1045,7 @@ export default class ExportProject extends DialogBase {
     }
 
     // Fix invalid characters in document file name
-    let exportFileName = (this.useSafetyMode && this.exportWholeProject)
-      ? `${input.name} (${input.id})`
-      : input.name
+    let exportFileName = input.name
     reservedCharacterList.forEach(char => {
       exportFileName = exportFileName.replace(char, "-")
       exportFileName = exportFileName.replace(char, "-")
@@ -1340,6 +1316,11 @@ export default class ExportProject extends DialogBase {
       else if (!this.writerMode) {
         doc.font("Roboto-Bold").fillColor("#000000").fontSize(textFont)
           .text(field.label, textPadding, undefined, paragraphOptions)
+
+        if (input.id === "60d23d8b-367f-4d5c-870c-74a0d46d6019") {
+          console.log(field.label)
+          console.log(field.value)
+        }
         doc.font("Roboto-Regular").fillColor("#000000").fontSize(textFont)
           .list((Array.isArray(field.value) ? field.value : [field.value]), listPadding, undefined, paragraphOptions)
           .moveDown()
