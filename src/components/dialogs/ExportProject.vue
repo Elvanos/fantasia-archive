@@ -3,10 +3,10 @@
   <q-dialog
     v-model="dialogModel"
     @before-hide="triggerDialogClose"
-    :persistent="exportOngoing"
+    :persistent="exportOngoing || editingExportTemplates"
     >
     <q-card
-      v-if="!exportOngoing"
+      v-if="!exportOngoing && !editingExportTemplates"
       class="exportDialog"
       dark
     >
@@ -278,8 +278,66 @@
              style="height: 100%;"
              class="q-mx-lg"
              >
+
+             <div class="row">
+
+                <div class="col q-mb-lg">
+                  <q-select
+                    dark
+                    filled
+                    class="flex-grow"
+                    :options="exportTemplateList"
+                    use-input
+                    v-model="selectedExportTemplate"
+                    menu-anchor="bottom middle"
+                    menu-self="top middle"
+                    label="Selected export template"
+                    option-value="id"
+                    clearable
+                  >
+                  <template v-slot:selected-item="scope">
+                    {{scope.opt.name}}
+                  </template>
+                  <template v-slot:option="{ itemProps, itemEvents, opt }">
+                    <q-item
+                      v-bind="itemProps"
+                      v-on="itemEvents"
+                      :key="opt.id"
+                    >
+                      <q-item-section>
+                        <q-item-label>
+                          {{opt.name}}
+                        </q-item-label>
+                      </q-item-section>
+                    </q-item>
+                  </template>
+
+                  </q-select>
+                </div>
+
+                <div
+                  v-if="selectedExportTemplate"
+                  class="col-auto flex items-center q-ml-md q-mb-lg"
+                >
+                  <q-btn round dense flat icon="mdi-pencil" @click.stop.prevent="editExistingExportTemplate">
+                    <q-tooltip :delay="500">
+                      Edit this export template
+                    </q-tooltip>
+                  </q-btn>
+                </div>
+
+                <div class="col-auto flex items-center q-ml-md q-mb-lg">
+                  <q-btn round dense flat icon="mdi-plus" @click.stop.prevent="setupNewExportTemplate">
+                    <q-tooltip :delay="500">
+                      Add a new export template
+                    </q-tooltip>
+                  </q-btn>
+                </div>
+
+              </div>
+
               <div
-                style="height: 100%; line-height: 2;"
+                style="height: calc(100% - 75px); line-height: 2;"
                 class="column justify-center items-center text-center"
                 v-if="exportWholeProject"
               >
@@ -426,6 +484,114 @@
       </q-card-actions>
     </q-card>
 
+    <q-card v-if="editingExportTemplates" dark class="exportTemplates">
+      <div style="width: 100%;">
+        <q-input
+          class="exportTemplateNameInput"
+          filled
+          dark
+          :bottom-slots="false"
+          hide-bottom-space
+          style="width: 100%;"
+          :label="(editedExportTemplate.name.length === 0) ? 'Enter template name' : 'Export template name'"
+          v-model="editedExportTemplate.name"
+          :error="editedExportTemplate.name.length === 0"
+        />
+      </div>
+
+      <div class="exportTemplatesInner">
+      <q-card-section horizontal class="exportTemplatesTabList">
+        <q-tabs
+          v-model="activeExportTemplateTab"
+          class="text-accent"
+          active-color="primary"
+          indicator-color="primary"
+          vertical
+          style="width: 100%;"
+          :class="{'hasTextShadow': textShadow}"
+          align="left"
+          inline-label
+          dense
+          no-caps
+        >
+          <q-tab
+            class="exportTemplatesTab"
+            v-for="(blueprint,index) in SGET_allBlueprints"
+            :key="blueprint._id"
+            :icon="blueprint.icon"
+            :name="blueprint._id"
+            :label="`${blueprint.namePlural} - ${selectedExportTableData[index].fields.length}/${exportTableData[index].fields.length}`"
+          />
+
+        </q-tabs>
+      </q-card-section>
+      <q-separator vertical dark />
+
+      <q-card-section horizontal class="exportTemplatesTabContent">
+        <q-tab-panels
+          dark
+          v-model="activeExportTemplateTab"
+          animated
+          style="width: 100%;"
+          vertical
+          transition-prev="jump-up"
+          transition-next="jump-down"
+         >
+          <q-tab-panel
+            v-for="(blueprint,index) in SGET_allBlueprints"
+            :key="blueprint._id"
+            :name="blueprint._id"
+            dark
+            >
+
+            <q-table
+              :title="blueprint.namePlural"
+              :data="exportTableData[index].fields"
+              :columns="exportDataColumns"
+              virtual-scroll
+              :rows-per-page-options="[0]"
+              :virtual-scroll-sticky-size-start="48"
+              row-key="id"
+              selection="multiple"
+              :selected.sync="selectedExportTableData[index].fields"
+              dark
+              flat
+              dense
+              hide-bottom
+              @selection="reactToRowUpdate"
+            />
+          </q-tab-panel
+          >
+        </q-tab-panels>
+      </q-card-section>
+
+      </div>
+
+      <q-card-actions align="right" class="q-mb-lg q-mt-md q-mr-xl controlButtons">
+         <q-btn
+          outline
+          label="Delete template"
+          color="secondary"
+          class="align-self-start"
+        />
+        <q-btn
+          flat
+          label="Cancel editing"
+          color="accent"
+          class="q-mr-lg"
+          @click="editingExportTemplates = false"
+        />
+        <q-btn
+          outline
+          :disable="editedExportTemplate.name.length === 0"
+          label="Save template"
+          color="primary"
+          @click="saveExportTemplate"
+        />
+      </q-card-actions>
+
+    </q-card>
+
     <q-card v-if="exportOngoing" dark class="exportDialog">
         <q-card-section class="row justify-center">
         <h6 class="text-center q-my-sm">Exporting...</h6>
@@ -451,6 +617,13 @@
 
 <script lang="ts">
 
+interface I_ShotrenedExtraField{
+  order: number
+  name: string
+  type: string
+  id: string
+}
+
 import { Component, Watch, Prop } from "vue-property-decorator"
 import { remote } from "electron"
 // @ts-ignore
@@ -468,9 +641,13 @@ import documentPreview from "src/components/DocumentPreview.vue"
 import { I_ExportObject } from "src/interfaces/I_ExportObject"
 import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
+import { I_ExportTemplate } from "src/interfaces/I_ExportTemplate"
+
 import { I_PDFKitDocument } from "src/interfaces/I_PDFKitDocument"
 import { I_HtmlParserNode } from "src/interfaces/I_HtmlParserNode"
 import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
+
+import { saveExportTemplateIntoDB, retrieveAllExportTemplatesFromDB } from "src/scripts/projectManagement/exportTemplates"
 
 import RobotoRegular from "src/assets/fonts/Roboto-Regular.ttf"
 import RobotoBold from "src/assets/fonts/Roboto-Bold.ttf"
@@ -490,13 +667,15 @@ export default class ExportProject extends DialogBase {
    * React to dialog opening request
    */
   @Watch("dialogTrigger")
-  openDialog (val: string|false) {
+  async openDialog (val: string|false) {
     if (val) {
       if (this.SGET_getDialogsState) {
         return
       }
       this.SSET_setDialogState(true)
       this.dialogModel = true
+
+      this.exportTemplateList = await retrieveAllExportTemplatesFromDB()
 
       this.resetLocalData()
       this.reloadOptions()
@@ -620,9 +799,245 @@ export default class ExportProject extends DialogBase {
   filteredExistingInput = null as unknown as I_ShortenedDocument[]
 
   /**
-   * Local list copty for filtering in order to not mess up the original list
+   * Local list copy for filtering in order to not mess up the original list
    */
   listCopy: I_ShortenedDocument[] = []
+
+  /**
+   * Local list of all predefined export templates
+   */
+  exportTemplateList: I_ExportTemplate[] = []
+
+  /**
+   * Currently selected export templates
+   */
+  selectedExportTemplate = null as unknown as I_ExportTemplate
+
+  editingExportTemplates = false
+
+  editedExportTemplate = {
+    id: "",
+    name: "",
+    documentTypeList: []
+  } as I_ExportTemplate
+
+  activeExportTemplateTab = ""
+
+  setupNewExportTemplate () {
+    this.editedExportTemplate.id = uid()
+    this.editedExportTemplate.name = ""
+    this.activeExportTemplateTab = this.SGET_allBlueprints[0]._id
+
+    this.editedExportTemplate.documentTypeList = this.SGET_allBlueprints.map(blueprint => {
+      return {
+        documentTypeID: blueprint._id,
+        excludedFieldIDList: []
+      }
+    })
+    this.mapExportFieldTableData()
+    this.editingExportTemplates = true
+  }
+
+  editExistingExportTemplate () {
+    this.editedExportTemplate.id = this.selectedExportTemplate.id
+    this.editedExportTemplate.name = this.selectedExportTemplate.name
+    this.activeExportTemplateTab = this.SGET_allBlueprints[0]._id
+
+    this.editedExportTemplate.documentTypeList = this.selectedExportTemplate.documentTypeList
+    this.mapExportFieldTableData()
+    this.editingExportTemplates = true
+  }
+
+  exportTableData: {
+    timestamp: string
+    blueprintID: string
+    fields: I_ShotrenedExtraField[]
+  }[] = []
+
+  selectedExportTableData: {
+    timestamp: string
+    blueprintID: string
+    fields: I_ShotrenedExtraField[]
+  }[] = []
+
+  mapExportFieldTableData () {
+    for (let index = 0; index < this.SGET_allBlueprints.length; index++) {
+      const blueprint = this.SGET_allBlueprints[index]
+
+      this.exportTableData[index] = {
+        timestamp: uid(),
+        blueprintID: blueprint._id,
+        fields: []
+      }
+      this.selectedExportTableData[index] = {
+        timestamp: uid(),
+        blueprintID: blueprint._id,
+        fields: []
+      }
+
+      let counter = 1
+
+      for (let index2 = 0; index2 < blueprint.extraFields.length; index2++) {
+        const field = blueprint.extraFields[index2]
+
+        const remappedField: I_ShotrenedExtraField = {
+          order: counter,
+          name: field.name,
+          type: field.type,
+          id: field.id
+        }
+        if (
+          !field.isLegacy &&
+          field.type !== "tags" &&
+          field.type !== "switch" &&
+          field.id !== "name" &&
+          field.id !== "order" &&
+          field.id !== "deadSwitch" &&
+          field.id !== "categorySwitch" &&
+          field.id !== "parentDoc" &&
+          field.id !== "documentColor" &&
+          field.id !== "documentBackgroundColor" &&
+          field.id !== "breakDocumentSettings"
+        ) {
+          this.exportTableData[index].fields.push(remappedField)
+
+          const matchedExludedList = this.editedExportTemplate.documentTypeList.find(list => list.documentTypeID === blueprint._id)?.excludedFieldIDList
+
+          if (!matchedExludedList || !matchedExludedList.includes(remappedField.id)) {
+            this.selectedExportTableData[index].fields.push(remappedField)
+          }
+          counter++
+        }
+      }
+    }
+  }
+
+  reactToRowUpdate () {
+    this.selectedExportTableData = this.selectedExportTableData.map(single => {
+      single.timestamp = uid()
+      return single
+    })
+  }
+
+  async saveExportTemplate () {
+    const newExportTemplate: I_ExportTemplate = extend(true, [], this.editedExportTemplate)
+    newExportTemplate.documentTypeList = newExportTemplate.documentTypeList.map(docType => {
+      const matchedBlueprint = this.SGET_blueprint(docType.documentTypeID)
+      const matchedTableRow = this.exportTableData.find(row => row.blueprintID === matchedBlueprint._id)
+      const matchedSelectTableRow = this.selectedExportTableData.find(row => row.blueprintID === matchedBlueprint._id)
+
+      if (matchedTableRow && matchedSelectTableRow) {
+        const excludedFieldIDList = matchedTableRow.fields
+          .filter(field =>
+            !matchedSelectTableRow.fields.find(selField => selField.id === field.id)
+          )
+          .map(field => field.id)
+        return {
+          documentTypeID: matchedBlueprint._id,
+          excludedFieldIDList: excludedFieldIDList
+        }
+      }
+      else {
+        return {
+          documentTypeID: matchedBlueprint._id,
+          excludedFieldIDList: []
+        }
+      }
+    })
+
+    await saveExportTemplateIntoDB(newExportTemplate)
+    this.exportTemplateList = await retrieveAllExportTemplatesFromDB()
+    this.editingExportTemplates = false
+    this.$q.notify({
+      group: false,
+      type: "positive",
+      message: "Template succesfully saved"
+    })
+
+    await this.$nextTick()
+
+    // @ts-ignore
+    this.selectedExportTemplate = this.exportTemplateList.find(t => t.id === newExportTemplate.id)
+  }
+
+  mapFields (fieldType: string) {
+    switch (fieldType) {
+      case "text":
+        return "Text"
+
+      case "number":
+        return "Number"
+
+      case "colorPicker":
+        return "Color picker"
+
+      case "switch":
+        return "On/Off switch"
+
+      case "list":
+        return "List"
+
+      case "wysiwyg":
+        return "Text editor"
+
+      case "singleSelect":
+        return "Single select"
+
+      case "multiSelect":
+        return "Multi select"
+
+      case "singleToNoneRelationship":
+        return "Single-to-None relationship"
+
+      case "manyToNoneRelationship":
+        return "Many-to-None relationship"
+
+      case "singleToSingleRelationship":
+        return "Single-to-Single relationship"
+
+      case "singleToManyRelationship":
+        return "Single-to-Many relationship"
+
+      case "manyToSingleRelationship":
+        return "Many-to-Single relationship"
+
+      case "manyToManyRelationship":
+        return "Many-to-Many relationship"
+
+      case "break":
+        return "Subtitle"
+
+      case "tags":
+        return "Tags"
+    }
+  }
+
+  exportDataColumns = [
+    {
+      name: "order",
+      required: true,
+      label: "Order",
+      align: "left",
+      field: (row: I_ShotrenedExtraField) => row.order,
+      sortable: true
+    },
+    {
+      name: "name",
+      required: true,
+      label: "Field name",
+      align: "left",
+      field: (row: I_ShotrenedExtraField) => row.name,
+      sortable: true
+    },
+    {
+      name: "type",
+      align: "left",
+      label: "Type",
+      field: (row: I_ShotrenedExtraField) => this.mapFields(row.type),
+      sortable: true
+    }
+
+  ]
 
   /**
    * Refocuses the first value in the selct upon filtering for intuitive keyboard control
@@ -1317,10 +1732,6 @@ export default class ExportProject extends DialogBase {
         doc.font("Roboto-Bold").fillColor("#000000").fontSize(textFont)
           .text(field.label, textPadding, undefined, paragraphOptions)
 
-        if (input.id === "60d23d8b-367f-4d5c-870c-74a0d46d6019") {
-          console.log(field.label)
-          console.log(field.value)
-        }
         doc.font("Roboto-Regular").fillColor("#000000").fontSize(textFont)
           .list((Array.isArray(field.value) ? field.value : [field.value]), listPadding, undefined, paragraphOptions)
           .moveDown()
@@ -1639,6 +2050,69 @@ export default class ExportProject extends DialogBase {
       padding-right: 0;
       padding-left: 0;
     }
+  }
+}
+
+.exportTemplates {
+  max-width: calc(100vw - 100px) !important;
+  width: 1300px;
+  max-height: calc(100vh - 120px) !important;
+  margin-top: 100px;
+  align-self: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+
+  .exportTemplateNameInput.q-field--error {
+    .q-field__label {
+      color: $secondary !important;
+      font-weight: 600;
+    }
+
+    .text-negative {
+      color: $secondary !important;
+    }
+  }
+
+  h6 {
+    display: block;
+    width: 100%;
+  }
+
+  .controlButtons {
+    width: 100%;
+  }
+
+  .exportTemplatesInner {
+    overflow: auto;
+    max-width: calc(100vw - 100px) !important;
+    width: 1300px;
+    max-height: calc(100vh - 300px) !important;
+    align-self: flex-start;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .exportTemplatesTabList {
+    width: 330px;
+
+    .q-tab {
+      padding: 0 16px;
+      justify-content: flex-start !important;
+      text-align: left !important;
+    }
+  }
+
+  .exportTemplatesTab .fas,
+  .exportTemplatesTab .fab {
+    font-size: 16px;
+  }
+
+  .exportTemplatesTab .mdi {
+    font-size: 18px;
+  }
+
+  .exportTemplatesTabContent {
+    width: calc(100% - 360px);
   }
 }
 </style>

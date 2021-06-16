@@ -172,7 +172,7 @@ export const chaptersBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "breakDetails",
+      id: "breakSpoilers",
       name: "Secrets/Spoilers/DM notes",
       type: "break",
       sizing: 12,

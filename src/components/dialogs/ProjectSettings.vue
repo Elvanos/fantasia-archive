@@ -17,6 +17,8 @@
               style="width: 400px;"
               label="Project name"
               v-model="projectName"
+              :error="isInvalid"
+              :error-message="'Your project name contains invalid characters or is empty'"
             />
           </div>
 
@@ -30,6 +32,7 @@
           v-close-popup />
           <q-btn
             flat
+            :disable="isInvalid"
             label="Save project settings"
             color="primary"
             @click="saveProjectSettings" />
@@ -66,6 +69,45 @@ export default class ProjectSettingsDialog extends DialogBase {
   }
 
   projectName = ""
+
+  reservedCharacterList = [
+    "/",
+    ">",
+    "<",
+    "|",
+    ":",
+    "&",
+    "\\",
+    "-",
+    "[",
+    "]",
+    "{",
+    "}",
+    "*",
+    "?",
+    "'",
+    "\"",
+    "#",
+    "%",
+    "$",
+    "!",
+    "@"
+  ]
+
+  get isInvalid () {
+    let isValid = true
+    if (this.projectName.length === 0) {
+      isValid = false
+    }
+
+    this.reservedCharacterList.forEach(char => {
+      if (this.projectName.includes(char)) {
+        isValid = false
+      }
+    })
+
+    return !isValid
+  }
 
   reloadProjectSettings () {
     this.projectName = this.SGET_getProjectName

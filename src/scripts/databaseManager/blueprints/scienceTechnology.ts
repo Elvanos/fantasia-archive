@@ -725,7 +725,7 @@ export const techBlueprint: I_Blueprint = {
       }
     },
     {
-      id: "breakDetails",
+      id: "breakSpoilers",
       name: "Secrets/Spoilers/DM notes",
       type: "break",
       sizing: 12,
