@@ -3,10 +3,10 @@
   <q-dialog
     v-model="dialogModel"
     @before-hide="triggerDialogClose"
-    :persistent="exportOngoing || editingExportTemplates"
+    :persistent="exportOngoing || editingDocumentTemplates"
     >
     <q-card
-      v-if="!exportOngoing && !editingExportTemplates"
+      v-if="!exportOngoing && !editingDocumentTemplates"
       class="exportDialog"
       dark
     >
@@ -286,12 +286,12 @@
                     dark
                     filled
                     class="flex-grow"
-                    :options="exportTemplateList"
+                    :options="documentTemplateList"
                     use-input
-                    v-model="selectedExportTemplate"
+                    v-model="selectedDocumentTemplate"
                     menu-anchor="bottom middle"
                     menu-self="top middle"
-                    label="Selected export template"
+                    label="Selected template"
                     option-value="id"
                     clearable
                   >
@@ -316,20 +316,20 @@
                 </div>
 
                 <div
-                  v-if="selectedExportTemplate"
+                  v-if="selectedDocumentTemplate"
                   class="col-auto flex items-center q-ml-md q-mb-lg"
                 >
-                  <q-btn round dense flat icon="mdi-pencil" @click.stop.prevent="editExistingExportTemplate">
+                  <q-btn round dense flat icon="mdi-pencil" @click.stop.prevent="editExistingDocumentTemplate">
                     <q-tooltip :delay="500">
-                      Edit this export template
+                      Edit this template
                     </q-tooltip>
                   </q-btn>
                 </div>
 
                 <div class="col-auto flex items-center q-ml-md q-mb-lg">
-                  <q-btn round dense flat icon="mdi-plus" @click.stop.prevent="setupNewExportTemplate">
+                  <q-btn round dense flat icon="mdi-plus" @click.stop.prevent="setupNewDocumentTemplate">
                     <q-tooltip :delay="500">
-                      Add a new export template
+                      Add a new template
                     </q-tooltip>
                   </q-btn>
                 </div>
@@ -484,7 +484,7 @@
       </q-card-actions>
     </q-card>
 
-    <q-card v-if="editingExportTemplates" dark class="exportTemplates">
+    <q-card v-if="editingDocumentTemplates" dark class="exportTemplates">
       <div style="width: 100%;">
         <q-input
           class="exportTemplateNameInput"
@@ -493,16 +493,16 @@
           :bottom-slots="false"
           hide-bottom-space
           style="width: 100%;"
-          :label="(editedExportTemplate.name.length === 0) ? 'Enter template name' : 'Export template name'"
-          v-model="editedExportTemplate.name"
-          :error="editedExportTemplate.name.length === 0"
+          :label="(editedDocumentTemplate.name.length === 0) ? 'Enter template name' : 'Export template name'"
+          v-model="editedDocumentTemplate.name"
+          :error="editedDocumentTemplate.name.length === 0"
         />
       </div>
 
       <div class="exportTemplatesInner">
       <q-card-section horizontal class="exportTemplatesTabList">
         <q-tabs
-          v-model="activeExportTemplateTab"
+          v-model="activeDocumentTemplateTab"
           class="text-accent"
           active-color="primary"
           indicator-color="primary"
@@ -520,7 +520,7 @@
             :key="blueprint._id"
             :icon="blueprint.icon"
             :name="blueprint._id"
-            :label="`${blueprint.namePlural} - ${selectedExportTableData[index].fields.length}/${exportTableData[index].fields.length}`"
+            :label="`${blueprint.namePlural} - ${selecteddocumentTemplateTableData[index].fields.length}/${documentTemplateTableData[index].fields.length}`"
           />
 
         </q-tabs>
@@ -530,7 +530,7 @@
       <q-card-section horizontal class="exportTemplatesTabContent">
         <q-tab-panels
           dark
-          v-model="activeExportTemplateTab"
+          v-model="activeDocumentTemplateTab"
           animated
           style="width: 100%;"
           vertical
@@ -546,14 +546,14 @@
 
             <q-table
               :title="blueprint.namePlural"
-              :data="exportTableData[index].fields"
-              :columns="exportDataColumns"
+              :data="documentTemplateTableData[index].fields"
+              :columns="documentTemplateDataColumns"
               virtual-scroll
               :rows-per-page-options="[0]"
               :virtual-scroll-sticky-size-start="48"
               row-key="id"
               selection="multiple"
-              :selected.sync="selectedExportTableData[index].fields"
+              :selected.sync="selecteddocumentTemplateTableData[index].fields"
               dark
               flat
               dense
@@ -567,26 +567,28 @@
 
       </div>
 
-      <q-card-actions align="right" class="q-mb-lg q-mt-md q-mr-xl controlButtons">
+      <q-card-actions align="right" class="q-mb-lg q-mt-md q-mx-xl controlButtons">
          <q-btn
           outline
           label="Delete template"
           color="secondary"
-          class="align-self-start"
+          class="q-mr-auto deleteTemplateButton"
+          v-if="!adddingNewTemplate"
+          @click="deleteDocumentTemplate"
         />
         <q-btn
           flat
           label="Cancel editing"
           color="accent"
           class="q-mr-lg"
-          @click="editingExportTemplates = false"
+          @click="editingDocumentTemplates = false"
         />
         <q-btn
           outline
-          :disable="editedExportTemplate.name.length === 0"
+          :disable="editedDocumentTemplate.name.length === 0"
           label="Save template"
           color="primary"
-          @click="saveExportTemplate"
+          @click="saveDocumentTemplate"
         />
       </q-card-actions>
 
@@ -641,13 +643,13 @@ import documentPreview from "src/components/DocumentPreview.vue"
 import { I_ExportObject } from "src/interfaces/I_ExportObject"
 import { I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
-import { I_ExportTemplate } from "src/interfaces/I_ExportTemplate"
+import { I_DocumentTemplate } from "src/interfaces/I_DocumentTemplate"
 
 import { I_PDFKitDocument } from "src/interfaces/I_PDFKitDocument"
 import { I_HtmlParserNode } from "src/interfaces/I_HtmlParserNode"
 import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
 
-import { saveExportTemplateIntoDB, retrieveAllExportTemplatesFromDB } from "src/scripts/projectManagement/exportTemplates"
+import { saveDocumentTemplateIntoDB, retrieveAllDocumentTemplatesFromDB, removeDocumentTemplateFromDB } from "src/scripts/projectManagement/documentTemplates"
 
 import RobotoRegular from "src/assets/fonts/Roboto-Regular.ttf"
 import RobotoBold from "src/assets/fonts/Roboto-Bold.ttf"
@@ -675,7 +677,7 @@ export default class ExportProject extends DialogBase {
       this.SSET_setDialogState(true)
       this.dialogModel = true
 
-      this.exportTemplateList = await retrieveAllExportTemplatesFromDB()
+      this.documentTemplateList = await retrieveAllDocumentTemplatesFromDB()
 
       this.resetLocalData()
       this.reloadOptions()
@@ -707,6 +709,8 @@ export default class ExportProject extends DialogBase {
     this.exportDocumentsModel = []
     this.exportOngoing = false
     this.exportList = []
+    // @ts-ignore
+    this.selectedDocumentTemplate = null
   }
 
   @Prop(({
@@ -804,72 +808,76 @@ export default class ExportProject extends DialogBase {
   listCopy: I_ShortenedDocument[] = []
 
   /**
-   * Local list of all predefined export templates
+   * Local list of all predefined document templates
    */
-  exportTemplateList: I_ExportTemplate[] = []
+  documentTemplateList: I_DocumentTemplate[] = []
 
   /**
-   * Currently selected export templates
+   * Currently selected document templates
    */
-  selectedExportTemplate = null as unknown as I_ExportTemplate
+  selectedDocumentTemplate = null as unknown as I_DocumentTemplate
 
-  editingExportTemplates = false
+  editingDocumentTemplates = false
 
-  editedExportTemplate = {
+  editedDocumentTemplate = {
     id: "",
     name: "",
     documentTypeList: []
-  } as I_ExportTemplate
+  } as I_DocumentTemplate
 
-  activeExportTemplateTab = ""
+  activeDocumentTemplateTab = ""
 
-  setupNewExportTemplate () {
-    this.editedExportTemplate.id = uid()
-    this.editedExportTemplate.name = ""
-    this.activeExportTemplateTab = this.SGET_allBlueprints[0]._id
+  adddingNewTemplate = false
 
-    this.editedExportTemplate.documentTypeList = this.SGET_allBlueprints.map(blueprint => {
+  setupNewDocumentTemplate () {
+    this.adddingNewTemplate = true
+    this.editedDocumentTemplate.id = uid()
+    this.editedDocumentTemplate.name = ""
+    this.activeDocumentTemplateTab = this.SGET_allBlueprints[0]._id
+
+    this.editedDocumentTemplate.documentTypeList = this.SGET_allBlueprints.map(blueprint => {
       return {
         documentTypeID: blueprint._id,
         excludedFieldIDList: []
       }
     })
-    this.mapExportFieldTableData()
-    this.editingExportTemplates = true
+    this.mapDocumentFieldTableData()
+    this.editingDocumentTemplates = true
   }
 
-  editExistingExportTemplate () {
-    this.editedExportTemplate.id = this.selectedExportTemplate.id
-    this.editedExportTemplate.name = this.selectedExportTemplate.name
-    this.activeExportTemplateTab = this.SGET_allBlueprints[0]._id
+  editExistingDocumentTemplate () {
+    this.adddingNewTemplate = false
+    this.editedDocumentTemplate.id = this.selectedDocumentTemplate.id
+    this.editedDocumentTemplate.name = this.selectedDocumentTemplate.name
+    this.activeDocumentTemplateTab = this.SGET_allBlueprints[0]._id
 
-    this.editedExportTemplate.documentTypeList = this.selectedExportTemplate.documentTypeList
-    this.mapExportFieldTableData()
-    this.editingExportTemplates = true
+    this.editedDocumentTemplate.documentTypeList = this.selectedDocumentTemplate.documentTypeList
+    this.mapDocumentFieldTableData()
+    this.editingDocumentTemplates = true
   }
 
-  exportTableData: {
+  documentTemplateTableData: {
     timestamp: string
     blueprintID: string
     fields: I_ShotrenedExtraField[]
   }[] = []
 
-  selectedExportTableData: {
+  selecteddocumentTemplateTableData: {
     timestamp: string
     blueprintID: string
     fields: I_ShotrenedExtraField[]
   }[] = []
 
-  mapExportFieldTableData () {
+  mapDocumentFieldTableData () {
     for (let index = 0; index < this.SGET_allBlueprints.length; index++) {
       const blueprint = this.SGET_allBlueprints[index]
 
-      this.exportTableData[index] = {
+      this.documentTemplateTableData[index] = {
         timestamp: uid(),
         blueprintID: blueprint._id,
         fields: []
       }
-      this.selectedExportTableData[index] = {
+      this.selecteddocumentTemplateTableData[index] = {
         timestamp: uid(),
         blueprintID: blueprint._id,
         fields: []
@@ -899,12 +907,12 @@ export default class ExportProject extends DialogBase {
           field.id !== "documentBackgroundColor" &&
           field.id !== "breakDocumentSettings"
         ) {
-          this.exportTableData[index].fields.push(remappedField)
+          this.documentTemplateTableData[index].fields.push(remappedField)
 
-          const matchedExludedList = this.editedExportTemplate.documentTypeList.find(list => list.documentTypeID === blueprint._id)?.excludedFieldIDList
+          const matchedExludedList = this.editedDocumentTemplate.documentTypeList.find(list => list.documentTypeID === blueprint._id)?.excludedFieldIDList
 
           if (!matchedExludedList || !matchedExludedList.includes(remappedField.id)) {
-            this.selectedExportTableData[index].fields.push(remappedField)
+            this.selecteddocumentTemplateTableData[index].fields.push(remappedField)
           }
           counter++
         }
@@ -913,18 +921,18 @@ export default class ExportProject extends DialogBase {
   }
 
   reactToRowUpdate () {
-    this.selectedExportTableData = this.selectedExportTableData.map(single => {
+    this.selecteddocumentTemplateTableData = this.selecteddocumentTemplateTableData.map(single => {
       single.timestamp = uid()
       return single
     })
   }
 
-  async saveExportTemplate () {
-    const newExportTemplate: I_ExportTemplate = extend(true, [], this.editedExportTemplate)
-    newExportTemplate.documentTypeList = newExportTemplate.documentTypeList.map(docType => {
+  async saveDocumentTemplate () {
+    const newDocumentTemplate: I_DocumentTemplate = extend(true, [], this.editedDocumentTemplate)
+    newDocumentTemplate.documentTypeList = newDocumentTemplate.documentTypeList.map(docType => {
       const matchedBlueprint = this.SGET_blueprint(docType.documentTypeID)
-      const matchedTableRow = this.exportTableData.find(row => row.blueprintID === matchedBlueprint._id)
-      const matchedSelectTableRow = this.selectedExportTableData.find(row => row.blueprintID === matchedBlueprint._id)
+      const matchedTableRow = this.documentTemplateTableData.find(row => row.blueprintID === matchedBlueprint._id)
+      const matchedSelectTableRow = this.selecteddocumentTemplateTableData.find(row => row.blueprintID === matchedBlueprint._id)
 
       if (matchedTableRow && matchedSelectTableRow) {
         const excludedFieldIDList = matchedTableRow.fields
@@ -945,9 +953,9 @@ export default class ExportProject extends DialogBase {
       }
     })
 
-    await saveExportTemplateIntoDB(newExportTemplate)
-    this.exportTemplateList = await retrieveAllExportTemplatesFromDB()
-    this.editingExportTemplates = false
+    await saveDocumentTemplateIntoDB(newDocumentTemplate)
+    this.documentTemplateList = await retrieveAllDocumentTemplatesFromDB()
+    this.editingDocumentTemplates = false
     this.$q.notify({
       group: false,
       type: "positive",
@@ -957,7 +965,25 @@ export default class ExportProject extends DialogBase {
     await this.$nextTick()
 
     // @ts-ignore
-    this.selectedExportTemplate = this.exportTemplateList.find(t => t.id === newExportTemplate.id)
+    this.selectedDocumentTemplate = this.documentTemplateList.find(t => t.id === newDocumentTemplate.id)
+  }
+
+  async deleteDocumentTemplate () {
+    const newDocumentTemplate: I_DocumentTemplate = extend(true, [], this.editedDocumentTemplate)
+
+    await removeDocumentTemplateFromDB(newDocumentTemplate)
+
+    this.documentTemplateList = await retrieveAllDocumentTemplatesFromDB()
+    this.editingDocumentTemplates = false
+    this.$q.notify({
+      group: false,
+      type: "positive",
+      message: "Template succesfully deleted"
+    })
+
+    await this.$nextTick()
+    // @ts-ignore
+    this.selectedDocumentTemplate = null
   }
 
   mapFields (fieldType: string) {
@@ -1012,7 +1038,7 @@ export default class ExportProject extends DialogBase {
     }
   }
 
-  exportDataColumns = [
+  documentTemplateDataColumns = [
     {
       name: "order",
       required: true,
@@ -1254,6 +1280,24 @@ export default class ExportProject extends DialogBase {
       .filter(field => field.id !== "breakDocumentSettings")
       .filter(field => !field.isLegacy)
       .filter(field => !field.isSpoiler || this.includeSpoilers)
+      .filter(field => {
+        if (this.selectedDocumentTemplate) {
+          const currentFieldID = field.id
+          const curentBlueprintID = blueprint._id
+
+          const matchedTemplateRow = this.selectedDocumentTemplate.documentTypeList.find(e => e.documentTypeID === curentBlueprintID)
+
+          if (matchedTemplateRow) {
+            return !(matchedTemplateRow.excludedFieldIDList.includes(currentFieldID))
+          }
+          else {
+            return true
+          }
+        }
+        else {
+          return true
+        }
+      })
       .filter(field => {
         if (input.extraFields.find(e => e.id === "categorySwitch")?.value) {
           if (catIgnoreList.includes(field.id)) {
@@ -2080,6 +2124,10 @@ export default class ExportProject extends DialogBase {
 
   .controlButtons {
     width: 100%;
+  }
+
+  .deleteTemplateButton {
+    margin-left: 330px;
   }
 
   .exportTemplatesInner {

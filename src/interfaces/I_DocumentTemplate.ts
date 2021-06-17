@@ -1,5 +1,5 @@
 
-export interface I_ExportTemplate{
+export interface I_DocumentTemplate{
   id: string
   name: string
   documentTypeList: {
