@@ -1011,12 +1011,12 @@ export default class ObjectTree extends BaseClass {
           }
         ]
 
-        if (this.firstTimeRender) {
+        /*  if (this.firstTimeRender) {
           this.expandedTreeNodes = [...new Set([
             ...this.expandedTreeNodes,
             "tagList"
           ])]
-        }
+        } */
       }
 
       treeObject = [...tagNodeList, ...treeObject]

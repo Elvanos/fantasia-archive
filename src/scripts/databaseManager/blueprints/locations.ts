@@ -445,13 +445,13 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedDemiseCharactersNew",
-      name: "Characters deceased at the locationNew",
+      name: "Characters deceased at the location",
       type: "manyToManyRelationship",
       icon: "mdi-account",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "characters",
-        connectedField: "pairedDemiseLocation"
+        connectedField: "pairedDemiseLocationNew"
       }
     },
     {
