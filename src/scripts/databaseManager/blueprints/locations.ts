@@ -8,6 +8,63 @@ export const locationsBlueprint: I_Blueprint = {
   category: "World",
   extraFields: [
     {
+      id: "pairedOriginCharacters",
+      name: "Characters originated from the location",
+      type: "manyToSingleRelationship",
+      icon: "mdi-account",
+      sizing: 12,
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
+        <br>
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
+      isLegacy: true,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "pairedOriginLocation"
+      }
+    },
+    {
+      id: "pairedCurrentCharacters",
+      name: "Characters currently living in the location",
+      type: "manyToSingleRelationship",
+      icon: "mdi-account",
+      sizing: 12,
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
+        <br>
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
+      isLegacy: true,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "pairedCurrentLocation"
+      }
+    },
+    {
+      id: "pairedDemiseCharacters",
+      name: "Characters deceased at the location",
+      type: "manyToSingleRelationship",
+      icon: "mdi-account",
+      sizing: 12,
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
+        <br>
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
+      isLegacy: true,
+      relationshipSettings: {
+        connectedObjectType: "characters",
+        connectedField: "pairedDemiseLocation"
+      }
+    },
+    {
       id: "breakDocumentSettings",
       name: "Document settings",
       type: "break",
@@ -111,7 +168,7 @@ export const locationsBlueprint: I_Blueprint = {
       type: "number",
       icon: "mdi-file-tree",
       tooltip:
-        `In case the default sorting via alphabet in the hierarchical tree on the left is inadequite for your needs, this field allows you to fill custom numbers to order by that get placed before the default alphabetical order.
+        `In case the default sorting via alphabet in the hierarchical tree on the left is inadequate for your needs, this field allows you to fill custom numbers to order by that get placed before the default alphabetical order.
         <br>It is heavily suggested to "pad-out" the custom order numbers by writing for example 100 (or least 10) instead of 1.
         <br>This allows for extra "padding" between the items in case a new one needs to be added in the middle without needing to redo the custom order on all documents.
         `,
@@ -365,31 +422,31 @@ export const locationsBlueprint: I_Blueprint = {
       sizing: 12
     },
     {
-      id: "pairedOriginCharacters",
+      id: "pairedOriginCharactersNew",
       name: "Characters originated from the location",
-      type: "manyToSingleRelationship",
+      type: "manyToManyRelationship",
       icon: "mdi-account",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "characters",
-        connectedField: "pairedOriginLocation"
+        connectedField: "pairedOriginLocationNew"
       }
     },
     {
-      id: "pairedCurrentCharacters",
+      id: "pairedCurrentCharactersNew",
       name: "Characters currently living in the location",
-      type: "manyToSingleRelationship",
+      type: "manyToManyRelationship",
       icon: "mdi-account",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "characters",
-        connectedField: "pairedCurrentLocation"
+        connectedField: "pairedCurrentLocationNew"
       }
     },
     {
-      id: "pairedDemiseCharacters",
-      name: "Characters deceased at the location",
-      type: "manyToSingleRelationship",
+      id: "pairedDemiseCharactersNew",
+      name: "Characters deceased at the locationNew",
+      type: "manyToManyRelationship",
       icon: "mdi-account",
       sizing: 4,
       relationshipSettings: {

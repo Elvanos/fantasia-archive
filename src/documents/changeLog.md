@@ -43,9 +43,11 @@
   - Rename tag
   - Delete tag  
   - Add new document to this tag
+- Added more common material/resource properties fields to the Resource document type
 
 ### QoL adjustments
 
+- Replaced confusing relationships to Places of Demise/Birth/Residence in Character and Location document types with normal 2-way relationship. Previous fields have been turned to Legacy fields for easy user removal later on
 - Added search to keybinds cheatsheet
 - Added hierarchical tree auto-expand to top-tag pseudo-category on startup in order to unify the behavior with how rest of FA modules work right now
 - Set non-aggressive relationships selection as default to make setting up new project a little easier for users

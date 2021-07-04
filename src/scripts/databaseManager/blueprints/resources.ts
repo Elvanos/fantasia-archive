@@ -111,7 +111,7 @@ export const resourcesBlueprint: I_Blueprint = {
       type: "number",
       icon: "mdi-file-tree",
       tooltip:
-        `In case the default sorting via alphabet in the hierarchical tree on the left is inadequite for your needs, this field allows you to fill custom numbers to order by that get placed before the default alphabetical order.
+        `In case the default sorting via alphabet in the hierarchical tree on the left is inadequate for your needs, this field allows you to fill custom numbers to order by that get placed before the default alphabetical order.
         <br>It is heavily suggested to "pad-out" the custom order numbers by writing for example 100 (or least 10) instead of 1.
         <br>This allows for extra "padding" between the items in case a new one needs to be added in the middle without needing to redo the custom order on all documents.
         `,
@@ -176,7 +176,6 @@ export const resourcesBlueprint: I_Blueprint = {
       type: "break",
       sizing: 12
     },
-
     {
       id: "features",
       name: "Prominent features",
@@ -220,7 +219,7 @@ export const resourcesBlueprint: I_Blueprint = {
       tooltip: `
         A rough scale to help you determine how hard your materials are.
         <br>
-        Please note that harness means that a harder material can scratch/pierce/drill through the softer one.
+        Please note that hardness means that a harder material can scratch/cut a softer one.
         <br>
         It does NOT mean that the material is automatically tougher as hardness tends to come with brittlenes.
       `,
@@ -310,6 +309,35 @@ export const resourcesBlueprint: I_Blueprint = {
         "Waste",
         "Other"
       ]
+    },
+    {
+      id: "otherStats",
+      name: "Other material physical properties",
+      type: "list",
+      icon: "mdi-format-list-bulleted-type",
+      sizing: 12,
+      predefinedListExtras: {
+        affix: "Note/Value",
+        reverse: true,
+        extraSelectValueList: [
+          {
+            title: "Common material properties",
+            values: [
+              "Melting point",
+              "Boiling point",
+              "Burning point",
+              "Brittleness",
+              "Plasticity (dont not return to original shape after deformation)",
+              "Elasticity (returns to original shape after deformation)",
+              "Thermo-plasticity (how much it deforms with temperature applied)",
+              "Electrical conductivity (admitence)",
+              "Thermal conductivity (admitence)",
+              "Vibration conductivity (admitence)"
+            ]
+          }
+
+        ]
+      }
     },
     {
       id: "relatedResources",

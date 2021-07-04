@@ -266,9 +266,9 @@
                       Disable document control bar
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
                       <q-tooltip :delay="500">
-                        In case you wish to maximize you working space on the document, you can disable the top button bar with the setting.
+                        In case you wish to maximize your working space on the document, you can disable the top button bar with the setting.
                         <br>
-                        The necesarry control buttons will be moved to the top of the main document body while the rest of the functionality will be accesible via keybinds or thought the app menu on the top left.
+                        The necessary control buttons will be moved to the top of the main document body while the rest of the functionality will be accessible via keybinds or through the app menu on the top left.
                       </q-tooltip>
                     </q-icon>
                     </div>

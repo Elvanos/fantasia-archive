@@ -9,6 +9,63 @@ export const charactersBlueprint: I_Blueprint = {
   category: "World",
   extraFields: [
     {
+      id: "pairedCurrentLocation",
+      name: "Place of residence",
+      type: "singleToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 12,
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
+        <br>
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
+      isLegacy: true,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "pairedCurrentCharacters"
+      }
+    },
+    {
+      id: "pairedOriginLocation",
+      name: "Place of origin",
+      type: "singleToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 12,
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
+        <br>
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
+      isLegacy: true,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "pairedOriginCharacters"
+      }
+    },
+    {
+      id: "pairedDemiseLocation",
+      name: "Place of demise",
+      type: "singleToManyRelationship",
+      icon: "mdi-map-marker-radius",
+      sizing: 12,
+      tooltip: `
+        This field is obsolete and no longer serves any purpose.
+        <br>
+        Pleae move your data to the corresponding new fields.
+        <br>
+        This field will automatically disappear once all data is gone from it.
+      `,
+      isLegacy: true,
+      relationshipSettings: {
+        connectedObjectType: "locations",
+        connectedField: "pairedDemiseCharacters"
+      }
+    },
+    {
       id: "pairedMagic",
       name: "Known Magic/Spells",
       type: "manyToManyRelationship",
@@ -181,7 +238,7 @@ export const charactersBlueprint: I_Blueprint = {
       type: "number",
       icon: "mdi-file-tree",
       tooltip:
-        `In case the default sorting via alphabet in the hierarchical tree on the left is inadequite for your needs, this field allows you to fill custom numbers to order by that get placed before the default alphabetical order.
+        `In case the default sorting via alphabet in the hierarchical tree on the left is inadequate for your needs, this field allows you to fill custom numbers to order by that get placed before the default alphabetical order.
         <br>It is heavily suggested to "pad-out" the custom order numbers by writing for example 100 (or least 10) instead of 1.
         <br>This allows for extra "padding" between the items in case a new one needs to be added in the middle without needing to redo the custom order on all documents.
         `,
@@ -363,36 +420,36 @@ export const charactersBlueprint: I_Blueprint = {
       ]
     },
     {
-      id: "pairedCurrentLocation",
+      id: "pairedCurrentLocationNew",
       name: "Place of residence",
-      type: "singleToManyRelationship",
+      type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "locations",
-        connectedField: "pairedCurrentCharacters"
+        connectedField: "pairedCurrentCharactersNew"
       }
     },
     {
-      id: "pairedOriginLocation",
+      id: "pairedOriginLocationNew",
       name: "Place of origin",
-      type: "singleToManyRelationship",
+      type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "locations",
-        connectedField: "pairedOriginCharacters"
+        connectedField: "pairedOriginCharactersNew"
       }
     },
     {
-      id: "pairedDemiseLocation",
+      id: "pairedDemiseLocationNew",
       name: "Place of demise",
-      type: "singleToManyRelationship",
+      type: "manyToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 4,
       relationshipSettings: {
         connectedObjectType: "locations",
-        connectedField: "pairedDemiseCharacters"
+        connectedField: "pairedDemiseCharactersNew"
       }
     },
     {
@@ -760,7 +817,7 @@ export const charactersBlueprint: I_Blueprint = {
         "Irreverent",
         "Irritable",
         "Kind",
-        "Knowledge",
+        "Knowledgeable",
         "Lazy",
         "Leaderly",
         "Leisurely",
@@ -778,7 +835,7 @@ export const charactersBlueprint: I_Blueprint = {
         "Many-sided",
         "Masculine (Manly)",
         "Maternal",
-        "Maticulous",
+        "Meticulous",
         "Mature",
         "Mawkish",
         "Mealymouthed",
@@ -928,7 +985,7 @@ export const charactersBlueprint: I_Blueprint = {
         "Ruined",
         "Rustic",
         "Sadistic",
-        "Sage",
+        "Sagacious (sage)",
         "Sanctimonious",
         "Sane",
         "Sarcastic",
