@@ -13,9 +13,9 @@
 
 ### Bugfixes & Optimizations
 
-- Fixed a few bug with the export project window not properly displaying on top of other windows/popups
-- Fixed a typo in "Save all opened documents with active changes" keybind
-- Fixed a bug that was causing the predefined select list sometimes completely disappear along with whole select in the single-select field when filtering (eg: Sex field)
+- Fixed a few bugs with the export project window not properly displaying on top of other windows/popups
+- Fixed a typo in the "Save all opened documents with active changes" keybind
+- Fixed a bug that was causing the predefined select list sometimes completely disappear along with the whole select in the single-select field when filtering (eg: Sex field)
 - Slightly improved performance when loading the project for the first time
 - Fixed a bug in PDF export that was causing export crashes in case of line breaks present in the list/relationship field notes
 
@@ -26,31 +26,32 @@
   - Integrated document templates into document view/editing
 - **Added document preview in split-view mode**
 - **Added mass document deletion tool**
-- **Added support for showing of last opened document list**
+- **Added support for the showing of last opened document list**
 - **Added first iteration of the Project settings**
 - Added project renaming support from inside the app
 - Added export functionality to relationships inside document previews
 - Added option: Aggressive relationships selection
 - Fantasia (the mascot) learned how to cook!
+- Multiple new RPG systems added and some existing got updated
 - Added unique-identified option for exports
 - Added new spoiler/secrets/DM notes field to all document types
 - Added spoiler-free export option for exports
 - Added support for custom subtitles in list fields
-- Added support for mass-exports to the hierarchy tree
+- Added support for mass exports to the hierarchy tree
 - Added context, right-click menu to the hierarchy tree to tags
   - Preview in split-view mode
   - Collapse/Expand all
   - Rename tag
   - Delete tag  
-  - Add new document to this tag
+  - Add a new document to this tag
 - Added more common material/resource properties fields to the Resource document type
 
 ### QoL adjustments
 
-- Replaced confusing relationships to Places of Demise/Birth/Residence in Character and Location document types with normal 2-way relationship. Previous fields have been turned to Legacy fields for easy user removal later on
+- Replaced confusing relationships to Places of Demise/Birth/Residence in Character and Location document types with the normal 2-way relationship. Previous fields have been turned to Legacy fields for easy user removal later on
 - Added search to keybinds cheatsheet
-- Added hierarchical tree auto-expand to top-tag pseudo-category on startup in order to unify the behavior with how rest of FA modules work right now
-- Set non-aggressive relationships selection as default to make setting up new project a little easier for users
+- Added hierarchical tree auto-expand to top-tag pseudo-category on startup in order to unify the behavior with how the rest of FA modules work right now
+- Set non-aggressive relationships selection as default to make setting up a new project a little easier for users
 - Reworded the legacy field warning message
 - Compacted the right-click menus across the app to make them a little easier to use
 - Optimized document display view to only show titles for sections that actually have content in case the document is tagged as finished or if options are set to only display filled field values

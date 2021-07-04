@@ -948,9 +948,13 @@ export default class PageDocumentDisplay extends BaseClass {
     let hasValue = true
 
     if (!value ||
+    (typeof value === "string" && value.length === 0) ||
+    // @ts-ignore
+    (typeof value.value === "string" && value.value.length === 0) ||
+    // @ts-ignore
     (Array.isArray(value) && value.length === 0) ||
     // @ts-ignore
-     (value?.value && value.value.length === 0) ||
+    (value.value && value.value.length === 0) ||
     // @ts-ignore
      (value.value === null)) {
       hasValue = false
