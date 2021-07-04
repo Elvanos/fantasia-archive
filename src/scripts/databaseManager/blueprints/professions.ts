@@ -132,7 +132,30 @@ export const professionsBlueprint: I_Blueprint = {
         <br>
         Example: A tag called "Player Party" will be considered the same tag as "player party", "PlAyER PaRtY" or anything similar.
         `,
-      sizing: 12
+      sizing: 8
+    },
+    {
+      id: "docTemplate",
+      name: "Document Template",
+      type: "documentTemplate",
+      icon: "mdi-script-text-outline",
+      tooltip:
+        `
+        Document templates are used to determine which fields will the current
+        <br>
+        document show both in view and edit mode.
+        <br>
+        Due to current technical limitations, new templates can be added and existing can
+        <br>
+        be edited/deleted only from the "Export project/document" popup.
+        <br>
+        Please also note that the updates to the template need a document tab reload.
+        <br>
+        This can be achieved either by closing an opening the current tab or switching
+        <br>
+        to another one and then back to this one.
+        `,
+      sizing: 4
     },
     {
       id: "otherNames",

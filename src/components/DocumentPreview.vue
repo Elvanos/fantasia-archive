@@ -27,7 +27,7 @@
         v-for="field in localBlueprint.extraFields"
         :key="`${field.id}`"
         class="col-12 q-mb-md"
-        v-show="retrieveFieldType(localDocument, field.id) !== 'break' && hasValueFieldFilter(field) && !determineLegacyField(localDocument, field.id)"
+        v-show="retrieveFieldType(localDocument, field.id) !== 'break' && hasValueFieldFilter(field) && !determineLegacyField(localDocument, field.id) && checkDocumentTemplate(field.id)"
       >
 
         <Field_Break
@@ -316,6 +316,8 @@ import Field_MultiSelect from "src/components/fields/Field_MultiSelect.vue"
 import Field_Wysiwyg from "src/components/fields/Field_Wysiwyg.vue"
 import Field_Tags from "src/components/fields/Field_Tags.vue"
 import { extend } from "quasar"
+import { I_DocumentTemplate } from "src/interfaces/I_DocumentTemplate"
+import { retrieveAllDocumentTemplatesFromDB } from "src/scripts/projectManagement/documentTemplates"
 
 @Component({
   components: {
@@ -371,14 +373,18 @@ export default class DocumentPreview extends BaseClass {
     })
   }
 
+  documentTemplateList: I_DocumentTemplate[] = []
+
   async setNewDocumentID (id: string) {
     this.localDocument = extend(true, {}, this.SGET_document(id))
     if (!this.localDocument) {
       // @ts-ignore
       this.localDocument = extend(true, {}, this.SGET_openedDocument(id))
+      this.documentTemplateList = await retrieveAllDocumentTemplatesFromDB()
     }
     if (this.localDocument) {
       this.localBlueprint = this.SGET_blueprint(this.localDocument.type)
+      this.documentTemplateList = await retrieveAllDocumentTemplatesFromDB()
 
       await this.$nextTick()
 
@@ -565,6 +571,38 @@ export default class DocumentPreview extends BaseClass {
     window.removeEventListener(this.wheelEvent, this.preventDefault, this.wheelOpt)
     // @ts-ignore
     window.removeEventListener("touchmove", this.preventDefault, this.wheelOpt)
+  }
+
+  checkDocumentTemplate (id: string) {
+    const ignoredList = ["breakDocumentSettings", "name", "documentColor", "documentBackgroundColor", "parentDoc", "order", "categorySwitch", "minorSwitch", "deadSwitch", "finishedSwitch", "tags", "docTemplate"]
+
+    if (ignoredList.includes(id)) {
+      return true
+    }
+
+    const selectedTemplate = this.retrieveFieldValue(this.localDocument, "docTemplate")
+
+    if (!selectedTemplate) {
+      return true
+    }
+
+    const matchedDocumentTemplate = this.documentTemplateList.find(e => e.id === selectedTemplate)
+
+    if (!matchedDocumentTemplate) {
+      return true
+    }
+
+    const matchedDocumentType = matchedDocumentTemplate.documentTypeList.find(e => e.documentTypeID === this.localBlueprint._id)
+
+    if (!matchedDocumentType) {
+      return true
+    }
+
+    if (matchedDocumentType.excludedFieldIDList.includes(id)) {
+      return false
+    }
+
+    return true
   }
 }
 </script>

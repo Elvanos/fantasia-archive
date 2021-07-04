@@ -197,6 +197,7 @@
             (hasValueFieldFilter(field) || editMode)
             && (checkBreakSectionValues(field) || editMode)
             && checkForLegacyFieldValue(currentData, field)
+            && checkDocumentTemplate(field.id)
           )
           "
         :class="`
@@ -330,6 +331,16 @@
           @signal-input="reactToFieldUpdate($event, field)"
           />
 
+          <Field_DocumentTemplate
+          class="inputWrapper"
+          v-if="field.type === 'documentTemplate'"
+          :inputDataBluePrint="field"
+          :inputDataValue="retrieveFieldValue(currentData, field.id)"
+          :isNew="currentData.isNew"
+          :editMode="editMode"
+          @signal-input="reactToFieldUpdate($event, field)"
+          />
+
       </div>
 
     </div>
@@ -349,6 +360,7 @@ import { copyDocument } from "src/scripts/documentActions/copyDocument"
 
 import { saveDocument } from "src/scripts/databaseManager/documentManager"
 import deleteDocumentCheckDialog from "src/components/dialogs/DeleteDocumentCheck.vue"
+import { retrieveAllDocumentTemplatesFromDB } from "src/scripts/projectManagement/documentTemplates"
 
 import Field_Break from "src/components/fields/Field_Break.vue"
 import Field_Text from "src/components/fields/Field_Text.vue"
@@ -362,7 +374,10 @@ import Field_SingleRelationship from "src/components/fields/Field_SingleRelation
 import Field_MultiRelationship from "src/components/fields/Field_MultiRelationship.vue"
 import Field_Wysiwyg from "src/components/fields/Field_Wysiwyg.vue"
 import Field_Tags from "src/components/fields/Field_Tags.vue"
+import Field_DocumentTemplate from "src/components/fields/Field_DocumentTemplate.vue"
+
 import { updateLastOpenedDocuments } from "src/scripts/projectManagement/projectManagent"
+import { I_DocumentTemplate } from "src/interfaces/I_DocumentTemplate"
 
 @Component({
   components: {
@@ -378,6 +393,7 @@ import { updateLastOpenedDocuments } from "src/scripts/projectManagement/project
     Field_MultiRelationship,
     Field_Wysiwyg,
     Field_Tags,
+    Field_DocumentTemplate,
 
     deleteDocumentCheckDialog
   }
@@ -468,6 +484,7 @@ export default class PageDocumentDisplay extends BaseClass {
     // window.removeEventListener("scroll", this.watchPageScroll)
     // window.removeEventListener("scroll", this.watchPageScroll)
 
+    this.documentTemplateList = await retrieveAllDocumentTemplatesFromDB()
     await this.sleep(50)
     const doc = this.findRequestedOrActiveDocument() as I_OpenedDocument
     window.scrollTo({ top: 0, behavior: "auto" })
@@ -484,6 +501,8 @@ export default class PageDocumentDisplay extends BaseClass {
 
     // window.addEventListener("scroll", this.watchPageScroll)
   }
+
+  documentTemplateList: I_DocumentTemplate[] = []
 
   decounceScrollTimer = false as any
   watchPageScroll () {
@@ -744,6 +763,17 @@ export default class PageDocumentDisplay extends BaseClass {
       const dataPass = { doc: this.localDataCopy, treeAction: false }
       this.SSET_updateOpenedDocument(dataPass)
     }
+
+    // FIELD - Document template
+    if (field.type === "documentTemplate") {
+      this.currentData.hasEdits = true
+      const indexToUpdate = this.currentData.extraFields.findIndex(s => s.id === field.id)
+      this.currentData.extraFields[indexToUpdate].value = inputData
+
+      this.localDataCopy = extend(true, {}, this.currentData)
+      const dataPass = { doc: this.localDataCopy, treeAction: true }
+      this.SSET_updateOpenedDocument(dataPass)
+    }
   }
 
   /**
@@ -870,7 +900,7 @@ export default class PageDocumentDisplay extends BaseClass {
   categoryFieldFilter (currentFieldID: string) {
     const isCategory = this.retrieveFieldValue(this.currentData, "categorySwitch")
 
-    const ignoredList = ["breakDocumentSettings", "name", "documentColor", "documentBackgroundColor", "parentDoc", "order", "categorySwitch", "minorSwitch", "deadSwitch", "finishedSwitch", "tags", "otherNames"]
+    const ignoredList = ["breakDocumentSettings", "name", "documentColor", "documentBackgroundColor", "parentDoc", "order", "categorySwitch", "minorSwitch", "deadSwitch", "finishedSwitch", "tags", "otherNames", "docTemplate"]
     return (
       (
         (!isCategory && currentFieldID !== "categoryDescription") ||
@@ -1150,6 +1180,38 @@ export default class PageDocumentDisplay extends BaseClass {
   triggerExport () {
     const localId = this.currentData._id
     this.SSET_setExportDialogState([localId])
+  }
+
+  checkDocumentTemplate (id: string) {
+    const ignoredList = ["breakDocumentSettings", "name", "documentColor", "documentBackgroundColor", "parentDoc", "order", "categorySwitch", "minorSwitch", "deadSwitch", "finishedSwitch", "tags", "docTemplate"]
+
+    if (ignoredList.includes(id)) {
+      return true
+    }
+
+    const selectedTemplate = this.retrieveFieldValue(this.currentData, "docTemplate")
+
+    if (!selectedTemplate) {
+      return true
+    }
+
+    const matchedDocumentTemplate = this.documentTemplateList.find(e => e.id === selectedTemplate)
+
+    if (!matchedDocumentTemplate) {
+      return true
+    }
+
+    const matchedDocumentType = matchedDocumentTemplate.documentTypeList.find(e => e.documentTypeID === this.bluePrintData._id)
+
+    if (!matchedDocumentType) {
+      return true
+    }
+
+    if (matchedDocumentType.excludedFieldIDList.includes(id)) {
+      return false
+    }
+
+    return true
   }
 }
 </script>

@@ -22,7 +22,8 @@ export interface I_ExtraFields {
   "manyToSingleRelationship" |
   "manyToManyRelationship" |
   "break" |
-  "tags"
+  "tags"|
+  "documentTemplate"
 
   predefinedListExtras?: {
     reverse?: boolean

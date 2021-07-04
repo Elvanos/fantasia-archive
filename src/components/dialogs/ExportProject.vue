@@ -905,7 +905,8 @@ export default class ExportProject extends DialogBase {
           field.id !== "parentDoc" &&
           field.id !== "documentColor" &&
           field.id !== "documentBackgroundColor" &&
-          field.id !== "breakDocumentSettings"
+          field.id !== "breakDocumentSettings" &&
+          field.id !== "docTemplate"
         ) {
           this.documentTemplateTableData[index].fields.push(remappedField)
 
@@ -1264,7 +1265,7 @@ export default class ExportProject extends DialogBase {
   }
 
   buildFieldValues (input: I_ShortenedDocument, blueprint: I_Blueprint) {
-    const catIgnoreList = ["breakDocumentSettings", "name", "documentColor", "documentBackgroundColor", "parentDoc", "order", "categorySwitch", "minorSwitch", "deadSwitch", "finishedSwitch", "tags", "otherNames", "categoryDescription"]
+    const catIgnoreList = ["breakDocumentSettings", "name", "documentColor", "documentBackgroundColor", "parentDoc", "order", "categorySwitch", "minorSwitch", "deadSwitch", "finishedSwitch", "tags", "otherNames", "categoryDescription", "docTemplate"]
 
     // Filter and map all fields
     const mappedFields = blueprint.extraFields
@@ -1277,6 +1278,7 @@ export default class ExportProject extends DialogBase {
       .filter(field => field.id !== "parentDoc")
       .filter(field => field.id !== "documentColor")
       .filter(field => field.id !== "documentBackgroundColor")
+      .filter(field => field.id !== "docTemplate")
       .filter(field => field.id !== "breakDocumentSettings")
       .filter(field => !field.isLegacy)
       .filter(field => !field.isSpoiler || this.includeSpoilers)

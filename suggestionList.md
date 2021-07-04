@@ -1,17 +1,4 @@
 
-## PROJECT SETTINGS BATCH 1 START - 0.1.8
-
-- Selective export per field basis
-- Templates for exports
-
-- New text editor (TipTap2)?
-  - Simple @ mentions
-  - Add description tabs
-  - Word count for editor fields
-  - Try to get field titles to show in full-screen edit of text editor fields
-
-## PROJECT SETTINGS BATCH 1 START - 0.1.8
-
 ## TRANSLATION SUPPORT START - 0.1.9
 
 - Settings search
@@ -27,6 +14,14 @@
 - Add advanced search capabilities to the hierarchical tree (maybe, might need to be moved to 0.2.1)
 
 - Add safeguard to escape closing of settings only after something actually got modified
+
+- Add setting for minor characters being shown with italic instead of color change
+- Add a way to cancel the spinning wheels on the load screens in case an error happens
+- New text editor (TipTap2)?
+  - Simple @ mentions
+  - Add description tabs
+  - Word count for editor fields
+  - Try to get field titles to show in full-screen edit of text editor fields
 
 ## TRANSLATION SUPPORT END - 0.1.9
 

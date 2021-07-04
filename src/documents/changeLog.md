@@ -21,6 +21,9 @@
 
 ### New features
 
+- **Added document template support**
+  - Integrated document templates into exports
+  - Integrated document templates into document view/editing
 - **Added document preview in split-view mode**
 - **Added mass document deletion tool**
 - **Added support for showing of last opened document list**
