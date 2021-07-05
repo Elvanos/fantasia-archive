@@ -28,6 +28,7 @@
 - **Added mass document deletion tool**
 - **Added support for the showing of last opened document list**
 - **Added first iteration of the Project settings**
+- Added an option to turn off the spellcheck app-wide
 - Added project renaming support from inside the app
 - Added export functionality to relationships inside document previews
 - Added option: Aggressive relationships selection
