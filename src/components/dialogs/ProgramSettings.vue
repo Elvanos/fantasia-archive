@@ -84,6 +84,23 @@
 
                   <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
+                      Disable spellcheck
+                    <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
+                      <q-tooltip :delay="500">
+                        Disabled any form of spell/grammar/word checking in the edit mode of a document
+                        <br>
+                        <span class="text-secondary">Please note that this option needs a FULL app restart to consistenly take effect!</span>
+                      </q-tooltip>
+                    </q-icon>
+                    </div>
+
+                      <q-toggle
+                        v-model="options.disableSpellCheck"
+                      />
+                  </div>
+
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
+                    <div class="optionTitle">
                       Hide relationships help button
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
                       <q-tooltip :delay="500">
@@ -1083,6 +1100,7 @@ export default class ProgramSettings extends DialogBase {
   options: OptionsStateInteface = {
     _id: "settings",
     darkMode: false,
+    disableSpellCheck: false,
     preventFilledNoteBoardPopup: false,
     agressiveRelationshipFilter: false,
     preventAutoScroll: false,

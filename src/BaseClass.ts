@@ -523,8 +523,8 @@ export default class BaseClass extends Vue {
   }
 
   @Dialogs.Getter("getDialogsState") SGET_getDialogsState!: boolean
-  @Dialogs.Getter("getExportDialogState") SGET_getExportDialogState!: {prepickedValue: string[]}
-  @Dialogs.Mutation("setExportDialogState") SSET_setExportDialogState!: (input: string[]) => void
+  @Dialogs.Getter("getExportDialogState") SGET_getExportDialogState!: {prepickedValue: string[], prepickedDocumentTemplate: string}
+  @Dialogs.Mutation("setExportDialogState") SSET_setExportDialogState!: (input: string[], prepickedTemplateID?: string) => void
 
   /**
    * Refreshes the route

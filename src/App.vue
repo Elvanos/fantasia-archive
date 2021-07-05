@@ -356,6 +356,13 @@ export default class App extends BaseClass {
 
     this.disableDocumentControlBar = options.disableDocumentControlBar
     this.refreshDocumentPreviewWindow()
+
+    if (options.disableSpellCheck) {
+      document.body.setAttribute("spellcheck", "false")
+    }
+    else {
+      document.body.setAttribute("spellcheck", "true")
+    }
   }
 
   disableDocumentControlBar = false

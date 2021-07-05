@@ -6,10 +6,11 @@ const mutation: MutationTree<DialogsStateInterface> = {
   setDialogState (state: DialogsStateInterface, input: boolean) {
     state.dialogExists = input
   },
-  setExportDialogState (state: DialogsStateInterface, input: string[]) {
+  setExportDialogState (state: DialogsStateInterface, input: string[], prepickedTemplateID = "") {
     state.exportDialog = {
       prepickedValue: input,
-      triggerTimestamp: uid()
+      triggerTimestamp: uid(),
+      prepickedDocumentTemplate: prepickedTemplateID
     }
   }
 

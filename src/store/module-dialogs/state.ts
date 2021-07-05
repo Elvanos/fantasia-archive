@@ -2,6 +2,7 @@ export interface DialogsStateInterface {
   dialogExists: boolean
   exportDialog: {
     prepickedValue: string[]
+    prepickedDocumentTemplate: string
     triggerTimestamp: string
   }
 }
@@ -11,7 +12,8 @@ function state (): DialogsStateInterface {
     dialogExists: false,
     exportDialog: {
       prepickedValue: [],
-      triggerTimestamp: ""
+      triggerTimestamp: "",
+      prepickedDocumentTemplate: ""
     }
 
   }
