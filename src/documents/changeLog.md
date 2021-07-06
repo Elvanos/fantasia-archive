@@ -18,6 +18,7 @@
 - Fixed a bug that was causing the predefined select list sometimes completely disappear along with the whole select in the single-select field when filtering (eg: Sex field)
 - Slightly improved performance when loading the project for the first time
 - Fixed a bug in PDF export that was causing export crashes in case of line breaks present in the list/relationship field notes
+- Fixed a bug causing some of the legacy field detection to miss some types of legacy fields sometimes
 
 ### New features
 

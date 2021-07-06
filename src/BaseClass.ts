@@ -653,11 +653,17 @@ export default class BaseClass extends Vue {
 
   checkForLegacyDocuments () {
     return this.SGET_allDocuments.docs.filter(doc => {
-      const localBlueprint = this.SGET_blueprint(doc.type)
+      const docSnapShot: I_ShortenedDocument = extend(true, {}, doc)
+      const localBlueprint = this.SGET_blueprint(docSnapShot.type)
       let hasLegacyValue = false
-      for (const field of doc.extraFields) {
+
+      for (const field of docSnapShot.extraFields) {
         const pairedBlueprintField = localBlueprint.extraFields.find(e => e.id === field.id)
-        if (pairedBlueprintField && pairedBlueprintField.isLegacy) {
+        if (docSnapShot._id === "e1e24951-e2af-4513-8e4c-50fb93fd94d9") {
+          console.log(field.id)
+        }
+
+        if (pairedBlueprintField && pairedBlueprintField.isLegacy && !hasLegacyValue) {
           const value = field.value
 
           if (!value ||
@@ -666,10 +672,10 @@ export default class BaseClass extends Vue {
             (value?.value?.length === 0) ||
             // @ts-ignore
             (value.value === null)) {
-            return false
           }
-          hasLegacyValue = true
-          break
+          else {
+            hasLegacyValue = true
+          }
         }
       }
 

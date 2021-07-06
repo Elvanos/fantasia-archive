@@ -10,7 +10,7 @@ export const charactersBlueprint: I_Blueprint = {
   extraFields: [
     {
       id: "pairedCurrentLocation",
-      name: "Place of residence",
+      name: "Place of residence (legacy)",
       type: "singleToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 12,
@@ -29,7 +29,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedOriginLocation",
-      name: "Place of origin",
+      name: "Place of origin (legacy)",
       type: "singleToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 12,
@@ -48,7 +48,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedDemiseLocation",
-      name: "Place of demise",
+      name: "Place of demise (legacy)",
       type: "singleToManyRelationship",
       icon: "mdi-map-marker-radius",
       sizing: 12,
@@ -67,7 +67,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedMagic",
-      name: "Known Magic/Spells",
+      name: "Known Magic/Spells (legacy)",
       type: "manyToManyRelationship",
       icon: "fas fa-hat-wizard",
       sizing: 12,
@@ -86,7 +86,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "pairedTech",
-      name: "Known Technologies/Sciences",
+      name: "Known Technologies/Sciences (legacy)",
       type: "manyToManyRelationship",
       icon: "fas fa-wrench",
       tooltip: `
@@ -105,7 +105,7 @@ export const charactersBlueprint: I_Blueprint = {
     },
     {
       id: "skills",
-      name: "Skills",
+      name: "Skills (legacy)",
       type: "list",
       icon: "mdi-sword",
       sizing: 12,

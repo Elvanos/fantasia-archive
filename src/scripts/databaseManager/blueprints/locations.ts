@@ -9,7 +9,7 @@ export const locationsBlueprint: I_Blueprint = {
   extraFields: [
     {
       id: "pairedOriginCharacters",
-      name: "Characters originated from the location",
+      name: "Characters originated from the location (legacy)",
       type: "manyToSingleRelationship",
       icon: "mdi-account",
       sizing: 12,
@@ -28,7 +28,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedCurrentCharacters",
-      name: "Characters currently living in the location",
+      name: "Characters currently living in the location (legacy)",
       type: "manyToSingleRelationship",
       icon: "mdi-account",
       sizing: 12,
@@ -47,7 +47,7 @@ export const locationsBlueprint: I_Blueprint = {
     },
     {
       id: "pairedDemiseCharacters",
-      name: "Characters deceased at the location",
+      name: "Characters deceased at the location (legacy)",
       type: "manyToSingleRelationship",
       icon: "mdi-account",
       sizing: 12,
