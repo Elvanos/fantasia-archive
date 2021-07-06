@@ -81,6 +81,29 @@
                   <q-item-section side>
                     <q-icon name="mdi-help-circle" size="18px">
                       <q-tooltip :delay="500">
+                        Determines if the export should use
+                        <br>
+                        the individual document templates set
+                        <br>
+                        inside of each document currently being exported.
+                        <br>
+                        In case this is off no such template will get used.
+                      </q-tooltip>
+                    </q-icon>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-checkbox
+                      dark
+                      v-model="useLocalDocumentTemplates"
+                      label="Use documents' local templates?"
+                    />
+                  </q-item-section>
+                </q-item>
+
+                <q-item>
+                  <q-item-section side>
+                    <q-icon name="mdi-help-circle" size="18px">
+                      <q-tooltip :delay="500">
                         Determines if the export should output a corresponding
                         <br>
                         folder structure to how FA structures the document types.
@@ -752,6 +775,8 @@ export default class ExportProject extends DialogBase {
 
   noFolderMode = false
 
+  useLocalDocumentTemplates = true
+
   setDocumentPreviewClose () {
     this.documentPreviewClose = uid()
   }
@@ -1267,6 +1292,10 @@ export default class ExportProject extends DialogBase {
   buildFieldValues (input: I_ShortenedDocument, blueprint: I_Blueprint) {
     const catIgnoreList = ["breakDocumentSettings", "name", "documentColor", "documentBackgroundColor", "parentDoc", "order", "categorySwitch", "minorSwitch", "deadSwitch", "finishedSwitch", "tags", "otherNames", "categoryDescription", "docTemplate"]
 
+    const prepickedTemplateID = input.extraFields.find(e => e.id === "docTemplate")?.value
+
+    const prepickedTemplate = this.documentTemplateList.find(t => t.id === prepickedTemplateID)
+
     // Filter and map all fields
     const mappedFields = blueprint.extraFields
       .filter(field => field.type !== "tags")
@@ -1283,6 +1312,20 @@ export default class ExportProject extends DialogBase {
       .filter(field => !field.isLegacy)
       .filter(field => !field.isSpoiler || this.includeSpoilers)
       .filter(field => {
+        if (prepickedTemplate && this.useLocalDocumentTemplates) {
+          const currentFieldID = field.id
+          const curentBlueprintID = blueprint._id
+
+          const matchedTemplateRow = prepickedTemplate.documentTypeList.find(e => e.documentTypeID === curentBlueprintID)
+
+          if (matchedTemplateRow) {
+            return !(matchedTemplateRow.excludedFieldIDList.includes(currentFieldID))
+          }
+          else {
+            return true
+          }
+        }
+
         if (this.selectedDocumentTemplate) {
           const currentFieldID = field.id
           const curentBlueprintID = blueprint._id

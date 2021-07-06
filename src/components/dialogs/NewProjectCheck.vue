@@ -159,7 +159,7 @@ export default class NewProjectCheck extends DialogBase {
 
     const optionsSnapShot = extend(true, {}, this.SGET_options)
     // @ts-ignore
-    optionsSnapShot.legacyFieldsCheck = false
+    optionsSnapShot.legacyFieldsCheck018 = false
     // @ts-ignore
     this.SSET_options(optionsSnapShot)
 

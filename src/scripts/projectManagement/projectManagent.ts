@@ -180,7 +180,7 @@ export const loadExistingProject = (vueRouter: any, Loading: any, loadingSetup: 
 
     const optionsSnapShot = extend(true, {}, vueInstance.SGET_options)
     // @ts-ignore
-    optionsSnapShot.legacyFieldsCheck = true
+    optionsSnapShot.legacyFieldsCheck018 = true
     // @ts-ignore
     optionsSnapShot.pre017check = true
     // @ts-ignore
@@ -260,7 +260,7 @@ export const mergeExistingProject = (vueRouter: any, Loading: any, loadingSetup:
     
     const optionsSnapShot = extend(true, {}, vueInstance.SGET_options)
     // @ts-ignore
-    optionsSnapShot.legacyFieldsCheck = true
+    optionsSnapShot.legacyFieldsCheck018 = true
     // @ts-ignore
     optionsSnapShot.pre017check = true
     // @ts-ignore

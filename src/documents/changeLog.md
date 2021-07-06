@@ -25,6 +25,7 @@
 - **Added document template support**
   - Integrated document templates into exports
   - Integrated document templates into document view/editing
+  - Export now automatically take in account individual export templates that take priority over one selected in the select field. This behavior can be disabled via an export setting check that will make FA ignore all individual export templates for the documents.
 - **Added document preview in split-view mode**
 - **Added mass document deletion tool**
 - **Added support for the showing of last opened document list**

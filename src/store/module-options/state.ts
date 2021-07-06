@@ -47,7 +47,7 @@ export interface OptionsStateInteface {
   userKeybindList: any[]
   treeWidth?: number
   pre017check?: boolean,
-  legacyFieldsCheck?: boolean
+  legacyFieldsCheck018?: boolean
 }
 
 function state (): OptionsStateInteface {
@@ -97,7 +97,7 @@ function state (): OptionsStateInteface {
     treeWidth: 374,
     userKeybindList: [],
     pre017check: true,
-    legacyFieldsCheck: true
+    legacyFieldsCheck018: true
   }
 }
 

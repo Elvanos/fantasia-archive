@@ -67,7 +67,7 @@
               icon="mdi-book-search-outline"
               color="red-13"
               fab
-              v-if="legacyFieldsCheck"
+              v-if="legacyFieldsCheck018"
               @click="openLegacyDocuments"
             >
               <q-tooltip
@@ -236,7 +236,7 @@ export default class DocumentLayout extends BaseClass {
     const options = this.SGET_options
     this.hideHierarchyTree = options.hideHierarchyTree
 
-    this.legacyFieldsCheck = options.legacyFieldsCheck
+    this.legacyFieldsCheck018 = options.legacyFieldsCheck018
 
     // @ts-ignore
     this.pre017check = options.pre017check
@@ -244,7 +244,7 @@ export default class DocumentLayout extends BaseClass {
     this.resizeTreeWrapper()
   }
 
-  legacyFieldsCheck: boolean|undefined = true
+  legacyFieldsCheck018: boolean|undefined = true
 
   get limiterWidth () {
     return (!this.hideHierarchyTree && this.SGET_getDocumentPreviewVisible === "") ? 374 : 0
