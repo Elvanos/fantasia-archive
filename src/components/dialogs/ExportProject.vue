@@ -2176,13 +2176,23 @@ export default class ExportProject extends DialogBase {
   }
 
   .exportTemplatesInner {
-    overflow: auto;
+    overflow: hidden;
     max-width: calc(100vw - 100px) !important;
     width: 1300px;
     max-height: calc(100vh - 300px) !important;
     align-self: flex-start;
     display: flex;
     flex-wrap: wrap;
+  }
+
+  .exportTemplatesTabList,
+  .exportTemplatesTabContent {
+    overflow: auto;
+    max-height: calc(100vh - 300px) !important;
+
+    .q-tabs__content {
+      height: auto !important;
+    }
   }
 
   .exportTemplatesTabList {
