@@ -322,7 +322,7 @@ export default class DocumentLayout extends BaseClass {
     if (legacyDocs.length === 0) {
       const optionsSnapShot = extend(true, {}, this.SGET_options)
       // @ts-ignore
-      optionsSnapShot.legacyFieldsCheck = false
+      optionsSnapShot.legacyFieldsCheck018 = false
       // @ts-ignore
       this.SSET_options(optionsSnapShot)
 
