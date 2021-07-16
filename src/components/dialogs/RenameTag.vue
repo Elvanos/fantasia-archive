@@ -25,6 +25,7 @@
               style="width: 400px;"
               label="New tag name"
               v-model="newTagName"
+              @keydown.enter.prevent="renameTags"
             />
           </div>
 
@@ -39,7 +40,7 @@
           <q-btn
             flat
             label="Rename tag"
-            :disable="newTagName.length <= 0"
+            :disable="isInvalid"
             color="primary"
             @click="renameTags" />
         </q-card-actions>
@@ -99,16 +100,19 @@ export default class RenameTagPrompt extends DialogBase {
   @Prop(({ default: "" })) readonly targetTag!: ""
 
   /**
-   * Model for the new project name
+   * Model for the new tag name
    */
   newTagName = ""
 
   documentsCopy:I_OpenedDocument[] = []
 
-  /**
-   * Create new project
-   */
+  get isInvalid () {
+    return this.newTagName.length <= 0
+  }
+
   async renameTags () {
+    if (this.isInvalid) return
+
     Loading.show({
       message: "<h4>Renaming tags in all affected documents...</h4>",
       spinnerColor: "primary",
