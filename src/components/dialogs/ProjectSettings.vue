@@ -19,6 +19,7 @@
               v-model="projectName"
               :error="isInvalid"
               :error-message="'Your project name contains invalid characters or is empty'"
+              @keydown.enter.prevent="saveProjectSettings"
             />
           </div>
 
@@ -114,6 +115,8 @@ export default class ProjectSettingsDialog extends DialogBase {
   }
 
   async saveProjectSettings () {
+    if (this.isInvalid) return
+
     const newSettings = {
       projectName: this.projectName
     }

@@ -25,9 +25,10 @@
               ref="newProjectInput"
               style="width: 400px;"
               label="New project name"
-              v-model="newProjectName"
+              v-model.trim="newProjectName"
               :error="isInvalid && newProjectName.length > 0"
               :error-message="'Your project name contains invalid characters'"
+              @keydown.enter.prevent="createNewProject"
             />
           </div>
 
@@ -147,6 +148,8 @@ export default class NewProjectCheck extends DialogBase {
    * Create new project
    */
   createNewProject () {
+    if (this.isInvalid) return
+
     Loading.show({
       message: "<h4>Setting up a new project...</h4>",
       spinnerColor: "primary",
