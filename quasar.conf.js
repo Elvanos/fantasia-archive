@@ -215,13 +215,7 @@ module.exports = configure(function (ctx) {
 
       builder: {
         // https://www.electron.build/configuration/configuration
-        linux: {
-          target: [
-            { target: "pacman" },
-            { target: "AppImage" },
-            { target: "deb" }
-          ]
-        },
+       
         appId: "fantasiaarchive",
         win: {
           icon: 'src-electron/icons/icon.ico'
