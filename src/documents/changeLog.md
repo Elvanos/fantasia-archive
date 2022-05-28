@@ -3,6 +3,19 @@
 
 ---
 
+## 0.1.9
+
+### Known issues
+
+- Creating a brand new project can very occasionally get stuck. Restarting the app fixes this.
+- Loading existing project can very occasionally get stuck. Restarting the app fixes this.
+- Saving documents can sometimes leave it in edit mode instead of closing it (data gets saved anyway).
+
+### Bugfixes & Optimizations
+
+- Improved enter key support for different dialogs. (thanks babelfish!)
+- Fixed an issue with outdated Electron version and added Arch Linux build support (thanks Wazikamawata!)
+
 ## 0.1.8
 
 ### Known issues
