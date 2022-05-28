@@ -41,7 +41,6 @@ jobs:
         path: |
           dist/electron/Packaged/*.snap
           dist/electron/Packaged/*.AppImage
-          dist/electron/Packaged/*.pacman
         
     - name: Upload MacOS Artifact
       if: ${{ matrix.os == 'macOS-latest' }}
