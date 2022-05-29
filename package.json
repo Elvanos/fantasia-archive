@@ -10,7 +10,7 @@
     "lint": "eslint --ext .js,.ts,.vue ./",
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev -m electron",
-    "build": "quasar build -m electron"
+    "build": "quasar build -m electron --publish never"
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
