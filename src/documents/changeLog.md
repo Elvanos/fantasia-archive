@@ -13,8 +13,9 @@
 
 ### Bugfixes & Optimizations
 
+- Hopefully improved performance and overall optimization due to multiple updated libraries and Electron framework.
 - Improved enter key support for different dialogs. (thanks babelfish!)
-- Fixed an issue with outdated Electron version and added Arch Linux build support (thanks Wazikamawata!)
+- Fixed an issue with outdated Electron version and fixed a connected issue with building using the newer Electron version (thanks Wazikamawata!)
 
 ## 0.1.8
 
