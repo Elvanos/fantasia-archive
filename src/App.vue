@@ -287,23 +287,23 @@ export default class App extends BaseClass {
     // @ts-ignore
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     if (event.target && event.target.tagName.toLowerCase() === "a" && event.target.closest(".fieldWysiwyg")) {
-      const isValidHttpUrl = (string:string) => {
-        let url
-
-        try {
-          url = new URL(string)
+      try {
+        // @ts-ignore
+        const url = new URL(event.target.href as string)
+        // @ts-ignore
+        console.log(url)
+        if (url.protocol === "http:" || url.protocol === "https:") {
+          shell.openExternal(url.href).catch(e => console.log(e))
         }
-        catch (_) {
-          return false
+        else if (url.protocol === "document:") {
+          const doc = this.SGET_document(url.pathname)
+          /* eslint-disable */
+          this.openExistingDocumentRoute(doc)
+          /* eslint-enable */
         }
-
-        return url.protocol === "http:" || url.protocol === "https:"
       }
+      catch (_) {
 
-      // @ts-ignore
-      if (isValidHttpUrl(event.target.href)) {
-      // @ts-ignore
-        shell.openExternal(event.target.href).catch(e => console.log(e))
       }
     }
   }
