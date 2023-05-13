@@ -1,5 +1,14 @@
 <template>
   <div>
+    <template v-if="editMode">
+      <existingDocumentDialog
+        preventOpen="true"
+        :dialog-trigger="existingObjectDialogTrigger"
+        @trigger-dialog-close="existingObjectDialogClose"
+        @signal-document-selected="handleDocumentSelected"
+      />
+    </template>
+
     <div class="flex justify-center items-center text-weight-bolder q-mb-sm q-mt-md fieldWysiwygTitle">
       <span>
       <q-icon v-if="inputIcon" :name="inputIcon"  :size="(inputIcon.includes('fas') || inputIcon.includes('fab'))? '15px': '20px'"   class="q-mr-md"/>
@@ -29,6 +38,8 @@
       v-if="editMode"
       :definitions="definitions"
       min-height="350px"
+      @keypress.native="handleEditorKeypress"
+      @click.native="handleEditorClick"
       />
 
     <div class="separatorWrapper">
@@ -43,9 +54,12 @@
 import { Component, Emit, Prop, Watch } from "vue-property-decorator"
 
 import FieldBase from "src/components/fields/_FieldBase"
+import { QEditor } from "quasar"
 
 @Component({
-  components: { }
+  components: {
+    existingDocumentDialog: () => import("src/components/dialogs/ExistingDocument.vue")
+  }
 })
 export default class Field_Wysiwyg extends FieldBase {
   /****************************************************************/
@@ -141,6 +155,63 @@ export default class Field_Wysiwyg extends FieldBase {
         this.$refs[`wysiwygField${this.inputDataBluePrint.id}`].runCmd("ms-pasteTextOnly", text)
       }
       onPasteStripFormattingIEPaste = false
+    }
+    /* eslint-enable */
+  }
+
+  existingObjectDialogTrigger: string | false = false
+
+  handleDocumentSelected (id: string) {
+    /*eslint-disable */
+    const editor = this.$refs[`wysiwygField${this.inputDataBluePrint.id}`] as any
+
+    editor.focus()
+    const doc = this.SGET_document(id)
+    // We need to timeout here to give time to the runtime to focus the editor.
+    // when focused the caret will return to it's previous position and we can insert the document link
+    setTimeout(() => {
+      editor.runCmd("insertHtml", `<a href="document:${id}">${doc.label}<a/>`)
+    }, 1)
+    /* eslint-enable */
+  }
+
+  existingObjectDialogClose () {
+    this.existingObjectDialogTrigger = false
+  }
+
+  existingObjectAssignUID () {
+    this.existingObjectDialogTrigger = this.generateUID()
+  }
+
+  handleEditorKeypress (evt: any) {
+    /*eslint-disable */
+    if (evt.key === '@' && this.editMode) {
+      const editor = this.$refs[`wysiwygField${this.inputDataBluePrint.id}`] as QEditor
+
+      // We don't want to paste anything special in the source mode editor, let the user do their thing
+      if ((editor as any).isViewingSource)
+        return;
+      
+      // Prevent showing up `@` character
+      evt.preventDefault()
+
+      // Open the selector dialog
+      this.existingObjectAssignUID()
+    }
+    /* eslint-enable */
+  }
+
+  handleEditorClick (evt: any) {
+    /*eslint-disable */
+    if (evt.target.tagName.toLowerCase() === 'a') {
+      // Only follow links when ctrl is pressed
+      if (evt.ctrlKey) {
+        const link = evt.target.href
+        console.log(link)
+        console.log(evt.target.tagName)
+        evt.stopPropagation()
+        this.openLink(link)
+      }
     }
     /* eslint-enable */
   }

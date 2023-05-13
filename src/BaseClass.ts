@@ -9,6 +9,7 @@ import { uid, colors, extend } from "quasar"
 import { I_FieldRelationship } from "src/interfaces/I_FieldRelationship"
 import { I_KeyPressObject } from "src/interfaces/I_KeypressObject"
 import { ProjectInterface } from "./store/module-project/state"
+import { shell } from "electron"
 
 const Blueprints = namespace("blueprintsModule")
 const AllDocuments = namespace("allDocumentsModule")
@@ -677,5 +678,26 @@ export default class BaseClass extends Vue {
 
       return hasLegacyValue
     })
+  }
+
+  openLink (link: string) {
+    try {
+      // @ts-ignore
+      const url = new URL(link)
+      // @ts-ignore
+      console.log(url)
+      if (url.protocol === "http:" || url.protocol === "https:") {
+        shell.openExternal(url.href).catch(e => console.log(e))
+      }
+      else if (url.protocol === "document:") {
+        const doc = this.SGET_document(url.pathname)
+        /* eslint-disable */
+        this.openExistingDocumentRoute(doc)
+        /* eslint-enable */
+      }
+    }
+    catch (_) {
+
+    }
   }
 }

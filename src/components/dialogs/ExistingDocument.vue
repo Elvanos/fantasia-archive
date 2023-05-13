@@ -241,7 +241,7 @@
 
 <script lang="ts">
 
-import { Component, Watch } from "vue-property-decorator"
+import { Component, Emit, Prop, Watch } from "vue-property-decorator"
 import { I_OpenedDocument, I_ShortenedDocument } from "src/interfaces/I_OpenedDocument"
 import { advancedDocumentFilter } from "src/scripts/utilities/advancedDocumentFilter"
 import { extend, uid } from "quasar"
@@ -260,6 +260,10 @@ import documentPreview from "src/components/DocumentPreview.vue"
   }
 })
 export default class ExistingDocumentDialog extends DialogBase {
+  @Prop({
+    default: false
+  }) readonly preventOpen!: boolean
+
   /****************************************************************/
   // DIALOG CONTROL
   /****************************************************************/
@@ -490,6 +494,17 @@ export default class ExistingDocumentDialog extends DialogBase {
   openExistingInput (e: I_ShortenedDocument) {
     // @ts-ignore
     e = (Array.isArray(e)) ? e[0] : e
+
+    // Signal to any listeners that care about this document being opened
+    this.signalDocumentSelected(e._id)
+
+    // If the caller doesn't want to open the document, don't actually open the document
+    if (this.preventOpen) {
+      this.dialogModel = false
+      this.existingDocumentModel = []
+
+      return
+    }
     // Open document and close dialog
     if (!this.disableCloseAftertSelectQuickSearch) {
       this.dialogModel = false
@@ -617,6 +632,12 @@ export default class ExistingDocumentDialog extends DialogBase {
     await this.sleep(100)
 
     this.SSET_setExportDialogState([node._id])
+  }
+
+  // Runs when a document would be opened by this dialog
+  @Emit()
+  signalDocumentSelected (document: string) {
+    return document
   }
 }
 </script>

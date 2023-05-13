@@ -102,7 +102,6 @@ import PouchDB from "pouchdb"
 import { OptionsStateInteface } from "./store/module-options/state"
 import { colors } from "quasar"
 import { tipsTricks } from "src/scripts/utilities/tipsTricks"
-import { shell } from "electron"
 import { summonAllPlusheForms } from "src/scripts/utilities/plusheMascot"
 import { saveCorkboard, retrieveCorkboard, retrieveCurrentProjectName } from "src/scripts/projectManagement/projectManagent"
 import documentPreview from "src/components/DocumentPreview.vue"
@@ -287,24 +286,9 @@ export default class App extends BaseClass {
     // @ts-ignore
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     if (event.target && event.target.tagName.toLowerCase() === "a" && event.target.closest(".fieldWysiwyg")) {
-      try {
-        // @ts-ignore
-        const url = new URL(event.target.href as string)
-        // @ts-ignore
-        console.log(url)
-        if (url.protocol === "http:" || url.protocol === "https:") {
-          shell.openExternal(url.href).catch(e => console.log(e))
-        }
-        else if (url.protocol === "document:") {
-          const doc = this.SGET_document(url.pathname)
-          /* eslint-disable */
-          this.openExistingDocumentRoute(doc)
-          /* eslint-enable */
-        }
-      }
-      catch (_) {
-
-      }
+      // @ts-ignore
+      this.openLink(event.target.href as string)
+      // @ts-ignore
     }
   }
 
