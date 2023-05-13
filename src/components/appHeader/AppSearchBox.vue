@@ -18,7 +18,6 @@ import projectCloseCheckDialog from "src/components/dialogs/ProjectCloseCheck.vu
 
 // @ts-ignore
 import { FindInPage } from "electron-find"
-import internal from "stream"
 
 interface I_FindInPage{
   openFindWindow: () => void
