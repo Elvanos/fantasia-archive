@@ -170,7 +170,6 @@ export default class Field_Wysiwyg extends FieldBase {
    * Wysiwyg toolbar ontions
    */
   wysiwygOptions = [
-    ["link"],
     ["left", "center", "right", "justify"],
     ["bold", "italic", "underline", "subscript", "superscript"],
     [
