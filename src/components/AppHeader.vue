@@ -33,6 +33,7 @@ import appControl from "src/components/appHeader/AppControl.vue"
   }
 })
 export default class AppHeader extends BaseClass {
+
 }
 </script>
 

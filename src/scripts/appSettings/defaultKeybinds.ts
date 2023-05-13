@@ -11,6 +11,17 @@ export const defaultKeybinds = [
     tooltip: "Open keybind cheatsheet"
   },
 
+  // Open full-page search - CTRL + SHIFT + F
+  {
+    altKey: false,
+    ctrlKey: true,
+    shiftKey: true,
+    which: 70,
+    editable: true,
+    id: "openFullPageSearch",
+    tooltip: "Open full-page search"
+  },
+
   // Show project overview - NONE
   {
     altKey: false,

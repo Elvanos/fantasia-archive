@@ -4,6 +4,10 @@
     :class="{'AppControl': !isFrontpage}"
   >
 
+    <appSearchBox
+      v-if="fullPageSeachPopupTrigger"
+    />
+
     <!-- New document dialog -->
     <newDocumentDialog
       :dialog-trigger="newObjectDialogTrigger"
@@ -581,9 +585,11 @@ import { saveProject } from "src/scripts/projectManagement/projectManagent"
 import { toggleDevTools } from "src/scripts/utilities/devTools"
 
 import appLogo from "src/assets/appLogo.png"
+import appSearchBox from "src/components/appHeader/AppSearchBox.vue"
 
 @Component({
   components: {
+    appSearchBox,
     projectCloseCheckDialog,
     keybindCheatsheetDialog,
     loadProjectCheckDialog,
@@ -654,25 +660,47 @@ export default class AppControl extends BaseClass {
 
   @Watch("SGET_getCurrentKeyBindData", { deep: true })
   processKeyPush () {
+    // Open full page search
+    if (this.determineKeyBind("openFullPageSearch") && !this.SGET_getDialogsState) {
+      this.fullPageSeachPopupClose()
+
+      setTimeout(() => {
+        this.fullPageSeachPopupAssignUID()
+      }, 100)
+    }
+
     // Keybind cheatsheet
     if (this.determineKeyBind("openKeybindsCheatsheet") && !this.SGET_getDialogsState) {
       this.keybindsDialogAssignUID()
     }
 
-    // App options
+    // Open app options page
     if (this.determineKeyBind("openAppOptions") && !this.SGET_getDialogsState) {
       this.programSettingsDialogAssignUID()
     }
 
-    // App options
+    // Navigate to project overview
     if (this.determineKeyBind("navigateToProjectOverview") && this.projectExists && !this.isProjectPage) {
       this.navigateToProjectPage()
     }
 
-    // App options
+    // Tohhle dev tools
     if (this.determineKeyBind("toggleDeveloperTools")) {
       this.toggleDevTools()
     }
+  }
+
+  /****************************************************************/
+  // Full page search pop-up
+  /****************************************************************/
+
+  fullPageSeachPopupTrigger: string | false = false
+  fullPageSeachPopupClose () {
+    this.fullPageSeachPopupTrigger = false
+  }
+
+  fullPageSeachPopupAssignUID () {
+    this.fullPageSeachPopupTrigger = this.generateUID()
   }
 
   /****************************************************************/

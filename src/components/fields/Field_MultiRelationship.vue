@@ -103,6 +103,7 @@
 
         </q-item-section>
         <q-menu
+
           touch-position
           context-menu
           auto-close
@@ -394,6 +395,7 @@
             :custom-delay="1500"
           />
            <q-menu
+              v-if="!quickInsertMode"
               touch-position
               context-menu
               auto-close
@@ -577,6 +579,14 @@ export default class Field_MultiRelationship extends FieldBase {
   /****************************************************************/
 
   @Prop({ default: 999 }) readonly specialZIndex!: number
+
+  /**
+   * Determines if the "quick insert mode is on"
+   * This prevents the dialog from scrolling up if used within wisywig editors
+   */
+  @Prop({
+    default: false
+  }) readonly quickInsertMode!: boolean
 
   /**
    * Prevent document preview in already existing previews

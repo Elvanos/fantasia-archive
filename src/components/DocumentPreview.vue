@@ -104,6 +104,7 @@
         <Field_SingleRelationship
         class="inputWrapper"
         v-if="(field.type === 'singleToNoneRelationship' || field.type === 'singleToSingleRelationship' || field.type === 'singleToManyRelationship') && categoryFieldFilter(field.id)"
+        :quickInsertMode="quickInsertMode"
         :inputDataBluePrint="field"
         :inputDataValue="retrieveFieldValue(localDocument, field.id)"
         :isNew="false"
@@ -121,6 +122,7 @@
         class="inputWrapper"
         v-if="(field.type === 'manyToNoneRelationship' || field.type ===
         'manyToSingleRelationship' || field.type === 'manyToManyRelationship') && categoryFieldFilter(field.id)"
+        :quickInsertMode="quickInsertMode"
         :inputDataBluePrint="field"
         :inputDataValue="retrieveFieldValue(localDocument, field.id)"
         :isNew="false"
@@ -249,6 +251,7 @@
         <Field_SingleRelationship
         class="inputWrapper"
         v-if="(field.type === 'singleToNoneRelationship' || field.type === 'singleToSingleRelationship' || field.type === 'singleToManyRelationship') && categoryFieldFilter(field.id)"
+        :quickInsertMode="quickInsertMode"
         :inputDataBluePrint="field"
         :inputDataValue="retrieveFieldValue(localDocument, field.id)"
         :isNew="false"
@@ -262,6 +265,7 @@
         class="inputWrapper"
         v-if="(field.type === 'manyToNoneRelationship' || field.type ===
         'manyToSingleRelationship' || field.type === 'manyToManyRelationship') && categoryFieldFilter(field.id)"
+        :quickInsertMode="quickInsertMode"
         :inputDataBluePrint="field"
         :inputDataValue="retrieveFieldValue(localDocument, field.id)"
         :isNew="false"
@@ -313,7 +317,6 @@ import Field_ColorPicker from "src/components/fields/Field_ColorPicker.vue"
 import Field_List from "src/components/fields/Field_List.vue"
 import Field_SingleSelect from "src/components/fields/Field_SingleSelect.vue"
 import Field_MultiSelect from "src/components/fields/Field_MultiSelect.vue"
-import Field_Wysiwyg from "src/components/fields/Field_Wysiwyg.vue"
 import Field_Tags from "src/components/fields/Field_Tags.vue"
 import { extend } from "quasar"
 import { I_DocumentTemplate } from "src/interfaces/I_DocumentTemplate"
@@ -331,7 +334,7 @@ import { retrieveAllDocumentTemplatesFromDB } from "src/scripts/projectManagemen
     Field_MultiSelect,
     Field_SingleRelationship: () => import("src/components/fields/Field_SingleRelationship.vue"),
     Field_MultiRelationship: () => import("src/components/fields/Field_MultiRelationship.vue"),
-    Field_Wysiwyg,
+    Field_Wysiwyg: () => import("src/components/fields/Field_Wysiwyg.vue"),
     Field_Tags
   }
 })
@@ -508,6 +511,14 @@ export default class DocumentPreview extends BaseClass {
       this.documentPreviewClose()
     }, this.customCloseDelay)
   }
+
+  /**
+   * Determines if the "quick insert mode is on"
+   * This prevents the dialog from scrolling up if used within wisywig editors
+   */
+  @Prop({
+    default: false
+  }) readonly quickInsertMode!: boolean
 
   /**
    * Debounce timer for nice user experience

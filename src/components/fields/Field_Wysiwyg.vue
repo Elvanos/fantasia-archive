@@ -1,13 +1,13 @@
 <template>
   <div>
-    <template v-if="editMode">
-      <existingDocumentDialog
-        preventOpen="true"
-        :dialog-trigger="existingObjectDialogTrigger"
-        @trigger-dialog-close="existingObjectDialogClose"
-        @signal-document-selected="handleDocumentSelected"
-      />
-    </template>
+    <existingDocumentDialog
+      v-if="editMode"
+      preventOpen="true"
+      quickInsertMode="true"
+      :dialog-trigger="existingObjectDialogTrigger"
+      @trigger-dialog-close="existingObjectDialogClose"
+      @signal-document-selected="handleDocumentSelected"
+    />
 
     <div class="flex justify-center items-center text-weight-bolder q-mb-sm q-mt-md fieldWysiwygTitle">
       <span>
@@ -170,8 +170,9 @@ export default class Field_Wysiwyg extends FieldBase {
     // We need to timeout here to give time to the runtime to focus the editor.
     // when focused the caret will return to it's previous position and we can insert the document link
     setTimeout(() => {
-      editor.runCmd("insertHtml", `<a href="document:${id}">${doc.label}<a/>`)
-    }, 1)
+      editor.runCmd("insertHtml", `<a href="document:${id}">${doc.label}</a>&nbsp;`)
+    }, 100)
+
     /* eslint-enable */
   }
 
@@ -189,14 +190,18 @@ export default class Field_Wysiwyg extends FieldBase {
       const editor = this.$refs[`wysiwygField${this.inputDataBluePrint.id}`] as QEditor
 
       // We don't want to paste anything special in the source mode editor, let the user do their thing
-      if ((editor as any).isViewingSource)
+      if ((editor as any).isViewingSource){
         return;
+      }
       
       // Prevent showing up `@` character
       evt.preventDefault()
 
       // Open the selector dialog
-      this.existingObjectAssignUID()
+      // Timeout to allow to actually type the '@' symbol
+      setTimeout(() => {
+        this.existingObjectAssignUID()
+      }, 1)
     }
     /* eslint-enable */
   }
@@ -207,8 +212,6 @@ export default class Field_Wysiwyg extends FieldBase {
       // Only follow links when ctrl is pressed
       if (evt.ctrlKey) {
         const link = evt.target.href
-        console.log(link)
-        console.log(evt.target.tagName)
         evt.stopPropagation()
         this.openLink(link)
       }

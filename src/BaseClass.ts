@@ -685,7 +685,6 @@ export default class BaseClass extends Vue {
       // @ts-ignore
       const url = new URL(link)
       // @ts-ignore
-      console.log(url)
       if (url.protocol === "http:" || url.protocol === "https:") {
         shell.openExternal(url.href).catch(e => console.log(e))
       }

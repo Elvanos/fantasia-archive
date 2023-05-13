@@ -3,6 +3,8 @@
  * Toggles dev tools in the current window
  */
 export const tipsTricks: string[] = [
+  "Typing '@' symbol while editing big text editor fields will allow you to link to other documents directly inside the text-editor!",
+  "\"CTRL+SHIFT\" will bring up a full-page search in case you are hunting for that particular word in the current document!",
   "Any field in the document editing mode with the small dropdown arrow allows for custom values! Just close the menu of predefined values with ESC, type your desired value and confirm with ENTER.",
   "It is possible to search through all documents and all of their fields at once using the following in either the Quick search popup or any of the relationship searches: \"%field-name:whatever-you-need\"",
   "There is a whole list of really helpful keybinds that can make your use of FA a lot quicker and easier!",

@@ -1281,7 +1281,14 @@ export default class PageDocumentDisplay extends BaseClass {
 }
 
 body:not(.body--dark) {
+
   .documentDisplay {
+
+  a,
+  .text-primary{
+    color: #e6ae2b !important;
+  }
+
     .isDead {
       text-decoration-color: #000;
     }

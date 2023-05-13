@@ -57,6 +57,7 @@
                   >
                   <documentPreview
                     v-if="!preventPreviewsPopups"
+                    :quickInsertMode="quickInsertMode"
                     :document-id="opt._id"
                     :external-close-trigger="documentPreviewClose"
                     :special-z-index="999999999"
@@ -92,6 +93,7 @@
                       </q-item-label>
                     </q-item-section>
                     <q-btn
+                      v-if="!quickInsertMode"
                       tabindex="-1"
                       round
                       flat
@@ -110,6 +112,7 @@
                       </q-tooltip>
                     </q-btn>
                     <q-btn
+                      v-if="!quickInsertMode"
                       tabindex="-1"
                       round
                       flat
@@ -130,6 +133,7 @@
                     </q-tooltip>
                     </q-btn>
                     <q-btn
+                      v-if="!quickInsertMode"
                       tabindex="-1"
                       round
                       flat
@@ -151,6 +155,7 @@
                     </q-btn>
 
             <q-menu
+              v-if="!quickInsertMode"
               touch-position
               context-menu
               auto-close
@@ -252,11 +257,10 @@ import { copyDocument } from "src/scripts/documentActions/copyDocument"
 
 import DialogBase from "src/components/dialogs/_DialogBase"
 import { I_Blueprint } from "src/interfaces/I_Blueprint"
-import documentPreview from "src/components/DocumentPreview.vue"
 
 @Component({
   components: {
-    documentPreview
+    documentPreview: () => import("src/components/DocumentPreview.vue")
   }
 })
 export default class ExistingDocumentDialog extends DialogBase {
@@ -310,6 +314,14 @@ export default class ExistingDocumentDialog extends DialogBase {
     this.hideAdvSearchCheatsheetButton = this.SGET_options.hideAdvSearchCheatsheetButton
     this.preventPreviewsPopups = this.SGET_options.preventPreviewsPopups
   }
+
+  /**
+   * Determines if the "quick insert mode is on"
+   * This prevents the dialog from scrolling up if used within wisywig editors
+   */
+  @Prop({
+    default: false
+  }) readonly quickInsertMode!: boolean
 
   /**
    * Determines if the document previews should be disabled or not
@@ -508,8 +520,11 @@ export default class ExistingDocumentDialog extends DialogBase {
     // Open document and close dialog
     if (!this.disableCloseAftertSelectQuickSearch) {
       this.dialogModel = false
+
+      if (!this.quickInsertMode) {
       // @ts-ignore
-      this.openExistingDocumentRoute(e)
+        this.openExistingDocumentRoute(e)
+      }
       this.existingDocumentModel = []
     }
     // Open document and DO NOT close the dialog
@@ -539,8 +554,10 @@ export default class ExistingDocumentDialog extends DialogBase {
     // Open document and close dialog
     if (!this.disableCloseAftertSelectQuickSearch) {
       this.dialogModel = false
+      if (!this.quickInsertMode) {
       // @ts-ignore
-      this.openExistingDocumentRouteWithEdit(e)
+        this.openExistingDocumentRouteWithEdit(e)
+      }
       this.existingDocumentModel = []
     }
     // Open document and DO NOT close the dialog
