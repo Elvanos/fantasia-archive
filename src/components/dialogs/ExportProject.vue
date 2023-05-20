@@ -1974,13 +1974,14 @@ export default class ExportProject extends DialogBase {
         node.attrs.hasHeadingFontSize = false
       }
 
-      // If next if bold, italic or underline
+      // If next if bold, italic, underline or link
       if (nextNode) {
         if ((nextNode.type === "tag" && nextNode.name === "i") ||
         (nextNode.type === "tag" && nextNode.name === "b") ||
         (nextNode.type === "tag" && nextNode.name === "u") ||
         (nextNode.type === "tag" && nextNode.name === "font") ||
-        (nextNode.type === "tag" && nextNode.name === "span")
+        (nextNode.type === "tag" && nextNode.name === "span") ||
+        (nextNode.type === "tag" && nextNode.name === "a")
         ) {
           node.attrs.continued = true
         }
@@ -2004,6 +2005,15 @@ export default class ExportProject extends DialogBase {
       }
       else {
         node.attrs.isSpan = false
+      }
+
+      // Fix for a tags
+      if ((node.type === "tag" && node.name === "a") || node?.parentNode?.attrs.isLink === true) {
+        node.attrs.isLink = true
+        node.attrs.continued = true
+      }
+      else {
+        node.attrs.isLink = false
       }
 
       // Text modifier - Italic
@@ -2085,7 +2095,7 @@ export default class ExportProject extends DialogBase {
         const returnNode = node
         // @ts-ignore
         returnNode.content = returnNode.content
-          .replace(/&nbsp;/g, "")
+          .replace(/&nbsp;/g, " ")
           .replace(/(\r\n|\n|\r)/gm, "")
           .replace(/&amp;/g, "&")
 
