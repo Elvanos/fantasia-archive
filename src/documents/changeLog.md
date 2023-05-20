@@ -3,7 +3,21 @@
 
 ---
 
+## 0.1.11
+
+### Known issues
+
+- Creating a brand new project can very occasionally get stuck. Restarting the app fixes this.
+- Loading existing project can very occasionally get stuck. Restarting the app fixes this.
+- Saving documents can sometimes leave it in edit mode instead of closing it (data gets saved anyway).
+
+### Bugfixes & Optimizations
+
+- Fixed PDF exports in regards to the @at links in text editors (thanks AkroMentos!)
+
 ## 0.1.10
+
+### Known issues
 
 - Creating a brand new project can very occasionally get stuck. Restarting the app fixes this.
 - Loading existing project can very occasionally get stuck. Restarting the app fixes this.
