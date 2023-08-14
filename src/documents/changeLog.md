@@ -1,7 +1,19 @@
-
 # Changelog
 
 ---
+
+## 0.1.12
+
+### Known issues
+
+- Creating a brand new project can very occasionally get stuck. Restarting the app fixes this.
+- Loading existing project can very occasionally get stuck. Restarting the app fixes this.
+- Saving documents can sometimes leave it in edit mode instead of closing it (data gets saved anyway).
+
+### New features
+
+- Added functionality to rearrange opened document tabs; either left or right
+- Added keybind support for rearranging opened document tabs
 
 ## 0.1.11
 
@@ -24,13 +36,14 @@
 - Saving documents can sometimes leave it in edit mode instead of closing it (data gets saved anyway).
 
 ### New features
+
 - **Added page-wide search option similar to web-browsers with a default keybind of "CTRL+ALT+F"**
   - The keybind can be modified to the user's preferences as usual in the Keybinds menu
 - **Added support for "@" links inside document editors** (thanks AkroMentos!)
- - Pressing "@" inside the big editor fields will now allow you connect links directly inside the text editors
- - Clicking on links created this way, while not in edit mode, inside text editors will open the connected document in a new tab
- - Clicking on links created this way, while in edit mode, inside text editors and holding CTRL key will also open the connected document in a new tab
- - Clicking on links created this way, while in document quick-preview, will open the connected document in a new tab
+- Pressing "@" inside the big editor fields will now allow you connect links directly inside the text editors
+- Clicking on links created this way, while not in edit mode, inside text editors will open the connected document in a new tab
+- Clicking on links created this way, while in edit mode, inside text editors and holding CTRL key will also open the connected document in a new tab
+- Clicking on links created this way, while in document quick-preview, will open the connected document in a new tab
 
 ### Bugfixes & Optimizations
 
@@ -92,7 +105,7 @@
   - Preview in split-view mode
   - Collapse/Expand all
   - Rename tag
-  - Delete tag  
+  - Delete tag
   - Add a new document to this tag
 - Added more common material/resource properties fields to the Resource document type
 
@@ -344,11 +357,11 @@
   - Finished is visible in the lists by default, but can be used to narrow down the search
   - Minor is NOT visible in the lists by default but can be included using this option
   - Instructions on how to trigger by these additions can be found in the `Advanced Search Guide` help menu
-- Added Fantasia mascot in the app! ^_^
+- Added Fantasia mascot in the app! ^\_^
 - Different document tabs now keep scroll distance and resume wherever you left them at
 - Added support for default empty keybinds
 - Added a dedicated button that opens the connected documents straight from the little chips in relationship fields while in edit mode
-- Added support for  background-color for documents
+- Added support for background-color for documents
 - Added support for "Minor document" mode switch for better organization and visual representation of documents
 - Added support for "Dead/Gone/Destroyed" mode switch for better organization and visual representation of documents
 - Added support for "Finished" mode switch for better organization and visual representation of documents
@@ -524,7 +537,7 @@
 - Massive overhaul of the search engine used by the Quick opening existing document and single/multi relationship fields (now supports tags, categories, document types, intelligent filtering, and intelligent sorting via the importance of the found values)
 - Added color support to single/multi relationship fields
 - Added a hierarchical path to Quick opening existing document and single/multi relationship fields
-- Added filtering to include or exclude documents that are considered categories in the  Quick opening existing document dialog
+- Added filtering to include or exclude documents that are considered categories in the Quick opening existing document dialog
 - Removed "Practitioners/Engineers" field from "Sciences/Technologies" document type as it was a duplicate of another one and was causing issues
 - Added automatic opening of hierarchical tree branches upon adding/moving documents under/among them
 - Added tags support

@@ -176,6 +176,28 @@ export const defaultKeybinds = [
     tooltip: "Previous tab"
   },
 
+  // Move tab left - ALT + SHIFT + RIGHT ARROW
+  {
+    altKey: true,
+    ctrlKey: false,
+    shiftKey: true,
+    which: 37,
+    editable: true,
+    id: "moveTabLeft",
+    tooltip: "Move tab left"
+  },
+
+  // Move tab right - ALT + SHIFT + LEFT ARROW
+  {
+    altKey: true,
+    ctrlKey: false,
+    shiftKey: true,
+    which: 39,
+    editable: true,
+    id: "moveTabRight",
+    tooltip: "Move tab right"
+  },
+
   // Save document - CTRL + ALT + S
   {
     altKey: true,

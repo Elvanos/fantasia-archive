@@ -158,6 +158,19 @@
                     <q-icon name="mdi-content-copy" />
                   </q-item-section>
                 </q-item>
+                <q-separator dark />
+                 <q-item clickable v-close-popup @click="tryMoveTabLeft(document)">
+                  <q-item-section>Move tab left</q-item-section>
+                  <q-item-section avatar>
+                    <q-icon name="mdi-chevron-left" />
+                  </q-item-section>
+                </q-item>
+                <q-item clickable v-close-popup @click="tryMoveTabRight(document)">
+                  <q-item-section>Move tab right</q-item-section>
+                  <q-item-section avatar>
+                    <q-icon name="mdi-chevron-right" />
+                  </q-item-section>
+                </q-item>
                 <q-separator v-if="!document.isNew" />
                 <q-item clickable v-close-popup @click="tryCloseTab(document)">
                   <q-item-section>Close this tab</q-item-section>
@@ -286,6 +299,18 @@ export default class TopTabs extends BaseClass {
       this.goToPreviousTab()
     }
 
+    // Move tab left - SHIFT + ALT + LEFT ARROW
+    if (this.determineKeyBind("moveTabLeft") && this.localDocuments.length > 0 && !this.SGET_getDialogsState) {
+      const currentDoc = this.findRequestedOrActiveDocument() as I_OpenedDocument
+      this.tryMoveTabLeft(currentDoc)
+    }
+
+    // Move tab right - SHIFT + ALT + RIGHT ARROW
+    if (this.determineKeyBind("moveTabRight") && this.localDocuments.length > 0 && !this.SGET_getDialogsState) {
+      const currentDoc = this.findRequestedOrActiveDocument() as I_OpenedDocument
+      this.tryMoveTabRight(currentDoc)
+    }
+
     // Close all tabs without changes except for this - CTRL + ALT + SHIFT + W
     if (this.determineKeyBind("closeAllTabsWithoutChangesButThis") && this.localDocuments.length > 0 && !this.SGET_getDialogsState) {
       const currentDoc = this.findRequestedOrActiveDocument() as I_OpenedDocument
@@ -344,6 +369,60 @@ export default class TopTabs extends BaseClass {
     if (matchingDocument) {
       this.dialogDoc = matchingDocument
       this.closeDocumentCheckDialogAssignUID()
+    }
+  }
+
+  /**
+   * Attempts to move the document to right
+   */
+  tryMoveTabRight (doc?: I_OpenedDocument) {
+    const currentIndex = this.localDocuments.findIndex(localDoc => {
+      return localDoc._id === doc?._id
+    })
+
+    if (this.localDocuments.length > 1) {
+      let newIndex = currentIndex + 1
+
+      if (currentIndex === this.localDocuments.length - 1) {
+        newIndex = 0
+      }
+      /* eslint-disable */
+      // @ts-ignore
+      Array.prototype.move = function (from, to) {
+        this.splice(to, 0, this.splice(from, 1)[0])
+        return this
+      }
+      const copy = this.localDocuments.map(doc => doc)
+      // @ts-ignore
+      copy.move(currentIndex, newIndex)
+      this.localDocuments = copy
+    }
+  }
+
+  /**
+   * Attempts to move the document to left
+   */
+  tryMoveTabLeft (doc?: I_OpenedDocument) {
+    const currentIndex = this.localDocuments.findIndex(localDoc => {
+      return localDoc._id === doc?._id
+    })
+
+    if (this.localDocuments.length > 1) {
+      let newIndex = currentIndex - 1
+
+      if (currentIndex === 0) {
+        newIndex = this.localDocuments.length + 1
+      }
+      /* eslint-disable */
+      // @ts-ignore
+      Array.prototype.move = function (from, to) {
+        this.splice(to, 0, this.splice(from, 1)[0])
+        return this
+      }
+      const copy = this.localDocuments.map(doc => doc)
+      // @ts-ignore
+      copy.move(currentIndex, newIndex)
+      this.localDocuments = copy
     }
   }
 
