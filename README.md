@@ -1,20 +1,22 @@
-# Fantasia Archive (y)
+# Fantasia Archive (fantasia-archive)
 
-A database manager for world building
+A worldbuilding database manager
 
-## Install the dependencies
+Use Yarn 1.22.19 or stuff is gonna bug out.
+
+## Install the dependencies and set up the project
 ```bash
-npm install
+yarn
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+### Start the app in Quasar development mode (hot-code reloading, error reporting, etc.)
 ```bash
-quasar dev
+quasar dev -m electron
 ```
 
 ### Lint the files
 ```bash
-npm run lint
+yarn lint
 ```
 
 ### Build the app for production
@@ -23,4 +25,4 @@ quasar build
 ```
 
 ### Customize the configuration
-See [Configuring quasar.conf.js](https://v2.quasar.dev/quasar-cli/quasar-conf-js).
+See [Configuring quasar.config.js](https://v2.quasar.dev/quasar-cli-vite/quasar-config-js).

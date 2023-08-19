@@ -39,7 +39,7 @@ function useDisplayTodo (todos: Ref<Todo[]>) {
 }
 
 export default defineComponent({
-  name: 'CompositionComponent',
+  name: 'ExampleComponent',
   props: {
     title: {
       type: String,
