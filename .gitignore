@@ -35,3 +35,6 @@ yarn-error.log*
 
 # local .env files
 .env.local*
+
+.nyc_output
+coverage/
