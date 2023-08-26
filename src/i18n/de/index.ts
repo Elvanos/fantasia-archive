@@ -2,5 +2,5 @@
 // so you can safely delete all default props below
 
 export default {
-  appName: 'FA - but in english!'
+  appName: 'FA - but in german!'
 }
