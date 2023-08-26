@@ -31,9 +31,6 @@ jobs:
     - name: quasar install and build
       run: |
         npm install --global yarn@1.22.19
-        export PATH="$(yarn global bin):$PATH"
-        set -U fish_user_paths (yarn global bin) $fish_user_paths
-        setx path "%path%;%LocalAppData%\yarn\bin"
         yarn global add @quasar/cli
         yarn install
         yarn build
