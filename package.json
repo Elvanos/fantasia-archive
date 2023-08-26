@@ -8,7 +8,7 @@
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
     "dev:electron": "quasar dev -m electron",
-    "build": "quasar build",
+    "build": "quasar build -m electron --publish never",
     "test:unit:ui": "vitest --ui",
     "test:unit": "vitest",
     "test:unit:ci": "vitest run",
@@ -41,6 +41,7 @@
     "autoprefixer": "^10.4.2",
     "cypress": "^12.2.0",
     "electron": "^25.5.0",
+    "electron-builder": "^24.3.0",
     "eslint": "^8.10.0",
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-cypress": "^2.12.1",

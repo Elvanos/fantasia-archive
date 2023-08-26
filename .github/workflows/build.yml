@@ -19,20 +19,25 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
+        node: [16]
 
     steps:
     - name: Check out the code
       uses: actions/checkout@v2.3.4
 
-      
     - name: Setup Node.js environment
       uses: actions/setup-node@v2.1.5
-      
-    - name: npm install and build
+
+    - name: quasar install and build
       run: |
-        npm install
-        npm run build
-    
+        npm install yarn@1.22.19
+        export PATH="$(yarn global bin):$PATH"
+        set -U fish_user_paths (yarn global bin) $fish_user_paths
+        setx path "%path%;%LocalAppData%\yarn\bin"
+        yarn global add @quasar/cli
+        yarn
+        yarn build
+
     - name: Upload Linux Artifact
       if: ${{ matrix.os == 'ubuntu-latest' }}
       uses: actions/upload-artifact@v2.2.3
@@ -42,7 +47,7 @@ jobs:
         path: |
           dist/electron/Packaged/*.snap
           dist/electron/Packaged/*.AppImage
-        
+
     - name: Upload MacOS Artifact
       if: ${{ matrix.os == 'macOS-latest' }}
       uses: actions/upload-artifact@v2.2.3
@@ -50,7 +55,7 @@ jobs:
         # Artifact name
         name: Mac_FA ${{ github.event.inputs.version }}
         path: dist/electron/Packaged/*.dmg
-    
+
     - name: Upload Windows Artifact
       if: ${{ matrix.os == 'windows-latest' }}
       uses: actions/upload-artifact@v2.2.3
@@ -58,4 +63,4 @@ jobs:
         # Artifact name
         name: Windows_FA ${{ github.event.inputs.version }}
         path: dist/electron/Packaged/*.exe
-    
+

@@ -203,7 +203,10 @@ module.exports = configure(function (/* ctx */) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'fantasia-archive'
+        appId: 'fantasia-archive',
+        win: {
+          icon: 'src-electron/icons/icon.ico'
+        }
       }
     },
 
