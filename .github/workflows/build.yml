@@ -60,4 +60,3 @@ jobs:
         # Artifact name
         name: Windows_FA ${{ github.event.inputs.version }}
         path: dist/electron/Packaged/*.exe
-
