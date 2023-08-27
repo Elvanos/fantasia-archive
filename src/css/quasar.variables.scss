@@ -1,25 +1,35 @@
 // Quasar SCSS (& Sass) Variables
-// --------------------------------------------------
-// To customize the look and feel of this app, you can override
-// the Sass/SCSS variables found in Quasar's source Sass/SCSS files.
 
-// Check documentation for full list of Quasar variables
+// GENERAL COLORS
 
-// Your own variables (that are declared here) and Quasar's own
-// ones will be available out of the box in your .vue/.scss/.sass files
+$primary   : #d7ac47;
+$secondary : #f75746;
+$accent    : #dde4e4;
 
-// It's highly recommended to change the default colors
-// to match your app's branding.
-// Tip: Use the "Theme Builder" on Quasar's documentation website.
-
-$primary   : #1976D2;
-$secondary : #26A69A;
-$accent    : #9C27B0;
-
-$dark      : #1D1D1D;
+$dark      : #18303a;
+// TODO - add color
 $dark-page : #121212;
 
-$positive  : #21BA45;
-$negative  : #C10015;
-$info      : #31CCEC;
-$warning   : #F2C037;
+$positive  : #35a14e;
+$negative  : #c10015;
+$info      : lighten(#d7ac47, 35);
+$warning   : #f2c037;
+
+$custom-gunmetal: #18303a;
+$custom-gunmetal-light: lighten(#18303a, 7.5);
+$custom-gunmetal-lighter: lighten(#18303a, 12.5);
+$custom-gunmetal-medium: lighten(#18303a, 20);
+$custom-gunmetal-bright: lighten(#18303a, 50);
+$custom-gunmetal-shine: lighten(#18303a, 60);
+$custom-ruby-red: #f75746;
+$custom-satin-sheen-gold: #e8bb50;
+$custom-satin-sheen-gold-dark: darken(#e8bb50, 12.5);
+$custom-satin-sheen-gold-darker: darken(#e8bb50, 17.5);
+$custom-satin-sheen-gold-light: lighten(#e8bb50, 7.5);
+$custom-satin-sheen-gold-bright: lighten(#e8bb50, 15);
+$custom-gainsboro: #dde4e4;
+$custom-cultured: #f5f5f5;
+
+// COMPONENT - GLOBAL WINDOW BUTTONS
+$globalWindowButtons_height: 35px;
+$globalWindowButtons_color: $accent;

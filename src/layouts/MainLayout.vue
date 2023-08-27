@@ -1,5 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
+    <GlobalWindowButtons />
     <q-header elevated>
       <q-toolbar>
         <q-btn
@@ -48,7 +49,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import EssentialLink from 'components/EssentialLink.vue'
-
+import GlobalWindowButtons from 'components/GlobalWindowButtons/GlobalWindowButtons.vue'
 const linksList = [
   {
     title: 'Docs',
@@ -98,7 +99,8 @@ export default defineComponent({
   name: 'MainLayout',
 
   components: {
-    EssentialLink
+    EssentialLink,
+    GlobalWindowButtons
   },
 
   setup () {

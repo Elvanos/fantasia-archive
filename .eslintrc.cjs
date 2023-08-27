@@ -105,6 +105,7 @@ module.exports = {
 
     // CUSTOM RULES
     'object-shorthand': 'off',
-    'quote-props': 'off'
+    'quote-props': 'off',
+    'camelcase': 'off'
   }
 }
