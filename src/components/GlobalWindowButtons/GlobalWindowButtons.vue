@@ -10,6 +10,7 @@
       :ripple="false"
       dark
       size="xs"
+      class="globalWindowButtons__minimize"
       @click="minimizeWindow()"
     >
       <q-tooltip
@@ -27,6 +28,7 @@
       :ripple="false"
       dark
       size="xs"
+      class="globalWindowButtons__resize"
       @click="[resizeWindow(),checkIfWindowMaximized()]"
     >
       <q-tooltip
@@ -44,6 +46,7 @@
       :ripple="false"
       dark
       size="xs"
+      class="globalWindowButtons__close"
       @click="tryCloseWindow()"
     >
       <q-tooltip
@@ -61,20 +64,23 @@
 import { onMounted, ref } from 'vue'
 import type { Ref } from 'vue'
 
-// TODO Add all tests!
-
 /*
 Triggers minimize of the window by the minimize button click
 */
 const minimizeWindow = () => {
-  window.faWindowControlAPI.minimizeWindow()
+  console.log(process.env.MODE)
+  if (process.env.MODE === 'electron') {
+    window.faWindowControlAPI.minimizeWindow()
+  }
 }
 
 /*
 Triggers resize of the window by the min/max button click
 */
 const resizeWindow = () => {
-  window.faWindowControlAPI.resizeWindow()
+  if (process.env.MODE === 'electron') {
+    window.faWindowControlAPI.resizeWindow()
+  }
 }
 
 /*
@@ -87,14 +93,18 @@ Otherwise, the app simply closes
 */
 const tryCloseWindow = () => {
   // TODO add project close checking
-  window.faWindowControlAPI.closeWindow()
+  if (process.env.MODE === 'electron') {
+    window.faWindowControlAPI.closeWindow()
+  }
 }
 
 /*
 Checks if the window is maximized and sets local ref
 */
 const checkIfWindowMaximized = () => {
-  isMaximized.value = window.faWindowControlAPI.checkWindowMaximized()
+  if (process.env.MODE === 'electron') {
+    isMaximized.value = window.faWindowControlAPI.checkWindowMaximized()
+  }
 }
 
 /*
