@@ -46,7 +46,7 @@ test:unit:ci
 ```
 test:component:frontend
 ```
-#### E2E test, Froentend - via Cypress, pick Electron on the config screen (I suggest turning on the electron dev window first, the test is a bit buggy sometimes)
+#### E2E test, Frontend - via Cypress, pick Electron on the config screen (I suggest turning on the electron dev window first, the test is a bit buggy sometimes)
 ```
 test:e2e:frontend
 ```
