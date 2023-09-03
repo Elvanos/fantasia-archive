@@ -11,7 +11,7 @@
     "build": "quasar build -m electron --publish never",
     "test:unit:ui": "vitest --ui",
     "test:unit:ci": "vitest run",
-    "test:component": "node \"node_modules/@playwright/test/cli.js\" test test/playwright-e2e/",
+    "test:component": "node \"node_modules/@playwright/test/cli.js\" test src/components/",
     "test:e2e": "node \"node_modules/@playwright/test/cli.js\" test test/playwright-e2e/"
   },
   "dependencies": {

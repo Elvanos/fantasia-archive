@@ -1,6 +1,6 @@
-const appRoot = require('app-root-path')
-const { _electron: electron } = require('playwright')
-const { test, expect } = require('@playwright/test')
+import appRoot from 'app-root-path'
+import { _electron as electron } from 'playwright'
+import { test, expect } from '@playwright/test'
 
 const electronMainFilePath = appRoot + '/dist/electron/UnPackaged/electron-main.js'
 const faFrontendRenderTimer = 1000
@@ -17,9 +17,14 @@ test('click resize button - smallify', async () => {
   await appWindow.waitForTimeout(faFrontendRenderTimer)
 
   const resizeButton = await appWindow.$('.globalWindowButtons__resize')
-  await resizeButton.click()
-  const isMaximized = await appWindow.evaluate(() => window.faWindowControlAPI.checkWindowMaximized())
-  expect(isMaximized).toBe(false)
+
+  if (resizeButton !== null) {
+    await resizeButton.click()
+    const isMaximized = await appWindow.evaluate(() => window.faWindowControlAPI.checkWindowMaximized())
+    expect(isMaximized).toBe(false)
+  } else {
+    test.fail()
+  }
 
   // close app
   await electronApp.close()
@@ -31,10 +36,15 @@ test('click resize button - maximize', async () => {
   await appWindow.waitForTimeout(faFrontendRenderTimer)
 
   const resizeButton = await appWindow.$('.globalWindowButtons__resize')
-  await resizeButton.click()
-  await resizeButton.click()
-  const isMaximized = await appWindow.evaluate(() => window.faWindowControlAPI.checkWindowMaximized())
-  expect(isMaximized).toBe(true)
+
+  if (resizeButton !== null) {
+    await resizeButton.click()
+    await resizeButton.click()
+    const isMaximized = await appWindow.evaluate(() => window.faWindowControlAPI.checkWindowMaximized())
+    expect(isMaximized).toBe(true)
+  } else {
+    test.fail()
+  }
 
   // close app
   await electronApp.close()
@@ -46,26 +56,35 @@ test('click minimize button', async () => {
   await appWindow.waitForTimeout(faFrontendRenderTimer)
 
   const minimizeButton = await appWindow.$('.globalWindowButtons__minimize')
-  await minimizeButton.click()
-  const isMaximized = await appWindow.evaluate(() => window.faWindowControlAPI.checkWindowMaximized())
-  expect(isMaximized).toBe(false)
+
+  if (minimizeButton !== null) {
+    await minimizeButton.click()
+    const isMaximized = await appWindow.evaluate(() => window.faWindowControlAPI.checkWindowMaximized())
+    expect(isMaximized).toBe(false)
+  } else {
+    test.fail()
+  }
 
   // close app
   await electronApp.close()
 })
 
+/* This test can VERY occasionally fail when the window takes too long to close on weaker PCs. Simply rerunning the tests generally fixes this. */
 test('click close button', async () => {
   const electronApp = await electron.launch({ args: [electronMainFilePath] })
   const appWindow = await electronApp.firstWindow()
   await appWindow.waitForTimeout(faFrontendRenderTimer)
 
-  let windowIsClosed = false
-  appWindow.on('close', () => {
-    windowIsClosed = true
-  })
-
   const closeButton = await appWindow.$('.globalWindowButtons__close')
-  await closeButton.click()
 
-  expect(windowIsClosed).toBe(true)
+  if (closeButton !== null) {
+    let windowIsClosed = false
+    appWindow.on('close', () => {
+      windowIsClosed = true
+    })
+    await closeButton.click()
+    expect(windowIsClosed).toBe(true)
+  } else {
+    test.fail()
+  }
 })
