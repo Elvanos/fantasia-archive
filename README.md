@@ -32,23 +32,22 @@ quasar build
 
 ### Testing:
 
-> Keep in mind that Cypress tests are limited to front-end testing due to the nature of Electron's nodeJS-based backend. Anything in Electron's main and preload will NOT work.
 
 #### Unit test - with pretty web-UI
 ```
 test:unit:ui
 ```
-#### Unit test - without any UI, fully in a terminal
+#### Unit test - Without any UI, fully in a terminal
 ```
 test:unit:ci
 ```
-#### Component test, Frontend - via Cypress, pick Electron on the config screen (I suggest turning on the electron dev window first, the test is a bit buggy sometimes)
+#### Component test - via Playwright
 ```
-test:component:frontend
+test:component
 ```
-#### E2E test, Frontend - via Cypress, pick Electron on the config screen (I suggest turning on the electron dev window first, the test is a bit buggy sometimes)
+#### E2E test - via Playwright
 ```
-test:e2e:frontend
+test:e2e
 ```
 
 ### Customize the configuration
