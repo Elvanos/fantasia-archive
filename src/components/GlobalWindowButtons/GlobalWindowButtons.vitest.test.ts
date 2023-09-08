@@ -5,24 +5,61 @@ import GlobalWindowButtons from './GlobalWindowButtons.vue'
 
 installQuasar()
 
-describe('Unit test - GlobalWindowButtons component', () => {
-  it('should mount three buttons', () => {
+describe('Component - "GlobalWindowButtons"', () => {
+  /**
+   * Object of string data selectors for the component
+   */
+  const selectorList = {
+    buttonMinimize: 'globalWindowButtons-button-minimize',
+    buttonResize: 'globalWindowButtons-button-resize',
+    buttonClose: 'globalWindowButtons-button-close'
+  }
+
+  /**
+   * Test if the component has three specific HTML element buttons properly mounted in it:
+   * - Minimize button
+   * - Resize button
+   * - Close button
+   */
+  it('Wrapper should contain three buttons', () => {
     const wrapper = mount(GlobalWindowButtons)
-    expect(wrapper.findAll('.q-btn')).toHaveLength(3)
+
+    const buttonList = []
+
+    buttonList.push(wrapper.get(`[data-test="${selectorList.buttonMinimize}"]`))
+    buttonList.push(wrapper.get(`[data-test="${selectorList.buttonResize}"]`))
+    buttonList.push(wrapper.get(`[data-test="${selectorList.buttonClose}"]`))
+
+    expect(buttonList).toHaveLength(3)
   })
 
-  it('should have `minimize` button', () => {
+  /**
+   * Test if the component has a specific HTML element button properly mounted in it.
+   * - Minimize button
+   */
+  it('Wrapper should contain "minimize" button', () => {
     const wrapper = mount(GlobalWindowButtons)
-    expect(wrapper.findAll('.globalWindowButtons__minimize')).toHaveLength(1)
+
+    expect(wrapper.get(`[data-test="${selectorList.buttonMinimize}"]`))
   })
 
-  it('should have `resize` button', () => {
+  /**
+   * Test if the component has a specific HTML element button properly mounted in it.
+   * - Resize button
+   */
+  it('Wrapper should contain "resize" button', () => {
     const wrapper = mount(GlobalWindowButtons)
-    expect(wrapper.findAll('.globalWindowButtons__minimize')).toHaveLength(1)
+
+    expect(wrapper.get(`[data-test="${selectorList.buttonResize}"]`))
   })
 
-  it('should have `close` button', () => {
+  /**
+   * Test if the component has a specific HTML element button properly mounted in it.
+   * - Close button
+   */
+  it('Wrapper should contain "close" button', () => {
     const wrapper = mount(GlobalWindowButtons)
-    expect(wrapper.findAll('.globalWindowButtons__minimize')).toHaveLength(1)
+
+    expect(wrapper.get(`[data-test="${selectorList.buttonClose}"]`))
   })
 })

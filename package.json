@@ -10,7 +10,7 @@
     "dev:electron": "quasar dev -m electron",
     "build": "quasar build -m electron --publish never",
     "test:unit:ui": "vitest --ui",
-    "test:unit:ci": "vitest run",
+    "test:unit:ci": "vitest run --reporter verbose",
     "test:component": "node \"node_modules/@playwright/test/cli.js\" test src/components/",
     "test:e2e": "node \"node_modules/@playwright/test/cli.js\" test test/playwright-e2e/"
   },

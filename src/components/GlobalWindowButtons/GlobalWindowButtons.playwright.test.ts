@@ -1,88 +1,155 @@
-import appRoot from 'app-root-path'
 import { _electron as electron } from 'playwright'
 import { test, expect } from '@playwright/test'
+import { extraEnvVariablesAPI } from 'app/src-electron/customContentBridgeAPIs/extraEnvVariablesAPI'
 
-const electronMainFilePath = appRoot + '/dist/electron/UnPackaged/electron-main.js'
-const faFrontendRenderTimer = 1000
+/**
+ * Extra env settings too trigger component testing via Playwright
+ */
+const extraEnvSettings = {
+  TEST_ENV: 'components',
+  COMPONENT_NAME: 'GlobalWindowButtons'
+}
 
-test('launch app', async () => {
-  const electronApp = await electron.launch({ args: [electronMainFilePath] })
-  // close app
+/**
+ * Electron main filepath
+ */
+const electronMainFilePath:string = extraEnvVariablesAPI.ELECTRON_MAIN_FILEPATH
+
+/**
+ * Extra rended timer buffer for tests to start after loading the app
+ * - Change here in order manually adjust this component's wait times
+ */
+const faFrontendRenderTimer:number = extraEnvVariablesAPI.FA_FRONTEND_RENDER_TIMER
+
+/**
+ * Object of string data selectors for the component
+ */
+const selectorList = {
+  buttonMinimize: 'globalWindowButtons-button-minimize',
+  buttonResize: 'globalWindowButtons-button-resize',
+  buttonClose: 'globalWindowButtons-button-close'
+}
+
+/**
+ * Test if the Electron launches to begin with.
+ */
+test('Should launch app', async () => {
+  const electronApp = await electron.launch({
+    env: extraEnvSettings,
+    args: [electronMainFilePath]
+  })
+
   await electronApp.close()
 })
 
-test('click resize button - smallify', async () => {
-  const electronApp = await electron.launch({ args: [electronMainFilePath] })
+/**
+ * Attempt to click the resize button
+ */
+test('Click resize button - "smallify"', async () => {
+  const electronApp = await electron.launch({
+    env: extraEnvSettings,
+    args: [electronMainFilePath]
+  })
+
   const appWindow = await electronApp.firstWindow()
   await appWindow.waitForTimeout(faFrontendRenderTimer)
 
-  const resizeButton = await appWindow.$('.globalWindowButtons__resize')
+  const resizeButton = await appWindow.$(`[data-test="${selectorList.buttonResize}"]`)
 
   if (resizeButton !== null) {
     await resizeButton.click()
+
     const isMaximized = await appWindow.evaluate(() => window.faWindowControlAPI.checkWindowMaximized())
+
     expect(isMaximized).toBe(false)
   } else {
     test.fail()
   }
 
-  // close app
   await electronApp.close()
 })
 
-test('click resize button - maximize', async () => {
-  const electronApp = await electron.launch({ args: [electronMainFilePath] })
+/**
+ * Attempt to click the resize button, twice
+ */
+test('Click resize button - "maximize"', async () => {
+  const electronApp = await electron.launch({
+    env: extraEnvSettings,
+    args: [electronMainFilePath]
+  })
+
   const appWindow = await electronApp.firstWindow()
   await appWindow.waitForTimeout(faFrontendRenderTimer)
 
-  const resizeButton = await appWindow.$('.globalWindowButtons__resize')
+  const resizeButton = await appWindow.$(`[data-test="${selectorList.buttonResize}"]`)
 
   if (resizeButton !== null) {
+    // Click twice
     await resizeButton.click()
     await resizeButton.click()
+
     const isMaximized = await appWindow.evaluate(() => window.faWindowControlAPI.checkWindowMaximized())
+
     expect(isMaximized).toBe(true)
   } else {
     test.fail()
   }
 
-  // close app
   await electronApp.close()
 })
 
-test('click minimize button', async () => {
-  const electronApp = await electron.launch({ args: [electronMainFilePath] })
+/**
+ * Attempt to click the minimize button
+ */
+test('Click minimize button', async () => {
+  const electronApp = await electron.launch({
+    env: extraEnvSettings,
+    args: [electronMainFilePath]
+  })
+
   const appWindow = await electronApp.firstWindow()
   await appWindow.waitForTimeout(faFrontendRenderTimer)
 
-  const minimizeButton = await appWindow.$('.globalWindowButtons__minimize')
+  const minimizeButton = await appWindow.$(`[data-test="${selectorList.buttonMinimize}"]`)
 
   if (minimizeButton !== null) {
     await minimizeButton.click()
+
     const isMaximized = await appWindow.evaluate(() => window.faWindowControlAPI.checkWindowMaximized())
+
     expect(isMaximized).toBe(false)
   } else {
     test.fail()
   }
 
-  // close app
   await electronApp.close()
 })
 
-/* This test can VERY occasionally fail when the window takes too long to close on weaker PCs. Simply rerunning the tests generally fixes this. */
-test('click close button', async () => {
-  const electronApp = await electron.launch({ args: [electronMainFilePath] })
+/**
+ * Attempt to click the close button
+ * - This test can VERY occasionally fail when the window takes too long to close on weaker PCs. Simply rerunning the tests generally fixes this.
+ */
+test('Click close button', async () => {
+  const electronApp = await electron.launch({
+    env: extraEnvSettings,
+    args: [electronMainFilePath]
+  })
+
   const appWindow = await electronApp.firstWindow()
   await appWindow.waitForTimeout(faFrontendRenderTimer)
 
-  const closeButton = await appWindow.$('.globalWindowButtons__close')
+  const closeButton = await appWindow.$(`[data-test="${selectorList.buttonClose}"]`)
 
   if (closeButton !== null) {
     let windowIsClosed = false
+
+    // Listen to window close event
     appWindow.on('close', () => {
       windowIsClosed = true
     })
+
     await closeButton.click()
+
     expect(windowIsClosed).toBe(true)
   } else {
     test.fail()

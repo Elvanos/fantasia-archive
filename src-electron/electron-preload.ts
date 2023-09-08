@@ -29,44 +29,9 @@
  */
 
 import { contextBridge } from 'electron'
-import { BrowserWindow } from '@electron/remote'
-import { I_faWindowControlAPI } from 'src/interfaces/I_faWindowControlAPI'
 
-const faWindowControlAPI: I_faWindowControlAPI = {
-
-  checkWindowMaximized () {
-    const currentWindow = BrowserWindow.getFocusedWindow()
-    if (currentWindow !== null) {
-      return currentWindow.isMaximized()
-    }
-    return false
-  },
-  minimizeWindow () {
-    const currentWindow = BrowserWindow.getFocusedWindow()
-
-    if (currentWindow !== null) {
-      currentWindow.minimize()
-    }
-  },
-
-  resizeWindow () {
-    const currentWindow = BrowserWindow.getFocusedWindow()
-
-    if (currentWindow !== null) {
-      if (currentWindow.isMaximized()) {
-        currentWindow.unmaximize()
-      } else {
-        currentWindow.maximize()
-      }
-    }
-  },
-
-  closeWindow () {
-    const currentWindow = BrowserWindow.getFocusedWindow()
-    if (currentWindow !== null) {
-      currentWindow.close()
-    }
-  }
-}
+import { faWindowControlAPI } from 'src-electron/customContentBridgeAPIs/faWindowControlAPI'
+import { extraEnvVariablesAPI } from 'src-electron/customContentBridgeAPIs/extraEnvVariablesAPI'
 
 contextBridge.exposeInMainWorld('faWindowControlAPI', faWindowControlAPI)
+contextBridge.exposeInMainWorld('extraEnvVariables', extraEnvVariablesAPI)

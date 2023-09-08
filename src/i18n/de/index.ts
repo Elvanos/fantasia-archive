@@ -1,6 +1,14 @@
-// This is just an example,
-// so you can safely delete all default props below
-
 export default {
-  appName: 'FA - but in german!'
+  // GLOBAL - APP TEXTS
+  app: {
+    name: 'FA - but in german!'
+  },
+
+  // COMPONENT - GLOBAL WINDOW BUTTONS
+  GlobalWindowButtons: {
+    minimizeButton: 'Minimize',
+    resizeButton: 'Resize Down',
+    maximizeButton: 'Maximize',
+    close: 'Close'
+  }
 }
