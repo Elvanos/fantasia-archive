@@ -3,11 +3,12 @@ import { test, expect } from '@playwright/test'
 import { extraEnvVariablesAPI } from 'app/src-electron/customContentBridgeAPIs/extraEnvVariablesAPI'
 
 /**
- * Extra env settings too trigger component testing via Playwright
+ * Extra env settings to trigger component testing via Playwright
  */
 const extraEnvSettings = {
   TEST_ENV: 'components',
-  COMPONENT_NAME: 'GlobalWindowButtons'
+  COMPONENT_NAME: 'GlobalWindowButtons',
+  COMPONENT_PROPS: JSON.stringify({})
 }
 
 /**
@@ -31,18 +32,6 @@ const selectorList = {
 }
 
 /**
- * Test if the Electron launches to begin with.
- */
-test('Should launch app', async () => {
-  const electronApp = await electron.launch({
-    env: extraEnvSettings,
-    args: [electronMainFilePath]
-  })
-
-  await electronApp.close()
-})
-
-/**
  * Attempt to click the resize button
  */
 test('Click resize button - "smallify"', async () => {
@@ -56,6 +45,7 @@ test('Click resize button - "smallify"', async () => {
 
   const resizeButton = await appWindow.$(`[data-test="${selectorList.buttonResize}"]`)
 
+  // Check if the tested element exists
   if (resizeButton !== null) {
     await resizeButton.click()
 
@@ -63,6 +53,7 @@ test('Click resize button - "smallify"', async () => {
 
     expect(isMaximized).toBe(false)
   } else {
+    // Element doesn't exist
     test.fail()
   }
 
@@ -83,6 +74,7 @@ test('Click resize button - "maximize"', async () => {
 
   const resizeButton = await appWindow.$(`[data-test="${selectorList.buttonResize}"]`)
 
+  // Check if the tested element exists
   if (resizeButton !== null) {
     // Click twice
     await resizeButton.click()
@@ -92,6 +84,7 @@ test('Click resize button - "maximize"', async () => {
 
     expect(isMaximized).toBe(true)
   } else {
+    // Element doesn't exist
     test.fail()
   }
 
@@ -112,6 +105,7 @@ test('Click minimize button', async () => {
 
   const minimizeButton = await appWindow.$(`[data-test="${selectorList.buttonMinimize}"]`)
 
+  // Check if the tested element exists
   if (minimizeButton !== null) {
     await minimizeButton.click()
 
@@ -119,6 +113,7 @@ test('Click minimize button', async () => {
 
     expect(isMaximized).toBe(false)
   } else {
+    // Element doesn't exist
     test.fail()
   }
 
@@ -140,6 +135,7 @@ test('Click close button', async () => {
 
   const closeButton = await appWindow.$(`[data-test="${selectorList.buttonClose}"]`)
 
+  // Check if the tested element exists
   if (closeButton !== null) {
     let windowIsClosed = false
 
@@ -152,6 +148,7 @@ test('Click close button', async () => {
 
     expect(windowIsClosed).toBe(true)
   } else {
+    // Element doesn't exist
     test.fail()
   }
 })

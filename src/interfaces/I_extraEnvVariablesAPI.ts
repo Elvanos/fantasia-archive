@@ -15,13 +15,20 @@ export interface I_extraEnvVariablesAPI {
 
   /**
    * Type of test environment to load.
+   * - 'components'
+   * - 'e2e'
    */
-  TEST_ENV?: 'components'|'e2e'|false
+  TEST_ENV?: string|false
 
   /**
    * Name of the component being tested.
    * - MUST match the file name of the vue file being tested (including the capital letter at the start).
    */
   COMPONENT_NAME?: string|false
+
+  /**
+   * Component props, assuming they have any.
+   */
+  COMPONENT_PROPS?: string|false
 
 }

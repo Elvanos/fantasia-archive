@@ -1,1 +1,3 @@
-// app global css in SCSS form
+@import './globals/scrollbar.scss';
+@import './globals/htmlAdjustments.scss';
+@import './globals/quasarComponentsAdjustments.scss';

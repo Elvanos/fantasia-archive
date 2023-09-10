@@ -1,0 +1,24 @@
+* {
+
+  /* Scrollbar sizing */
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  /* Whole scrollbar track */
+  ::-webkit-scrollbar-track {
+    background: $dark;
+  }
+
+  /* Handle button */
+  ::-webkit-scrollbar-thumb {
+    background: lighten($dark, 40);
+    border-radius: 5px;
+  }
+
+  /* Handle button - Hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: lighten($dark, 60);
+  }
+}

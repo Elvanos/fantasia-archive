@@ -1,11 +1,19 @@
 <template>
   <q-page class="row items-center justify-evenly">
-    <component :is="currentComponent" />
+    <component
+      :is="currentComponent"
+      v-bind="propList"
+    />
   </q-page>
 </template>
 
 <script lang="ts" setup>
 import { useRoute } from 'vue-router'
+
+/**
+ * Passed prop list from the test through Electron backend. If somehow nothing get passed (somehow), set to a blank object just to be on the safe side.
+ */
+const propList = (window.extraEnvVariables.COMPONENT_PROPS) ? window.extraEnvVariables.COMPONENT_PROPS : {}
 
 /**
  * Current route

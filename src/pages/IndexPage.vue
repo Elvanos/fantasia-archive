@@ -1,12 +1,18 @@
 <template>
-  <q-page class="row items-center justify-evenly" />
+  <q-page class="row">
+    <FantasiaMascotImage />
+    <div>
+      <div
+        v-for="n in 1000"
+        :key="n"
+      >
+        {{ n }}
+      </div>
+    </div>
+  </q-page>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
+import FantasiaMascotImage from 'src/components/FantasiaMascotImage/FantasiaMascotImage.vue'
 
-export default defineComponent({
-  name: 'IndexPage',
-  components: {}
-})
 </script>

@@ -1,0 +1,5 @@
+.q-page{
+    // Max-height of the window minus the height of the top bar
+    max-height: calc(100vh - 50px);
+    overflow: auto;
+}
