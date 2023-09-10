@@ -7,28 +7,19 @@ $secondary : #f75746;
 $accent    : #dde4e4;
 
 $dark      : #18303a;
-// TODO - add color
-$dark-page : #121212;
+$dark-page : #303742;
 
 $positive  : #35a14e;
 $negative  : #c10015;
 $info      : lighten(#d7ac47, 35);
 $warning   : #f2c037;
 
-$custom-gunmetal: #18303a;
-$custom-gunmetal-light: lighten(#18303a, 7.5);
-$custom-gunmetal-lighter: lighten(#18303a, 12.5);
-$custom-gunmetal-medium: lighten(#18303a, 20);
-$custom-gunmetal-bright: lighten(#18303a, 50);
-$custom-gunmetal-shine: lighten(#18303a, 60);
-$custom-ruby-red: #f75746;
-$custom-satin-sheen-gold: #e8bb50;
-$custom-satin-sheen-gold-dark: darken(#e8bb50, 12.5);
-$custom-satin-sheen-gold-darker: darken(#e8bb50, 17.5);
-$custom-satin-sheen-gold-light: lighten(#e8bb50, 7.5);
-$custom-satin-sheen-gold-bright: lighten(#e8bb50, 15);
-$custom-gainsboro: #dde4e4;
-$custom-cultured: #f5f5f5;
+// QUASAR COMPONENT - Q-CARD
+$qCard-background: #f7eeda;
+$qCard-text: $dark;
+$qCard-border-color: $dark;
+$qCard-border-size: 2px;
+$qCard-border-radius: 5px;
 
 // COMPONENT - GLOBAL WINDOW BUTTONS
 $globalWindowButtons_height: 35px;

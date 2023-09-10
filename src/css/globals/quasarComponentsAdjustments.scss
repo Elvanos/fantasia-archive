@@ -3,3 +3,11 @@
     max-height: calc(100vh - 50px);
     overflow: auto;
 }
+
+.q-card{
+  border-radius: $qCard-border-radius;
+  box-shadow: none;
+  border: $qCard-border-size solid $qCard-border-color;
+  background-color: $qCard-background;
+  color: $qCard-text;
+}

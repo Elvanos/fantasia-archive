@@ -29,8 +29,8 @@ export default defineComponent({
 
     /**
      * In case of some testing happening:
-     * Reroute to the proper component path route assuming all is properly set.
-     * Otherwise, make sure we are on homepage on load.
+     * - Reroute to the proper component path route assuming all is properly set.
+     * - Otherwise, make sure we are on homepage on load.
      */
     if (testingType && testingType === 'components' && testingComponentName) {
       router.push({ path: `/componentTesting/${testingComponentName}` })

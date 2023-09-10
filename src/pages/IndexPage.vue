@@ -1,6 +1,6 @@
 <template>
   <q-page class="row">
-    <FantasiaMascotImage />
+    <FantasiaMascotImage width="400px" />
     <div>
       <div
         v-for="n in 1000"

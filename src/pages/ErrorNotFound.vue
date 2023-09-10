@@ -1,34 +1,40 @@
 <template>
-  <div class="fullscreen bg-blue text-white text-center q-pa-md flex flex-center">
+  <div class="fullscreen bg-dark text-primary text-center q-pa-md flex column flex-center">
+    <GlobalWindowButtons />
+    <q-card
+      class="q-pl-xl q-pr-xl q-pb-xl"
+    >
+      <q-card-section>
+        <h2 class="text-negative">
+          {{ $t('ErrorNotFound.title') }}
+        </h2>
+        <h6>
+          {{ $t('ErrorNotFound.subTitleFirst') }}
+          <br>
+          {{ $t('ErrorNotFound.subTitleSecond') }}
+        </h6>
+        <FantasiaMascotImage
+          fantasia-image="error"
+          width="300px"
+        />
+      </q-card-section>
+    </q-card>
+
     <div>
-      <div style="font-size: 30vh">
-        404
-      </div>
-
-      <div
-        class="text-h2"
-        style="opacity:.4"
-      >
-        Oops. Nothing here...
-      </div>
-
       <q-btn
         class="q-mt-xl"
-        color="white"
-        text-color="blue"
-        unelevated
+        color="primary"
+        outline
+        size="xl"
         to="/"
-        label="Go Home"
-        no-caps
-      />
+      >
+        {{ $t('ErrorNotFound.ctaText') }}
+      </q-btn>
     </div>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
-
-export default defineComponent({
-  name: 'ErrorNotFound'
-})
+<script lang="ts" setup>
+import GlobalWindowButtons from 'src/components/GlobalWindowButtons/GlobalWindowButtons.vue'
+import FantasiaMascotImage from 'src/components/FantasiaMascotImage/FantasiaMascotImage.vue'
 </script>
