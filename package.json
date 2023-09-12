@@ -8,7 +8,7 @@
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue ./",
     "dev:electron": "quasar dev -m electron",
-    "build": "quasar build -m electron --publish never",
+    "build": "quasar build -m electron --publish never --debug",
     "test:unit:ui": "vitest --ui",
     "test:unit:ci": "vitest run --reporter verbose",
     "test:component": "node \"node_modules/@playwright/test/cli.js\" test src/components/",
@@ -17,6 +17,7 @@
   "dependencies": {
     "@electron/remote": "^2.0.10",
     "@quasar/extras": "^1.16.4",
+    "app-root-path": "^3.1.0",
     "axios": "^1.2.1",
     "pinia": "^2.0.11",
     "quasar": "^2.6.0",
@@ -35,7 +36,6 @@
     "@typescript-eslint/parser": "^5.10.0",
     "@vitest/ui": "^0.15.0",
     "@vue/test-utils": "^2.0.0",
-    "app-root-path": "^3.1.0",
     "autoprefixer": "^10.4.2",
     "electron": "^25.5.0",
     "electron-builder": "^24.3.0",

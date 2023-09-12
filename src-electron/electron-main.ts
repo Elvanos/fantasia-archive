@@ -1,4 +1,4 @@
-import { app, BrowserWindow, nativeTheme } from 'electron'
+import { app, BrowserWindow, Menu, nativeTheme } from 'electron'
 import { initialize, enable } from '@electron/remote/main'
 import path from 'path'
 import os from 'os'
@@ -50,6 +50,9 @@ function createWindow () {
     mainWindow = undefined
   })
 }
+
+// Performance improvement tweak
+Menu.setApplicationMenu(null)
 
 app.whenReady().then(createWindow)
 
