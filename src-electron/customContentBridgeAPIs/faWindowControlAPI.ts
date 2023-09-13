@@ -19,6 +19,14 @@ export const faWindowControlAPI: I_faWindowControlAPI = {
     }
   },
 
+  maximizeWindow () {
+    const currentWindow = BrowserWindow.getFocusedWindow()
+
+    if (currentWindow !== null) {
+      currentWindow.maximize()
+    }
+  },
+
   resizeWindow () {
     const currentWindow = BrowserWindow.getFocusedWindow()
 

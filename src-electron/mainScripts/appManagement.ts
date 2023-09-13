@@ -16,11 +16,9 @@ export const openAppWindowManager = () => {
   // Create the app window in the normal way
   app.whenReady().then(mainWindowCreation)
 
-  // Create the app window, if it still doesn't exist yet
+  // Create the app window
   app.on('activate', () => {
-    if (app.requestSingleInstanceLock()) {
-      mainWindowCreation()
-    }
+    mainWindowCreation()
   })
 }
 

@@ -11,6 +11,11 @@ export interface I_faWindowControlAPI {
   minimizeWindow: () => void
 
   /**
+   * Mazimizes the current window
+   */
+  maximizeWindow: () => void
+
+  /**
    * Resizes the current window.
    * - If the window is maximized, smallifies it
    * - If the window is smallified, maximizes it
