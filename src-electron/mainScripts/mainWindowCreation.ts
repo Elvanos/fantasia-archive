@@ -1,11 +1,14 @@
 import { BrowserWindow, app } from 'electron'
 import { enable } from '@electron/remote/main'
 import path from 'path'
-
 /**
  * Prevent app to launch a secondary instance
  */
 const preventSecondaryAppInstance = (appWindow: BrowserWindow | undefined) => {
+  // Do not limit the window amount if we are in auto-test mode
+  if (process.env.TEST_ENV && (process.env.TEST_ENV === 'components' || process.env.TEST_ENV === 'e2e')) {
+    return
+  }
   /**
    * Determines if the app is the primary instance
    * - This exists as a variable due to the app bugging out if used directly from "app"
@@ -76,4 +79,6 @@ export const mainWindowCreation = () => {
 
   // Check if we are on the primary or secondary instance of the app
   preventSecondaryAppInstance(appWindow)
+
+  return appWindow
 }

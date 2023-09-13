@@ -76,11 +76,18 @@ test('Click resize button - "maximize"', async () => {
 
   // Check if the tested element exists
   if (resizeButton !== null) {
-    // Click twice
-    await resizeButton.click()
-    await resizeButton.click()
+    let isMaximized = await appWindow.evaluate(() => window.faWindowControlAPI.checkWindowMaximized())
 
-    const isMaximized = await appWindow.evaluate(() => window.faWindowControlAPI.checkWindowMaximized())
+    // Check if the window if maximized of not, react accordingly
+    if (isMaximized) {
+      // Click twice
+      await resizeButton.click()
+      await resizeButton.click()
+    } else {
+      await resizeButton.click()
+    }
+
+    isMaximized = await appWindow.evaluate(() => window.faWindowControlAPI.checkWindowMaximized())
 
     expect(isMaximized).toBe(true)
   } else {
