@@ -80,5 +80,6 @@ export const mainWindowCreation = () => {
   // Check if we are on the primary or secondary instance of the app
   preventSecondaryAppInstance(appWindow)
 
-  return appWindow
+  // In case the window somehow didn't maximize/show for any reason; maximize it
+  appWindow.maximize()
 }
