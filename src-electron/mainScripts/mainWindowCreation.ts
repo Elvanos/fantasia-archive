@@ -1,4 +1,4 @@
-import { BrowserWindow, app } from 'electron'
+import { BrowserWindow, app, screen } from 'electron'
 import { enable } from '@electron/remote/main'
 import path from 'path'
 /**
@@ -25,7 +25,9 @@ const preventSecondaryAppInstance = (appWindow: BrowserWindow | undefined) => {
     */
     app.on('second-instance', () => {
       if (appWindow) {
-        if (appWindow.isMinimized()) appWindow.restore()
+        if (appWindow.isMinimized()) {
+          appWindow.restore()
+        }
         appWindow.focus()
       }
     })
@@ -37,12 +39,20 @@ const preventSecondaryAppInstance = (appWindow: BrowserWindow | undefined) => {
   */
 export const mainWindowCreation = () => {
   /**
+   * Retrieve actual display size to stop flicker/debounce that happens with "maximize" function at first
+   */
+  const displaySizes = screen.getPrimaryDisplay().workAreaSize
+
+  /**
    * Initial window options
    */
   let appWindow: BrowserWindow | undefined = new BrowserWindow({
+    width: displaySizes.width,
+    height: displaySizes.height,
     useContentSize: true,
     frame: false,
     show: false,
+    center: true,
     icon: path.resolve(__dirname, '../icons/icon.png'),
     webPreferences: {
       sandbox: false,
@@ -54,10 +64,19 @@ export const mainWindowCreation = () => {
   // Enable actual webContents inside the created window
   enable(appWindow.webContents)
 
+  // Show the windows once electron is ready to show the actual HTML content
   appWindow.once('ready-to-show', () => {
     if (appWindow) {
-      appWindow.maximize()
+      appWindow.show()
       appWindow.focus()
+      appWindow.maximize()
+
+      // In case the windows somehow didn't maximize at first, make sure it does; this is a fix for slower machines
+      setTimeout(() => {
+        if (appWindow) {
+          appWindow.maximize()
+        }
+      }, 1000)
     }
   })
 
@@ -79,7 +98,4 @@ export const mainWindowCreation = () => {
 
   // Check if we are on the primary or secondary instance of the app
   preventSecondaryAppInstance(appWindow)
-
-  // In case the window somehow didn't maximize/show for any reason; maximize it
-  appWindow.maximize()
 }
