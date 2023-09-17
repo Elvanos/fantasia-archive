@@ -27,12 +27,17 @@ openAppWindowManager()
 // Set up manager for closing app instance
 closeAppManager(platform)
 
-/*
 import * as sqlite3 from 'sqlite3'
 import { app } from 'electron'
-sqlite3.verbose()
-const db = new sqlite3.Database(`${app.getPath('userData')}/test.sqlite3`)
+import fs from 'fs'
 
+if (!fs.existsSync(`${app.getPath('userData')}/_faProjectTemp/`)) {
+  fs.mkdirSync(`${app.getPath('userData')}/_faProjectTemp/`)
+}
+
+sqlite3.verbose()
+const db = new sqlite3.Database(`${app.getPath('userData')}/_faProjectTemp/test.fae`)
+/*
 db.serialize(() => {
   db.run('CREATE TABLE IF NOT EXISTS lorem (info TEXT, yeet TEXT)')
 
@@ -47,7 +52,18 @@ db.serialize(() => {
     console.log(row.id + ': ' + row.info)
     console.log(row.id + ': ' + row.yeet)
   })
-})
+}) */
+
+/* db.serialize(() => {
+  db.run('CREATE TABLE IF NOT EXISTS sqlar (name TEXT, data BLOB)')
+
+  const buffer = fs.readFileSync(`${app.getPath('userData')}/_faProjectTemp/testImg.jpg`)
+
+  db.run('INSERT INTO sqlar VALUES (?, ?)', ['test', buffer])
+
+  db.each('SELECT rowid AS id, name, data FROM sqlar', (_err, row: {id:string, name:string, data:string}) => {
+    fs.writeFileSync(`${app.getPath('userData')}/_faProjectTemp/testImg2.jpg`, row.data)
+  })
+}) */
 
 db.close()
- */
