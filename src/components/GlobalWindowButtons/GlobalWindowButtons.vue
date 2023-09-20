@@ -7,7 +7,6 @@
     <!-- Minimize button -->
     <q-btn
       flat
-      :ripple="false"
       dark
       size="xs"
       class="globalWindowButtons__minimize"
@@ -26,7 +25,6 @@
     <!-- MinMax button -->
     <q-btn
       flat
-      :ripple="false"
       dark
       size="xs"
       class="globalWindowButtons__resize"
@@ -45,7 +43,6 @@
     <!-- Close button -->
     <q-btn
       flat
-      :ripple="false"
       dark
       size="xs"
       class="globalWindowButtons__close"
