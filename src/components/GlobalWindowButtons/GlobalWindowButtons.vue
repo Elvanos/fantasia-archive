@@ -61,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 import type { Ref } from 'vue'
 
 /**
@@ -114,10 +114,25 @@ const checkIfWindowMaximized = () => {
 const isMaximized: Ref<boolean> = ref(false)
 
 /**
- * Check on component mount if the windows if maximized or not
+ * Window interval checker variable
+ */
+let checkerInterval: number
+
+/**
+ * Hook up a interval timer on mount for continuous checking
+ * This done due to the fact that dragging via the top header bar doesn't properly fire "drag" event
  */
 onMounted(() => {
-  checkIfWindowMaximized()
+  checkerInterval = window.setInterval(() => {
+    checkIfWindowMaximized()
+  }, 300)
+})
+
+/**
+ *Unhook the interval timer on unmounting in order to prevent left-over intervals ticking in the app
+ */
+onUnmounted(() => {
+  window.clearInterval(checkerInterval)
 })
 
 </script>

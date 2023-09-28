@@ -1,3 +1,7 @@
+import T_helpInfo from './components/AppControlMenus/T_helpInfo'
+import T_project from './components/AppControlMenus/T_project'
+import T_tools from './components/AppControlMenus/T_tools'
+
 export default {
   // GLOBAL - APP TEXTS
   app: {
@@ -18,5 +22,13 @@ export default {
     resizeButton: 'Resize Down',
     maximizeButton: 'Maximize',
     close: 'Close'
+  },
+
+  // COMPONENT - APP CONTROL MENUS
+  AppControlMenus: {
+    project: T_project,
+    tools: T_tools,
+    helpInfo: T_helpInfo
   }
+
 }

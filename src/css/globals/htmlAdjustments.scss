@@ -2,3 +2,33 @@ html,
 body{
   overflow: hidden !important;
 }
+
+body{
+  &.body--light{
+    /* WebKit/Blink Browsers */
+    ::selection {
+      color: $selectTextColor_lightMode;
+      background: $selectBackgroundColor_lightMode;
+    }
+
+    /* Gecko Browsers */
+    ::-moz-selection {
+      color: $selectTextColor_lightMode;
+      background: $selectBackgroundColor_lightMode;
+    }
+  }
+
+  &.body--dark{
+    /* WebKit/Blink Browsers */
+    ::selection {
+      color: $selectTextColor_darkMode;
+      background: $selectBackgroundColor_darkMode;
+    }
+
+    /* Gecko Browsers */
+    ::-moz-selection {
+      color: $selectTextColor_darkMode;
+      background: $selectBackgroundColor_darkMode;
+    }
+  }
+}

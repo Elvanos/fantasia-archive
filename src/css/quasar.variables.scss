@@ -4,15 +4,23 @@
 
 $primary   : #d7ac47;
 $secondary : #f75746;
-$accent    : #dde4e4;
+$accent    : #f5f5f5;
 
 $dark      : #18303a;
 $dark-page : #303742;
+
+$dark-lighter: #234655;
 
 $positive  : #35a14e;
 $negative  : #c10015;
 $info      : lighten(#d7ac47, 35);
 $warning   : #f2c037;
+
+// GLOBALS - GENERAL SELECT
+$selectTextColor_darkMode: #eedbb0;
+$selectBackgroundColor_darkMode: #bb3b32;
+$selectTextColor_lightMode: #eedbb0;
+$selectBackgroundColor_lightMode: #aa2a21;
 
 // QUASAR COMPONENT - Q-CARD
 $qCard-background: #f7eeda;
@@ -24,3 +32,9 @@ $qCard-border-radius: 5px;
 // COMPONENT - GLOBAL WINDOW BUTTONS
 $globalWindowButtons_height: 35px;
 $globalWindowButtons_color: $accent;
+
+// COMPONENT - APP CONTROL MENUS
+$appControlMenus_bgColor: $dark-lighter;
+$appControlMenus_color: $accent;
+$appControlMenus_separatorColor: $primary;
+$appControlMenus_singleHover: $primary;

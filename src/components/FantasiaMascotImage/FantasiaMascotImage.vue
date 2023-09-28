@@ -47,6 +47,7 @@ const props = defineProps({
     type: String,
     default: ''
   },
+
   /**
    * Custom CSS string for the "height" attribute.
    */
@@ -54,6 +55,7 @@ const props = defineProps({
     type: String,
     default: 'initial'
   },
+
   /**
    * Custom CSS string for the "width" attribute.
    */
@@ -103,6 +105,7 @@ const currentMascotImage = determineCurrentImage(fantasiaImageList)
   &__inner{
     height: v-bind(height);
     width: v-bind(width);
+    user-select: none;
   }
 }
 
