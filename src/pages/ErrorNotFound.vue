@@ -2,7 +2,7 @@
   <div class="fullscreen bg-dark text-primary text-center q-pa-md flex column flex-center">
     <GlobalWindowButtons />
     <q-card
-      class="q-pl-xl q-pr-xl q-pb-xl"
+      class="q-pl-xl q-pr-xl q-pb-xl errorPage-card"
     >
       <q-card-section>
         <h2 class="text-negative">
@@ -38,3 +38,13 @@
 import GlobalWindowButtons from 'src/components/GlobalWindowButtons/GlobalWindowButtons.vue'
 import FantasiaMascotImage from 'src/components/FantasiaMascotImage/FantasiaMascotImage.vue'
 </script>
+
+<style lang="scss" scoped>
+.errorPage-card{
+  border-radius: $qCard-errorPage-border-radius;
+  box-shadow: none;
+  border: $qCard-errorPage-border-size solid $qCard-errorPage-border-color;
+  background-color: $qCard-errorPage-background;
+  color: $qCard-errorPage-text;
+}
+</style>

@@ -10,5 +10,8 @@
       "typescript",
       "ui"
     ]
+  },
+  "@quasar/qmarkdown": {
+    "import_md": true
   }
 }

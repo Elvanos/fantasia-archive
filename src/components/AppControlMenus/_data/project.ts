@@ -88,7 +88,7 @@ export const project: I_appMenusDataList = {
       icon: 'keyboard_arrow_right',
       trigger: undefined,
       conditions: true,
-      specialColor: 'accent',
+      specialColor: 'grey',
       submenu: [
         {
           mode: 'item',

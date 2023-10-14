@@ -9,7 +9,7 @@
       flat
       dark
       size="xs"
-      class="globalWindowButtons__minimize"
+      class="globalWindowButtons__button globalWindowButtons__minimize"
       data-test="globalWindowButtons-button-minimize"
       @click="minimizeWindow()"
     >
@@ -19,7 +19,10 @@
       >
         {{ $t('GlobalWindowButtons.minimizeButton') }}
       </q-tooltip>
-      <q-icon name="mdi-window-minimize" />
+      <q-icon
+        size="16px"
+        name="mdi-window-minimize"
+      />
     </q-btn>
 
     <!-- MinMax button -->
@@ -27,7 +30,7 @@
       flat
       dark
       size="xs"
-      class="globalWindowButtons__resize"
+      class="globalWindowButtons__button globalWindowButtons__resize"
       data-test="globalWindowButtons-button-resize"
       @click="[resizeWindow(),checkIfWindowMaximized()]"
     >
@@ -37,7 +40,10 @@
       >
         {{ isMaximized ? $t('GlobalWindowButtons.resizeButton') : $t('GlobalWindowButtons.maximizeButton') }}
       </q-tooltip>
-      <q-icon :name="(isMaximized)? 'mdi-window-restore' : 'mdi-window-maximize'" />
+      <q-icon
+        size="16px"
+        :name="(isMaximized)? 'mdi-window-restore' : 'mdi-window-maximize'"
+      />
     </q-btn>
 
     <!-- Close button -->
@@ -45,7 +51,7 @@
       flat
       dark
       size="xs"
-      class="globalWindowButtons__close"
+      class="globalWindowButtons__button globalWindowButtons__close"
       data-test="globalWindowButtons-button-close"
       @click="tryCloseWindow()"
     >
@@ -55,7 +61,10 @@
       >
         {{ $t('GlobalWindowButtons.close') }}
       </q-tooltip>
-      <q-icon name="mdi-window-close" />
+      <q-icon
+        size="16px"
+        name="mdi-window-close"
+      />
     </q-btn>
   </q-btn-group>
 </template>
@@ -121,8 +130,9 @@ let checkerInterval: number
 /**
  * Hook up a interval timer on mount for continuous checking
  * This done due to the fact that dragging via the top header bar doesn't properly fire "drag" event
+ * Async due to UI render blocking
  */
-onMounted(() => {
+onMounted(async () => {
   checkerInterval = window.setInterval(() => {
     checkIfWindowMaximized()
   }, 300)
@@ -130,8 +140,9 @@ onMounted(() => {
 
 /**
  *Unhook the interval timer on unmounting in order to prevent left-over intervals ticking in the app
+ * Async due to UI render blocking
  */
-onUnmounted(() => {
+onUnmounted(async () => {
   window.clearInterval(checkerInterval)
 })
 
@@ -144,12 +155,23 @@ onUnmounted(() => {
   z-index: 99999999;
   right: 0;
   top: 0;
-
   border-radius: 0;
-
-  height:$globalWindowButtons_height;
+  height: $globalWindowButtons_height;
   color: $globalWindowButtons_color;
-
   -webkit-app-region: no-drag;
+
+  &__button {
+    &:hover,
+    &:focus {
+      color: $globalWindowButtons_hoverColor;
+    }
+  }
+
+  &__close {
+    &:hover,
+    &:focus {
+      color: $globalWindowButtons_close_hoverColor;
+    }
+  }
 }
 </style>

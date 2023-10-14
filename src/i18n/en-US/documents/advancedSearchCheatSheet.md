@@ -1,0 +1,22 @@
+
+- Notes for filter types
+  - Substitute whitespaces with `-`
+  - `@` prefix to include `Other names` in the search
+- Filter types
+  - `$` - Document type
+  - `#` - Tag
+  - `>` - Hierarchical path
+  - `^` - Switch
+    - `^c` - Is a category
+    - `^d` - Is Dead/Gone/Destroyed
+    - `^f` - Is finished
+    - `^m` - Is a minor document
+- Full search
+  - `%` - Beginning of the full-search
+  - `:` - Division between the field-name and field value
+  - `%some-field:some-value` - Search through all fields for value
+  - This can also be used to search for colors: `%color:blue`
+  - `""` wrap for precise search (field name and/or value)
+    - Example full precise: `%"some-field":"some-value"`
+    - Example value precise: `%some-field:"some-value"`
+    - Example name precise: `%"some-field":some-value`

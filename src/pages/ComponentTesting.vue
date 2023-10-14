@@ -8,6 +8,7 @@
 </template>
 
 <script lang="ts" setup>
+import type { Component } from 'vue'
 import { useRoute } from 'vue-router'
 
 /**
@@ -33,7 +34,7 @@ const componentList = import.meta.globEager('components/**/*.vue')
 /**
  * Placeholder variable for the matched component
  */
-let currentComponent = null as unknown
+let currentComponent: Component
 
 /**
  * Loops through the component list

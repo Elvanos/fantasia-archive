@@ -1,10 +1,20 @@
+* {
+  letter-spacing: 0.025em;
+
+  &::before,
+  &::after {
+    backface-visibility: hidden !important;
+  }
+}
+
 html,
-body{
+body {
   overflow: hidden !important;
 }
 
-body{
-  &.body--light{
+body {
+  &.body--light {
+
     /* WebKit/Blink Browsers */
     ::selection {
       color: $selectTextColor_lightMode;
@@ -18,7 +28,8 @@ body{
     }
   }
 
-  &.body--dark{
+  &.body--dark {
+
     /* WebKit/Blink Browsers */
     ::selection {
       color: $selectTextColor_darkMode;
@@ -31,4 +42,12 @@ body{
       background: $selectBackgroundColor_darkMode;
     }
   }
+}
+
+a {
+  color: $aLinkColor;
+}
+
+p {
+  margin: 0 0 16px;
 }

@@ -37,11 +37,18 @@
             clickable
             :class="['appControlSingleMenu__item', `text-${menuItem.specialColor}`, 'non-selectable']"
             :disable="(!menuItem.conditions)"
-            @click="(menuItem.trigger) ? menuItem.trigger() : false"
+            @click="(menuItem.trigger)
+              ? menuItem.triggerArguments
+                ? menuItem.trigger(...menuItem.triggerArguments)
+                : menuItem.trigger()
+              : false"
           >
             <q-item-section>{{ menuItem.text }}</q-item-section>
             <q-item-section avatar>
-              <q-icon :name="menuItem.icon" />
+              <q-icon
+                class="appControlSingleMenu__icon"
+                :name="menuItem.icon"
+              />
             </q-item-section>
 
             <!-- Sub-menu-->
@@ -53,6 +60,7 @@
               dark
               transition-show="jump-right"
               transition-hide="jump-left"
+              class="-subMenu"
             >
               <q-list
                 class="appControlSingleMenu__list"
@@ -77,7 +85,10 @@
                   >
                     <q-item-section>{{ submenuItem.text }}</q-item-section>
                     <q-item-section avatar>
-                      <q-icon :name="submenuItem.icon" />
+                      <q-icon
+                        class="appControlSingleMenu__icon"
+                        :name="submenuItem.icon"
+                      />
                     </q-item-section>
                   </q-item>
                 </template>
@@ -108,23 +119,32 @@ const menuData = props.dataInput.data
 
 <style lang="scss" scoped>
 .appControlSingleMenu {
+  &:hover,
+  &:focus {
+    color: $appControlMenus_singleHover;
+  }
 
-  &__list{
+  &__icon {
+    font-size: $iconSize;
+  }
+
+  &__list {
     background-color: $appControlMenus_bgColor;
     color: $appControlMenus_color;
   }
 
-  &__item{
+  &__item {
     min-height: 42px;
-    &:hover{
+
+    &:hover,
+    &:focus {
       color: $appControlMenus_singleHover;
     }
   }
 
-  &__separator{
+  &__separator {
     background-color: $appControlMenus_separatorColor;
     height: 0.5px !important;
   }
-
 }
 </style>

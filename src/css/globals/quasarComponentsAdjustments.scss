@@ -1,23 +1,117 @@
-.q-page{
-    // Max-height of the window minus the height of the top bar
-    max-height: calc(100vh - 50px);
-    overflow: auto;
+.fullscreen {
+
+  /* Tweak for top bar and other element with z-index between 6000 to 7000 */
+  z-index: 7001;
 }
 
-.q-card{
-  border-radius: $qCard-border-radius;
-  box-shadow: none;
-  border: $qCard-border-size solid $qCard-border-color;
-  background-color: $qCard-background;
-  color: $qCard-text;
+.q-layout {
+  &__shadow::after {
+
+    /* Tweak for default light shadow rendering in the dark-mode variation of the element */
+    box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.2), 0 0 10px rgba(0, 0, 0, 0.24) !important;
+  }
 }
 
-.q-menu--dark{
-  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12) !important;
+.q-page {
+
+  /* Max-height of the window minus the height of the top bar */
+  max-height: calc(100vh - 50px);
+  overflow: auto;
 }
 
+.q-card {
+  box-shadow: $qCard-boxShadow;
+}
 
-.q-transition--slide-right-enter-active, .q-transition--slide-right-leave-active, .q-transition--slide-left-enter-active, .q-transition--slide-left-leave-active, .q-transition--slide-up-enter-active, .q-transition--slide-up-leave-active, .q-transition--slide-down-enter-active, .q-transition--slide-down-leave-active, .q-transition--jump-right-enter-active, .q-transition--jump-right-leave-active, .q-transition--jump-left-enter-active, .q-transition--jump-left-leave-active, .q-transition--jump-up-enter-active, .q-transition--jump-up-leave-active, .q-transition--jump-down-enter-active, .q-transition--jump-down-leave-active, .q-transition--fade-enter-active, .q-transition--fade-leave-active, .q-transition--scale-enter-active, .q-transition--scale-leave-active, .q-transition--rotate-enter-active, .q-transition--rotate-leave-active, .q-transition--flip-enter-active, .q-transition--flip-leave-active{
+.q-markdown {
+  color: $qMarkdown-color !important;
+  line-height: 1.75;
+
+  a {
+    border-bottom: 1px dotted $aLinkColor;
+  }
+
+  pre {
+    padding: 16px 5px !important;
+    margin: 0 0 16px !important;
+  }
+
+  .q-markdown--token {
+    font-weight: 600;
+    padding: 0 5px;
+    background-color: $qMarkdown-code-blackgroundColor !important;
+    color: $qMarkdown-code-textColor !important;
+    border-color: $qMarkdown-code-borderColor !important;
+  }
+}
+
+.q-menu {
+  &--dark {
+
+    /* Tweak for default light shadow rendering in the dark-mode variation of the element */
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 0 2px 2px rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12) !important;
+  }
+
+  &.-subMenu {
+
+    /* Submenu having 1 lower z-index than normal menu for fancier looking animation of sliding underneath the parent */
+    z-index: 5999;
+  }
+}
+
+body.desktop .q-hoverable:hover > .q-focus-helper,
+body.desktop .q-manual-focusable--focused > .q-focus-helper {
+
+  /* Replacement of the overlay (before/after) elements via simple background-color opacity */
+  opacity: 0.075 !important;
+
+  &::before,
+  &::after {
+
+    /* Fix for color-disrupting overlay elements of buttons/links */
+    opacity: 0 !important;
+  }
+}
+
+body.desktop .q-focusable:focus > .q-focus-helper {
+
+  /* Replacement of the overlay (before/after) elements via simple background-color opacity */
+  opacity: 0.15 !important;
+
+  &::before,
+  &::after {
+
+    /* Fix for color-disrupting overlay elements of buttons/links */
+    opacity: 0 !important;
+  }
+}
+
+.q-transition--slide-right-enter-active,
+.q-transition--slide-right-leave-active,
+.q-transition--slide-left-enter-active,
+.q-transition--slide-left-leave-active,
+.q-transition--slide-up-enter-active,
+.q-transition--slide-up-leave-active,
+.q-transition--slide-down-enter-active,
+.q-transition--slide-down-leave-active,
+.q-transition--jump-right-enter-active,
+.q-transition--jump-right-leave-active,
+.q-transition--jump-left-enter-active,
+.q-transition--jump-left-leave-active,
+.q-transition--jump-up-enter-active,
+.q-transition--jump-up-leave-active,
+.q-transition--jump-down-enter-active,
+.q-transition--jump-down-leave-active,
+.q-transition--fade-enter-active,
+.q-transition--fade-leave-active,
+.q-transition--scale-enter-active,
+.q-transition--scale-leave-active,
+.q-transition--rotate-enter-active,
+.q-transition--rotate-leave-active,
+.q-transition--flip-enter-active,
+.q-transition--flip-leave-active {
+
+  /* Transitions glitches with user input/select fix */
   user-select: none;
   pointer-events: none;
 }

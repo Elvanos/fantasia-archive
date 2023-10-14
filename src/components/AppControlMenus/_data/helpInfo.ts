@@ -4,6 +4,7 @@ import { I_appMenusDataList } from 'app/interfaces/I_appMenusDataList'
 
 // TODO - add functionality for all buttons and conditions
 import { toggleDevTools } from 'app/src/scripts/appInfo/toggleDevTools'
+import { openDialogMarkdownDocument } from 'app/src/scripts/appInfo/openDialogMarkdownDocument'
 
 export const helpInfo: I_appMenusDataList = {
   title: i18n.global.t('AppControlMenus.helpInfo.title'),
@@ -22,7 +23,8 @@ export const helpInfo: I_appMenusDataList = {
       text: i18n.global.t('AppControlMenus.helpInfo.items.advancedSearchGuide'),
       icon: 'mdi-file-question',
       submenu: undefined,
-      trigger: undefined,
+      trigger: openDialogMarkdownDocument,
+      triggerArguments: ['advancedSearchGuide'],
       conditions: true,
       specialColor: undefined
     },
@@ -43,7 +45,8 @@ export const helpInfo: I_appMenusDataList = {
       text: i18n.global.t('AppControlMenus.helpInfo.items.changelog'),
       icon: 'mdi-clipboard-text',
       submenu: undefined,
-      trigger: undefined,
+      trigger: openDialogMarkdownDocument,
+      triggerArguments: ['changeLog'],
       conditions: true,
       specialColor: undefined
     },
@@ -61,7 +64,8 @@ export const helpInfo: I_appMenusDataList = {
       text: i18n.global.t('AppControlMenus.helpInfo.items.license'),
       icon: 'mdi-script-text-outline',
       submenu: undefined,
-      trigger: undefined,
+      trigger: openDialogMarkdownDocument,
+      triggerArguments: ['license'],
       conditions: true,
       specialColor: undefined
     },

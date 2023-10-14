@@ -103,5 +103,6 @@ module.exports = {
     "object-shorthand": "off",
     "quote-props": "off",
     camelcase: "off",
+    "@typescript-eslint/no-explicit-any": ["error", { ignoreRestArgs: true }],
   },
 };

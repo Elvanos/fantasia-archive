@@ -2,11 +2,9 @@
   <q-page class="row">
     <FantasiaMascotImage width="400px" />
     <div>
-      <button
-        @click="toggleDevTools()"
-      >
+      <router-link to="/testeee">
         test
-      </button>
+      </router-link>
     </div>
     <div>
       <div
@@ -21,5 +19,4 @@
 
 <script lang="ts" setup>
 import FantasiaMascotImage from 'src/components/FantasiaMascotImage/FantasiaMascotImage.vue'
-import { toggleDevTools } from 'src/scripts/appInfo/toggleDevTools'
 </script>

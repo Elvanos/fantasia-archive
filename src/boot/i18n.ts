@@ -26,6 +26,7 @@ export default boot(({ app }) => {
     locale: 'en-US',
     fallbackLocale: 'en-US',
     legacy: false,
+    warnHtmlMessage: false,
     messages
   })
 
