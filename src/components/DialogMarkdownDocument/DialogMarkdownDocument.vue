@@ -53,7 +53,7 @@ const props = defineProps<{
   /**
    * Custom input directly fed to the component in case it doesn't get triggered from the global store
    */
-  directInput: T_documentList
+  directInput?: T_documentList
 }>()
 
 /**
