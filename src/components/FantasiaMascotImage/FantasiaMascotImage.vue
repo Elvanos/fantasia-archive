@@ -101,8 +101,7 @@ const currentMascotImage = determineCurrentImage(fantasiaImageList)
 <style lang="scss" scoped>
 
 .fantasiaMascotImage {
-
-  &__inner{
+  &__inner {
     height: v-bind(height);
     width: v-bind(width);
     user-select: none;

@@ -106,13 +106,32 @@
 <script setup lang="ts">
 import { I_appMenusDataList } from 'app/interfaces/I_appMenusDataList'
 
+/**
+ * All component props
+ */
 const props = defineProps<{
+  /**
+   * Data input for the component
+   */
   dataInput: I_appMenusDataList
 }>()
 
-const hasProperDataInput = (props.dataInput.title && props.dataInput.data)
+/**
+ * Determines if the input has "proper" data in it
+ * Checks for:
+ * - Title
+ * - Overall data feed
+ */
+const hasProperDataInput = !!(props.dataInput.title && props.dataInput.data)
 
+/**
+ * Menu title from the prop
+ */
 const menuTitle = props.dataInput.title
+
+/**
+ * Menu data content from the prop
+ */
 const menuData = props.dataInput.data
 
 </script>

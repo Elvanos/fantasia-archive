@@ -1,6 +1,7 @@
 import { _electron as electron } from 'playwright'
 import { test, expect } from '@playwright/test'
 import { extraEnvVariablesAPI } from 'app/src-electron/customContentBridgeAPIs/extraEnvVariablesAPI'
+import { T_documentList } from 'app/interfaces/T_documentList'
 
 /**
  * Extra env settings to trigger component testing via Playwright
@@ -20,22 +21,24 @@ const electronMainFilePath:string = extraEnvVariablesAPI.ELECTRON_MAIN_FILEPATH
  * Extra rended timer buffer for tests to start after loading the app
  * - Change here in order manually adjust this component's wait times
  */
-const faFrontendRenderTimer:number = extraEnvVariablesAPI.FA_FRONTEND_RENDER_TIMER
+const faFrontendRenderTimer = extraEnvVariablesAPI.FA_FRONTEND_RENDER_TIMER
 
 /**
  * Object of string data selectors for the component
  */
 const selectorList = {
-  image: 'fantasiaMascotImage-image'
+  markdownWrapper: 'dialogMarkdownDocument-markdown-wrapper',
+  markdownContent: 'dialogMarkdownDocument-markdown-content',
+  closeButton: 'dialogMarkdownDocument-button-close'
 }
 
 /**
- * Attempt to pass "width" prop to the component and check the result
+ * Feed 'license' input as the file to open and check if the opened dialog afterwars has all the needed elements in it
  */
-test('Visually check "width" prop', async () => {
-  const testString = '300px'
+test('Open test "license" dialog with all elements in it', async () => {
+  const testString: T_documentList = 'license'
 
-  extraEnvSettings.COMPONENT_PROPS = JSON.stringify({ width: testString })
+  extraEnvSettings.COMPONENT_PROPS = JSON.stringify({ directInput: testString })
 
   const electronApp = await electron.launch({
     env: extraEnvSettings,
@@ -45,37 +48,26 @@ test('Visually check "width" prop', async () => {
   const appWindow = await electronApp.firstWindow()
   await appWindow.waitForTimeout(faFrontendRenderTimer)
 
-  const imageElement = await appWindow.$(`[data-test="${selectorList.image}"]`)
+  const closeButton = await appWindow.$(`[data-test="${selectorList.closeButton}"]`)
+  const markdownWrapper = await appWindow.$(`[data-test="${selectorList.markdownWrapper}"]`)
+  const markdownContent = await appWindow.$(`[data-test="${selectorList.markdownContent}"]`)
 
-  // Check if the tested element exists
-  if (imageElement !== null) {
-    const imageBoxData = await imageElement.boundingBox()
-
-    // Test if the tested element isn't invisisble for some reason
-    if (imageBoxData !== null) {
-      const roundedFirstValue = Math.round(imageBoxData.width)
-      const roundedSecondValue = Math.round(parseInt(testString))
-
-      expect(roundedFirstValue).toBe(roundedSecondValue)
-    } else {
-      // Element is invisible
-      test.fail()
-    }
+  // Check if the tested elements exists
+  if (closeButton !== null && markdownWrapper !== null && markdownContent !== null) {
+    expect(true).toBe(true)
   } else {
-    // Element doesn't exist
+    // Elements don't exist
     test.fail()
   }
-
-  await electronApp.close()
 })
 
 /**
- * Attempt to pass "height" prop to the component and check the result
+ * Feed 'license' input as the file to open and check if the opened dialog afterwars has all the needed elements in it
  */
-test('Visually check "height" prop', async () => {
-  const testString = '300px'
+test('Open test "license" dialog and try closing it', async () => {
+  const testString: T_documentList = 'license'
 
-  extraEnvSettings.COMPONENT_PROPS = JSON.stringify({ height: testString })
+  extraEnvSettings.COMPONENT_PROPS = JSON.stringify({ directInput: testString })
 
   const electronApp = await electron.launch({
     env: extraEnvSettings,
@@ -85,26 +77,18 @@ test('Visually check "height" prop', async () => {
   const appWindow = await electronApp.firstWindow()
   await appWindow.waitForTimeout(faFrontendRenderTimer)
 
-  const imageElement = await appWindow.$(`[data-test="${selectorList.image}"]`)
+  const closeButton = await appWindow.$(`[data-test="${selectorList.closeButton}"]`)
+  const markdownContent = await appWindow.$(`[data-test="${selectorList.markdownContent}"]`)
 
-  // Check if the tested element exists
-  if (imageElement !== null) {
-    const imageBoxData = await imageElement.boundingBox()
+  // Check if the close button exists
+  if (closeButton !== null && markdownContent !== null) {
+    await closeButton.click()
+    await appWindow.waitForTimeout(1500)
 
-    // Test if the tested element isn't invisisble for some reason
-    if (imageBoxData !== null) {
-      const roundedFirstValue = Math.round(imageBoxData.height)
-      const roundedSecondValue = Math.round(parseInt(testString))
-
-      expect(roundedFirstValue).toBe(roundedSecondValue)
-    } else {
-      // Element is invisible
-      test.fail()
-    }
+    // Check if the content is properly hidden after closing the popup
+    expect(await markdownContent.isHidden()).toBe(true)
   } else {
-    // Element doesn't exist
+    // Close button doesn't exist
     test.fail()
   }
-
-  await electronApp.close()
 })
