@@ -32,7 +32,7 @@ describe('Component - "FantasiaMascotImage"', () => {
     const testString = '300px'
 
     const wrapper = mount(FantasiaMascotImage, {
-      propsData: {
+      props: {
         width: testString
       }
     })
@@ -50,7 +50,7 @@ describe('Component - "FantasiaMascotImage"', () => {
     const testString = '300px'
 
     const wrapper = mount(FantasiaMascotImage, {
-      propsData: {
+      props: {
         height: testString
       }
     })
@@ -78,7 +78,7 @@ describe('Component - "FantasiaMascotImage"', () => {
     const testString = 'flop'
 
     const wrapper = mount(FantasiaMascotImage, {
-      propsData: {
+      props: {
         fantasiaImage: testString
       }
     })
