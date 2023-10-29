@@ -110,7 +110,6 @@ export const project: I_appMenusDataList = {
           specialColor: undefined
         }
       ]
-
     }
   ]
 }

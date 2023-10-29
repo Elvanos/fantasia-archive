@@ -8,8 +8,7 @@
       :src="currentMascotImage"
       class="fantasiaMascotImage__inner"
       data-test="fantasiaMascotImage-image"
-      :data-test-width="props.width"
-      :data-test-height="props.height"
+      :data-test-image="fantasiaImage"
       :data-test-is-random="isRandom"
     >
   </div>

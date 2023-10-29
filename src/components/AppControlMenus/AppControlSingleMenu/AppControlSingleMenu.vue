@@ -1,4 +1,5 @@
 <template>
+  <!-- Main menu - Wrapper -->
   <q-btn
     v-if="hasProperDataInput"
     flat
@@ -6,10 +7,18 @@
     dark
     size="md"
     no-caps
+    data-test="AppControlSingleMenu-wrapper"
+    :data-test-has-proper-data-input="hasProperDataInput"
   >
-    {{ menuTitle }}
+    <!-- Main menu - Title -->
+    <span
+      v-if="menuTitle"
+      data-test="AppControlSingleMenu-title"
+    >
+      {{ menuTitle }}
+    </span>
 
-    <!-- Button menu-->
+    <!-- Main menu - Content -->
     <q-menu
       anchor="bottom left"
       square
@@ -35,6 +44,7 @@
             v-if="menuItem.mode === 'item'"
             v-close-popup="menuItem.submenu === undefined ? true : false"
             clickable
+            data-test="AppControlSingleMenu-menuItem"
             :class="['appControlSingleMenu__item', `text-${menuItem.specialColor}`, 'non-selectable']"
             :disable="(!menuItem.conditions)"
             @click="(menuItem.trigger)
@@ -43,15 +53,18 @@
                 : menuItem.trigger()
               : false"
           >
-            <q-item-section>{{ menuItem.text }}</q-item-section>
+            <q-item-section data-test="AppControlSingleMenu-menuItem-text">
+              {{ menuItem.text }}
+            </q-item-section>
             <q-item-section avatar>
               <q-icon
                 class="appControlSingleMenu__icon"
                 :name="menuItem.icon"
+                data-test="AppControlSingleMenu-menuItem-icon"
               />
             </q-item-section>
 
-            <!-- Sub-menu-->
+            <!-- Sub-menu -->
             <q-menu
               v-if="menuItem.submenu !== undefined"
               anchor="top end"
@@ -61,6 +74,7 @@
               transition-show="jump-right"
               transition-hide="jump-left"
               class="-subMenu"
+              data-test="AppControlSingleMenu-menuItem-subMenu"
             >
               <q-list
                 class="appControlSingleMenu__list"
@@ -81,12 +95,18 @@
                     clickable
                     :class="['appControlSingleMenu__item', `text-${submenuItem.specialColor}`, 'non-selectable']"
                     :disable="(!submenuItem.conditions)"
+                    data-test="AppControlSingleMenu-menuItem-subMenu-item"
                     @click="(submenuItem.trigger) ? submenuItem.trigger() : false"
                   >
-                    <q-item-section>{{ submenuItem.text }}</q-item-section>
+                    <q-item-section
+                      data-test="AppControlSingleMenu-menuItem-subMenu-item-text"
+                    >
+                      {{ submenuItem.text }}
+                    </q-item-section>
                     <q-item-section avatar>
                       <q-icon
                         class="appControlSingleMenu__icon"
+                        data-test="AppControlSingleMenu-menuItem-subMenu-item-icon"
                         :name="submenuItem.icon"
                       />
                     </q-item-section>
@@ -99,12 +119,17 @@
         </template>
       </q-list>
     </q-menu>
-    <!-- Main menu end -->
+    <!-- Main menu end - Content -->
   </q-btn>
+  <!-- Main menu end - Wrappper -->
 </template>
 
 <script setup lang="ts">
+// TODO - ADD TESTS
+
 import { I_appMenusDataList } from 'app/interfaces/I_appMenusDataList'
+import { testData } from '../_testData/test.raw.component'
+import { computed } from 'vue'
 
 /**
  * All component props
@@ -117,22 +142,35 @@ const props = defineProps<{
 }>()
 
 /**
+ * Testing type currently possibly happening
+ */
+const testingType = window.extraEnvVariables.TEST_ENV
+
+const componentData = computed(() => {
+  if (testingType === 'components') {
+    return testData
+  } else {
+    return props.dataInput
+  }
+})
+
+/**
  * Determines if the input has "proper" data in it
  * Checks for:
  * - Title
  * - Overall data feed
  */
-const hasProperDataInput = !!(props.dataInput.title && props.dataInput.data)
+const hasProperDataInput = !!(componentData.value.title && componentData.value.data)
 
 /**
  * Menu title from the prop
  */
-const menuTitle = props.dataInput.title
+const menuTitle = componentData.value.title
 
 /**
  * Menu data content from the prop
  */
-const menuData = props.dataInput.data
+const menuData = componentData.value.data
 
 </script>
 

@@ -86,7 +86,8 @@ test('Open test "license" dialog and try closing it', async () => {
     await appWindow.waitForTimeout(1500)
 
     // Check if the content is properly hidden after closing the popup
-    expect(await markdownContent.isHidden()).toBe(true)
+    await expect(await markdownContent.isHidden()).toBe(true)
+    await electronApp.close()
   } else {
     // Close button doesn't exist
     test.fail()

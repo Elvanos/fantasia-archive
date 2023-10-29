@@ -32,6 +32,37 @@ const selectorList = {
 }
 
 /**
+ * Test if the component has three specific HTML element buttons properly mounted in it:
+ * - Minimize button
+ * - Resize button
+ * - Close button
+ */
+test('Wrapper should contain three specific buttons', async () => {
+  const electronApp = await electron.launch({
+    env: extraEnvSettings,
+    args: [electronMainFilePath]
+  })
+
+  const appWindow = await electronApp.firstWindow()
+  await appWindow.waitForTimeout(faFrontendRenderTimer)
+
+  const resizeButton = await appWindow.$(`[data-test="${selectorList.buttonResize}"]`)
+  const minimizeButton = await appWindow.$(`[data-test="${selectorList.buttonMinimize}"]`)
+  const closeButton = await appWindow.$(`[data-test="${selectorList.buttonClose}"]`)
+
+  // Check if the tested elements exists
+  if (resizeButton !== null && minimizeButton !== null && closeButton !== null) {
+    await expect(true).toBe(true)
+    await electronApp.close()
+  } else {
+    // At least one of the tested elements doesn't exist
+    test.fail()
+  }
+
+  await electronApp.close()
+})
+
+/**
  * Attempt to click the resize button
  */
 test('Click resize button - "smallify"', async () => {
@@ -51,7 +82,8 @@ test('Click resize button - "smallify"', async () => {
 
     const isMaximized = await appWindow.evaluate(() => window.faWindowControlAPI.checkWindowMaximized())
 
-    expect(isMaximized).toBe(false)
+    await expect(isMaximized).toBe(false)
+    await electronApp.close()
   } else {
     // Element doesn't exist
     test.fail()
@@ -82,14 +114,19 @@ test('Click resize button - "maximize"', async () => {
     if (isMaximized) {
       // Click twice
       await resizeButton.click()
+
+      await appWindow.waitForTimeout(500)
+
       await resizeButton.click()
     } else {
       await resizeButton.click()
     }
 
+    await appWindow.waitForTimeout(500)
     isMaximized = await appWindow.evaluate(() => window.faWindowControlAPI.checkWindowMaximized())
 
-    expect(isMaximized).toBe(true)
+    await expect(isMaximized).toBe(true)
+    await electronApp.close()
   } else {
     // Element doesn't exist
     test.fail()
@@ -118,7 +155,8 @@ test('Click minimize button', async () => {
 
     const isMaximized = await appWindow.evaluate(() => window.faWindowControlAPI.checkWindowMaximized())
 
-    expect(isMaximized).toBe(false)
+    await expect(isMaximized).toBe(false)
+    await electronApp.close()
   } else {
     // Element doesn't exist
     test.fail()
@@ -153,7 +191,8 @@ test('Click close button', async () => {
 
     await closeButton.click()
 
-    expect(windowIsClosed).toBe(true)
+    await expect(windowIsClosed).toBe(true)
+    await electronApp.close()
   } else {
     // Element doesn't exist
     test.fail()

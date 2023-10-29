@@ -6,28 +6,56 @@
       flat
       class="appControlMenus__inner"
     >
-      <!-- Project menu-->
-      <AppControlSingleMenu :data-input="project" />
+      <!-- Test data menu - FOR COMPOENT TEST PURPOSES ONLY -->
+      <AppControlSingleMenu
+        v-if="testingType === 'components'"
+        :data-input="testData"
+        data-test-test-menu="appControlMenus-testMenu"
+        data-test-any-menu="appControlMenus-anyMenu"
+      />
 
-      <!-- Tools menu-->
-      <AppControlSingleMenu :data-input="tools" />
+      <!-- Project menu -->
+      <AppControlSingleMenu
+        v-if="testingType !== 'components'"
+        :data-input="project"
+        data-test-any-menu="appControlMenus-anyMenu"
+      />
 
-      <!-- Help & Info Menu-->
-      <AppControlSingleMenu :data-input="helpInfo" />
+      <!-- Tools menu -->
+      <AppControlSingleMenu
+        v-if="testingType !== 'components'"
+        :data-input="tools"
+        data-test-any-menu="appControlMenus-anyMenu"
+      />
+
+      <!-- Help & Info Menu -->
+      <AppControlSingleMenu
+        v-if="testingType !== 'components'"
+        :data-input="helpInfo"
+        data-test-any-menu="appControlMenus-anyMenu"
+      />
     </q-btn-group>
 
+    <!-- Dialog Popups -->
     <DialogMarkdownDocument />
   </div>
 </template>
 
 <script setup lang="ts">
-import AppControlSingleMenu from 'src/components/AppControlMenus/AppControlSingleMenu/AppControlSingleMenu.vue'
+
+import { testData } from 'app/src/components/AppControlMenus/_testData/test.raw.component'
 
 import { project } from 'app/src/components/AppControlMenus/_data/project'
 import { tools } from 'app/src/components/AppControlMenus/_data/tools'
 import { helpInfo } from 'app/src/components/AppControlMenus/_data/helpInfo'
 
+import AppControlSingleMenu from 'app/src/components/AppControlMenus/AppControlSingleMenu/AppControlSingleMenu.vue'
 import DialogMarkdownDocument from 'app/src/components/DialogMarkdownDocument/DialogMarkdownDocument.vue'
+
+/**
+ * Testing type currently possibly happening
+ */
+const testingType = window.extraEnvVariables.TEST_ENV
 
 </script>
 

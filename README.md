@@ -34,15 +34,6 @@ quasar build
 
 ### Testing:
 
-
-#### Unit test - with pretty web-UI
-```
-test:unit:ui
-```
-#### Unit test - Without any UI, fully in a terminal
-```
-test:unit:ci
-```
 #### Component test - via Playwright
 ```
 test:component
