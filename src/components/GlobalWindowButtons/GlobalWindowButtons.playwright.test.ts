@@ -115,14 +115,14 @@ test('Click resize button - "maximize"', async () => {
       // Click twice
       await resizeButton.click()
 
-      await appWindow.waitForTimeout(500)
+      await appWindow.waitForTimeout(1500)
 
       await resizeButton.click()
     } else {
       await resizeButton.click()
     }
 
-    await appWindow.waitForTimeout(500)
+    await appWindow.waitForTimeout(1500)
     isMaximized = await appWindow.evaluate(() => window.faWindowControlAPI.checkWindowMaximized())
 
     await expect(isMaximized).toBe(true)

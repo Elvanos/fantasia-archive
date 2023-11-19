@@ -9,7 +9,7 @@
     "lint": "eslint --ext .js,.ts,.vue ./",
     "dev:electron": "quasar dev -m electron",
     "build": "quasar build -m electron --publish never",
-    "test:component": "node \"node_modules/@playwright/test/cli.js\" test src/components/",
+    "test:component": "node \"node_modules/@playwright/test/cli.js\" test src/components",
     "test:e2e": "node \"node_modules/@playwright/test/cli.js\" test test/playwright-e2e/"
   },
   "dependencies": {
