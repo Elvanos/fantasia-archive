@@ -343,8 +343,6 @@ test('Check if the first sub-menu item has proper text and icon', async () => {
   }
 })
 
-// TODO add checking for submenu text colors
-
 /**
  * Check if text color class applied properly to any sub-main menu item: Secondary
  */
