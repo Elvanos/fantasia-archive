@@ -42,7 +42,9 @@
       </q-tooltip>
       <q-icon
         size="16px"
-        :name="(isMaximized)? 'mdi-window-restore' : 'mdi-window-maximize'"
+        :name="(isMaximized)
+          ? 'mdi-window-restore'
+          : 'mdi-window-maximize'"
       />
     </q-btn>
 
@@ -120,7 +122,7 @@ const checkIfWindowMaximized = () => {
 /**
  * Determines if the window is currently maximized or not
  */
-const isMaximized: Ref<boolean> = ref(false)
+const isMaximized: Ref<boolean> = ref(true)
 
 /**
  * Window interval checker variable
@@ -129,13 +131,17 @@ let checkerInterval: number
 
 /**
  * Hook up a interval timer on mount for continuous checking
- * This done due to the fact that dragging via the top header bar doesn't properly fire "drag" event
+ * This is done due to the fact that dragging via the top header bar doesn't properly fire "drag" event
  * Async due to UI render blocking
  */
 onMounted(async () => {
+  window.clearInterval(checkerInterval)
+
+  checkIfWindowMaximized()
+
   checkerInterval = window.setInterval(() => {
     checkIfWindowMaximized()
-  }, 300)
+  }, 100)
 })
 
 /**

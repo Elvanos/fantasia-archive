@@ -13,6 +13,7 @@ const routes: RouteRecordRaw[] = [
 
   /**
    * Component testing pathing
+   * ONLY for singular component testing purposes
    */
   {
     path: '/componentTesting/:componentName',
@@ -23,6 +24,7 @@ const routes: RouteRecordRaw[] = [
   },
 
   /**
+   * Error page - 404
    * Always leave this as last one, but you can also remove it
    */
   {
