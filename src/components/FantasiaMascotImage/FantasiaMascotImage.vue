@@ -16,17 +16,7 @@
 
 <script setup lang="ts">
 
-/**
- * A list of all Fantasia mascot images currently avaiable
- */
-const fantasiaImageList: { [key: string]: string } = {
-  didYouKnow: 'images/fantasiaMascot/fantasia_didYouKnow.png',
-  flop: 'images/fantasiaMascot/fantasia_flop.png',
-  hug: 'images/fantasiaMascot/fantasia_hug.png',
-  reading: 'images/fantasiaMascot/fantasia_reading.png',
-  cooking: 'images/fantasiaMascot/fantasia_cooking.png',
-  error: 'images/fantasiaMascot/fantasia_error.png'
-}
+import { fantasiaImageList, determineCurrentImage } from 'app/src/scripts/appInfo/fantasiaMascotImageManager'
 
 /**
  * All component props
@@ -70,30 +60,9 @@ const props = defineProps({
 const isRandom = ((imageUrl: string) => (imageUrl === ''))(props.fantasiaImage)
 
 /**
- * Get a random image URL from the whole list of all available images
- */
-const randomMascotImage = (list: { [key: string]: string }) => {
-  // Cryptic code from SO: https://stackoverflow.com/a/15106541
-  const keys = Object.keys(list)
-  return list[keys[keys.length * Math.random() << 0]]
-}
-
-/**
- * Determine what current URL link we will be rendering.
- * If a specific image URL if one is chosen, otherwise return a random image URL.
- */
-const determineCurrentImage = (list: { [key: string]: string }) => {
-  if (isRandom) {
-    return randomMascotImage(list)
-  } else {
-    return list[props.fantasiaImage]
-  }
-}
-
-/**
  * Currently selected image URL for rendering
  */
-const currentMascotImage = determineCurrentImage(fantasiaImageList)
+const currentMascotImage = determineCurrentImage(fantasiaImageList, isRandom, props.fantasiaImage)
 
 </script>
 

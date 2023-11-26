@@ -121,10 +121,18 @@ onMounted(() => {
     width: 1100px;
   }
 
+  &.tipsTricksTrivia .q-card {
+    width: 1100px;
+  }
+
   &__content {
     overflow: auto;
     max-height: calc(100vh - 235px);
-    height: 850px;
+    min-height: 650px;
+
+    &.tipsTricksTrivia {
+      padding-right: 40px;
+    }
 
     &.changeLog {
       padding-right: 40px;

@@ -32,8 +32,8 @@ export const helpInfo: I_appMenusDataList = {
       mode: 'item',
       text: i18n.global.t('AppControlMenus.helpInfo.items.tipsTricksTrivia'),
       icon: 'mdi-fire-alert',
-      submenu: undefined,
-      trigger: undefined,
+      trigger: openDialogMarkdownDocument,
+      triggerArguments: ['tipsTricksTrivia'],
       conditions: true,
       specialColor: undefined
     },

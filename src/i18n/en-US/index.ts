@@ -8,6 +8,7 @@ import advancedSearchCheatSheet from './documents/advancedSearchCheatSheet.md'
 import advancedSearchGuide from './documents/advancedSearchGuide.md'
 import changeLog from './documents/changeLog.md'
 import license from './documents/license.md'
+import tipsTricksTrivia from './documents/tipsTricksTrivia.md'
 
 export default {
   // GLOBAL - DOCUMENTS
@@ -15,7 +16,8 @@ export default {
     advancedSearchCheatSheet: specialCharacterFixer(advancedSearchCheatSheet),
     advancedSearchGuide: specialCharacterFixer(advancedSearchGuide),
     changeLog: specialCharacterFixer(changeLog),
-    license: specialCharacterFixer(license)
+    license: specialCharacterFixer(license),
+    tipsTricksTrivia: specialCharacterFixer(tipsTricksTrivia)
   },
 
   // GLOBAL - APP TEXTS
@@ -29,6 +31,11 @@ export default {
     subTitleFirst: 'Something broke horribly somewhere',
     subTitleSecond: 'Fantasia is trying her best to fix it!',
     ctaText: 'Return to app start screen'
+  },
+
+  // QUASAR COMPONENT - NOTIFY
+  QuasarNotify: {
+    didYouKnow: 'Did you know?'
   },
 
   // COMPONENT - GLOBAL WINDOW BUTTONS

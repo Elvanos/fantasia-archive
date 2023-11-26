@@ -115,3 +115,40 @@ body.desktop .q-focusable:focus > .q-focus-helper {
   user-select: none;
   pointer-events: none;
 }
+
+.q-notification {
+  &.bg-info {
+    max-width: 550px;
+    border: 2px solid $qNotify-bgColor;
+    color: $qNotify-color;
+
+    i {
+      color: $qNotify-icon-color;
+    }
+  }
+
+  &__message {
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  &__caption {
+    opacity: 1;
+  }
+
+  &__avatar {
+    height: 135px;
+    width: 135px;
+    margin-right: 30px;
+    flex-shrink: 0;
+    border-radius: 0;
+    margin-top: 15px;
+    margin-bottom: 15px;
+
+    img {
+      object-fit: contain;
+      max-width: 100%;
+      max-height: 100%;
+    }
+  }
+}
