@@ -1,6 +1,7 @@
 export interface OptionsStateInteface {
   _id: string,
   _rev?: string,
+  language: string,
   darkMode: boolean
   disableSpellCheck: boolean
   agressiveRelationshipFilter: boolean
@@ -53,6 +54,7 @@ export interface OptionsStateInteface {
 function state (): OptionsStateInteface {
   return {
     _id: "settings",
+    language: "en-us",
     darkMode: false,
     disableSpellCheck: false,
     agressiveRelationshipFilter: false,

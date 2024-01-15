@@ -193,6 +193,17 @@
                   </div>
 
                   <div class="col-12 col-md-6 col-lg-4 optionWrapper">
+                    <q-select
+                      dark
+                      filled
+                      :options="$i18n.availableLocales"
+                      @input="changeLocale"
+                      v-model="options.language"
+                      :label="$t('language.current')"
+                    />
+                  </div>
+
+                  <div class="col-12 col-md-6 col-lg-4 optionWrapper">
                     <div class="optionTitle">
                       Hide Welcome screen social links
                     <q-icon name="mdi-help-circle" size="16px" class="q-ml-md">
@@ -1099,6 +1110,7 @@ export default class ProgramSettings extends DialogBase {
    */
   options: OptionsStateInteface = {
     _id: "settings",
+    language: this.$i18n.locale,
     darkMode: false,
     disableSpellCheck: false,
     preventFilledNoteBoardPopup: false,
@@ -1364,6 +1376,21 @@ export default class ProgramSettings extends DialogBase {
         userKeybind: (this.options.userKeybindList.find(userKb => userKb.id === keybind.id)) || ""
       }
     })
+  }
+
+  /**
+   * Change vue i18n & quasar locale
+   */
+  changeLocale (lang: string) {
+    // Vue i18n
+    this.$i18n.locale = lang
+
+    // Quasar language with dynamic import
+    import(`quasar/lang/${lang}`)
+      .then(lang => {
+        this.$q.lang.set(lang)
+      })
+      .catch(() => console.error(`Quasar language not found : ${lang}`))
   }
 }
 </script>
