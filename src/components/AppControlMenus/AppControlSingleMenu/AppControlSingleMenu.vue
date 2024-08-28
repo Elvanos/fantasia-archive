@@ -197,6 +197,11 @@ const menuData = componentData.value.data
     &:focus {
       color: $appControlMenus_singleHover;
     }
+
+    /* Text legibitility fix: Red and green blend too much into each other without a little shadow */
+    &.text-secondary {
+      text-shadow: 0 0 3px black;
+    }
   }
 
   &__separator {

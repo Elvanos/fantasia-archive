@@ -21,6 +21,13 @@
         data-test-any-menu="appControlMenus-anyMenu"
       />
 
+      <!-- Documents menu -->
+      <AppControlSingleMenu
+        v-if="testingType !== 'components'"
+        :data-input="documents"
+        data-test-any-menu="appControlMenus-anyMenu"
+      />
+
       <!-- Tools menu -->
       <AppControlSingleMenu
         v-if="testingType !== 'components'"
@@ -46,6 +53,7 @@
 import { testData } from 'app/src/components/AppControlMenus/_testData/test.raw.component'
 
 import { project } from 'app/src/components/AppControlMenus/_data/project'
+import { documents } from 'app/src/components/AppControlMenus/_data/documents'
 import { tools } from 'app/src/components/AppControlMenus/_data/tools'
 import { helpInfo } from 'app/src/components/AppControlMenus/_data/helpInfo'
 
