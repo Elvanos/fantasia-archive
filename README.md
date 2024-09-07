@@ -29,7 +29,7 @@ quasar dev -m electron
 
 ### Build the app for production
 ```
-quasar build
+quasar build -m electron
 ```
 
 ### Testing:
