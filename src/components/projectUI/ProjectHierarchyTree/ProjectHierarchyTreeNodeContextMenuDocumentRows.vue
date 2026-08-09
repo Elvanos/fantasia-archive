@@ -1,54 +1,56 @@
 <template>
-  <q-item
-    v-close-popup
-    clickable
-    class="projectHierarchyTreeNodeContextMenu__item non-selectable"
-    data-test-locator="projectHierarchyTree-nodeContextMenu-openDocument"
-    role="menuitem"
-    @click="onOpenDocumentClick"
-  >
-    <q-item-section>
-      <span class="projectHierarchyTreeNodeContextMenu__primaryLabel">
-        {{ openDocumentLabel }}
-      </span>
-    </q-item-section>
-    <q-item-section avatar>
-      <q-icon
-        class="projectHierarchyTreeNodeContextMenu__icon fa-color-glyph"
-        name="mdi-book-open-page-variant-outline"
-      />
-    </q-item-section>
-  </q-item>
+  <template v-if="showsOpenEdit !== false">
+    <q-item
+      v-close-popup
+      clickable
+      class="projectHierarchyTreeNodeContextMenu__item non-selectable"
+      data-test-locator="projectHierarchyTree-nodeContextMenu-openDocument"
+      role="menuitem"
+      @click="onOpenDocumentClick"
+    >
+      <q-item-section>
+        <span class="projectHierarchyTreeNodeContextMenu__primaryLabel">
+          {{ openDocumentLabel }}
+        </span>
+      </q-item-section>
+      <q-item-section avatar>
+        <q-icon
+          class="projectHierarchyTreeNodeContextMenu__icon fa-color-glyph"
+          name="mdi-book-open-page-variant-outline"
+        />
+      </q-item-section>
+    </q-item>
+
+    <q-separator
+      class="projectHierarchyTreeNodeContextMenu__separatorAlt"
+      dark
+      role="separator"
+    />
+
+    <q-item
+      v-close-popup
+      clickable
+      class="projectHierarchyTreeNodeContextMenu__item non-selectable"
+      data-test-locator="projectHierarchyTree-nodeContextMenu-editDocument"
+      role="menuitem"
+      @click="onEditDocumentClick"
+    >
+      <q-item-section>
+        <span class="projectHierarchyTreeNodeContextMenu__primaryLabel">
+          {{ editDocumentLabel }}
+        </span>
+      </q-item-section>
+      <q-item-section avatar>
+        <q-icon
+          class="projectHierarchyTreeNodeContextMenu__icon fa-color-glyph"
+          name="mdi-pencil"
+        />
+      </q-item-section>
+    </q-item>
+  </template>
 
   <q-separator
-    class="projectHierarchyTreeNodeContextMenu__separatorAlt"
-    dark
-    role="separator"
-  />
-
-  <q-item
-    v-close-popup
-    clickable
-    class="projectHierarchyTreeNodeContextMenu__item non-selectable"
-    data-test-locator="projectHierarchyTree-nodeContextMenu-editDocument"
-    role="menuitem"
-    @click="onEditDocumentClick"
-  >
-    <q-item-section>
-      <span class="projectHierarchyTreeNodeContextMenu__primaryLabel">
-        {{ editDocumentLabel }}
-      </span>
-    </q-item-section>
-    <q-item-section avatar>
-      <q-icon
-        class="projectHierarchyTreeNodeContextMenu__icon fa-color-glyph"
-        name="mdi-pencil"
-      />
-    </q-item-section>
-  </q-item>
-
-  <q-separator
-    v-if="showsCopyDocument !== false"
+    v-if="showsOpenEdit !== false && showsCopyDocument !== false"
     class="projectHierarchyTreeNodeContextMenu__separatorAlt"
     dark
     role="separator"
@@ -122,8 +124,10 @@ withDefaults(defineProps<{
   openDocumentLabel: string
   showsAddUnder?: boolean
   showsCopyDocument?: boolean
+  showsOpenEdit?: boolean
 }>(), {
   showsAddUnder: true,
-  showsCopyDocument: true
+  showsCopyDocument: true,
+  showsOpenEdit: true
 })
 </script>

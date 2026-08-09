@@ -89,7 +89,7 @@ export default {
       tags: 'prosjekthjem, dashbord, oversikt, arbeidsområde',
       projectOverviewBehavior: {
         subtitle: 'Atferd for prosjektoversikt',
-        tags: 'tips, triks, visste du, oversiktskort',
+        tags: 'tips, triks, visste du, oversiktskort, auto open, last document',
       }
     },
     welcomeScreen: {
@@ -117,6 +117,12 @@ export default {
       description: 'Denne innstillingen gjør rullefeltene til FA bredere og tillater derfor manuell klikkrulling direkte på dem for enheter som ikke støtter standard rulling (for eksempel mus uten rullehjul).',
       tags: 'rullefeltbredde, klikkrull, mus uten hjul, styrekule, berøring',
     },
+    autoOpenLastDocument: {
+      title: 'Auto-open last document',
+      description: 'When opening a project, automatically open the last active document tab instead of showing the Project overview first.',
+      tags: 'auto open, last document, project open, restore tab, skip overview, workspace home, resume session'
+    },
+
     disableCategoryCount: {
       title: 'Skjul kategoriantall',
       description: 'Skjul kategorinumre i det hierarkiske treet',

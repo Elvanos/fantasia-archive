@@ -227,6 +227,7 @@ vi.mock('../scripts/projectAppControlBar_manager', () => {
         showTabBarScrollButtons: showTabBarScrollButtonsRef,
         advancedSearchGuideKeybindLabel: { value: null },
         keyboardShortcutsKeybindLabel: { value: null },
+        quickAddKeybindLabel: { value: null },
         toggleAppNoteboardKeybindLabel: { value: null },
         toggleHierarchyTreeKeybindLabel: { value: null },
         toggleProjectNoteboardKeybindLabel: { value: null },

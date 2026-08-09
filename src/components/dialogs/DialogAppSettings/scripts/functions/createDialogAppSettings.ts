@@ -346,12 +346,6 @@ export function createDialogAppSettings (deps: {
         updatedValue
       )
 
-      if (settingKey === 'hideTooltipsProject' && typeof updatedValue === 'boolean') {
-        deps.S_FaUserSettings().setAppSettingsDialogPreview({
-          hideTooltipsProject: updatedValue
-        })
-      }
-
       if (settingKey === 'hideTabCloseButton' && typeof updatedValue === 'boolean') {
         deps.S_FaUserSettings().setAppSettingsDialogPreview({
           hideTabCloseButton: updatedValue

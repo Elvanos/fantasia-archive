@@ -56,6 +56,7 @@ import {
   handleOpenKeybindSettingsDialog as handleOpenKeybindSettingsDialogExport,
   handleOpenLicenseDialog as handleOpenLicenseDialogExport,
   handleOpenNewProjectDialog as handleOpenNewProjectDialogExport,
+  handleOpenQuickAddDocumentDialog as handleOpenQuickAddDocumentDialogExport,
   handleOpenProjectSettingsDialog as handleOpenProjectSettingsDialogExport,
   handleOpenProjectStylingWindow as handleOpenProjectStylingWindowExport,
   handleOpenTipsTricksTriviaDialog as handleOpenTipsTricksTriviaDialogExport,
@@ -73,6 +74,7 @@ const faActionDefinitionHandlersApi = {
     S_FaAppStyling,
     S_FaProjectStyling,
     S_FaProjectSettings,
+    S_FaProjectHierarchyTree,
     S_FaProjectWorkspaceWorlds,
     S_FaUserSettings,
     canOpenFloatingWindowWhileNoModal,
@@ -204,6 +206,8 @@ export const handleOpenKeybindSettingsDialog = handleOpenKeybindSettingsDialogEx
 export const handleOpenLicenseDialog = handleOpenLicenseDialogExport
 
 export const handleOpenNewProjectDialog = handleOpenNewProjectDialogExport
+
+export const handleOpenQuickAddDocumentDialog = handleOpenQuickAddDocumentDialogExport
 
 export const handleOpenProjectSettingsDialog = handleOpenProjectSettingsDialogExport
 

@@ -58,10 +58,14 @@ const qTooltipStub = defineComponent({
   template: '<span class="q-tooltip-stub"><slot /></span>'
 })
 
-function mountDeleteButton (removeDisabled: boolean) {
+function mountDeleteButton (
+  removeDisabled: boolean,
+  removeDisabledReason: 'hasDocuments' | 'assignedToWorld' | null = null
+) {
   return mount(DialogProjectSettingsDocumentTemplatesDeleteButton, {
     props: {
-      removeDisabled
+      removeDisabled,
+      removeDisabledReason
     },
     global: {
       mocks: {
@@ -89,11 +93,25 @@ afterEach(() => {
  * Renders delete control with disabled state when documents reference the template.
  */
 test('Test that DialogProjectSettingsDocumentTemplatesDeleteButton reflects removeDisabled', () => {
-  const w = mountDeleteButton(true)
+  const w = mountDeleteButton(true, 'hasDocuments')
 
   const button = w.find('[data-test-locator="dialogProjectSettings-documentTemplates-removeButton"]')
   expect(button.exists()).toBe(true)
   expect(button.attributes('disabled')).toBeDefined()
+  expect(w.text()).toContain(
+    'dialogs.projectSettings.panels.documentTemplates.removeDisabledHasDocuments'
+  )
+})
+
+/**
+ * DialogProjectSettingsDocumentTemplatesDeleteButton
+ * Shows assigned-to-world tooltip when that disable reason is set.
+ */
+test('Test that DialogProjectSettingsDocumentTemplatesDeleteButton shows assignedToWorld tooltip', () => {
+  const w = mountDeleteButton(true, 'assignedToWorld')
+  expect(w.text()).toContain(
+    'dialogs.projectSettings.panels.documentTemplates.removeDisabledAssignedToWorld'
+  )
 })
 
 /**

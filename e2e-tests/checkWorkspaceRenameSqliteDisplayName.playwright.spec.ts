@@ -284,6 +284,14 @@ test.describe.serial('Opened documents E2E — cold restart keeps SQLite rename'
         `[data-test-locator="projectAppControlBar-tab-${e2eRenameSqliteDocumentId}"]`
       )
     ).toContainText(RENAME_SQLITE_E2E_SAVED_LABEL, { timeout: 15_000 })
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
+    await appWindow.locator(
+      `[data-test-locator="projectAppControlBar-tab-${e2eRenameSqliteDocumentId}"]`
+    ).click()
+    await expectFaPlaywrightE2eHashRoute(
+      appWindow,
+      `/home/document/${e2eRenameSqliteDocumentId}`
+    )
     await expect(
       appWindow.locator(`[data-test-locator="${selectorList.documentPreviewTitle}"]`)
     ).toHaveText(RENAME_SQLITE_E2E_SAVED_LABEL)

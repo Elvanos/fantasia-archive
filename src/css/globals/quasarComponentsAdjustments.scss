@@ -271,6 +271,21 @@ body.fa-appTheme--fantasy .q-dialog > .q-dialog__inner > .q-card {
 }
 
 /*
+ * Top-anchored quick dialogs (dialogComponent--topPopup): Material-ish elevation 4.
+ * Fantasy keeps cyan 1px rim + swaps default card elevation for the stronger stack.
+ * Radius matches floating windows — not the heavily rounded centered modal cards.
+ */
+.q-dialog.dialogComponent.dialogComponent--topPopup > .q-dialog__inner > .q-card.dialogComponent__wrapper {
+  @include dialogCyanRim.fa-dialog-top-popup-card-elevation;
+
+  border-radius: $qDialog-topPopup-card-borderRadius;
+}
+
+body.fa-appTheme--fantasy .q-dialog.dialogComponent.dialogComponent--topPopup > .q-dialog__inner > .q-card.dialogComponent__wrapper {
+  @include dialogCyanRim.fa-dialog-top-popup-card-elevation-fantasy;
+}
+
+/*
  * Keybind capture popup: keep flat light grey-lighter surface + dark ink.
  * Global dialog shell ($dark / $fantasy-dark !important) would otherwise paint over it
  * (invisible title, invisible color=dark SET button, wrong help contrast).
@@ -645,7 +660,8 @@ body.fa-appTheme--fantasy .q-markdown hr {
 
 .q-menu {
   border-radius: $qMenu-borderRadius;
-  overflow: hidden;
+  /* Keep radius clip on X; allow vertical scroll so tall menus (tab context) are not cut off. */
+  overflow: hidden auto;
 
   /* Any hoverable in a menu (q-item rows + icon-picker cells, etc.). */
   .q-hoverable > .q-focus-helper,
@@ -1020,9 +1036,13 @@ div + .q-notification__caption {
 
 .q-page {
 
-  /* Max-height of the window minus the height of the top bar */
+  /* Max-height of the window minus the app header (no app control bar). */
   max-height: calc(100vh - #{$qPage-maxHeightSubtract});
   overflow: auto;
+}
+
+.q-page-container:has(.projectAppControlBar__flowSpacer) .q-page {
+  max-height: calc(100vh - #{$qPage-maxHeightSubtractWithAppControlBar});
 }
 
 /* Flush with parent (dialog card / page). Beat Quasar #fff and .q-dark $dark fill. */

@@ -17,10 +17,12 @@ import {
 
 export function createDialogProjectSettingsDialogActions (deps: {
   FA_DIALOG_PROJECT_SETTINGS_GENERAL_TAB: string
+  consumeProjectSettingsInitialTab: () => string | null
   faProjectDocumentTemplatesFetchFreshForDialog: () => Promise<I_dialogProjectSettingsDocumentTemplateDraft[]>
   faProjectSettingsFetchFreshForDialog: () => Promise<I_faProjectSettingsRoot>
   faProjectWorldsFetchFreshForDialog: () => Promise<I_dialogProjectSettingsWorldDraft[]>
   getCurrentLanguageCode: () => T_faUserSettingsLanguageCode
+  patchHideHierarchyTreeSilently: (hideHierarchyTree: boolean) => Promise<void>
   resolveNewTemplateDefaultDisplayName: () => string
   resolveNewWorldDefaultDisplayName: () => string
   runFaActionAwait: Parameters<typeof saveDialogProjectSettingsDraftAndClose>[0]['runFaActionAwait']
@@ -31,6 +33,7 @@ export function createDialogProjectSettingsDialogActions (deps: {
     baselineWorlds,
     dialogModel,
     documentName,
+    hadWorldTemplatePlacementsAtDialogOpen,
     localDocumentTemplates,
     localSettings,
     localWorlds,
@@ -46,11 +49,13 @@ export function createDialogProjectSettingsDialogActions (deps: {
   function openDialog (input: T_dialogName): void {
     documentName.value = input
     dialogModel.value = true
-    selectedCategoryTab.value = deps.FA_DIALOG_PROJECT_SETTINGS_GENERAL_TAB
+    const initialTab = deps.consumeProjectSettingsInitialTab()
+    selectedCategoryTab.value = initialTab ?? deps.FA_DIALOG_PROJECT_SETTINGS_GENERAL_TAB
     void hydrateDialogProjectSettingsDrafts(deps, {
       baselineDocumentTemplates,
       baselineSettings,
       baselineWorlds,
+      hadWorldTemplatePlacementsAtDialogOpen,
       localDocumentTemplates,
       localSettings,
       localWorlds,
@@ -64,6 +69,7 @@ export function createDialogProjectSettingsDialogActions (deps: {
       baselineSettings,
       baselineWorlds,
       dialogModel,
+      hadWorldTemplatePlacementsAtDialogOpen,
       localDocumentTemplates,
       localSettings,
       localWorlds
@@ -75,6 +81,7 @@ export function createDialogProjectSettingsDialogActions (deps: {
       baselineDocumentTemplates,
       baselineSettings,
       baselineWorlds,
+      hadWorldTemplatePlacementsAtDialogOpen,
       localDocumentTemplates,
       localSettings,
       localWorlds

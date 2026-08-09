@@ -147,7 +147,9 @@ export default {
         confirmDeleteButton: 'Bekreft sletting',
         message: 'Er du sikker på at du vil slette denne dokumentmalen? Alle felt koblet til denne malen i andre maler slutter å fungere. I tillegg slutter tilknyttede dokumenter å vise dataene sine hvis noen ble fylt ut med denne malen. Denne slettingen kan ha utilsiktede bivirkninger.'
       },
-      removeDisabledHasDocuments: 'Fjern dokumenter som bruker denne malen før du sletter den.'
+      removeDisabledHasDocuments: 'Fjern dokumenter som bruker denne malen før du sletter den.',
+      removeDisabledAssignedToWorld:
+        'Denne malen er knyttet til én eller flere verdener; fjern tildelingen fra alle berørte verdener først.'
     }
   }
 }

@@ -21,12 +21,43 @@ vi.mock('../projectOverviewPickRandomTipWiring', () => {
   }
 })
 
-import { S_FaActiveProject } from 'app/src/stores/S_FaActiveProject'
-import { useProjectOverview } from '../projectOverview_manager'
+vi.mock('app/src/scripts/actionManager/faActionManagerRun_manager', () => {
+  return {
+    runFaAction: vi.fn(),
+    runFaActionAwait: vi.fn(async () => undefined)
+  }
+})
+
+const listDocumentDistributionMock = vi.fn(async () => {
+  return {
+    counts: [],
+    templates: [],
+    documentTemplateTotalCount: 0,
+    totalDocumentCount: 0,
+    worlds: []
+  }
+})
+const listDocumentLastOpenedMock = vi.fn(async () => {
+  return { items: [] }
+})
 
 beforeEach(() => {
   setActivePinia(createPinia())
+  listDocumentDistributionMock.mockClear()
+  listDocumentLastOpenedMock.mockClear()
+  Object.defineProperty(window, 'faContentBridgeAPIs', {
+    configurable: true,
+    value: {
+      projectContent: {
+        listDocumentDistribution: listDocumentDistributionMock,
+        listDocumentLastOpened: listDocumentLastOpenedMock
+      }
+    }
+  })
 })
+
+import { S_FaActiveProject } from 'app/src/stores/S_FaActiveProject'
+import { useProjectOverview } from '../projectOverview_manager'
 
 /**
  * useProjectOverview
@@ -55,9 +86,12 @@ test('Test that useProjectOverview from the manager reads Pinia and loads a tip'
   const wrapper = mount(Harness)
 
   await wrapper.vm.$nextTick()
+  await Promise.resolve()
 
   expect(wrapper.attributes('data-project-name')).toBe('Wired Project')
   expect(wrapper.attributes('data-tip-caption')).toBe('Manager-wired tip.')
+  expect(listDocumentDistributionMock).toHaveBeenCalled()
+  expect(listDocumentLastOpenedMock).toHaveBeenCalled()
 
   wrapper.unmount()
 })

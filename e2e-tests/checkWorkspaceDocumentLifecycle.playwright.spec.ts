@@ -255,6 +255,10 @@ test.describe.serial('Document lifecycle E2E — cold restart keeps renamed disp
         `[data-test-locator="projectAppControlBar-tab-${e2eLifecyclePersistedDocumentId}"]`
       )
     ).toContainText(DOCUMENT_LIFECYCLE_E2E_RENAMED_NAME)
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
+    await appWindow.locator(
+      `[data-test-locator="projectAppControlBar-tab-${e2eLifecyclePersistedDocumentId}"]`
+    ).click()
     await expectFaPlaywrightE2eHashRoute(
       appWindow,
       `/home/document/${e2eLifecyclePersistedDocumentId}`

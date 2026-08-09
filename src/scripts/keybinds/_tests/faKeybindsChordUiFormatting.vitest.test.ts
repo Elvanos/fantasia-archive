@@ -1,8 +1,8 @@
 import { afterEach, expect, test, vi } from 'vitest'
 
 import { FA_KEYBINDS_STORE_DEFAULTS } from 'app/src-electron/mainScripts/keybinds/keybinds_managerDefaults'
-import * as faKeybindCommandDefinitions from '../functions/faKeybindCommandDefinitions'
 import * as faKeybindsChordEqualityAndResolve from '../functions/faKeybindsChordEqualityAndResolve'
+import { findFaKeybindCommandDefinition } from '../findFaKeybindCommandDefinitionWiring'
 import { createFaKeybindsChordUiFormatting } from '../functions/createFaKeybindsChordUiFormatting'
 import {
   formatFaKeybindChordForUi,
@@ -105,7 +105,7 @@ test('Test that formatFaKeybindCommandLabelFromSnapshot returns null without com
 test('Test that formatFaKeybindCommandLabelFromSnapshot returns null when effective chord is null', () => {
   const formatLabel = createFaKeybindsChordUiFormatting({
     faKeybindResolveEffectiveChord: () => null,
-    findFaKeybindCommandDefinition: faKeybindCommandDefinitions.findFaKeybindCommandDefinition,
+    findFaKeybindCommandDefinition,
     sortFaKeybindMods: faKeybindsChordEqualityAndResolve.sortFaKeybindMods
   }).formatFaKeybindCommandLabelFromSnapshot
   const snapshot: I_faKeybindsSnapshot = {

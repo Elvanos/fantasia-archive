@@ -89,7 +89,7 @@ export default {
       tags: 'プロジェクトホーム, ダッシュボード, 概要, ワークスペース',
       projectOverviewBehavior: {
         subtitle: 'プロジェクト概要の動作',
-        tags: 'ヒント, トリック, ご存知ですか, 概要カード',
+        tags: 'ヒント, トリック, ご存知ですか, 概要カード, auto open, last document',
       }
     },
     welcomeScreen: {
@@ -117,6 +117,12 @@ export default {
       description: 'この設定により、FA のスクロールバーの幅が広くなり、標準のスクロールをサポートしていないデバイス (スクロール ホイールのないマウスなど) でスクロールバーを直接手動でクリックしてスクロールできるようになります。',
       tags: 'スクロールバーの幅、クリックスクロール、ホイールなしのマウス、トラックボール、タッチ',
     },
+    autoOpenLastDocument: {
+      title: 'Auto-open last document',
+      description: 'When opening a project, automatically open the last active document tab instead of showing the Project overview first.',
+      tags: 'auto open, last document, project open, restore tab, skip overview, workspace home, resume session'
+    },
+
     disableCategoryCount: {
       title: 'カテゴリ数を非表示にする',
       description: '階層ツリー内のカテゴリ番号を非表示にします',

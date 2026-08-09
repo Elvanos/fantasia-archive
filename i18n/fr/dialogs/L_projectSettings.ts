@@ -147,7 +147,9 @@ export default {
         confirmDeleteButton: 'Confirmer la suppression',
         message: "Voulez-vous vraiment supprimer ce modèle de document ? Tous les champs connectés à ce modèle dans d'autres modèles cesseront de fonctionner. De plus, tous les documents connectés cesseront d'afficher leurs données s'ils ont été remplis à l'aide de ce modèle. Cette suppression peut avoir des effets secondaires involontaires."
       },
-      removeDisabledHasDocuments: 'Supprimez les documents utilisant ce modèle avant de le supprimer.'
+      removeDisabledHasDocuments: 'Supprimez les documents utilisant ce modèle avant de le supprimer.',
+      removeDisabledAssignedToWorld:
+        'Ce modèle est lié à un ou plusieurs mondes ; veuillez d’abord le désassigner de tous les mondes concernés.'
     }
   }
 }

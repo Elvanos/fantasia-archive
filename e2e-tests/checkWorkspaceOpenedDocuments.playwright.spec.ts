@@ -217,16 +217,9 @@ test.describe.serial('Opened documents E2E — cold restart restores workspace t
     await expect(appWindow.locator(`[data-test-locator="${selectorList.projectAppControlBar}"]`)).toBeVisible()
     await expect(appWindow.locator(tabLocator)).toBeVisible()
     await expect(appWindow.getByText(OPENED_DOCUMENTS_E2E_TAB_LABEL, { exact: true })).toHaveCount(1)
-    await expectFaPlaywrightE2eHashRoute(
-      appWindow,
-      `/home/document/${e2eOpenedDocumentsPersistedDocumentId}`
-    )
-    // Seeded editState true → document page opens in edit mode after cold hydrate.
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
     await expect(
-      appWindow.locator('[data-test-locator="documentWorkspacePage-nameInput"]')
+      appWindow.locator('[data-test-locator="projectOverview"]')
     ).toBeVisible({ timeout: 15_000 })
-    await expect(
-      appWindow.locator('[data-test-locator="documentWorkspacePage-previewTitle"]')
-    ).toHaveCount(0)
   })
 })

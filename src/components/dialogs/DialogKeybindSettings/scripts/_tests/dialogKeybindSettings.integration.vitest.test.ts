@@ -92,6 +92,7 @@ test('buildDialogKeybindSettingsRows lists all command ids', () => {
     'openKeybindSettings',
     'openProjectSettings',
     'openProjectStyling',
+    'quickNewDocument',
     'saveDocument',
     'saveDocumentKeepEditMode',
     'showProjectDashboard',

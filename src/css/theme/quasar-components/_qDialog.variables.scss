@@ -67,3 +67,14 @@ $qDialog-card-rim-borderColor: color-mix(in srgb, fa-v('dialog-rim-cyan', $dialo
 $qDialog-card-rim-boxShadow:
   0 0 0 1px $qDialog-card-rim-borderColor,
   #{qCard.$qCard-boxShadow};
+/* Top-anchored quick dialogs (Quick Add, future Quick-*). Stronger than default card elevation. */
+$qDialog-topPopup-card-boxShadow:
+  0 2px 4px -1px rgba($black, 0.2),
+  0 4px 5px rgba($black, 0.14),
+  0 1px 10px rgba($black, 0.12);
+/* Match floating windows ($floatingWindowComponent-borderRadius) — not $qDialog-card-borderRadius. */
+$qDialog-topPopup-card-borderRadius: 4px;
+/* Fantasy: cyan rim ring + topPopup elevation (overrides default rim+qCard elevation). */
+$qDialog-topPopup-card-rim-boxShadow:
+  0 0 0 1px $qDialog-card-rim-borderColor,
+  #{$qDialog-topPopup-card-boxShadow};

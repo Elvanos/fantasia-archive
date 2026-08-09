@@ -8,7 +8,6 @@ import {
   e2eExpandWorldAndPlacementNodes,
   e2eGetDocumentById,
   e2eHierarchyTreeSelectorList,
-  e2eHydrateOpenedDocumentsAndRoute,
   e2eReadPlacementRootSiblingDisplayNames,
   e2eRefreshHierarchyTreeLayout,
   e2eSeedHierarchyPlacementWithDocuments
@@ -213,6 +212,7 @@ test.describe.serial('Opened documents E2E — cold restart keeps tree UI create
     await e2eExpectFaActiveProjectStoreName(appWindow, TREE_CREATE_E2E_PROJECT_NAME)
     await expectFaPlaywrightE2eWorkspaceShell(appWindow)
 
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
     await e2eRefreshHierarchyTreeLayout(appWindow)
     await e2eExpandWorldAndPlacementNodes(appWindow)
     await expect(
@@ -220,7 +220,9 @@ test.describe.serial('Opened documents E2E — cold restart keeps tree UI create
         `[data-test-locator="${e2eHierarchyTreeSelectorList.nodeDocument}${e2eHierarchyTreeSelectorList.nodeDocumentLabelSuffix}"]`
       ).filter({ hasText: TREE_CREATE_E2E_SAVED_LABEL })
     ).toHaveCount(1)
-    await e2eHydrateOpenedDocumentsAndRoute(appWindow, e2eTreeCreateSavedDocumentId)
+    await appWindow.locator(
+      `[data-test-locator="projectAppControlBar-tab-${e2eTreeCreateSavedDocumentId}"]`
+    ).click()
     await expectFaPlaywrightE2eHashRoute(appWindow, `/home/document/${e2eTreeCreateSavedDocumentId}`)
     const savedDocument = await e2eGetDocumentById(appWindow, e2eTreeCreateSavedDocumentId)
     expect(savedDocument.displayName).toBe(TREE_CREATE_E2E_SAVED_LABEL)

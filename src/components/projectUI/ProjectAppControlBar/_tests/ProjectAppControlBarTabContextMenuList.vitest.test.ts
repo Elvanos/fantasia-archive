@@ -72,7 +72,7 @@ test('Test that ProjectAppControlBarTabContextMenuList renders document action r
 
   expect(wrapper.find('[data-test-locator="projectAppControlBar-tabContextMenu-copyDocument"]').exists()).toBe(true)
   expect(wrapper.find('[data-test-locator="projectAppControlBar-tabContextMenu-addNewDocumentUnderThis"]').exists()).toBe(true)
-  expect(wrapper.findAll('.projectAppControlBarTabContextMenu__separatorPrimaryBright').length).toBe(3)
+  expect(wrapper.findAll('.projectAppControlBarTabContextMenu__separatorPrimaryBright').length).toBe(4)
 
   const copyDocument = wrapper.get('[data-test-locator="projectAppControlBar-tabContextMenu-copyDocument"]')
   expect(copyDocument.element.previousElementSibling?.classList.contains('projectAppControlBarTabContextMenu__separatorPrimaryBright')).toBe(true)

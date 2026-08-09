@@ -11,7 +11,6 @@ import {
   e2eExpandWorldAndPlacementNodes,
   e2eGetDocumentById,
   e2eHierarchyTreeSelectorList,
-  e2eHydrateOpenedDocumentsAndRoute,
   e2eRefreshHierarchyTreeLayout,
   e2eSeedHierarchyPlacementWithDocuments
 } from 'app/helpers/playwrightHelpers_e2e/e2eWorkspaceHierarchyTreeHelpers'
@@ -256,6 +255,7 @@ test.describe.serial('Opened documents E2E — cold restart keeps label color ca
     await e2eExpectFaActiveProjectStoreName(appWindow, TREE_LABEL_COLOR_E2E_PROJECT_NAME)
     await expectFaPlaywrightE2eWorkspaceShell(appWindow)
 
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
     await expect(
       appWindow.locator(
         `[data-test-locator="projectAppControlBar-tab-${e2eTreeLabelColorDocumentId}"]`
@@ -282,7 +282,6 @@ test.describe.serial('Opened documents E2E — cold restart keeps label color ca
     const treeNode = appWindow.locator(`[data-test-hierarchy-node-id="${e2eTreeLabelColorDocumentId}"]`)
     await expect(treeNode.locator('.projectHierarchyTreeNode__icon')).toHaveAttribute('class', /mdi-folder-open/)
     await e2eClickHierarchyDocumentLabel(appWindow, TREE_LABEL_COLOR_E2E_RENAMED_LABEL)
-    await e2eHydrateOpenedDocumentsAndRoute(appWindow, e2eTreeLabelColorDocumentId)
     await expectFaPlaywrightE2eHashRoute(appWindow, `/home/document/${e2eTreeLabelColorDocumentId}`)
   })
 })

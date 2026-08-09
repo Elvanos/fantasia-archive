@@ -89,7 +89,7 @@ export default {
       tags: 'inicio del proyecto, panel, resumen, espacio de trabajo',
       projectOverviewBehavior: {
         subtitle: 'Comportamiento del resumen del proyecto',
-        tags: 'consejos, trucos, sabías que, tarjeta de resumen',
+        tags: 'consejos, trucos, sabías que, tarjeta de resumen, auto open, last document',
       }
     },
     welcomeScreen: {
@@ -117,6 +117,12 @@ export default {
       description: 'Esta configuración hace que las barras de desplazamiento de FA sean más anchas y, por lo tanto, permite el desplazamiento manual con clic directamente sobre ellas para dispositivos que no admiten el desplazamiento estándar (por ejemplo, ratones sin rueda de desplazamiento).',
       tags: 'ancho de la barra de desplazamiento, desplazamiento con clic, mouse sin rueda, trackball, toque',
     },
+    autoOpenLastDocument: {
+      title: 'Auto-open last document',
+      description: 'When opening a project, automatically open the last active document tab instead of showing the Project overview first.',
+      tags: 'auto open, last document, project open, restore tab, skip overview, workspace home, resume session'
+    },
+
     disableCategoryCount: {
       title: 'Ocultar recuento de categorías',
       description: 'Ocultar los números de categoría en el árbol jerárquico',

@@ -284,6 +284,10 @@ test.describe.serial('Opened documents E2E — cold restart keeps renamed previe
         `[data-test-locator="projectAppControlBar-tab-${e2eEditSaveDocumentId}"]`
       )
     ).toBeVisible({ timeout: 15_000 })
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
+    await appWindow.locator(
+      `[data-test-locator="projectAppControlBar-tab-${e2eEditSaveDocumentId}"]`
+    ).click()
     await expectFaPlaywrightE2eHashRoute(
       appWindow,
       `/home/document/${e2eEditSaveDocumentId}`

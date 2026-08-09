@@ -30,6 +30,7 @@
             :current-language-code="props.currentLanguageCode"
             :name-has-error="isTemplateNameInvalid(selectedTemplate.titlePluralTranslations)"
             :remove-disabled="isTemplateRemoveDisabled(selectedTemplate)"
+            :remove-disabled-reason="resolveTemplateRemoveDisabledReason(selectedTemplate)"
             :template="selectedTemplate"
             @remove="emitRemove(selectedTemplate.id)"
             @update:icon="emitUpdateIcon(selectedTemplate.id, $event)"
@@ -46,12 +47,14 @@
 import { computed, ref, watch } from 'vue'
 
 import type { I_dialogProjectSettingsDocumentTemplateDraft } from 'app/types/I_dialogProjectSettingsDocumentTemplates'
+import type { I_dialogProjectSettingsWorldDraft } from 'app/types/I_dialogProjectSettingsWorlds'
 import type { I_faLocaleSingularPluralTranslations } from 'app/types/I_faLocaleSingularPluralTranslations'
 import type { I_faProjectDocumentTemplateWorldAppendixTranslations } from 'app/types/I_faProjectDocumentTemplateWorldAppendixTranslations'
 import type { T_faUserSettingsLanguageCode } from 'app/types/faUserSettingsLanguageRegistry'
 import {
   isDialogProjectSettingsDocumentTemplateNameInvalid,
-  isDialogProjectSettingsDocumentTemplateRemoveDisabled
+  isDialogProjectSettingsDocumentTemplateRemoveDisabled,
+  resolveDialogProjectSettingsDocumentTemplateRemoveDisabledReason
 } from 'app/src/components/dialogs/DialogProjectSettings/scripts/dialogProjectSettingsDocumentTemplatesDraft'
 import { resolveDialogProjectSettingsDocumentTemplatesPanelSelection } from 'app/src/components/dialogs/DialogProjectSettings/scripts/functions/dialogProjectSettingsDocumentTemplatesSelection'
 import { FA_DIALOG_PROJECT_SETTINGS_DOCUMENT_TEMPLATES_TAB_LIST_WIDTH_PX } from 'app/src/components/dialogs/DialogProjectSettings/scripts/functions/dialogProjectSettingsDialogInput'
@@ -67,6 +70,7 @@ defineOptions({
 const props = defineProps<{
   currentLanguageCode: T_faUserSettingsLanguageCode
   templates: I_dialogProjectSettingsDocumentTemplateDraft[]
+  worlds: I_dialogProjectSettingsWorldDraft[] | null
 }>()
 
 const emit = defineEmits<{
@@ -111,7 +115,13 @@ function isTemplateNameInvalid (
 function isTemplateRemoveDisabled (
   template: I_dialogProjectSettingsDocumentTemplateDraft
 ): boolean {
-  return isDialogProjectSettingsDocumentTemplateRemoveDisabled(template)
+  return isDialogProjectSettingsDocumentTemplateRemoveDisabled(template, props.worlds)
+}
+
+function resolveTemplateRemoveDisabledReason (
+  template: I_dialogProjectSettingsDocumentTemplateDraft
+): 'hasDocuments' | 'assignedToWorld' | null {
+  return resolveDialogProjectSettingsDocumentTemplateRemoveDisabledReason(template, props.worlds)
 }
 
 function onSelectTemplate (id: string): void {

@@ -27,6 +27,7 @@ export default {
     openAdvancedSearchGuideDialog: 'Apri la Guida alla ricerca avanzata',
     openChangelogDialog: 'Apri il registro delle modifiche',
     openKeybindSettingsDialog: 'Apri Impostazioni combinazione tasti',
+    openQuickAddDocumentDialog: 'Open Quick-Add New Document',
     openProjectSettingsDialog: 'Apri impostazioni del progetto',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'Salva impostazioni del progetto',

@@ -46,6 +46,7 @@ const updateDocumentMock = vi.fn()
 const getWorldByIdMock = vi.fn()
 const getDocumentTemplateByIdMock = vi.fn()
 const createDocumentMock = vi.fn()
+const recordDocumentLastOpenedMock = vi.fn(async () => undefined)
 const moveDocumentInHierarchyMock = vi.fn()
 const listPlacementDocumentChildrenMock = vi.fn()
 
@@ -102,6 +103,8 @@ beforeEach(() => {
   getWorldByIdMock.mockReset()
   getDocumentTemplateByIdMock.mockReset()
   createDocumentMock.mockReset()
+  recordDocumentLastOpenedMock.mockReset()
+  recordDocumentLastOpenedMock.mockResolvedValue(undefined)
   moveDocumentInHierarchyMock.mockReset()
   listPlacementDocumentChildrenMock.mockReset()
   listDocumentTagsMock.mockReset()
@@ -166,6 +169,7 @@ beforeEach(() => {
       getWorldById: getWorldByIdMock,
       listPlacementDocumentChildren: listPlacementDocumentChildrenMock,
       moveDocumentInHierarchy: moveDocumentInHierarchyMock,
+      recordDocumentLastOpened: recordDocumentLastOpenedMock,
       updateDocument: updateDocumentMock
     },
     projectManagement: {
@@ -191,7 +195,27 @@ test('Test that S_FaOpenedDocuments hydrates tabs from project database snapshot
   expect(store.tabs).toHaveLength(1)
   expect(store.activeDocumentId).toBe('doc-1')
   expect(store.hydrationComplete).toBe(true)
+  expect(navigateToWorkspaceHomeRouteMock).toHaveBeenCalled()
+  expect(navigateToOpenedDocumentRouteMock).not.toHaveBeenCalled()
+})
+
+test('Test that S_FaOpenedDocuments hydrate navigates to active document when autoOpenLastDocument is on', async () => {
+  const { S_FaUserSettings } = await import('../S_FaUserSettings')
+  const { FA_USER_SETTINGS_DEFAULTS } = await import(
+    'app/src-electron/mainScripts/userSettings/faUserSettingsDefaults'
+  )
+  const userSettings = S_FaUserSettings()
+  userSettings.settings = {
+    ...FA_USER_SETTINGS_DEFAULTS,
+    autoOpenLastDocument: true
+  }
+
+  const { S_FaOpenedDocuments } = await import('../S_FaOpenedDocuments')
+  const store = S_FaOpenedDocuments()
+  await store.hydrateFromProjectDatabase()
+  expect(store.activeDocumentId).toBe('doc-1')
   expect(navigateToOpenedDocumentRouteMock).toHaveBeenCalledWith('doc-1')
+  expect(navigateToWorkspaceHomeRouteMock).not.toHaveBeenCalled()
 })
 
 test('Test that S_FaOpenedDocuments openFromTree appends a new tab on left navigate', async () => {
@@ -763,12 +787,14 @@ test('Test that S_FaOpenedDocuments forceCloseAllTabs clears every tab and navig
 test('Test that S_FaOpenedDocuments deleteOpenedDocument removes tab and skips hierarchy refresh when tree has no loaded container', async () => {
   const refreshDocumentsInTreeMock = vi.fn()
   const refreshHierarchyTreeNodesMock = vi.fn()
+  const refreshLayoutMock = vi.fn(async () => undefined)
   const { S_FaOpenedDocuments } = await import('../S_FaOpenedDocuments')
   const { S_FaProjectHierarchyTree } = await import('../S_FaProjectHierarchyTree')
   const store = S_FaOpenedDocuments()
   const hierarchyStore = S_FaProjectHierarchyTree()
   hierarchyStore.refreshDocumentsInTree = refreshDocumentsInTreeMock
   hierarchyStore.refreshHierarchyTreeNodes = refreshHierarchyTreeNodesMock
+  hierarchyStore.refreshLayout = refreshLayoutMock
   store.replaceSessionForComponentTesting({
     activeDocumentId: 'doc-1',
     tabs: [
@@ -790,17 +816,21 @@ test('Test that S_FaOpenedDocuments deleteOpenedDocument removes tab and skips h
   expect(navigateToOpenedDocumentRouteMock).toHaveBeenCalledWith('doc-2')
   expect(refreshDocumentsInTreeMock).not.toHaveBeenCalled()
   expect(refreshHierarchyTreeNodesMock).not.toHaveBeenCalled()
+  expect(refreshLayoutMock).toHaveBeenCalledTimes(1)
+  expect(hierarchyStore.documentCensusRefreshGeneration).toBe(1)
 })
 
 test('Test that S_FaOpenedDocuments deleteOpenedDocument queues hierarchy node refresh when document is in tree', async () => {
   const refreshHierarchyTreeNodesMock = vi.fn()
   const refreshDocumentsInTreeMock = vi.fn()
+  const refreshLayoutMock = vi.fn(async () => undefined)
   const { S_FaOpenedDocuments } = await import('../S_FaOpenedDocuments')
   const { S_FaProjectHierarchyTree } = await import('../S_FaProjectHierarchyTree')
   const store = S_FaOpenedDocuments()
   const hierarchyStore = S_FaProjectHierarchyTree()
   hierarchyStore.refreshHierarchyTreeNodes = refreshHierarchyTreeNodesMock
   hierarchyStore.refreshDocumentsInTree = refreshDocumentsInTreeMock
+  hierarchyStore.refreshLayout = refreshLayoutMock
   hierarchyStore.treeData = [
     {
       children: [
@@ -841,6 +871,7 @@ test('Test that S_FaOpenedDocuments deleteOpenedDocument queues hierarchy node r
 
   expect(refreshHierarchyTreeNodesMock).toHaveBeenCalledWith(['placement-1'])
   expect(refreshDocumentsInTreeMock).not.toHaveBeenCalled()
+  expect(refreshLayoutMock).toHaveBeenCalledTimes(1)
   expect(hierarchyStore.treeData[0]?.children).toEqual([])
 })
 
@@ -1275,6 +1306,8 @@ test('Test that S_FaOpenedDocuments saveDocumentDisplayName promotes a temporary
   expect(savedTab?.extraClassesDraft).toBe('foo bar')
   expect(refreshHierarchyTreeNodesMock).toHaveBeenCalledWith(['placement-1'])
   expect(refreshDocumentsInTreeMock).not.toHaveBeenCalled()
+  expect(recordDocumentLastOpenedMock).toHaveBeenCalledWith({ documentId })
+  expect(hierarchyStore.documentCensusRefreshGeneration).toBe(1)
 })
 
 /**
@@ -1954,11 +1987,13 @@ test('Test that S_FaOpenedDocuments confirmDiscardAndClose clears pending close 
 
 test('Test that S_FaOpenedDocuments deleteOpenedDocument discards temporary tabs without deleteDocument IPC', async () => {
   const refreshHierarchyTreeNodesMock = vi.fn()
+  const refreshLayoutMock = vi.fn(async () => undefined)
   const { S_FaOpenedDocuments } = await import('../S_FaOpenedDocuments')
   const { S_FaProjectHierarchyTree } = await import('../S_FaProjectHierarchyTree')
   const store = S_FaOpenedDocuments()
   const hierarchyStore = S_FaProjectHierarchyTree()
   hierarchyStore.refreshHierarchyTreeNodes = refreshHierarchyTreeNodesMock
+  hierarchyStore.refreshLayout = refreshLayoutMock
   await store.hydrateFromProjectDatabase()
   const documentId = await store.createTemporaryDocument({
     displayName: 'Aria',
@@ -1979,6 +2014,7 @@ test('Test that S_FaOpenedDocuments deleteOpenedDocument discards temporary tabs
   await store.deleteOpenedDocument(documentId)
 
   expect(deleteDocumentMock).not.toHaveBeenCalled()
+  expect(refreshLayoutMock).not.toHaveBeenCalled()
   expect(notifyCreateMock).toHaveBeenCalledWith({
     group: false,
     message: 'Document successfully deleted.',
@@ -1987,15 +2023,18 @@ test('Test that S_FaOpenedDocuments deleteOpenedDocument discards temporary tabs
   expect(store.tabs).toHaveLength(0)
   expect(store.activeDocumentId).toBeNull()
   expect(navigateToWorkspaceHomeRouteMock).toHaveBeenCalled()
+  expect(hierarchyStore.documentCensusRefreshGeneration).toBe(0)
 })
 
 test('Test that S_FaOpenedDocuments deleteOpenedDocument no-ops tab removal when document is not open', async () => {
   const refreshDocumentsInTreeMock = vi.fn()
+  const refreshLayoutMock = vi.fn(async () => undefined)
   const { S_FaOpenedDocuments } = await import('../S_FaOpenedDocuments')
   const { S_FaProjectHierarchyTree } = await import('../S_FaProjectHierarchyTree')
   const store = S_FaOpenedDocuments()
   const hierarchyStore = S_FaProjectHierarchyTree()
   hierarchyStore.refreshDocumentsInTree = refreshDocumentsInTreeMock
+  hierarchyStore.refreshLayout = refreshLayoutMock
   store.replaceSessionForComponentTesting({
     activeDocumentId: 'doc-1',
     tabs: [baseTab]
@@ -2004,6 +2043,7 @@ test('Test that S_FaOpenedDocuments deleteOpenedDocument no-ops tab removal when
   await store.deleteOpenedDocument('doc-closed')
 
   expect(deleteDocumentMock).toHaveBeenCalledWith('doc-closed')
+  expect(refreshLayoutMock).toHaveBeenCalledTimes(1)
   expect(notifyCreateMock).toHaveBeenCalledWith({
     group: false,
     message: 'Document successfully deleted.',
@@ -2012,6 +2052,7 @@ test('Test that S_FaOpenedDocuments deleteOpenedDocument no-ops tab removal when
   expect(store.tabs.map((tab) => tab.documentId)).toEqual(['doc-1'])
   expect(store.activeDocumentId).toBe('doc-1')
   expect(navigateToOpenedDocumentRouteMock).not.toHaveBeenCalled()
+  expect(hierarchyStore.documentCensusRefreshGeneration).toBe(1)
 })
 
 test('Test that S_FaOpenedDocuments closeAllTabsWithoutChanges no-ops when every tab has unsaved changes', async () => {

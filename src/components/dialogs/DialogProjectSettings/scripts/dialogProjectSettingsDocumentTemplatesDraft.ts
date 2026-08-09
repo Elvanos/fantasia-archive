@@ -1,4 +1,5 @@
 import type { I_dialogProjectSettingsDocumentTemplateDraft } from 'app/types/I_dialogProjectSettingsDocumentTemplates'
+import type { I_dialogProjectSettingsWorldDraft } from 'app/types/I_dialogProjectSettingsWorlds'
 import type { I_faProjectDocumentTemplateSnapshotItem } from 'app/types/I_faProjectDocumentTemplateDomain'
 import type { I_faProjectDocumentTemplateTitleSingularTranslations } from 'app/types/I_faProjectDocumentTemplateTitleSingularTranslations'
 import type { I_faProjectDocumentTemplateTitleTranslations } from 'app/types/I_faProjectDocumentTemplateTitleTranslations'
@@ -255,10 +256,48 @@ export function appendDialogProjectSettingsDocumentTemplateDraft (
 }
 
 /**
+ * True when any world draft layout still places this document template.
+ */
+export function isDialogProjectSettingsDocumentTemplateAssignedToAnyWorld (
+  templateId: string,
+  worlds: readonly I_dialogProjectSettingsWorldDraft[] | null
+): boolean {
+  if (worlds === null || templateId.length === 0) {
+    return false
+  }
+  for (const world of worlds) {
+    for (const placement of world.templateLayout.placements) {
+      if (placement.documentTemplateId === templateId) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
+/**
+ * Why Delete Template stays disabled, or null when delete is allowed.
+ * Documents win over world assignment when both apply.
+ */
+export function resolveDialogProjectSettingsDocumentTemplateRemoveDisabledReason (
+  template: I_dialogProjectSettingsDocumentTemplateDraft,
+  worlds: readonly I_dialogProjectSettingsWorldDraft[] | null
+): 'hasDocuments' | 'assignedToWorld' | null {
+  if (template.documentCount > 0) {
+    return 'hasDocuments'
+  }
+  if (isDialogProjectSettingsDocumentTemplateAssignedToAnyWorld(template.id, worlds)) {
+    return 'assignedToWorld'
+  }
+  return null
+}
+
+/**
  * True when the remove control must stay disabled for this template row.
  */
 export function isDialogProjectSettingsDocumentTemplateRemoveDisabled (
-  template: I_dialogProjectSettingsDocumentTemplateDraft
+  template: I_dialogProjectSettingsDocumentTemplateDraft,
+  worlds: readonly I_dialogProjectSettingsWorldDraft[] | null
 ): boolean {
-  return template.documentCount > 0
+  return resolveDialogProjectSettingsDocumentTemplateRemoveDisabledReason(template, worlds) !== null
 }

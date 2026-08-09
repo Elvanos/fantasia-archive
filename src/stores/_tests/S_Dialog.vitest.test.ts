@@ -49,8 +49,20 @@ test('Test that S_DialogMarkdown has defaults and updates UUID', () => {
 test('Test that S_DialogComponent has defaults and updates UUID', () => {
   expect(S_DialogComponent.dialogToOpen).toBe('AboutFantasiaArchive')
   expect(S_DialogComponent.dialogUUID).toBe('')
+  expect(S_DialogComponent.projectSettingsInitialTab).toBe(null)
   S_DialogComponent.generateDialogUUID()
   expect(S_DialogComponent.dialogUUID).toBe('uuid-1')
+})
+
+/**
+ * S_DialogComponent
+ * consumeProjectSettingsInitialTab returns and clears the pending tab.
+ */
+test('Test that S_DialogComponent consumeProjectSettingsInitialTab clears after read', () => {
+  S_DialogComponent.projectSettingsInitialTab = 'documentTemplatesSettings'
+  expect(S_DialogComponent.consumeProjectSettingsInitialTab()).toBe('documentTemplatesSettings')
+  expect(S_DialogComponent.projectSettingsInitialTab).toBe(null)
+  expect(S_DialogComponent.consumeProjectSettingsInitialTab()).toBe(null)
 })
 
 /**
@@ -101,4 +113,15 @@ test('Test that S_DialogComponent open count visible and hidden stay non-negativ
   expect(S_DialogComponent.componentDialogOpenCount).toBe(0)
   S_DialogComponent.onComponentDialogBecameHidden()
   expect(S_DialogComponent.componentDialogOpenCount).toBe(0)
+})
+
+/**
+ * S_DialogComponent
+ * projectSettingsInitialTab is consumed once then cleared.
+ */
+test('Test that S_DialogComponent consumeProjectSettingsInitialTab clears the tab', () => {
+  S_DialogComponent.projectSettingsInitialTab = 'documentTemplatesSettings'
+  expect(S_DialogComponent.consumeProjectSettingsInitialTab()).toBe('documentTemplatesSettings')
+  expect(S_DialogComponent.projectSettingsInitialTab).toBeNull()
+  expect(S_DialogComponent.consumeProjectSettingsInitialTab()).toBeNull()
 })

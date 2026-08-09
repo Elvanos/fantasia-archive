@@ -11,6 +11,7 @@ import {
   handleOpenLicenseDialog,
   handleOpenAppSettingsDialog,
   handleOpenProjectSettingsDialog,
+  handleOpenQuickAddDocumentDialog,
   handleShowProjectDashboard,
   handleEditActiveDocument,
   handleCreateTemporaryOpenedDocument,
@@ -102,6 +103,12 @@ export const FA_ACTION_DEFINITIONS_HEAD: ReadonlyArray<I_faActionDefinition<T_fa
     dedup: true,
     handler: handleOpenProjectSettingsDialog as I_faActionDefinition<T_faActionId>['handler'],
     id: 'openProjectSettingsDialog',
+    kind: 'async'
+  },
+  {
+    dedup: true,
+    handler: handleOpenQuickAddDocumentDialog as I_faActionDefinition<T_faActionId>['handler'],
+    id: 'openQuickAddDocumentDialog',
     kind: 'async'
   },
   {

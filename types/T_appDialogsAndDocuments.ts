@@ -7,6 +7,7 @@ export type T_dialogName =
   | 'ImportExportAppConfig'
   | 'KeybindSettings'
   | 'NewProject'
+  | 'QuickAddDocument'
   | 'AppSettings'
   | 'ProjectSettings'
   | 'WindowAppNoteboard'

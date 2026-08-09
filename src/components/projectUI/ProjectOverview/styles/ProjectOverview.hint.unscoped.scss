@@ -19,3 +19,13 @@ body.fa-appTheme--flat .projectOverview__hint {
 body.fa-appTheme--fantasy .projectOverview__hint {
   @include tooltipParchment.fa-tooltip-parchment-surface;
 }
+
+/* Fantasy: pull subtitle up under title (scoped SFC cannot see body theme class). */
+body.fa-appTheme--fantasy .projectOverview__subtitle {
+  margin-top: $projectOverview-subtitle-marginTop-fantasy;
+}
+
+/* Any theme: more air when app control bar is disabled (no flow spacer). */
+.q-page-container:not(:has(.projectAppControlBar__flowSpacer)) .projectOverview__subtitle {
+  margin-top: $projectOverview-subtitle-marginTop-controlBarDisabled;
+}

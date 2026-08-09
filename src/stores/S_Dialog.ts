@@ -52,6 +52,11 @@ export const S_DialogComponent = defineStore('S_DialogComponent', () => {
 
   const dialogUUID: Ref<string> = ref('')
 
+  /**
+   * Optional Project Settings category tab applied on next open, then cleared.
+   */
+  const projectSettingsInitialTab: Ref<string | null> = ref(null)
+
   const componentDialogOpenCount = ref(0)
 
   function generateDialogUUID () {
@@ -66,12 +71,20 @@ export const S_DialogComponent = defineStore('S_DialogComponent', () => {
     componentDialogOpenCount.value = decrementDialogOpenCountNonNegative(componentDialogOpenCount.value)
   }
 
+  function consumeProjectSettingsInitialTab (): string | null {
+    const tab = projectSettingsInitialTab.value
+    projectSettingsInitialTab.value = null
+    return tab
+  }
+
   return {
     componentDialogOpenCount,
+    consumeProjectSettingsInitialTab,
     dialogToOpen,
     dialogUUID,
     generateDialogUUID,
     onComponentDialogBecameHidden,
-    onComponentDialogBecameVisible
+    onComponentDialogBecameVisible,
+    projectSettingsInitialTab
   }
 })

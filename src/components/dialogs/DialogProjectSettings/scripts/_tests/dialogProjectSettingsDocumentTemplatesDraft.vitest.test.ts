@@ -10,6 +10,7 @@ import {
   isDialogProjectSettingsDocumentTemplateResolvedTitleUsingFallback,
   isDialogProjectSettingsDocumentTemplateMissingCurrentLanguageTranslations,
   resolveDialogProjectSettingsDocumentTemplateMissingTranslationWarningTooltip,
+  resolveDialogProjectSettingsDocumentTemplateRemoveDisabledReason,
   resolveDialogProjectSettingsDocumentTemplateResolvedTitle,
   resolveDialogProjectSettingsDocumentTemplateResolvedTitleLanguageCode
 } from '../dialogProjectSettingsDocumentTemplatesDraft'
@@ -118,25 +119,93 @@ test('Test that mapDialogProjectSettingsDocumentTemplatesToSnapshot trims option
 
 /**
  * isDialogProjectSettingsDocumentTemplateRemoveDisabled
- * Blocks delete only when documents reference the template.
+ * Blocks delete when documents reference the template or any world still places it.
  */
-test('Test that isDialogProjectSettingsDocumentTemplateRemoveDisabled respects documentCount', () => {
-  expect(isDialogProjectSettingsDocumentTemplateRemoveDisabled({
+test('Test that isDialogProjectSettingsDocumentTemplateRemoveDisabled respects documents and world assignment', () => {
+  const template = {
     documentCount: 0,
     icon: '',
     id: '7c9e6679-7425-40de-944b-e07fc1f90ae7',
     titlePluralTranslations: { 'en-US': 'Tpl' },
     titleSingularTranslations: {},
     worldAppendixTranslations: {}
-  })).toBe(false)
+  }
+  expect(isDialogProjectSettingsDocumentTemplateRemoveDisabled(template, [])).toBe(false)
   expect(isDialogProjectSettingsDocumentTemplateRemoveDisabled({
+    ...template,
+    documentCount: 1
+  }, [])).toBe(true)
+  expect(isDialogProjectSettingsDocumentTemplateRemoveDisabled(template, [{
+    color: '',
+    colorPalette: '',
+    displayNameTranslations: { 'en-US': 'World' },
+    documentCount: 0,
+    id: '550e8400-e29b-41d4-a716-446655440001',
+    templateLayout: {
+      groups: [],
+      placements: [{
+        categoryCountInWorld: 0,
+        documentCountInWorld: 0,
+        documentTemplateId: template.id,
+        groupId: null,
+        groupSortOrder: null,
+        icon: '',
+        id: 'placement-1',
+        nicknamePluralTranslations: {},
+        nicknameSingularTranslations: {},
+        rootSortOrder: 0,
+        templateDisplayName: 'Tpl',
+        worldAppendix: ''
+      }]
+    }
+  }])).toBe(true)
+})
+
+/**
+ * resolveDialogProjectSettingsDocumentTemplateRemoveDisabledReason
+ * Documents take priority over world assignment for the disabled tooltip.
+ */
+test('Test that resolveDialogProjectSettingsDocumentTemplateRemoveDisabledReason prefers hasDocuments', () => {
+  const template = {
     documentCount: 1,
     icon: '',
     id: '7c9e6679-7425-40de-944b-e07fc1f90ae7',
     titlePluralTranslations: { 'en-US': 'Tpl' },
     titleSingularTranslations: {},
     worldAppendixTranslations: {}
-  })).toBe(true)
+  }
+  const worldsWithAssignment = [{
+    color: '',
+    colorPalette: '',
+    displayNameTranslations: { 'en-US': 'World' },
+    documentCount: 0,
+    id: '550e8400-e29b-41d4-a716-446655440001',
+    templateLayout: {
+      groups: [],
+      placements: [{
+        categoryCountInWorld: 0,
+        documentCountInWorld: 0,
+        documentTemplateId: template.id,
+        groupId: null,
+        groupSortOrder: null,
+        icon: '',
+        id: 'placement-1',
+        nicknamePluralTranslations: {},
+        nicknameSingularTranslations: {},
+        rootSortOrder: 0,
+        templateDisplayName: 'Tpl',
+        worldAppendix: ''
+      }]
+    }
+  }]
+  expect(resolveDialogProjectSettingsDocumentTemplateRemoveDisabledReason(
+    template,
+    worldsWithAssignment
+  )).toBe('hasDocuments')
+  expect(resolveDialogProjectSettingsDocumentTemplateRemoveDisabledReason({
+    ...template,
+    documentCount: 0
+  }, worldsWithAssignment)).toBe('assignedToWorld')
 })
 
 /**

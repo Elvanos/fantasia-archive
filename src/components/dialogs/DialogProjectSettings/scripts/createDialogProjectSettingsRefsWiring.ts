@@ -12,6 +12,7 @@ export function createDialogProjectSettingsRefsWiring (deps: {
     baselineWorlds: Ref<I_dialogProjectSettingsWorldDraft[] | null>
     dialogModel: Ref<boolean>
     documentName: Ref<string>
+    hadWorldTemplatePlacementsAtDialogOpen: Ref<boolean>
     localDocumentTemplates: Ref<I_dialogProjectSettingsDocumentTemplateDraft[] | null>
     localSettings: Ref<I_faProjectSettingsRoot | null>
     localWorlds: Ref<I_dialogProjectSettingsWorldDraft[] | null>
@@ -19,6 +20,7 @@ export function createDialogProjectSettingsRefsWiring (deps: {
   } {
   const dialogModel = deps.ref(false)
   const documentName = deps.ref('')
+  const hadWorldTemplatePlacementsAtDialogOpen = deps.ref(false)
   const localDocumentTemplates = deps.ref<I_dialogProjectSettingsDocumentTemplateDraft[] | null>(null)
   const localSettings = deps.ref<I_faProjectSettingsRoot | null>(null)
   const localWorlds = deps.ref<I_dialogProjectSettingsWorldDraft[] | null>(null)
@@ -32,6 +34,7 @@ export function createDialogProjectSettingsRefsWiring (deps: {
     baselineWorlds,
     dialogModel,
     documentName,
+    hadWorldTemplatePlacementsAtDialogOpen,
     localDocumentTemplates,
     localSettings,
     localWorlds,

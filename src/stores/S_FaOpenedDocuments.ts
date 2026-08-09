@@ -20,6 +20,7 @@ import {
   navigateToOpenedDocumentRoute,
   navigateToWorkspaceHomeRoute
 } from 'app/src/scripts/appInternals/faAppRouterSession_manager'
+import { recordFaOpenedDocumentLastOpenedBestEffort } from 'app/src/stores/scripts/faOpenedDocumentsRecordLastOpenedWiring'
 import {
   createFaProjectDocumentForRenderer,
   deleteFaProjectDocumentForRenderer,
@@ -271,7 +272,11 @@ export const S_FaOpenedDocuments = defineStore('S_FaOpenedDocuments', () => {
     await validateAndFilterTabsFromSnapshot()
     hydrationComplete.value = true
     if (activeDocumentId.value !== null) {
-      await navigateToOpenedDocumentRoute(activeDocumentId.value)
+      if (S_FaUserSettings().settings?.autoOpenLastDocument === true) {
+        await navigateToOpenedDocumentRoute(activeDocumentId.value)
+      } else {
+        await navigateToWorkspaceHomeRoute()
+      }
     }
   }
 
@@ -362,6 +367,9 @@ export const S_FaOpenedDocuments = defineStore('S_FaOpenedDocuments', () => {
     schedulePersistSnapshot()
     if (openResult.shouldNavigate && openResult.navigateDocumentId !== null) {
       await navigateToOpenedDocumentRoute(openResult.navigateDocumentId)
+    }
+    if (!resolveOpenedDocumentTabIsTemporary(newTab.persistenceState)) {
+      void recordFaOpenedDocumentLastOpenedBestEffort(documentId)
     }
   }
 
@@ -713,12 +721,20 @@ export const S_FaOpenedDocuments = defineStore('S_FaOpenedDocuments', () => {
   }
 
   async function focusTab (documentId: string): Promise<void> {
-    if (findOpenedDocumentTabIndexByDocumentId(tabs.value, documentId) === -1) {
+    const index = findOpenedDocumentTabIndexByDocumentId(tabs.value, documentId)
+    if (index === -1) {
       return
     }
+    const tab = tabs.value[index]
     activeDocumentId.value = documentId
     schedulePersistSnapshot()
     await navigateToOpenedDocumentRoute(documentId)
+    if (
+      tab !== undefined &&
+      !resolveOpenedDocumentTabIsTemporary(tab.persistenceState)
+    ) {
+      void recordFaOpenedDocumentLastOpenedBestEffort(documentId)
+    }
   }
 
   function updateDisplayNameDraft (documentId: string, value: string): void {
@@ -1086,6 +1102,9 @@ export const S_FaOpenedDocuments = defineStore('S_FaOpenedDocuments', () => {
             hierarchyStore.refreshHierarchyTreeNodes(treeRefreshNodeIds)
           }
           await hierarchyStore.refreshLayout()
+          // Await MRU write before census bump so Project overview reload includes this doc.
+          await recordFaOpenedDocumentLastOpenedBestEffort(savedDocument.id)
+          hierarchyStore.bumpDocumentCensusRefreshGeneration()
         })(),
         (error): unknown => error
       )
@@ -1417,6 +1436,11 @@ export const S_FaOpenedDocuments = defineStore('S_FaOpenedDocuments', () => {
     )
     if (treeRefreshNodeIds.length > 0) {
       hierarchyStore.refreshHierarchyTreeNodes(treeRefreshNodeIds)
+    }
+    if (shouldDeletePersistedDocumentRow) {
+      // Same as temp save promote: layout carries placement documentCount / categoryCount.
+      await hierarchyStore.refreshLayout()
+      hierarchyStore.bumpDocumentCensusRefreshGeneration()
     }
     const index = findOpenedDocumentTabIndexByDocumentId(tabs.value, documentId)
     if (index !== -1) {

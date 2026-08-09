@@ -89,7 +89,7 @@ export default {
       tags: 'परियोजना होम, डैशबोर्ड, अवलोकन, कार्यक्षेत्र',
       projectOverviewBehavior: {
         subtitle: 'परियोजना अवलोकन व्यवहार',
-        tags: 'युक्तियाँ, ट्रिक्स, क्या आप जानते हैं, अवलोकन कार्ड',
+        tags: 'युक्तियाँ, ट्रिक्स, क्या आप जानते हैं, अवलोकन कार्ड, auto open, last document',
       }
     },
     welcomeScreen: {
@@ -117,6 +117,12 @@ export default {
       description: 'यह सेटिंग FA के स्क्रॉलबार को व्यापक बनाती है और इसलिए उन उपकरणों के लिए सीधे मैन्युअल क्लिक-स्क्रॉलिंग की अनुमति देती है जो मानक स्क्रॉलिंग का समर्थन नहीं करते हैं (उदाहरण के लिए स्क्रॉल व्हील के बिना चूहे)।',
       tags: 'स्क्रॉलबार की चौड़ाई, स्क्रॉल पर क्लिक करें, व्हील के बिना माउस, ट्रैकबॉल, स्पर्श',
     },
+    autoOpenLastDocument: {
+      title: 'Auto-open last document',
+      description: 'When opening a project, automatically open the last active document tab instead of showing the Project overview first.',
+      tags: 'auto open, last document, project open, restore tab, skip overview, workspace home, resume session'
+    },
+
     disableCategoryCount: {
       title: 'श्रेणी गणना छिपाएँ',
       description: 'पदानुक्रमित वृक्ष में श्रेणी संख्या छिपाएँ',

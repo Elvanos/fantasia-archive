@@ -27,6 +27,7 @@ export default {
     openAdvancedSearchGuideDialog: 'उन्नत खोज मार्गदर्शिका खोलें',
     openChangelogDialog: 'चेंजलॉग खोलें',
     openKeybindSettingsDialog: 'कीबाइंड सेटिंग्स खोलें',
+    openQuickAddDocumentDialog: 'Open Quick-Add New Document',
     openProjectSettingsDialog: 'परियोजना सेटिंग्स खोलें',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'परियोजना सेटिंग्स सहेजें',

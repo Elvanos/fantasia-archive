@@ -145,6 +145,33 @@ vi.mock(
   })
 )
 
+vi.mock(
+  'app/src-electron/mainScripts/projectManagement/projectDbContent/faProjectDocumentLastOpenedQueryWiring',
+  () => ({
+    listFaProjectDocumentLastOpened: vi.fn(() => ({ items: [] }))
+  })
+)
+
+vi.mock(
+  'app/src-electron/mainScripts/projectManagement/projectDbContent/faProjectDocumentLastOpenedPersistWiring',
+  () => ({
+    recordFaProjectDocumentLastOpened: vi.fn()
+  })
+)
+
+vi.mock(
+  'app/src-electron/mainScripts/projectManagement/projectDbContent/faProjectDocumentDistributionQueryWiring',
+  () => ({
+    listFaProjectDocumentDistribution: vi.fn(() => ({
+      templates: [],
+      worlds: [],
+      counts: [],
+      documentTemplateTotalCount: 0,
+      totalDocumentCount: 0
+    }))
+  })
+)
+
 const SAMPLE_UUID = '550e8400-e29b-41d4-a716-446655440000'
 const SAMPLE_UUID_B = '6ba7b810-9dad-11d1-80b4-00c04fd430c8'
 
@@ -184,6 +211,9 @@ test('Test that registerFaProjectContentIpc registers all project content channe
   expect(channels).toContain(FA_PROJECT_CONTENT_IPC.setDocumentTagsAsync)
   expect(channels).toContain(FA_PROJECT_CONTENT_IPC.renameTagAsync)
   expect(channels).toContain(FA_PROJECT_CONTENT_IPC.deleteTagAsync)
+  expect(channels).toContain(FA_PROJECT_CONTENT_IPC.listDocumentLastOpenedAsync)
+  expect(channels).toContain(FA_PROJECT_CONTENT_IPC.recordDocumentLastOpenedAsync)
+  expect(channels).toContain(FA_PROJECT_CONTENT_IPC.listDocumentDistributionAsync)
   expect(channels.length).toBeGreaterThan(20)
 })
 
@@ -312,6 +342,12 @@ test('Test that every project content IPC handler runs through runWithFaProjectD
     newName: 'Villains'
   })
   await handlerFor(FA_PROJECT_CONTENT_IPC.deleteTagAsync)(event, { tagId: SAMPLE_UUID })
+
+  await handlerFor(FA_PROJECT_CONTENT_IPC.listDocumentLastOpenedAsync)(event)
+  await handlerFor(FA_PROJECT_CONTENT_IPC.recordDocumentLastOpenedAsync)(event, {
+    documentId: SAMPLE_UUID
+  })
+  await handlerFor(FA_PROJECT_CONTENT_IPC.listDocumentDistributionAsync)(event)
 
   await handlerFor(FA_PROJECT_CONTENT_IPC.listWorkspaceHierarchyLayoutAsync)(event)
   await handlerFor(FA_PROJECT_CONTENT_IPC.listPlacementDocumentChildrenAsync)(event, {

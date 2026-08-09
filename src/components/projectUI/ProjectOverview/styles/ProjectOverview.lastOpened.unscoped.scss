@@ -1,0 +1,244 @@
+@use '../../../../css/globals/faColorGlyph.mixin.scss' as colorGlyph;
+@use '../../../../css/globals/faDialogCyanRim.mixin.scss' as dialogCyanRim;
+@use '../../../../css/globals/faQIconDisplay.mixin.scss' as faQIconDisplay;
+@use '../../../../css/globals/faTabEdgeGlow.mixin.scss' as tabEdgeGlow;
+@use '../../../../css/globals/paletteGlobals.variables.scss' as paletteGlobals;
+@use '../../../../css/theme/quasar-components/qDialog.variables' as qDialog;
+@use '../../../../css/theme/quasar-components/qMenu.variables' as qMenu;
+@use '../../../globals/AppControlMenus/styles/contextMenuSeparators.mixin' as contextMenuSeparators;
+@use './variables' as *;
+
+/* Last-opened list chrome: app $iconSize glyph boxes + world color via --fa-color-glyph-base. */
+.projectOverview {
+  &__lastOpened {
+    flex-grow: 0;
+    flex-shrink: 0;
+    height: $projectOverview-graph-card-height-css;
+    margin-left: $projectOverview-lastOpened-marginLeft;
+    max-height: $projectOverview-graph-card-height-css;
+    min-height: $projectOverview-graph-card-height-css;
+    width: $projectOverview-lastOpened-width;
+
+    > .projectOverview__lastOpenedCard,
+    > .q-card {
+      height: 100%;
+    }
+  }
+
+  &__lastOpenedCard {
+    box-shadow: $qCard-boxShadow;
+    display: flex;
+    flex-direction: column;
+    height: $projectOverview-graph-card-height-css;
+    max-height: $projectOverview-graph-card-height-css;
+    min-height: $projectOverview-graph-card-height-css;
+    overflow: hidden;
+
+    /* Beat Quasar .q-card__section--vert 16px so the list scrollbar can dock to the card edge. */
+    > .q-card__section,
+    > .q-card__section--vert {
+      display: flex;
+      flex: 1 1 auto;
+      flex-direction: column;
+      min-height: 0;
+      overflow: hidden;
+      padding: 0;
+    }
+  }
+
+  &__lastOpenedTitle {
+    font-size: $projectOverview-lastOpened-title-fontSize;
+    font-weight: $projectOverview-lastOpened-title-fontWeight;
+    line-height: $projectOverview-lastOpened-title-lineHeight;
+    margin-bottom: $projectOverview-lastOpened-title-marginBottom;
+    margin-top: $projectOverview-lastOpened-title-marginTop;
+    padding-left: $projectOverview-lastOpened-title-paddingInline;
+    padding-right: $projectOverview-lastOpened-title-paddingInline;
+  }
+
+  &__lastOpenedInner {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    /*
+     * Top = original list pad. Bottom = +12px breathing room above the cyan rim.
+     * Inline = list + former Quasar section pad (16+16) so content matches
+     * pre-scrollbar-dock inset while thumb stays on the card edge.
+     */
+    padding-inline: $projectOverview-lastOpened-list-paddingInline;
+    padding-bottom: $projectOverview-lastOpened-list-paddingBottom;
+    padding-top: $projectOverview-lastOpened-list-padding;
+  }
+
+  &__lastOpenedSeparatorAlt {
+    @include contextMenuSeparators.fa-context-menu-separator-alt;
+  }
+
+  &__lastOpenedItem {
+    position: relative;
+
+    .q-item__section--avatar {
+      min-width: $projectOverview-lastOpened-avatar-minWidth;
+    }
+
+    .q-item__section--side {
+      align-self: center;
+      padding-left: $projectOverview-lastOpened-row-paddingInline;
+      /* Mirror avatar padding-left so the world glyph matches left inset from the row edge. */
+      padding-right: $projectOverview-lastOpened-avatar-paddingInline;
+
+      /*
+       * Beat Quasar `.q-item__section--side > .q-icon { font-size: 24px }` —
+       * same `$iconSize` box + glyph constrain as `__lastOpenedIcon`.
+       */
+      > .projectOverview__lastOpenedWorldIndicator.q-icon {
+        @include faQIconDisplay.fa-q-icon-display-constrain-glyph-in-box;
+
+        --fa-q-icon-display-glyph-font-size: #{paletteGlobals.$iconSize};
+        --fa-q-icon-display-mdi-fit-scale: 1;
+        --fa-q-icon-display-mdi-font-size: #{paletteGlobals.$iconSize};
+
+        align-items: center;
+        align-self: center;
+        box-sizing: border-box;
+        color: var(--fa-color-glyph-base);
+        display: inline-flex;
+        flex: 0 0 auto;
+        font-size: paletteGlobals.$iconSize;
+        height: paletteGlobals.$iconSize;
+        justify-content: center;
+        line-height: 1;
+        overflow: visible;
+        width: paletteGlobals.$iconSize;
+
+        &:not(.fa-brands, .fa-regular, .fa-solid) {
+          margin-top: 0;
+          transform: none;
+        }
+
+        &::before {
+          display: block;
+          font-size: 1em;
+          height: 1em;
+          line-height: 1;
+          width: 1em;
+        }
+      }
+    }
+
+    .projectOverview__lastOpenedRow {
+      --fa-color-glyph-base: #{$projectOverview-lastOpened-row-color};
+
+      color: $projectOverview-lastOpened-row-color;
+      min-height: 0;
+      padding: $projectOverview-lastOpened-row-paddingBlock $projectOverview-lastOpened-row-paddingInline;
+      transition: $qMenu-item-hover-colorTransition;
+    }
+  }
+
+  &__lastOpenedAvatar {
+    padding-left: $projectOverview-lastOpened-avatar-paddingInline;
+    padding-right: $projectOverview-lastOpened-avatar-paddingInline;
+  }
+
+  &__lastOpenedIcon {
+    @include faQIconDisplay.fa-q-icon-display-constrain-glyph-in-box;
+
+    --fa-q-icon-display-glyph-font-size: #{paletteGlobals.$iconSize};
+    --fa-q-icon-display-mdi-fit-scale: 1;
+    --fa-q-icon-display-mdi-font-size: #{paletteGlobals.$iconSize};
+
+    align-items: center;
+    box-sizing: border-box;
+    color: var(--fa-color-glyph-base);
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: paletteGlobals.$iconSize;
+    height: paletteGlobals.$iconSize;
+    justify-content: center;
+    line-height: 1;
+    overflow: visible;
+    transition: $qMenu-item-hover-colorTransition;
+    width: paletteGlobals.$iconSize;
+
+    /* Mixin scales the MDI host — that shrinks the wrapper under ::before. Keep 1:1. */
+    &:not(.fa-brands, .fa-regular, .fa-solid) {
+      margin-top: 0;
+      transform: none;
+    }
+
+    &::before {
+      display: block;
+      font-size: 1em;
+      height: 1em;
+      line-height: 1;
+      width: 1em;
+    }
+  }
+
+  &__lastOpenedLabel {
+    &--dead {
+      text-decoration: line-through;
+    }
+  }
+
+  &__lastOpenedDeadMarker {
+    margin-right: $projectOverview-lastOpened-deadMarker-marginRight;
+  }
+}
+
+/* Fantasy: same cyan rim stack as dialog cards / floating windows / menus. */
+body.fa-appTheme--fantasy .projectOverview__lastOpenedCard {
+  @include dialogCyanRim.fa-dialog-cyan-rim-chrome;
+
+  background: qDialog.$qDialog-card-backgroundColor !important;
+  /* Outer rim ring needs room; scroll clip stays on __lastOpenedInner. */
+  overflow: visible;
+}
+
+/*
+ * Fantasy: same bottom-edge gold glow as menu q-items (faMenuItemGlow).
+ * Kill Quasar square focus-helper wash; world indicator keeps its own glyph base.
+ */
+body.desktop.fa-appTheme--fantasy .projectOverview__lastOpenedRow.q-focusable:focus > .q-focus-helper,
+body.desktop.fa-appTheme--fantasy .projectOverview__lastOpenedRow.q-hoverable:hover > .q-focus-helper,
+body.desktop.fa-appTheme--fantasy .projectOverview__lastOpenedRow.q-manual-focusable--focused > .q-focus-helper {
+  opacity: 0 !important;
+
+  &::after,
+  &::before {
+    opacity: 0 !important;
+  }
+}
+
+body.fa-appTheme--fantasy .projectOverview__lastOpenedRow {
+  overflow: visible;
+  position: relative;
+
+  &::after {
+    @include tabEdgeGlow.fa-tab-edge-glow-idle(bottom);
+  }
+
+  &:hover:not(.disabled, [disabled], [aria-disabled='true'])::after,
+  &:focus:not(.disabled, [disabled], [aria-disabled='true'])::after,
+  &.q-manual-focusable--focused:not(.disabled, [disabled], [aria-disabled='true'])::after {
+    @include tabEdgeGlow.fa-tab-edge-glow-hover(bottom);
+  }
+
+  &:hover:not(.disabled, [disabled], [aria-disabled='true']),
+  &:focus:not(.disabled, [disabled], [aria-disabled='true']),
+  &.q-manual-focusable--focused:not(.disabled, [disabled], [aria-disabled='true']) {
+    color: $projectOverview-lastOpened-row-hover-color;
+
+    .projectOverview__lastOpenedIcon {
+      --fa-color-glyph-base: #{$projectOverview-lastOpened-row-hover-color};
+
+      color: var(--fa-color-glyph-base);
+    }
+  }
+}
+
+body.fa-appTheme--fantasy .projectOverview__lastOpenedIcon,
+body.fa-appTheme--fantasy .projectOverview__lastOpenedWorldIndicator {
+  @include colorGlyph.fa-color-glyph-shading;
+}

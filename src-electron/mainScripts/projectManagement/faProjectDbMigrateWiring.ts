@@ -28,12 +28,13 @@ import { applyFaProjectDocumentExtraClassesSchemaPatch } from './projectDbConten
 import { seedFaProjectDefaultWorldIfEmpty } from './projectDbContent/faProjectWorldBootstrapWiring'
 import { applyFaProjectWorldColorEmptyAllowedSchemaPatch } from './projectDbContent/faProjectWorldColorEmptyAllowedSchemaPatchWiring'
 import { applyFaProjectTagsSchemaPatch } from './projectDbContent/faProjectTagsSchemaPatchWiring'
+import { applyFaProjectDocumentLastOpenedSchemaPatch } from './projectDbContent/faProjectDocumentLastOpenedSchemaPatchWiring'
 
 const OPTION_PROJECT_NAME = 'project_name'
 const OPTION_PROJECT_UUID = 'project_uuid'
 
-/** Current schema revision: flattened bootstrap + v2 is_category + v3 status flags + v4 tree order number + v5 extra_classes + v6 worlds.color_palette rename + v7 tags. */
-export const FA_PROJECT_USER_VERSION_SUPPORTED_MAX = 7
+/** Current schema revision: flattened bootstrap + v2–v7 + v8 document_last_opened. */
+export const FA_PROJECT_USER_VERSION_SUPPORTED_MAX = 8
 
 const applyFaProjectDocumentsHierarchySchemaPatch = createApplyFaProjectDocumentsHierarchySchemaPatch({
   documentsTableName: FA_PROJECT_TABLE_DOCUMENTS,
@@ -105,6 +106,7 @@ function applyFaProjectSchemaPatchesAtCurrentVersion (db: Database): void {
   applyFaProjectWorldColorEmptyAllowedSchemaPatch(db)
   applyFaProjectDocumentAppearanceEmptyColorSchemaPatch(db)
   applyFaProjectTagsSchemaPatch(db)
+  applyFaProjectDocumentLastOpenedSchemaPatch(db)
   applyFaProjectOpenedDocumentsSchemaV1(db)
 }
 
@@ -174,6 +176,14 @@ function migrateFaProjectSchemaV6ToV7 (db: Database): void {
   runMigration()
 }
 
+function migrateFaProjectSchemaV7ToV8 (db: Database): void {
+  const runMigration = db.transaction(() => {
+    applyFaProjectDocumentLastOpenedSchemaPatch(db)
+    db.pragma('user_version = 8')
+  })
+  runMigration()
+}
+
 /**
  * Applies schema migrations. Fresh files bootstrap to the current revision and seed the default world.
  * Files already at the supported version run idempotent patches only.
@@ -197,6 +207,7 @@ export function applyFaProjectMigrations (
     migrateFaProjectSchemaV4ToV5(db)
     migrateFaProjectSchemaV5ToV6(db)
     migrateFaProjectSchemaV6ToV7(db)
+    migrateFaProjectSchemaV7ToV8(db)
     applyFaProjectSchemaPatchesAtCurrentVersion(db)
     return
   }
@@ -206,6 +217,7 @@ export function applyFaProjectMigrations (
     migrateFaProjectSchemaV4ToV5(db)
     migrateFaProjectSchemaV5ToV6(db)
     migrateFaProjectSchemaV6ToV7(db)
+    migrateFaProjectSchemaV7ToV8(db)
     applyFaProjectSchemaPatchesAtCurrentVersion(db)
     return
   }
@@ -214,6 +226,7 @@ export function applyFaProjectMigrations (
     migrateFaProjectSchemaV4ToV5(db)
     migrateFaProjectSchemaV5ToV6(db)
     migrateFaProjectSchemaV6ToV7(db)
+    migrateFaProjectSchemaV7ToV8(db)
     applyFaProjectSchemaPatchesAtCurrentVersion(db)
     return
   }
@@ -221,17 +234,25 @@ export function applyFaProjectMigrations (
     migrateFaProjectSchemaV4ToV5(db)
     migrateFaProjectSchemaV5ToV6(db)
     migrateFaProjectSchemaV6ToV7(db)
+    migrateFaProjectSchemaV7ToV8(db)
     applyFaProjectSchemaPatchesAtCurrentVersion(db)
     return
   }
   if (startVer === 5) {
     migrateFaProjectSchemaV5ToV6(db)
     migrateFaProjectSchemaV6ToV7(db)
+    migrateFaProjectSchemaV7ToV8(db)
     applyFaProjectSchemaPatchesAtCurrentVersion(db)
     return
   }
   if (startVer === 6) {
     migrateFaProjectSchemaV6ToV7(db)
+    migrateFaProjectSchemaV7ToV8(db)
+    applyFaProjectSchemaPatchesAtCurrentVersion(db)
+    return
+  }
+  if (startVer === 7) {
+    migrateFaProjectSchemaV7ToV8(db)
     applyFaProjectSchemaPatchesAtCurrentVersion(db)
     return
   }

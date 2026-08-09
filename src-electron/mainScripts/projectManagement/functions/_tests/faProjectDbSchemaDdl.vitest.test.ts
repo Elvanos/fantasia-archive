@@ -4,6 +4,7 @@ import {
   applyFaProjectContentSchemaV1,
   applyFaProjectProjectDataSchemaV1,
   FA_PROJECT_TABLE_DOCUMENTS,
+  FA_PROJECT_TABLE_DOCUMENT_LAST_OPENED,
   FA_PROJECT_TABLE_DOCUMENT_TEMPLATES,
   FA_PROJECT_TABLE_OPENED_DOCUMENTS,
   FA_PROJECT_TABLE_WORLDS,
@@ -38,10 +39,11 @@ test('Test that applyFaProjectContentSchemaV1 runs exec with worlds and related 
     exec,
     pragma: vi.fn()
   })
-  expect(exec).toHaveBeenCalledTimes(4)
-  const sql = `${exec.mock.calls[0]![0] as string}${exec.mock.calls[1]![0] as string}${exec.mock.calls[2]![0] as string}${exec.mock.calls[3]![0] as string}`
+  expect(exec).toHaveBeenCalledTimes(5)
+  const sql = `${exec.mock.calls[0]![0] as string}${exec.mock.calls[1]![0] as string}${exec.mock.calls[2]![0] as string}${exec.mock.calls[3]![0] as string}${exec.mock.calls[4]![0] as string}`
   expect(sql).toContain(FA_PROJECT_TABLE_DOCUMENTS)
   expect(sql).toContain(FA_PROJECT_TABLE_OPENED_DOCUMENTS)
+  expect(sql).toContain(FA_PROJECT_TABLE_DOCUMENT_LAST_OPENED)
   expect(sql).toContain(FA_PROJECT_TABLE_WORLDS)
   expect(sql).toContain('color_palette')
   expect(sql).toContain("color = '' OR")

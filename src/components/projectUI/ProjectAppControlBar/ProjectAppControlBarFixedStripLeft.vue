@@ -188,7 +188,6 @@
       <q-btn
         color="primary-bright"
         data-test-locator="projectAppControlBar-quickAddButton"
-        disable
         icon="mdi-text-box-plus-outline"
         outline
         @click="onQuickAddClick"
@@ -198,7 +197,17 @@
           class="projectAppControlBar__buttonTooltip"
           self="top middle"
         >
-          {{ quickAddTooltip }}
+          <div class="fa-tooltip-keybind-stack">
+            <span class="fa-tooltip-keybind-stack__label">
+              {{ quickAddTooltip }}
+            </span><div
+              v-if="quickAddKeybindLabel !== null"
+              class="fa-tooltip-keybind-hint fa-text-keybind-hint"
+              data-test-locator="projectAppControlBar-quickAddButton-keybind"
+            >
+              ({{ quickAddKeybindLabel }})
+            </div>
+          </div>
         </q-tooltip>
       </q-btn>
     </template>
@@ -225,6 +234,7 @@ defineProps<{
   onToggleAppNoteboardClick: () => void
   onToggleHierarchyTreeClick: () => void
   onToggleProjectNoteboardClick: () => void
+  quickAddKeybindLabel: string | null
   quickAddTooltip: string
   quickSearchTooltip: string
   showAppNoteboardContentDot: boolean

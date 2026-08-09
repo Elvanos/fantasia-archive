@@ -11,12 +11,14 @@
     no-caps
     remove-button-test-locator="dialogProjectSettings-documentTemplates-removeButton"
     :remove-disabled="props.removeDisabled"
-    remove-disabled-tooltip-key="dialogs.projectSettings.panels.documentTemplates.removeDisabledHasDocuments"
+    :remove-disabled-tooltip-key="removeDisabledTooltipKey"
     @confirm="emit('confirm')"
   />
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+
 import FaDeleteConfirmButton from 'app/src/components/elements/FaDeleteConfirmButton/FaDeleteConfirmButton.vue'
 
 defineOptions({
@@ -25,9 +27,17 @@ defineOptions({
 
 const props = defineProps<{
   removeDisabled: boolean
+  removeDisabledReason: 'hasDocuments' | 'assignedToWorld' | null
 }>()
 
 const emit = defineEmits<{
   confirm: []
 }>()
+
+const removeDisabledTooltipKey = computed(() => {
+  if (props.removeDisabledReason === 'assignedToWorld') {
+    return 'dialogs.projectSettings.panels.documentTemplates.removeDisabledAssignedToWorld'
+  }
+  return 'dialogs.projectSettings.panels.documentTemplates.removeDisabledHasDocuments'
+})
 </script>

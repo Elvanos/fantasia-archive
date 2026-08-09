@@ -80,6 +80,14 @@ export function createFaProjectContentBridgeHarnessStub (): I_faProjectContentAP
     getMediaById: async () => stubNamedEntity(),
     getWorldById: async () => stubWorld(),
     linkDocumentMedia: noop,
+    listDocumentDistribution: async () => ({
+      counts: [],
+      documentTemplateTotalCount: 0,
+      templates: [],
+      totalDocumentCount: 0,
+      worlds: []
+    }),
+    listDocumentLastOpened: emptyList,
     listDocumentMedia: emptyList,
     listDocumentTags: emptyList,
     listDocumentsUnderTag: emptyList,
@@ -122,6 +130,7 @@ export function createFaProjectContentBridgeHarnessStub (): I_faProjectContentAP
       merged: false,
       mergedFromTagId: null
     }),
+    recordDocumentLastOpened: noop,
     reorderDocumentsUnderTag: noop,
     searchProjectHierarchy: async (query) => {
       return {

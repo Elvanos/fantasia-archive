@@ -78,6 +78,14 @@ test('Test that openDialogComponent accepts NewProject dialog name', () => {
   expect(generateDialogUUIDComponentMock).toHaveBeenCalled()
 })
 
+test('Test that openDialogComponent accepts QuickAddDocument dialog name', () => {
+  markdownStoreMock.markdownDialogOpenCount = 0
+  componentStoreMock.componentDialogOpenCount = 0
+  openDialogComponent('QuickAddDocument')
+  expect(componentStoreMock.dialogToOpen).toBe('QuickAddDocument')
+  expect(generateDialogUUIDComponentMock).toHaveBeenCalled()
+})
+
 test('Test that openDialogComponent accepts KeybindSettings dialog name', () => {
   markdownStoreMock.markdownDialogOpenCount = 0
   componentStoreMock.componentDialogOpenCount = 0

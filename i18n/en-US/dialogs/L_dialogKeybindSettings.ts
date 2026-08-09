@@ -28,6 +28,7 @@ export default {
     openProjectStyling: 'Open Custom Project CSS',
     openProjectSettings: 'Open Project Settings',
     showProjectDashboard: 'Show Project Dashboard',
+    quickNewDocument: 'Quick-Add New Document',
     toggleDeveloperTools: 'Toggle Developer Tools',
     toggleAppNoteboard: 'Toggle App Noteboard',
     toggleProjectNoteboard: 'Toggle Project Noteboard',

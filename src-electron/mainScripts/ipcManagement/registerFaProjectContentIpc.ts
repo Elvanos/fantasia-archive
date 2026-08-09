@@ -9,6 +9,7 @@ import {
 import { wireFaProjectContentDocumentTemplateIpcHandlers } from './registerFaProjectContentDocumentTemplateIpcHandlersWiring'
 import { wireFaProjectContentHierarchyTreeIpcHandlers } from './registerFaProjectContentHierarchyTreeIpcHandlersWiring'
 import { wireFaProjectContentTagIpcHandlers } from './registerFaProjectContentTagIpcHandlersWiring'
+import { wireFaProjectContentDocumentLastOpenedIpcHandlers } from './registerFaProjectContentDocumentLastOpenedIpcHandlersWiring'
 
 let registered = false
 
@@ -28,4 +29,5 @@ export function registerFaProjectContentIpc (): void {
   wireFaProjectContentMediaLinkIpcHandlers(ipcMain)
   wireFaProjectContentTagIpcHandlers(ipcMain)
   wireFaProjectContentHierarchyTreeIpcHandlers(ipcMain)
+  wireFaProjectContentDocumentLastOpenedIpcHandlers(ipcMain)
 }

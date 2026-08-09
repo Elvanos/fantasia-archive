@@ -1,6 +1,25 @@
 import type { I_faActionPayloadMap } from 'app/types/I_faActionManagerDomain'
 import type { I_createFaActionDefinitionHandlersDialogsDeps } from 'app/types/I_createFaActionDefinitionHandlersDialogsDeps'
 
+import { syncHideHierarchyTreeWhenNoWorldTemplatePlacements } from 'app/src/scripts/projectWorlds/functions/faProjectWorldTemplatePlacementHideHierarchyTree'
+
+async function maybeAutoHideHierarchyTreeWhenNoWorldTemplatePlacements (
+  deps: I_createFaActionDefinitionHandlersDialogsDeps
+): Promise<void> {
+  const hierarchyTreeStore = deps.S_FaProjectHierarchyTree()
+  const userSettingsStore = deps.S_FaUserSettings()
+  await syncHideHierarchyTreeWhenNoWorldTemplatePlacements({
+    getHideHierarchyTree: () => userSettingsStore.settings?.hideHierarchyTree === true,
+    getWorlds: () => hierarchyTreeStore.worlds,
+    patchHideHierarchyTree: async (hideHierarchyTree) => {
+      await userSettingsStore.patchSettingsSilently({ hideHierarchyTree })
+    },
+    refreshLayout: async () => {
+      await hierarchyTreeStore.refreshLayout()
+    }
+  })
+}
+
 function maybeAutoOpenProjectNoteboardAfterHydrate (
   deps: I_createFaActionDefinitionHandlersDialogsDeps
 ): void {
@@ -44,6 +63,7 @@ export function buildFaActionDefinitionHandlersDialogsProjectFlow (
         }
         await deps.S_FaProjectSidebar().refreshProjectSidebar()
         await deps.S_FaProjectStyling().refreshProjectStyling()
+        await maybeAutoHideHierarchyTreeWhenNoWorldTemplatePlacements(deps)
       })
       .finally(async () => {
         await deps.S_FaRecentProjects().refreshRecentProjects()
@@ -71,6 +91,7 @@ export function buildFaActionDefinitionHandlersDialogsProjectFlow (
           }
           await deps.S_FaProjectSidebar().refreshProjectSidebar()
           await deps.S_FaProjectStyling().refreshProjectStyling()
+          await maybeAutoHideHierarchyTreeWhenNoWorldTemplatePlacements(deps)
         }
         if (outcome === 'reused' && payload.resumeActiveSession !== true) {
           deps.notifyFaProjectAlreadyActiveWarning()

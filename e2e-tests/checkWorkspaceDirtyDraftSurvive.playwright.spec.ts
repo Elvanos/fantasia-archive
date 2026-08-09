@@ -276,6 +276,10 @@ test.describe.serial('Opened documents E2E — dirty draft survives cold restart
       )
     ).toBeVisible({ timeout: 15_000 })
     await expect(appWindow.getByText(DIRTY_DRAFT_E2E_DRAFT_LABEL, { exact: true })).toHaveCount(1)
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
+    await appWindow.locator(
+      `[data-test-locator="projectAppControlBar-tab-${e2eDirtyDraftDocumentId}"]`
+    ).click()
     await expectFaPlaywrightE2eHashRoute(
       appWindow,
       `/home/document/${e2eDirtyDraftDocumentId}`

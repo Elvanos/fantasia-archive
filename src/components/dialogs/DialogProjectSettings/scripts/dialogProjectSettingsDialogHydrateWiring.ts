@@ -5,6 +5,7 @@ import type { I_dialogProjectSettingsWorldDraft } from 'app/types/I_dialogProjec
 import type { Ref } from 'app/types/I_vueCompositionRefs'
 import type { T_faUserSettingsLanguageCode } from 'app/types/faUserSettingsLanguageRegistry'
 
+import { hasAnyDialogProjectSettingsWorldTemplatePlacement } from 'app/src/scripts/projectWorlds/functions/faProjectWorldTemplatePlacementHideHierarchyTree'
 import { captureDialogProjectSettingsBaselines } from './dialogProjectSettingsDialogBaselineWiring'
 import { syncDialogProjectSettingsAllWorldTemplateLayoutLocalizedPlacementLabels } from './dialogProjectSettingsDocumentTemplateLayoutTitleSyncWiring'
 
@@ -17,6 +18,7 @@ export async function hydrateDialogProjectSettingsDrafts (deps: {
   baselineDocumentTemplates: Ref<I_dialogProjectSettingsDocumentTemplateDraft[] | null>
   baselineSettings: Ref<I_faProjectSettingsRoot | null>
   baselineWorlds: Ref<I_dialogProjectSettingsWorldDraft[] | null>
+  hadWorldTemplatePlacementsAtDialogOpen: Ref<boolean>
   localDocumentTemplates: Ref<I_dialogProjectSettingsDocumentTemplateDraft[] | null>
   localSettings: Ref<I_faProjectSettingsRoot | null>
   localWorlds: Ref<I_dialogProjectSettingsWorldDraft[] | null>
@@ -26,6 +28,7 @@ export async function hydrateDialogProjectSettingsDrafts (deps: {
     baselineDocumentTemplates,
     baselineSettings,
     baselineWorlds,
+    hadWorldTemplatePlacementsAtDialogOpen,
     localDocumentTemplates,
     localSettings,
     localWorlds,
@@ -56,6 +59,9 @@ export async function hydrateDialogProjectSettingsDrafts (deps: {
     localDocumentTemplates,
     localWorlds
   })
+  hadWorldTemplatePlacementsAtDialogOpen.value = localWorlds.value === null
+    ? false
+    : hasAnyDialogProjectSettingsWorldTemplatePlacement(localWorlds.value)
   captureDialogProjectSettingsBaselines({
     baselineDocumentTemplates,
     baselineSettings,

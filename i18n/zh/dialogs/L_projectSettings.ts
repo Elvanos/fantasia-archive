@@ -147,7 +147,9 @@ export default {
         confirmDeleteButton: '确认删除',
         message: '确定要删除此文档模板吗？任何其他模板中连接到此模板的所有字段将停止工作。此外，若曾使用此模板填写，所有关联文档也将停止显示其数据。此删除可能产生意外副作用。'
       },
-      removeDisabledHasDocuments: '删除此模板前，请先移除使用此模板的文档。'
+      removeDisabledHasDocuments: '删除此模板前，请先移除使用此模板的文档。',
+      removeDisabledAssignedToWorld:
+        '此模板已连接到一个或多个世界，请先从所有相关世界中取消分配。'
     }
   }
 }

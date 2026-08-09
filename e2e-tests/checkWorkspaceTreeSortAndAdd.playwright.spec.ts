@@ -9,7 +9,6 @@ import {
   e2eExpandHierarchyDocumentNode,
   e2eExpandWorldAndPlacementNodes,
   e2eHierarchyTreeSelectorList,
-  e2eHydrateOpenedDocumentsAndRoute,
   e2eOpenHierarchyNodeContextMenu,
   e2eReadPlacementChildrenForParent,
   e2eReadPlacementRootSiblingDisplayNames,
@@ -257,6 +256,7 @@ test.describe.serial('Opened documents E2E — cold restart keeps sort and add-u
     await e2eExpectFaActiveProjectStoreName(appWindow, TREE_SORT_ADD_E2E_PROJECT_NAME)
     await expectFaPlaywrightE2eWorkspaceShell(appWindow)
 
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
     await e2eRefreshHierarchyTreeLayout(appWindow)
     await e2eExpandWorldAndPlacementNodes(appWindow)
 
@@ -274,7 +274,9 @@ test.describe.serial('Opened documents E2E — cold restart keeps sort and add-u
       e2eTreeSortParentId
     )
     expect(children.some((row) => row.id === e2eTreeSortAddUnderSavedId)).toBe(true)
-    await e2eHydrateOpenedDocumentsAndRoute(appWindow, e2eTreeSortAddUnderSavedId)
+    await appWindow.locator(
+      `[data-test-locator="projectAppControlBar-tab-${e2eTreeSortAddUnderSavedId}"]`
+    ).click()
     await expectFaPlaywrightE2eHashRoute(appWindow, `/home/document/${e2eTreeSortAddUnderSavedId}`)
   })
 })

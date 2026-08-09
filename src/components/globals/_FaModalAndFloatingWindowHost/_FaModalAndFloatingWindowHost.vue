@@ -12,12 +12,14 @@
     <WindowProjectNoteboard />
     <DialogImportExportAppConfig />
     <DialogNewProject />
+    <DialogQuickAddDocument />
   </div>
 </template>
 
 <script setup lang="ts">
 import DialogMarkdownDocument from 'app/src/components/dialogs/DialogMarkdownDocument/DialogMarkdownDocument.vue'
 import DialogNewProject from 'app/src/components/dialogs/DialogNewProject/DialogNewProject.vue'
+import DialogQuickAddDocument from 'app/src/components/dialogs/DialogQuickAddDocument/DialogQuickAddDocument.vue'
 import DialogAboutFantasiaArchive from 'app/src/components/dialogs/DialogAboutFantasiaArchive/DialogAboutFantasiaArchive.vue'
 import DialogActionMonitor from 'app/src/components/dialogs/DialogActionMonitor/DialogActionMonitor.vue'
 import DialogKeybindSettings from 'app/src/components/dialogs/DialogKeybindSettings/DialogKeybindSettings.vue'

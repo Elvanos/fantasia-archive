@@ -10,7 +10,6 @@ import {
   e2eExpandWorldAndPlacementNodes,
   e2eGetDocumentById,
   e2eHierarchyTreeSelectorList,
-  e2eHydrateOpenedDocumentsAndRoute,
   e2eReadPlacementChildrenForParent,
   e2eRefreshHierarchyTreeLayout,
   e2eSeedHierarchyPlacementWithDocuments
@@ -250,6 +249,7 @@ test.describe.serial('Opened documents E2E — cold restart keeps parent-chain f
     await e2eExpectFaActiveProjectStoreName(appWindow, TEMP_PARENT_FALLBACK_E2E_PROJECT_NAME)
     await expectFaPlaywrightE2eWorkspaceShell(appWindow)
 
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
     const savedChild = await e2eGetDocumentById(appWindow, e2eTempFallbackSavedChildId)
     expect(savedChild.parentDocumentId).toBe(e2eTempFallbackGrandparentId)
 
@@ -261,7 +261,9 @@ test.describe.serial('Opened documents E2E — cold restart keeps parent-chain f
         `[data-test-locator="${e2eHierarchyTreeSelectorList.nodeDocument}${e2eHierarchyTreeSelectorList.nodeDocumentLabelSuffix}"]`
       ).filter({ hasText: TEMP_PARENT_FALLBACK_E2E_CHILD_LABEL })
     ).toHaveCount(1)
-    await e2eHydrateOpenedDocumentsAndRoute(appWindow, e2eTempFallbackSavedChildId)
+    await appWindow.locator(
+      `[data-test-locator="projectAppControlBar-tab-${e2eTempFallbackSavedChildId}"]`
+    ).click()
     await expectFaPlaywrightE2eHashRoute(appWindow, `/home/document/${e2eTempFallbackSavedChildId}`)
   })
 })

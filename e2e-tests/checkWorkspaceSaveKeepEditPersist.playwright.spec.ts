@@ -270,6 +270,14 @@ test.describe.serial('Opened documents E2E — cold restart keeps keep-edit sess
     await e2eExpectFaActiveProjectStoreName(appWindow, KEEP_EDIT_E2E_PROJECT_NAME)
     await expectFaPlaywrightE2eWorkspaceShell(appWindow)
 
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
+    await appWindow.locator(
+      `[data-test-locator="projectAppControlBar-tab-${e2eKeepEditDocumentId}"]`
+    ).click()
+    await expectFaPlaywrightE2eHashRoute(
+      appWindow,
+      `/home/document/${e2eKeepEditDocumentId}`
+    )
     const nameInput = appWindow.locator(`[data-test-locator="${selectorList.documentNameInput}"]`)
     await expect(nameInput).toBeVisible({ timeout: 15_000 })
     await expect(nameInput).toHaveValue(KEEP_EDIT_E2E_SAVED_LABEL)

@@ -282,7 +282,7 @@ test.describe.serial('Opened documents E2E — cold restart restores last focuse
     })
   })
 
-  test('Cold restart opens the last focused document tab A', async () => {
+  test('Cold restart hydrates last focused tab A and lands on Project overview', async () => {
     expect(e2eFocusTabIdA.length).toBeGreaterThan(0)
 
     await navigateFaPlaywrightE2eToSplashRoute(appWindow)
@@ -293,6 +293,9 @@ test.describe.serial('Opened documents E2E — cold restart restores last focuse
     await expect(
       appWindow.locator(`[data-test-locator="projectAppControlBar-tab-${e2eFocusTabIdA}"]`)
     ).toBeVisible({ timeout: 15_000 })
-    await expectFaPlaywrightE2eHashRoute(appWindow, `/home/document/${e2eFocusTabIdA}`)
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
+    await expect(
+      appWindow.locator('[data-test-locator="projectOverview"]')
+    ).toBeVisible({ timeout: 15_000 })
   })
 })

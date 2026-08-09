@@ -27,6 +27,7 @@ export default {
     openAdvancedSearchGuideDialog: 'Avaa Tarkennettu hakuopas',
     openChangelogDialog: 'Avaa muutosloki',
     openKeybindSettingsDialog: 'Avaa Näppäimistön asetukset',
+    openQuickAddDocumentDialog: 'Open Quick-Add New Document',
     openProjectSettingsDialog: 'Avaa projektiasetukset',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'Tallenna projektiasetukset',

@@ -26,6 +26,7 @@ export default {
     openAppSettings: 'Avaa Sovellusasetukset',
     openAppStyling: 'Avaa mukautettu sovellus CSS',
     openProjectStyling: 'Avaa mukautettu projekti CSS',
+    quickNewDocument: 'Quick-Add New Document',
     openProjectSettings: 'Avaa projektiasetukset',
     showProjectDashboard: 'Näytä projektin hallintapaneeli',
     toggleDeveloperTools: 'Vaihda Kehittäjätyökalut',

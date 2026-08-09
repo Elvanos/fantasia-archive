@@ -54,6 +54,7 @@
       :on-toggle-app-noteboard-click="onToggleAppNoteboardClick"
       :on-toggle-hierarchy-tree-click="onToggleHierarchyTreeClick"
       :on-toggle-project-noteboard-click="onToggleProjectNoteboardClick"
+      :quick-add-keybind-label="quickAddKeybindLabel"
       :quick-add-tooltip="quickAddTooltip"
       :quick-search-tooltip="quickSearchTooltip"
       :save-document-button-color="saveDocumentButtonColor"
@@ -154,6 +155,7 @@ const {
   onTabMoveClick,
   onTabReorder,
   openedDocumentTabs,
+  quickAddKeybindLabel,
   resolveDocumentTabLabel,
   resolveDocumentTabAppearanceChrome,
   resolveDocumentTabDisplayIcon,

@@ -1,6 +1,12 @@
 import type { I_faOpenedDocumentTab } from 'app/types/I_faOpenedDocumentsDomain'
 import type { I_faProjectHierarchyTreeWorkspaceWorld } from 'app/types/I_faProjectHierarchyTreeDomain'
 
+/**
+ * Blank world.color UI paint — same token as hierarchy tree world icons.
+ */
+const FA_PROJECT_APP_CONTROL_BAR_WORLD_COLOR_PRIMARY_BRIGHT_FALLBACK =
+  'var(--fa-color-primary-bright)'
+
 export function resolveProjectAppControlBarShowWorldTabIndicators (
   projectWorldCount: number
 ): boolean {
@@ -20,7 +26,7 @@ export function resolveProjectAppControlBarTabWorldColor (
   }
   const trimmedColor = world.color.trim()
   if (trimmedColor.length === 0) {
-    return null
+    return FA_PROJECT_APP_CONTROL_BAR_WORLD_COLOR_PRIMARY_BRIGHT_FALLBACK
   }
   return trimmedColor
 }

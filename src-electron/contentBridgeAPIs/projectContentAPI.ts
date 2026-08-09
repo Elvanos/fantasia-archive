@@ -129,6 +129,15 @@ export const projectContentAPI: I_faProjectContentAPI = {
   listDocumentMedia: async (documentId) => {
     return await invokeProjectContent(FA_PROJECT_CONTENT_IPC.listDocumentMediaAsync, { documentId })
   },
+  listDocumentLastOpened: async () => {
+    return await invokeProjectContent(FA_PROJECT_CONTENT_IPC.listDocumentLastOpenedAsync)
+  },
+  recordDocumentLastOpened: async (input) => {
+    await invokeProjectContent(FA_PROJECT_CONTENT_IPC.recordDocumentLastOpenedAsync, input)
+  },
+  listDocumentDistribution: async () => {
+    return await invokeProjectContent(FA_PROJECT_CONTENT_IPC.listDocumentDistributionAsync)
+  },
   listTagsForWorld: async (input) => {
     return await invokeProjectContent(FA_PROJECT_CONTENT_IPC.listTagsForWorldAsync, input)
   },

@@ -249,6 +249,10 @@ test.describe.serial('Opened documents E2E — cold restart keeps promoted persi
         `[data-test-locator="projectAppControlBar-tab-${e2eSaveTemporaryPromoteDocumentId}"]`
       )
     ).toBeVisible({ timeout: 15_000 })
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
+    await appWindow.locator(
+      `[data-test-locator="projectAppControlBar-tab-${e2eSaveTemporaryPromoteDocumentId}"]`
+    ).click()
     await expectFaPlaywrightE2eHashRoute(
       appWindow,
       `/home/document/${e2eSaveTemporaryPromoteDocumentId}`

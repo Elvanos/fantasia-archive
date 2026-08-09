@@ -4,7 +4,8 @@ import { createPinia, setActivePinia } from 'pinia'
 
 import { S_FaActiveProject } from 'app/src/stores/S_FaActiveProject'
 
-const { updateProjectSettingsMock, persistWorldsSnapshotMock, persistDocumentTemplatesSnapshotMock, notifyCreateMock, refreshWorkspaceWorldsMock } = vi.hoisted(() => ({
+const { updateProjectSettingsMock, persistWorldsSnapshotMock, persistDocumentTemplatesSnapshotMock, notifyCreateMock, refreshWorkspaceWorldsMock, bumpDocumentCensusRefreshGenerationMock } = vi.hoisted(() => ({
+  bumpDocumentCensusRefreshGenerationMock: vi.fn(),
   notifyCreateMock: vi.fn(),
   persistDocumentTemplatesSnapshotMock: vi.fn(async () => undefined),
   persistWorldsSnapshotMock: vi.fn(async () => undefined),
@@ -57,6 +58,16 @@ vi.mock('app/src/stores/S_FaProjectWorkspaceWorlds', () => {
   }
 })
 
+vi.mock('app/src/stores/S_FaProjectHierarchyTree', () => {
+  return {
+    S_FaProjectHierarchyTree: () => {
+      return {
+        bumpDocumentCensusRefreshGeneration: bumpDocumentCensusRefreshGenerationMock
+      }
+    }
+  }
+})
+
 beforeEach(() => {
   setActivePinia(createPinia())
   vi.resetModules()
@@ -65,6 +76,7 @@ beforeEach(() => {
   persistWorldsSnapshotMock.mockReset()
   persistDocumentTemplatesSnapshotMock.mockReset()
   refreshWorkspaceWorldsMock.mockReset()
+  bumpDocumentCensusRefreshGenerationMock.mockReset()
   S_FaActiveProject().clearActiveProject()
 })
 
@@ -94,6 +106,7 @@ test('Test that handleSaveProjectSettings delegates to S_FaProjectSettings', asy
   await handleSaveProjectSettings({ settings: patch })
   expect(updateProjectSettingsMock).toHaveBeenCalledWith(patch)
   expect(persistWorldsSnapshotMock).not.toHaveBeenCalled()
+  expect(bumpDocumentCensusRefreshGenerationMock).not.toHaveBeenCalled()
 })
 
 /**
@@ -120,6 +133,7 @@ test('Test that handleSaveProjectSettings persists worlds snapshot when provided
   expect(updateProjectSettingsMock).toHaveBeenCalledWith({ projectName: 'Renamed' })
   expect(persistWorldsSnapshotMock).toHaveBeenCalledWith(worlds)
   expect(refreshWorkspaceWorldsMock).toHaveBeenCalledTimes(1)
+  expect(bumpDocumentCensusRefreshGenerationMock).toHaveBeenCalledTimes(1)
 })
 
 /**
@@ -146,6 +160,7 @@ test('Test that handleSaveProjectSettings persists document templates snapshot w
   })
   expect(updateProjectSettingsMock).toHaveBeenCalledWith({ projectName: 'Renamed' })
   expect(persistDocumentTemplatesSnapshotMock).toHaveBeenCalledWith(documentTemplates)
+  expect(bumpDocumentCensusRefreshGenerationMock).toHaveBeenCalledTimes(1)
 })
 
 /**
@@ -180,6 +195,7 @@ test('Test that handleSaveProjectSettings persists document templates before wor
   expect(persistDocumentTemplatesSnapshotMock.mock.invocationCallOrder[0]!).toBeLessThan(
     persistWorldsSnapshotMock.mock.invocationCallOrder[0]! ?? Number.POSITIVE_INFINITY
   )
+  expect(bumpDocumentCensusRefreshGenerationMock).toHaveBeenCalledTimes(1)
 })
 
 /**

@@ -107,6 +107,14 @@ test('Test that createFaProjectContentBridgeHarnessStub list methods return expe
   const emptyList = { items: [] }
 
   await expect(api.listDocumentMedia(STUB_UUID)).resolves.toEqual(emptyList)
+  await expect(api.listDocumentLastOpened()).resolves.toEqual(emptyList)
+  await expect(api.listDocumentDistribution()).resolves.toEqual({
+    templates: [],
+    worlds: [],
+    counts: [],
+    documentTemplateTotalCount: 0,
+    totalDocumentCount: 0
+  })
   await expect(api.listDocuments()).resolves.toEqual(emptyList)
   await expect(api.listDocuments({ worldId: STUB_UUID })).resolves.toEqual(emptyList)
   await expect(api.listDocumentTemplates()).resolves.toEqual(emptyList)
@@ -166,6 +174,7 @@ test('Test that createFaProjectContentBridgeHarnessStub noop methods resolve und
     orderedDocumentIds: [STUB_UUID]
   })).resolves.toBeUndefined()
   await expect(api.deleteTag({ tagId: STUB_UUID })).resolves.toBeUndefined()
+  await expect(api.recordDocumentLastOpened({ documentId: STUB_UUID })).resolves.toBeUndefined()
 })
 
 /**

@@ -60,6 +60,9 @@ export const handleImportAppConfigApply =
 export const handleOpenNewProjectDialog =
   faActionDefinitionHandlersDialogsApi.handleOpenNewProjectDialog
 
+export const handleOpenQuickAddDocumentDialog =
+  faActionDefinitionHandlersDialogsApi.handleOpenQuickAddDocumentDialog
+
 export const handleCreateNewProject =
   faActionDefinitionHandlersDialogsApi.handleCreateNewProject
 

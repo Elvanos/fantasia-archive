@@ -1264,7 +1264,7 @@ test('Test that createFaProjectNamedEntity throws when the insert read-back row 
   ).toThrow(FaProjectContentNotFoundError)
 })
 
-test('Test that createFaProjectWorld assigns sortOrder and default color', () => {
+test('Test that createFaProjectWorld assigns sortOrder and empty default color', () => {
   const { db } = makeProjectContentTestDb()
   const first = createFaProjectWorld(db as never, { displayName: 'Alpha' })
   const second = createFaProjectWorld(db as never, { displayName: 'Beta' })

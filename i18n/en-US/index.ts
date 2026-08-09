@@ -23,6 +23,7 @@ import L_aboutFantasiaArchive from './dialogs/L_aboutFantasiaArchive'
 import L_DialogActionMonitor from './dialogs/L_DialogActionMonitor'
 import L_markdownDocument from './dialogs/L_markdownDocument'
 import L_newProject from './dialogs/L_newProject'
+import L_dialogQuickAddDocument from './dialogs/L_dialogQuickAddDocument'
 import L_dialogKeybindSettings from './dialogs/L_dialogKeybindSettings'
 import L_importExportAppConfig from './dialogs/L_importExportAppConfig'
 import L_appSettings from './dialogs/L_appSettings'
@@ -87,6 +88,7 @@ export default {
     keybindSettings: L_dialogKeybindSettings,
     markdownDocument: L_markdownDocument,
     newProject: L_newProject,
+    quickAddDocument: L_dialogQuickAddDocument,
     appSettings: L_appSettings,
     projectSettings: L_projectSettings,
     discardOpenedDocumentTab: L_discardOpenedDocumentTab,

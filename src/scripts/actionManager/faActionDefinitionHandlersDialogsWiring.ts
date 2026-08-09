@@ -5,8 +5,10 @@ import { S_FaAppNoteboard } from 'app/src/stores/S_FaAppNoteboard'
 import { S_FaProjectNoteboard } from 'app/src/stores/S_FaProjectNoteboard'
 import { S_FaProjectSidebar } from 'app/src/stores/S_FaProjectSidebar'
 import { S_FaProjectStyling } from 'app/src/stores/S_FaProjectStyling'
+import { S_FaProjectHierarchyTree } from 'app/src/stores/S_FaProjectHierarchyTree'
 import { S_FaAppStyling } from 'app/src/stores/S_FaAppStyling'
 import { S_FaUserSettings } from 'app/src/stores/S_FaUserSettings'
+import { S_DialogComponent } from 'app/src/stores/S_Dialog'
 import {
   openDialogComponent,
   openDialogMarkdownDocument,
@@ -38,6 +40,7 @@ export const faActionDefinitionHandlersDialogsDeps = {
   S_FaProjectNoteboard: () => S_FaProjectNoteboard(),
   S_FaProjectSidebar: () => S_FaProjectSidebar(),
   S_FaProjectStyling: () => S_FaProjectStyling(),
+  S_FaProjectHierarchyTree: () => S_FaProjectHierarchyTree(),
   S_FaAppStyling: () => S_FaAppStyling(),
   S_FaUserSettings: () => S_FaUserSettings(),
   FaActionUserCanceledError,
@@ -47,6 +50,9 @@ export const faActionDefinitionHandlersDialogsDeps = {
   },
   openDialogComponent,
   openDialogMarkdownDocument,
+  setProjectSettingsInitialTab: (tab: string | null) => {
+    S_DialogComponent().projectSettingsInitialTab = tab
+  },
   tryDismissFaComponentDialogIfOpen,
   tryDismissFaMarkdownDocumentIfOpen,
   canOpenFloatingWindowWhileNoModal,

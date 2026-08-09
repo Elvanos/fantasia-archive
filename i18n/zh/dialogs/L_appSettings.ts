@@ -89,7 +89,7 @@ export default {
       tags: '项目主页, 仪表板, 概览, 工作区',
       projectOverviewBehavior: {
         subtitle: '项目概览行为',
-        tags: '提示, 技巧, 你知道吗, 概览卡片',
+        tags: '提示, 技巧, 你知道吗, 概览卡片, auto open, last document',
       }
     },
     welcomeScreen: {
@@ -117,6 +117,12 @@ export default {
       description: '此设置使 FA 的滚动条更宽，因此允许在不支持标准滚动的设备（例如没有滚轮的鼠标）上直接手动单击滚动。',
       tags: '滚动条宽度、点击滚动、无滚轮鼠标、轨迹球、触摸',
     },
+    autoOpenLastDocument: {
+      title: 'Auto-open last document',
+      description: 'When opening a project, automatically open the last active document tab instead of showing the Project overview first.',
+      tags: 'auto open, last document, project open, restore tab, skip overview, workspace home, resume session'
+    },
+
     disableCategoryCount: {
       title: '隐藏类别数',
       description: '在层次树中隐藏类别编号',

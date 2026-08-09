@@ -38,7 +38,16 @@ test('Test that ProjectAppControlBarTabContextMenuCloseRows delegates close row 
   await wrapper.get('[data-test-locator="projectAppControlBar-tabContextMenu-closeAllTabsWithoutChanges"]').trigger('click')
 
   const closeThisTab = wrapper.get('[data-test-locator="projectAppControlBar-tabContextMenu-closeThisTab"]')
+  const closeAllExcept = wrapper.get(
+    '[data-test-locator="projectAppControlBar-tabContextMenu-closeAllTabsWithoutChangesExceptThisOne"]'
+  )
+  const closeAll = wrapper.get(
+    '[data-test-locator="projectAppControlBar-tabContextMenu-closeAllTabsWithoutChanges"]'
+  )
   expect(closeThisTab.element.previousElementSibling?.classList.contains('projectAppControlBarTabContextMenu__separatorPrimaryBright')).toBe(true)
+  expect(closeThisTab.classes()).toContain('text-secondary')
+  expect(closeAllExcept.classes()).toContain('text-secondary')
+  expect(closeAll.classes()).toContain('text-secondary')
 
   expect(onCloseThisTabClick).toHaveBeenCalled()
   expect(onCloseAllTabsWithoutChangesExceptThisOneClick).toHaveBeenCalled()

@@ -89,7 +89,7 @@ export default {
       tags: 'Projektstart, Dashboard, Übersicht, Arbeitsbereich',
       projectOverviewBehavior: {
         subtitle: 'Verhalten der Projektübersicht',
-        tags: 'Tipps, Tricks, Wussten Sie schon, Übersichtskarte',
+        tags: 'Tipps, Tricks, Wussten Sie schon, Übersichtskarte, auto open, last document',
       }
     },
     welcomeScreen: {
@@ -117,6 +117,12 @@ export default {
       description: 'Diese Einstellung macht die Bildlaufleisten von FA breiter und ermöglicht daher manuelles Klicken und Scrollen direkt auf ihnen für Geräte, die das Standard-Scrollen nicht unterstützen (z. B. Mäuse ohne Scrollrad).',
       tags: 'Breite der Bildlaufleiste, Scrollen durch Klicken, Maus ohne Rad, Trackball, Touch',
     },
+    autoOpenLastDocument: {
+      title: 'Auto-open last document',
+      description: 'When opening a project, automatically open the last active document tab instead of showing the Project overview first.',
+      tags: 'auto open, last document, project open, restore tab, skip overview, workspace home, resume session'
+    },
+
     disableCategoryCount: {
       title: 'Anzahl der Kategorien ausblenden',
       description: 'Kategorienummern in der hierarchischen Struktur ausblenden',

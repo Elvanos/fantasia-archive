@@ -2,7 +2,9 @@
 
 body.fa-userSetting--hideDeadCrossThrough {
   .projectHierarchyTreeNode__label--dead,
-  .projectAppControlBarTabs__tabLabelText--dead {
+  .projectAppControlBarTabs__tabLabelText--dead,
+  .projectOverview__lastOpenedItemLabel--dead,
+  .projectOverview__lastOpenedLabel--dead {
     text-decoration: none;
   }
 }

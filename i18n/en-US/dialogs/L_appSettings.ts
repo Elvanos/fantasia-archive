@@ -89,7 +89,7 @@ export default {
       tags: 'project home, dashboard, overview, workspace home',
       projectOverviewBehavior: {
         subtitle: 'Project overview behavior',
-        tags: 'tips, tricks, did you know, overview card'
+        tags: 'tips, tricks, did you know, overview card, auto open, last document'
       }
     },
     welcomeScreen: {
@@ -116,6 +116,11 @@ export default {
       title: 'TODO - Wider scrollbars',
       description: 'This setting makes FA\'s scrollbars wider and therefore allows manual click-scrolling directly on them for devices that do not support standard scrolling (for example mice without a scroll wheel).',
       tags: 'scrollbar width, click scroll, mouse without wheel, trackball, touch'
+    },
+    autoOpenLastDocument: {
+      title: 'Auto-open last document',
+      description: 'When opening a project, automatically open the last active document tab instead of showing the Project overview first.',
+      tags: 'auto open, last document, project open, restore tab, skip overview, workspace home, resume session'
     },
     disableCategoryCount: {
       title: 'Hide category count',

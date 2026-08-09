@@ -20,6 +20,7 @@ export const FA_ACTION_IDS = [
   'openAppStylingWindow',
   'openProjectStylingDialog',
   'openProjectSettingsDialog',
+  'openQuickAddDocumentDialog',
   'showProjectDashboard',
   'saveProjectSettings',
   'saveAppStyling',
@@ -109,7 +110,7 @@ export interface I_faActionPayloadMap {
   saveAppSettings: { settings: I_faUserSettings }
   openAppStylingWindow: void
   openProjectStylingDialog: void
-  openProjectSettingsDialog: void
+  openProjectSettingsDialog: { initialTab?: string } | void
   showProjectDashboard: void
   saveProjectSettings: {
     documentTemplates?: import('app/types/I_faProjectDocumentTemplateDomain').I_faProjectDocumentTemplateSnapshotItem[] | undefined
@@ -138,6 +139,7 @@ export interface I_faActionPayloadMap {
   checkForAppUpdates: import('app/types/I_faAppUpdateCheck').I_faAppUpdateCheckPayload
   openImportExportAppConfigDialog: void
   openNewProjectDialog: void
+  openQuickAddDocumentDialog: void
   loadExistingProject: I_faLoadExistingProjectPayload
   createNewProject: { projectName: string }
   exportAppConfigPackage: {
@@ -170,7 +172,10 @@ export interface I_faActionPayloadMap {
   copyHierarchyTreeDocumentName: { documentId: string }
   copyHierarchyTreeDocumentTextColor: { documentId: string }
   copyHierarchyTreeDocumentBackgroundColor: { documentId: string }
-  openHierarchyTreeDocument: { documentId: string }
+  openHierarchyTreeDocument: {
+    documentId: string
+    openMode?: import('app/types/I_faOpenedDocumentsDomain').T_faOpenedDocumentOpenMode | undefined
+  }
   editHierarchyTreeDocument: { documentId: string }
   copyHierarchyTreeDocument: { documentId: string }
   addHierarchyTreeChildDocument: { documentId: string }

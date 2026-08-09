@@ -20,6 +20,7 @@ import {
   filterFaSelectInputOptionsByQuery,
   isFaSelectInputObjectItem
 } from '../filterFaSelectInputOptionsByQuery'
+import { resolveFaSelectInputOptionIcon } from '../resolveFaSelectInputOptionIcon'
 
 /**
  * filterFaSelectInputOptionsByQuery
@@ -437,4 +438,47 @@ test('Test that splitFaSelectInputLabelForFilterHighlight marks whole matching w
       text: 'plain'
     }
   ])
+})
+
+/**
+ * resolveFaSelectInputOptionIcon
+ * Document mode always shows a glyph; empty icon uses placeholder.
+ */
+test('Test that resolveFaSelectInputOptionIcon falls back in document mode', () => {
+  expect(resolveFaSelectInputOptionIcon('plain', 'document', 'mdi-file-outline')).toBeNull()
+  expect(resolveFaSelectInputOptionIcon({
+    id: '1',
+    name: 'Hero'
+  }, 'document', 'mdi-file-outline')).toBe('mdi-file-outline')
+  expect(resolveFaSelectInputOptionIcon({
+    icon: '',
+    id: '1',
+    name: 'Hero'
+  }, 'document', 'mdi-file-outline')).toBe('mdi-file-outline')
+  expect(resolveFaSelectInputOptionIcon({
+    icon: 'mdi-account',
+    id: '1',
+    name: 'Hero'
+  }, 'document', 'mdi-file-outline')).toBe('mdi-account')
+})
+
+/**
+ * resolveFaSelectInputOptionIcon
+ * Non-document object modes hide when icon key is absent.
+ */
+test('Test that resolveFaSelectInputOptionIcon hides absent icons outside document mode', () => {
+  expect(resolveFaSelectInputOptionIcon({
+    id: '1',
+    name: 'Tag'
+  }, 'tags', 'mdi-file-outline')).toBeNull()
+  expect(resolveFaSelectInputOptionIcon({
+    icon: '  ',
+    id: '1',
+    name: 'Tag'
+  }, 'tags', 'mdi-file-outline')).toBe('mdi-file-outline')
+  expect(resolveFaSelectInputOptionIcon({
+    icon: '  mdi-tag  ',
+    id: '1',
+    name: 'Tag'
+  }, 'tags', 'mdi-file-outline')).toBe('mdi-tag')
 })

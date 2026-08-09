@@ -147,7 +147,9 @@ export default {
         confirmDeleteButton: 'Confirmar eliminación',
         message: '¿Está seguro de que desea eliminar esta plantilla de documento? Todos los campos conectados a esta plantilla en cualquier otra plantilla dejarán de funcionar. Además, todos los documentos conectados dejarán de mostrar sus datos si se rellenaron con esta plantilla. Esta eliminación puede tener efectos secundarios no deseados.'
       },
-      removeDisabledHasDocuments: 'Elimine los documentos que usan esta plantilla antes de eliminarla.'
+      removeDisabledHasDocuments: 'Elimine los documentos que usan esta plantilla antes de eliminarla.',
+      removeDisabledAssignedToWorld:
+        'Esta plantilla está conectada a uno o más mundos; desasígnela primero de todos los mundos afectados.'
     }
   }
 }

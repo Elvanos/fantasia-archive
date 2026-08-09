@@ -198,7 +198,7 @@ test.describe.serial('Opened documents E2E — cold resume auto-activates seeded
     })
   })
 
-  test('Cold restart hydrates seeded tab and routes to the active document', async () => {
+  test('Cold restart hydrates seeded tab and lands on Project overview by default', async () => {
     expect(e2eColdActivateDocumentId.length).toBeGreaterThan(0)
 
     await navigateFaPlaywrightE2eToSplashRoute(appWindow)
@@ -215,12 +215,9 @@ test.describe.serial('Opened documents E2E — cold resume auto-activates seeded
       )
     ).toBeVisible({ timeout: 15_000 })
     await expect(appWindow.getByText(COLD_ACTIVATE_E2E_TAB_LABEL, { exact: true })).toHaveCount(1)
-    await expectFaPlaywrightE2eHashRoute(
-      appWindow,
-      `/home/document/${e2eColdActivateDocumentId}`
-    )
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
     await expect(
-      appWindow.locator('[data-test-locator="documentWorkspacePage-previewTitle"]')
+      appWindow.locator('[data-test-locator="projectOverview"]')
     ).toBeVisible({ timeout: 15_000 })
   })
 })

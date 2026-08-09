@@ -1,8 +1,8 @@
 import type { I_faProjectContentListResult } from 'app/types/I_faProjectContentShared'
 import type { I_faProjectWorldDisplayNameTranslations } from 'app/types/I_faProjectWorldDisplayNameTranslations'
 
-/** Stored worlds.color hex (#RRGGBB). */
-export type T_faProjectWorldStorageColor = `#${string}`
+/** Stored worlds.color: empty (optional) or #RRGGBB. */
+export type T_faProjectWorldStorageColor = '' | `#${string}`
 
 /** Stored worlds.color_palette: semicolon-separated #RRGGBB list (max 2000 chars). */
 export type T_faProjectWorldColorPalette = string

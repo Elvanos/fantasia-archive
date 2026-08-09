@@ -13,7 +13,7 @@ const projectOverviewCanvasDecorator: Decorator = (story) => {
       story
     },
     template: `
-      <div class="bg-dark flex flex-center" style="min-height: 520px; padding: 24px; width: 100%;">
+      <div class="bg-dark flex flex-center" style="min-height: 580px; padding: 24px; width: 100%;">
         <story />
       </div>
     `
@@ -29,7 +29,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Workspace home block on /home: shows the active project name and an optional Did you know? card with a random Tips, Tricks & Trivia line (respecting App Settings hide flags).'
+          'Workspace home block on /home: project name, optional Did you know tip card, stacked document-distribution chart, last-opened list, and empty-project CTAs.'
       }
     }
   }

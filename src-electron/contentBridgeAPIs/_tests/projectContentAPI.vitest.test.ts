@@ -103,6 +103,10 @@ test('Test that projectContentAPI methods invoke expected IPC channels', async (
   })
   await projectContentAPI.deleteTag({ tagId: SAMPLE_UUID })
 
+  await projectContentAPI.listDocumentLastOpened()
+  await projectContentAPI.recordDocumentLastOpened({ documentId: SAMPLE_UUID })
+  await projectContentAPI.listDocumentDistribution()
+
   await projectContentAPI.listWorkspaceHierarchyLayout()
   await projectContentAPI.listPlacementDocumentChildren({
     placementId: SAMPLE_UUID
@@ -209,6 +213,18 @@ test('Test that projectContentAPI methods invoke expected IPC channels', async (
   expect(invokeMock).toHaveBeenCalledWith(
     FA_PROJECT_CONTENT_IPC.deleteTagAsync,
     { tagId: SAMPLE_UUID }
+  )
+  expect(invokeMock).toHaveBeenCalledWith(
+    FA_PROJECT_CONTENT_IPC.listDocumentLastOpenedAsync,
+    undefined
+  )
+  expect(invokeMock).toHaveBeenCalledWith(
+    FA_PROJECT_CONTENT_IPC.recordDocumentLastOpenedAsync,
+    { documentId: SAMPLE_UUID }
+  )
+  expect(invokeMock).toHaveBeenCalledWith(
+    FA_PROJECT_CONTENT_IPC.listDocumentDistributionAsync,
+    undefined
   )
   expect(invokeMock).toHaveBeenCalledWith(
     FA_PROJECT_CONTENT_IPC.listWorkspaceHierarchyLayoutAsync,

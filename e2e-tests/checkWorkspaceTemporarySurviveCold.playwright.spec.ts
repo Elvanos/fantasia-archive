@@ -315,10 +315,7 @@ test.describe.serial('Opened documents E2E — cold restart keeps temporary tab'
         `[data-test-locator="projectAppControlBar-tab-${e2eTemporarySurviveDocumentId}"]`
       )
     ).toBeVisible({ timeout: 15_000 })
-    await expectFaPlaywrightE2eHashRoute(
-      appWindow,
-      `/home/document/${e2eTemporarySurviveDocumentId}`
-    )
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
 
     await expect.poll(async () => {
       return await appWindow.evaluate((documentId) => {

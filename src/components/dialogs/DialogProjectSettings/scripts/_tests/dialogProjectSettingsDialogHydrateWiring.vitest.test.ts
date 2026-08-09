@@ -13,7 +13,8 @@ function emptyBaselines () {
   return {
     baselineDocumentTemplates: ref<I_dialogProjectSettingsDocumentTemplateDraft[] | null>(null),
     baselineSettings: ref<I_faProjectSettingsRoot | null>(null),
-    baselineWorlds: ref<I_dialogProjectSettingsWorldDraft[] | null>(null)
+    baselineWorlds: ref<I_dialogProjectSettingsWorldDraft[] | null>(null),
+    hadWorldTemplatePlacementsAtDialogOpen: ref(false)
   }
 }
 
@@ -70,6 +71,7 @@ test('Test that hydrateDialogProjectSettingsDrafts mixes direct snapshots with b
   expect(baselines.baselineSettings.value?.projectName).toBe('Fetched')
   expect(baselines.baselineWorlds.value).toEqual(localWorlds.value)
   expect(baselines.baselineDocumentTemplates.value).toEqual(localDocumentTemplates.value)
+  expect(baselines.hadWorldTemplatePlacementsAtDialogOpen.value).toBe(false)
 })
 
 /**
@@ -149,6 +151,7 @@ test('Test that hydrateDialogProjectSettingsDrafts localizes world template layo
 
   const localWorlds = ref<I_dialogProjectSettingsWorldDraft[] | null>(null)
   const localDocumentTemplates = ref<I_dialogProjectSettingsDocumentTemplateDraft[] | null>(null)
+  const baselines = emptyBaselines()
 
   await hydrateDialogProjectSettingsDrafts({
     faProjectDocumentTemplatesFetchFreshForDialog: vi.fn(async () => [localizedTemplate]),
@@ -159,7 +162,7 @@ test('Test that hydrateDialogProjectSettingsDrafts localizes world template layo
     faProjectWorldsFetchFreshForDialog: fetchWorlds,
     getCurrentLanguageCode: () => 'de'
   }, {
-    ...emptyBaselines(),
+    ...baselines,
     localDocumentTemplates,
     localSettings: ref<I_faProjectSettingsRoot | null>(null),
     localWorlds,
@@ -168,4 +171,5 @@ test('Test that hydrateDialogProjectSettingsDrafts localizes world template layo
 
   expect(localWorlds.value?.[0]!?.templateLayout.placements[0]!?.templateDisplayName).toBe('Rassen')
   expect(localWorlds.value?.[0]!?.templateLayout.placements[0]!?.worldAppendix).toBe('yugghm')
+  expect(baselines.hadWorldTemplatePlacementsAtDialogOpen.value).toBe(true)
 })

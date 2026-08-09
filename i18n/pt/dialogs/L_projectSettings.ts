@@ -147,7 +147,9 @@ export default {
         confirmDeleteButton: 'Confirmar exclusão',
         message: 'Tem certeza de que deseja excluir este modelo de documento? Todos os campos conectados a este modelo em qualquer outro modelo deixarão de funcionar. Além disso, todos os documentos conectados deixarão de exibir seus dados se algum foi preenchido usando este modelo. Esta exclusão pode ter efeitos colaterais indesejados.'
       },
-      removeDisabledHasDocuments: 'Remova os documentos que usam este modelo antes de excluí-lo.'
+      removeDisabledHasDocuments: 'Remova os documentos que usam este modelo antes de excluí-lo.',
+      removeDisabledAssignedToWorld:
+        'Este modelo está conectado a um ou mais mundos; desatribua-o primeiro de todos os mundos afetados.'
     }
   }
 }

@@ -377,6 +377,14 @@ test.describe.serial('Opened documents E2E — cold restart keeps copy-promoted 
         `[data-test-locator="projectAppControlBar-tab-${e2eCopyTemporaryDocumentId}"]`
       )
     ).toBeVisible({ timeout: 15_000 })
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
+    await appWindow.locator(
+      `[data-test-locator="projectAppControlBar-tab-${e2eCopyTemporaryDocumentId}"]`
+    ).click()
+    await expectFaPlaywrightE2eHashRoute(
+      appWindow,
+      `/home/document/${e2eCopyTemporaryDocumentId}`
+    )
     await expect(
       appWindow.locator(`[data-test-locator="${selectorList.documentPreviewTitle}"]`)
     ).toHaveText(COPY_TEMP_PROMOTE_E2E_SAVED_LABEL, { timeout: 15_000 })

@@ -147,7 +147,9 @@ export default {
         confirmDeleteButton: 'Löschen bestätigen',
         message: 'Möchten Sie diese Dokumentvorlage wirklich löschen? Alle Felder, die in anderen Vorlagen mit dieser Vorlage verbunden sind, funktionieren nicht mehr. Außerdem zeigen alle verbundenen Dokumente ihre Daten nicht mehr an, falls welche mit dieser Vorlage ausgefüllt wurden. Diese Löschung kann unbeabsichtigte Nebenwirkungen haben.'
       },
-      removeDisabledHasDocuments: 'Entfernen Sie Dokumente, die diese Vorlage verwenden, bevor Sie sie löschen.'
+      removeDisabledHasDocuments: 'Entfernen Sie Dokumente, die diese Vorlage verwenden, bevor Sie sie löschen.',
+      removeDisabledAssignedToWorld:
+        'Diese Vorlage ist mit einer oder mehreren Welten verbunden. Bitte heben Sie die Zuweisung zuerst in allen betroffenen Welten auf.'
     }
   }
 }

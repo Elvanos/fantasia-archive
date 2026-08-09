@@ -85,6 +85,7 @@
       <div class="dialogProjectSettingsDocumentTemplatesDetail__deleteCol">
         <DialogProjectSettingsDocumentTemplatesDeleteButton
           :remove-disabled="props.removeDisabled"
+          :remove-disabled-reason="props.removeDisabledReason"
           @confirm="emit('remove')"
         />
       </div>
@@ -113,6 +114,7 @@ const props = defineProps<{
   currentLanguageCode: T_faUserSettingsLanguageCode
   nameHasError: boolean
   removeDisabled: boolean
+  removeDisabledReason: 'hasDocuments' | 'assignedToWorld' | null
   template: I_dialogProjectSettingsDocumentTemplateDraft
 }>()
 

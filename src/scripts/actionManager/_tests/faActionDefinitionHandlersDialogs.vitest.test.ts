@@ -7,7 +7,8 @@ const {
   tryDismissFaComponentDialogIfOpenMock,
   tryDismissFaMarkdownDocumentIfOpenMock,
   mockActiveProjectGate,
-  canOpenFloatingWindowWhileNoModalMock
+  canOpenFloatingWindowWhileNoModalMock,
+  setProjectSettingsInitialTabMock
 } = vi.hoisted(() => {
   return {
     openDialogComponentMock: vi.fn(),
@@ -17,7 +18,8 @@ const {
     mockActiveProjectGate: {
       hasActiveProject: true
     },
-    canOpenFloatingWindowWhileNoModalMock: vi.fn((): boolean => true)
+    canOpenFloatingWindowWhileNoModalMock: vi.fn((): boolean => true),
+    setProjectSettingsInitialTabMock: vi.fn()
   }
 })
 
@@ -28,6 +30,21 @@ vi.mock('app/src/stores/S_FaActiveProject', () => ({
     }
   })
 }))
+
+vi.mock('app/src/stores/S_Dialog', () => {
+  let projectSettingsInitialTab: string | null = null
+  return {
+    S_DialogComponent: () => ({
+      get projectSettingsInitialTab () {
+        return projectSettingsInitialTab
+      },
+      set projectSettingsInitialTab (value: string | null) {
+        projectSettingsInitialTab = value
+        setProjectSettingsInitialTabMock(value)
+      }
+    })
+  }
+})
 
 vi.mock('app/src/scripts/appNoteboard/appNoteboard_manager', () => ({
   canOpenFloatingWindowWhileNoModal: (): boolean => canOpenFloatingWindowWhileNoModalMock()
@@ -64,6 +81,7 @@ beforeEach(() => {
   mockActiveProjectGate.hasActiveProject = true
   canOpenFloatingWindowWhileNoModalMock.mockReset()
   canOpenFloatingWindowWhileNoModalMock.mockReturnValue(true)
+  setProjectSettingsInitialTabMock.mockReset()
 })
 
 /**
@@ -151,6 +169,17 @@ test('Test that handleOpenProjectStylingWindow skips when floating windows canno
 test('Test that handleOpenProjectSettingsDialog opens ProjectSettings when a project is active', async () => {
   await handleOpenProjectSettingsDialog()
   expect(tryDismissFaComponentDialogIfOpenMock).toHaveBeenCalledWith('ProjectSettings')
+  expect(setProjectSettingsInitialTabMock).toHaveBeenCalledWith(null)
+  expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectSettings')
+})
+
+/**
+ * handleOpenProjectSettingsDialog
+ * Forwards an optional initial category tab into S_DialogComponent before open.
+ */
+test('Test that handleOpenProjectSettingsDialog sets initial tab when provided', async () => {
+  await handleOpenProjectSettingsDialog({ initialTab: 'documentTemplatesSettings' })
+  expect(setProjectSettingsInitialTabMock).toHaveBeenCalledWith('documentTemplatesSettings')
   expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectSettings')
 })
 

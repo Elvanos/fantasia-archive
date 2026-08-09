@@ -11,6 +11,26 @@
     z-index: inherit !important;
   }
 
+  .q-splitter__after {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+
+  .q-splitter__after > .appShellLayout__pageContainer {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+  }
+
+  .q-splitter__after > .appShellLayout__pageContainer > .appShellLayout__pageTransitionHost {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
   .q-splitter__separator {
     background-color: transparent;
     cursor: col-resize;

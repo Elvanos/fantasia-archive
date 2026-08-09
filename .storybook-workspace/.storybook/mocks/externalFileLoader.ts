@@ -17,6 +17,7 @@ import L_dialogKeybindSettings from 'app/i18n/en-US/dialogs/L_dialogKeybindSetti
 import L_importExportAppConfig from 'app/i18n/en-US/dialogs/L_importExportAppConfig'
 import L_markdownDocument from 'app/i18n/en-US/dialogs/L_markdownDocument'
 import L_newProject from 'app/i18n/en-US/dialogs/L_newProject'
+import L_dialogQuickAddDocument from 'app/i18n/en-US/dialogs/L_dialogQuickAddDocument'
 import L_appSettings from 'app/i18n/en-US/dialogs/L_appSettings'
 import L_projectSettings from 'app/i18n/en-US/dialogs/L_projectSettings'
 import L_appStylingFloating from 'app/i18n/en-US/floatingWindows/L_appStyling'
@@ -82,6 +83,7 @@ const defaultMessages: Record<string, unknown> = {
     importExportAppConfig: L_importExportAppConfig,
     markdownDocument: L_markdownDocument,
     newProject: L_newProject,
+    quickAddDocument: L_dialogQuickAddDocument,
     appSettings: L_appSettings,
     projectSettings: L_projectSettings
   },

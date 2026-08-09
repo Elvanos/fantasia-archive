@@ -1039,6 +1039,7 @@ test.describe.serial('DialogProjectSettings delete guards — templates', () => 
   const guardWorldId = '550e8400-e29b-41d4-a716-446655440099'
   const guardTemplateId = '660e8400-e29b-41d4-a716-446655440099'
   const guardTemplateBId = '660e8400-e29b-41d4-a716-446655440098'
+  const guardTemplateAssignedId = '660e8400-e29b-41d4-a716-446655440097'
 
   test.beforeAll(async ({}, testInfo) => {
     suiteTestInfo = testInfo
@@ -1059,6 +1060,14 @@ test.describe.serial('DialogProjectSettings delete guards — templates', () => 
           titlePluralTranslations: { 'en-US': 'Deletable template' },
           titleSingularTranslations: { 'en-US': 'Deletable template' },
           worldAppendixTranslations: {}
+        },
+        {
+          documentCount: 0,
+          icon: '',
+          id: guardTemplateAssignedId,
+          titlePluralTranslations: { 'en-US': 'Assigned template' },
+          titleSingularTranslations: { 'en-US': 'Assigned template' },
+          worldAppendixTranslations: {}
         }
       ],
       directInput: projectSettingsDirectInput,
@@ -1072,7 +1081,22 @@ test.describe.serial('DialogProjectSettings delete guards — templates', () => 
           id: guardWorldId,
           templateLayout: {
             groups: [],
-            placements: []
+            placements: [
+              {
+                categoryCountInWorld: 0,
+                documentCountInWorld: 0,
+                documentTemplateId: guardTemplateAssignedId,
+                groupId: null,
+                groupSortOrder: null,
+                icon: '',
+                id: '770e8400-e29b-41d4-a716-446655440001',
+                nicknamePluralTranslations: {},
+                nicknameSingularTranslations: {},
+                rootSortOrder: 0,
+                templateDisplayName: 'Assigned template',
+                worldAppendix: ''
+              }
+            ]
           }
         }
       ]
@@ -1099,6 +1123,19 @@ test.describe.serial('DialogProjectSettings delete guards — templates', () => 
     await removeButton.hover()
     await expect(
       appWindow.getByText(L_projectSettings.panels.documentTemplates.removeDisabledHasDocuments)
+    ).toBeVisible()
+  })
+
+  test('Delete template stays disabled when template is assigned to a world', async () => {
+    await appWindow.locator(`[data-test-locator="${selectorList.tabDocumentTemplatesSettings}"]`).click()
+    await appWindow.locator(`[data-test-locator="${selectorList.documentTemplatesTab}"]`).nth(2).click()
+    const removeButton = appWindow.locator(
+      `[data-test-locator="${selectorList.documentTemplatesRemoveButton}"]`
+    )
+    await expect(removeButton).toBeDisabled()
+    await removeButton.hover()
+    await expect(
+      appWindow.getByText(L_projectSettings.panels.documentTemplates.removeDisabledAssignedToWorld)
     ).toBeVisible()
   })
 

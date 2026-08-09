@@ -11,6 +11,7 @@ export function buildProjectAppControlBarFixedStripLeftKeybindTooltipLabels (dep
 }): {
     advancedSearchGuideKeybindLabel: I_computedRef<string | null>
     keyboardShortcutsKeybindLabel: I_computedRef<string | null>
+    quickAddKeybindLabel: I_computedRef<string | null>
     toggleAppNoteboardKeybindLabel: I_computedRef<string | null>
     toggleHierarchyTreeKeybindLabel: I_computedRef<string | null>
     toggleProjectNoteboardKeybindLabel: I_computedRef<string | null>
@@ -50,9 +51,17 @@ export function buildProjectAppControlBarFixedStripLeftKeybindTooltipLabels (dep
     })
   })
 
+  const quickAddKeybindLabel = deps.computed(() => {
+    return deps.formatFaKeybindCommandLabelFromSnapshot({
+      commandId: 'quickNewDocument',
+      snapshot: deps.getKeybindsSnapshot()
+    })
+  })
+
   return {
     advancedSearchGuideKeybindLabel,
     keyboardShortcutsKeybindLabel,
+    quickAddKeybindLabel,
     toggleAppNoteboardKeybindLabel,
     toggleHierarchyTreeKeybindLabel,
     toggleProjectNoteboardKeybindLabel

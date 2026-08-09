@@ -27,6 +27,7 @@ export default {
     openAdvancedSearchGuideDialog: 'Öppna Advanced Search Guide',
     openChangelogDialog: 'Öppna Changelog',
     openKeybindSettingsDialog: 'Öppna Keybind Settings',
+    openQuickAddDocumentDialog: 'Open Quick-Add New Document',
     openProjectSettingsDialog: 'Öppna projektinställningar',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'Spara projektinställningar',

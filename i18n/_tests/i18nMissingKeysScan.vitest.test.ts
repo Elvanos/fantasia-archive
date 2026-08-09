@@ -40,7 +40,14 @@ test('non-en-US locales include every en-US key except changeLog', () => {
     const localeMessages = messages[locale as keyof typeof messages]
     const missing = enKeys.filter((key) => {
       const value = getAtPath(localeMessages, key)
-      return value === undefined || value === ''
+      if (value === undefined) {
+        return true
+      }
+      if (value !== '') {
+        return false
+      }
+      const enValue = getAtPath(messages['en-US'], key)
+      return enValue !== ''
     })
     if (missing.length > 0) {
       report[locale] = missing

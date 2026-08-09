@@ -318,9 +318,9 @@ test.describe.serial('Opened documents E2E — cold restart drops externally del
         `[data-test-locator="projectAppControlBar-tab-${e2eExternalDeleteSurvivorDocumentId}"]`
       )
     ).toBeVisible({ timeout: 15_000 })
-    await expectFaPlaywrightE2eHashRoute(
-      appWindow,
-      `/home/document/${e2eExternalDeleteSurvivorDocumentId}`
-    )
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
+    await expect(
+      appWindow.locator('[data-test-locator="projectOverview"]')
+    ).toBeVisible({ timeout: 15_000 })
   })
 })

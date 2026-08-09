@@ -89,7 +89,7 @@ export default {
       tags: 'projektin koti, kojelauta, yleiskatsaus, työtila',
       projectOverviewBehavior: {
         subtitle: 'Projektin yleiskatsauksen käyttäytyminen',
-        tags: 'vinkit, temput, tiesitkö, yleiskatsauskortti',
+        tags: 'vinkit, temput, tiesitkö, yleiskatsauskortti, auto open, last document',
       }
     },
     welcomeScreen: {
@@ -117,6 +117,12 @@ export default {
       description: 'Tämä asetus tekee FA:n vierityspalkeista leveämpiä ja mahdollistaa siten manuaalisen klikkausvierityksen suoraan niissä laitteissa, jotka eivät tue tavallista vieritystä (esimerkiksi hiiret ilman vierityspyörää).',
       tags: 'vierityspalkin leveys, klikkaa vieritys, hiiri ilman pyörää, ohjauspallo, kosketus',
     },
+    autoOpenLastDocument: {
+      title: 'Auto-open last document',
+      description: 'When opening a project, automatically open the last active document tab instead of showing the Project overview first.',
+      tags: 'auto open, last document, project open, restore tab, skip overview, workspace home, resume session'
+    },
+
     disableCategoryCount: {
       title: 'Piilota luokkamäärä',
       description: 'Piilota luokanumerot hierarkkisessa puussa',

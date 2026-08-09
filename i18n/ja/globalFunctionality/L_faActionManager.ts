@@ -27,6 +27,7 @@ export default {
     openAdvancedSearchGuideDialog: '詳細検索ガイドを開く',
     openChangelogDialog: '変更履歴を開く',
     openKeybindSettingsDialog: 'キーバインド設定を開く',
+    openQuickAddDocumentDialog: 'Open Quick-Add New Document',
     openProjectSettingsDialog: 'プロジェクト設定を開く',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'プロジェクト設定を保存',

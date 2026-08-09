@@ -258,6 +258,14 @@ test.describe.serial('Opened documents E2E — cold restart keeps extra HTML cla
     await e2eExpectFaActiveProjectStoreName(appWindow, EXTRA_CLASSES_E2E_PROJECT_NAME)
     await expectFaPlaywrightE2eWorkspaceShell(appWindow)
 
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
+    await appWindow.locator(
+      `[data-test-locator="projectAppControlBar-tab-${e2eExtraClassesDocumentId}"]`
+    ).click()
+    await expectFaPlaywrightE2eHashRoute(
+      appWindow,
+      `/home/document/${e2eExtraClassesDocumentId}`
+    )
     await expect(
       appWindow.locator(`[data-test-locator="${selectorList.documentPage}"]`)
     ).toHaveClass(new RegExp(EXTRA_CLASSES_E2E_SAVED_CLASSES), { timeout: 15_000 })

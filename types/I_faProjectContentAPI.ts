@@ -52,6 +52,11 @@ import type {
   I_faProjectHierarchyTreeWorkspaceLayoutResult
 } from 'app/types/I_faProjectHierarchyTreeDomain'
 import type {
+  I_faProjectDocumentDistributionResult,
+  I_faProjectDocumentLastOpenedListResult,
+  I_faProjectRecordDocumentLastOpenedInput
+} from 'app/types/I_faProjectDocumentLastOpenedDomain'
+import type {
   I_faProjectWorld,
   I_faProjectWorldCreateInput,
   I_faProjectWorldListResult,
@@ -78,6 +83,8 @@ export interface I_faProjectContentAPI {
   getMediaById: (id: string) => Promise<I_faProjectMedia>
   getWorldById: (id: string) => Promise<I_faProjectWorld>
   linkDocumentMedia: (input: I_faProjectDocumentMediaLinkInput) => Promise<void>
+  listDocumentDistribution: () => Promise<I_faProjectDocumentDistributionResult>
+  listDocumentLastOpened: () => Promise<I_faProjectDocumentLastOpenedListResult>
   listDocumentMedia: (documentId: string) => Promise<I_faProjectDocumentMediaListResult>
   listDocumentTags: (
     input: I_faProjectListDocumentTagsInput
@@ -106,6 +113,7 @@ export interface I_faProjectContentAPI {
     input: I_faProjectHierarchyTreeReindexDocumentSiblingsInput
   ) => Promise<I_faProjectHierarchyTreeDocumentChild>
   renameTag: (input: I_faProjectRenameTagInput) => Promise<I_faProjectRenameTagResult>
+  recordDocumentLastOpened: (input: I_faProjectRecordDocumentLastOpenedInput) => Promise<void>
   reorderDocumentsUnderTag: (input: I_faProjectReorderDocumentsUnderTagInput) => Promise<void>
   searchProjectHierarchy: (query: string) => Promise<I_faProjectHierarchyTreeSearchResult>
   saveDocumentTemplatesSnapshot: (items: I_faProjectDocumentTemplateSnapshotItem[]) => Promise<void>

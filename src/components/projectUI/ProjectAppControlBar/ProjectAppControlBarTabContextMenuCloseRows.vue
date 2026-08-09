@@ -8,7 +8,7 @@
   <q-item
     v-close-popup
     clickable
-    class="projectAppControlBarTabContextMenu__item non-selectable"
+    class="projectAppControlBarTabContextMenu__item text-secondary non-selectable"
     data-test-locator="projectAppControlBar-tabContextMenu-closeThisTab"
     role="menuitem"
     @click="onCloseThisTabClick"
@@ -35,7 +35,7 @@
   <q-item
     v-close-popup
     clickable
-    class="projectAppControlBarTabContextMenu__item non-selectable"
+    class="projectAppControlBarTabContextMenu__item text-secondary non-selectable"
     data-test-locator="projectAppControlBar-tabContextMenu-closeAllTabsWithoutChangesExceptThisOne"
     role="menuitem"
     @click="onCloseAllTabsWithoutChangesExceptThisOneClick"
@@ -62,7 +62,7 @@
   <q-item
     v-close-popup
     clickable
-    class="projectAppControlBarTabContextMenu__item non-selectable"
+    class="projectAppControlBarTabContextMenu__item text-secondary non-selectable"
     data-test-locator="projectAppControlBar-tabContextMenu-closeAllTabsWithoutChanges"
     role="menuitem"
     @click="onCloseAllTabsWithoutChangesClick"
@@ -79,12 +79,6 @@
       />
     </q-item-section>
   </q-item>
-
-  <q-separator
-    class="projectAppControlBarTabContextMenu__separator"
-    dark
-    role="separator"
-  />
 </template>
 
 <script setup lang="ts">

@@ -15,6 +15,7 @@ type T_createFaActionDefinitionHandlersDeps = {
   S_FaAppStyling: () => { updateAppStyling: (patch: { css: string }) => Promise<boolean> }
   S_FaProjectStyling: () => { savePersistedCssFromEditor: (css: string) => Promise<boolean> }
   S_FaProjectSettings: () => { updateProjectSettings: (patch: I_faProjectSettingsPatch) => Promise<void> }
+  S_FaProjectHierarchyTree: () => { bumpDocumentCensusRefreshGeneration: () => void }
   S_FaProjectWorkspaceWorlds: () => { refreshWorkspaceWorlds: () => Promise<void> }
   S_FaUserSettings: () => {
     patchSettingsSilently: (patch: Partial<I_faUserSettings>) => Promise<void>
@@ -120,12 +121,18 @@ async function handleSaveProjectSettings (
     throw new Error(deps.i18n.global.t('globalFunctionality.faProjectSettings.saveError'))
   }
   await deps.S_FaProjectSettings().updateProjectSettings(payload.settings)
+  let shouldRefreshOverviewDocumentCensus = false
   if (payload.documentTemplates !== undefined) {
     await deps.faProjectDocumentTemplatesPersistSnapshotFromDialog(payload.documentTemplates)
+    shouldRefreshOverviewDocumentCensus = true
   }
   if (payload.worlds !== undefined) {
     await deps.faProjectWorldsPersistSnapshotFromDialog(payload.worlds)
     await deps.S_FaProjectWorkspaceWorlds().refreshWorkspaceWorlds()
+    shouldRefreshOverviewDocumentCensus = true
+  }
+  if (shouldRefreshOverviewDocumentCensus) {
+    deps.S_FaProjectHierarchyTree().bumpDocumentCensusRefreshGeneration()
   }
   deps.notifyCreate({
     group: false,

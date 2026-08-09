@@ -1,0 +1,9 @@
+/* COMPONENT - DIALOG QUICK ADD DOCUMENT */
+$dialogQuickAddDocument-content-maxHeightSubtract: 220px;
+$dialogQuickAddDocument-marginTop: 100px;
+/* Teleported q-select menu — above modal QDialog chrome (same band as App Settings). */
+$dialogQuickAddDocument-selectMenu-zIndex: 7002;
+/* FA 1.0 .menuResizer — menu a bit wider than the 560px dialog input. */
+$dialogQuickAddDocument-selectMenu-minWidth: 600px;
+$dialogQuickAddDocument-selectMenu-width: 600px;
+$dialogQuickAddDocument-wrapper-width: 560px;

@@ -1,4 +1,6 @@
 /* Welcome ↔ workspace page crossfade inside MainLayout (see faAppShellPageTransition.ts). */
+@use '../../../components/projectUI/ProjectOverview/styles/variables' as projectOverview;
+
 $fa-appShellPage-ease: cubic-bezier(0, 0, 0.2, 1);
 
 .fa-appShellPage-enter-active,
@@ -15,4 +17,47 @@ $fa-appShellPage-ease: cubic-bezier(0, 0, 0.2, 1);
 .fa-appShellPage-enter-to,
 .fa-appShellPage-leave-from {
   opacity: 1;
+}
+
+/* Empty CTA — allow cyan rim / elevation outside the card (panel often fills ≤950px). */
+.appShellLayout__pageTransitionHost:has(.appShellLayout__pageTransitionLayer--emptyCta) {
+  overflow: visible;
+}
+
+/*
+ * Empty CTA — layer fits 950px card + IndexPage q-pa-xl side pads (same gutters as chart mode).
+ * Do not zero padding-inline: that squashed the card flush to the panel edges.
+ */
+.appShellLayout__pageTransitionLayer--emptyCta {
+  box-sizing: border-box;
+  margin-inline: auto;
+  max-width: projectOverview.$projectOverview-emptyCta-pageLayer-maxWidth;
+  overflow: visible;
+  width: 100%;
+
+  > * {
+    width: 100%;
+  }
+
+  .indexPage {
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .projectOverview {
+    align-items: stretch;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .projectOverview__content,
+  .projectOverview__content--emptyCta,
+  .projectOverview__graphParent,
+  .projectOverview__graphParent--emptyCta,
+  .projectOverview__graphScroll,
+  .projectOverview__graphCard,
+  .projectOverview__graphCard--emptyCta {
+    max-width: 100%;
+    width: 100%;
+  }
 }

@@ -415,6 +415,19 @@ test('Test that S_FaProjectHierarchyTree refreshLayout re-fetches after concurre
 })
 
 /**
+ * S_FaProjectHierarchyTree bumpDocumentCensusRefreshGeneration notifies overview reload watchers.
+ */
+test('Test that S_FaProjectHierarchyTree bumpDocumentCensusRefreshGeneration increments generation', async () => {
+  const { S_FaProjectHierarchyTree } = await import('../S_FaProjectHierarchyTree')
+  const store = S_FaProjectHierarchyTree()
+  expect(store.documentCensusRefreshGeneration).toBe(0)
+  store.bumpDocumentCensusRefreshGeneration()
+  expect(store.documentCensusRefreshGeneration).toBe(1)
+  store.bumpDocumentCensusRefreshGeneration()
+  expect(store.documentCensusRefreshGeneration).toBe(2)
+})
+
+/**
  * S_FaProjectHierarchyTree refreshDocumentsInTree queues document ids for session refresh.
  */
 test('Test that S_FaProjectHierarchyTree refreshDocumentsInTree queues document ids', async () => {

@@ -35,12 +35,19 @@ export interface I_createFaActionDefinitionHandlersDialogsDeps {
   S_FaProjectStyling: () => {
     refreshProjectStyling: () => Promise<boolean>
   }
+  S_FaProjectHierarchyTree: () => {
+    refreshLayout: () => Promise<void>
+    worlds: ReadonlyArray<{ placements: ReadonlyArray<unknown> }>
+  }
   S_FaAppStyling: () => {
     refreshAppStyling: () => Promise<boolean>
   }
   S_FaUserSettings: () => {
+    patchSettingsSilently: (updateObject: { hideHierarchyTree: boolean }) => Promise<void>
     refreshSettings: () => Promise<void>
     settings: {
+      allowQuickPopupSameKeyClose: boolean
+      hideHierarchyTree?: boolean | undefined
       preventFilledProjectNoteBoardPopup: boolean
     } | null
   }
@@ -55,6 +62,7 @@ export interface I_createFaActionDefinitionHandlersDialogsDeps {
   runFaAction: <TId extends T_faActionId>(id: TId, payload: I_faActionPayloadMap[TId]) => void
   openDialogComponent: (name: T_dialogName) => void
   openDialogMarkdownDocument: (name: T_documentName) => void
+  setProjectSettingsInitialTab: (tab: string | null) => void
   tryDismissFaComponentDialogIfOpen: (name: T_dialogName) => boolean
   tryDismissFaMarkdownDocumentIfOpen: (name: T_documentName) => boolean
   canOpenFloatingWindowWhileNoModal: () => boolean

@@ -317,9 +317,9 @@ test('Test that FaSelectInput object chip shows icon and uses new chip color', (
 
 /**
  * FaSelectInput
- * Empty icon string on object option skips icon render.
+ * Empty icon string on document option uses the shared file-outline placeholder.
  */
-test('Test that FaSelectInput skips icon when object icon is empty', () => {
+test('Test that FaSelectInput shows placeholder icon when document icon is empty', () => {
   const wrapper = mountFaSelectInput({
     mode: 'document',
     modelValue: {
@@ -338,7 +338,7 @@ test('Test that FaSelectInput skips icon when object icon is empty', () => {
   })
 
   expect(wrapper.find('.q-chip-stub').exists()).toBe(true)
-  expect(wrapper.find('.q-icon-stub').exists()).toBe(false)
+  expect(wrapper.find('.q-icon-stub').exists()).toBe(true)
 })
 
 /**

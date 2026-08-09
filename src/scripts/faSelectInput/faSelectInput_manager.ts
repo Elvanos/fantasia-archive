@@ -16,6 +16,7 @@ import {
   normalizeFaSelectInputOptions
 } from './functions/faSelectInputModeNormalize'
 import { splitFaSelectInputLabelForFilterHighlight } from './functions/faSelectInputLabelFilterHighlight'
+import { resolveFaSelectInputOptionIcon } from './functions/resolveFaSelectInputOptionIcon'
 import { shouldShowFaSelectInputSelectedChip } from './functions/faSelectInputSelectedChipVisibility'
 
 export {
@@ -30,6 +31,7 @@ export {
   isFaSelectInputObjectMode,
   normalizeFaSelectInputOptions,
   resolveFaSelectInputChangeAction,
+  resolveFaSelectInputOptionIcon,
   shouldShowFaSelectInputSelectedChip,
   splitFaSelectInputLabelForFilterHighlight
 }

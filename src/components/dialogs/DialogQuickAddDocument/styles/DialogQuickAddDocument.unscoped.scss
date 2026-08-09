@@ -1,0 +1,36 @@
+@use '../../../globals/AppControlMenus/styles/contextMenuSeparators.mixin' as contextMenuSeparators;
+
+.q-dialog.dialogComponent.dialogQuickAddDocument > .q-dialog__inner {
+  align-self: flex-start;
+  margin-top: $dialogQuickAddDocument-marginTop;
+}
+
+.q-dialog.dialogComponent.dialogQuickAddDocument > .q-dialog__inner > .q-card.dialogComponent__wrapper {
+  width: $dialogQuickAddDocument-wrapper-width;
+
+  .dialogComponent__content {
+    max-height: calc(100vh - #{$dialogQuickAddDocument-content-maxHeightSubtract});
+    /* Keep visible so q-select menus are not clipped inside the card. */
+    overflow: visible;
+  }
+}
+
+/*
+ * Flat: solid world color from --fa-color-glyph-base (inline style).
+ * Fantasy: global body.fa-appTheme--fantasy .fa-color-glyph adds shading.
+ */
+.dialogQuickAddDocument__worldSelect .fa-color-glyph,
+.dialogQuickAddDocument__selectMenu .fa-color-glyph {
+  color: var(--fa-color-glyph-base);
+}
+
+/* Teleported q-select menu; stack above modal QDialog chrome. FA 1.0 menuResizer = 600px. */
+.dialogQuickAddDocument__selectMenu.q-menu {
+  min-width: $dialogQuickAddDocument-selectMenu-minWidth !important;
+  width: $dialogQuickAddDocument-selectMenu-width !important;
+  z-index: $dialogQuickAddDocument-selectMenu-zIndex !important;
+
+  .dialogQuickAddDocument__separatorAlt {
+    @include contextMenuSeparators.fa-context-menu-separator-alt;
+  }
+}

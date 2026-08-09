@@ -8,11 +8,33 @@ import type { I_dialogProjectSettingsWorldDraft } from 'app/types/I_dialogProjec
 import { FA_DIALOG_PROJECT_SETTINGS_GENERAL_TAB } from '../functions/dialogProjectSettingsDialogInput'
 import { createDialogProjectSettingsDialogActions } from '../dialogProjectSettings_manager'
 
-const { fetchFreshMock, fetchTemplatesMock, fetchWorldsMock, runFaActionAwaitMock } = vi.hoisted(() => ({
+const {
+  fetchFreshMock,
+  fetchTemplatesMock,
+  fetchWorldsMock,
+  runFaActionAwaitMock,
+  consumeInitialTabMock,
+  patchSettingsSilentlyMock
+} = vi.hoisted(() => ({
   fetchFreshMock: vi.fn(),
   fetchTemplatesMock: vi.fn(),
   fetchWorldsMock: vi.fn(),
-  runFaActionAwaitMock: vi.fn(async () => true)
+  runFaActionAwaitMock: vi.fn(async () => true),
+  consumeInitialTabMock: vi.fn((): string | null => null),
+  patchSettingsSilentlyMock: vi.fn(async () => undefined)
+}))
+
+vi.mock('app/src/stores/S_Dialog', () => ({
+  S_DialogComponent: () => ({
+    consumeProjectSettingsInitialTab: consumeInitialTabMock
+  })
+}))
+
+vi.mock('app/src/stores/S_FaUserSettings', () => ({
+  S_FaUserSettings: () => ({
+    patchSettingsSilently: patchSettingsSilentlyMock,
+    settings: { languageCode: 'en-US' }
+  })
 }))
 
 vi.mock('app/src/stores/scripts/sFaProjectSettingsBridge', () => ({
@@ -90,6 +112,7 @@ function buildActionBindings (
     baselineWorlds: ref<I_dialogProjectSettingsWorldDraft[] | null>(null),
     dialogModel: ref(false),
     documentName: ref(''),
+    hadWorldTemplatePlacementsAtDialogOpen: ref(false),
     localDocumentTemplates: ref<I_dialogProjectSettingsDocumentTemplateDraft[] | null>([]),
     localSettings: ref<I_faProjectSettingsRoot | null>(null),
     localWorlds: ref<I_dialogProjectSettingsWorldDraft[] | null>(null),
@@ -111,6 +134,10 @@ beforeEach(() => {
   fetchTemplatesMock.mockResolvedValue(hydratedTemplates)
   runFaActionAwaitMock.mockReset()
   runFaActionAwaitMock.mockResolvedValue(true)
+  consumeInitialTabMock.mockReset()
+  consumeInitialTabMock.mockReturnValue(null)
+  patchSettingsSilentlyMock.mockReset()
+  patchSettingsSilentlyMock.mockResolvedValue(undefined)
 })
 
 /**
@@ -141,6 +168,21 @@ test('Test that openDialog hydrates from direct snapshots when provided', async 
   expect(fetchFreshMock).not.toHaveBeenCalled()
   expect(fetchWorldsMock).not.toHaveBeenCalled()
   expect(fetchTemplatesMock).not.toHaveBeenCalled()
+})
+
+/**
+ * createDialogProjectSettingsDialogActions
+ * openDialog applies a consumed projectSettingsInitialTab when present.
+ */
+test('Test that openDialog applies consumed projectSettingsInitialTab', async () => {
+  consumeInitialTabMock.mockReturnValue('documentTemplatesSettings')
+  const bindings = buildActionBindings()
+
+  const { openDialog } = createDialogProjectSettingsDialogActions(bindings)
+  openDialog('ProjectSettings')
+  await flushPromises()
+
+  expect(bindings.selectedCategoryTab.value).toBe('documentTemplatesSettings')
 })
 
 /**
@@ -340,6 +382,7 @@ test('Test that saveAndCloseDialog dispatches saveProjectSettings with trimmed n
     ]
   })
   expect(bindings.dialogModel.value).toBe(false)
+  expect(patchSettingsSilentlyMock).toHaveBeenCalledWith({ hideHierarchyTree: true })
 })
 
 /**

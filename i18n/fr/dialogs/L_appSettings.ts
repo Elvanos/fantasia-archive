@@ -89,7 +89,7 @@ export default {
       tags: 'accueil projet, tableau de bord, aperçu, espace de travail',
       projectOverviewBehavior: {
         subtitle: 'Comportement de l\'aperçu du projet',
-        tags: 'conseils, astuces, le saviez-vous, carte d\'aperçu',
+        tags: 'conseils, astuces, le saviez-vous, carte d\'aperçu, auto open, last document',
       }
     },
     welcomeScreen: {
@@ -117,6 +117,12 @@ export default {
       description: 'Ce paramètre élargit les barres de défilement de FA et permet donc un défilement manuel par clic directement sur celles-ci pour les appareils qui ne prennent pas en charge le défilement standard (par exemple les souris sans molette de défilement).',
       tags: 'largeur de la barre de défilement, défilement par clic, souris sans molette, trackball, toucher',
     },
+    autoOpenLastDocument: {
+      title: 'Auto-open last document',
+      description: 'When opening a project, automatically open the last active document tab instead of showing the Project overview first.',
+      tags: 'auto open, last document, project open, restore tab, skip overview, workspace home, resume session'
+    },
+
     disableCategoryCount: {
       title: 'Masquer le nombre de catégories',
       description: 'Masquer les numéros de catégorie dans l’arborescence hiérarchique',

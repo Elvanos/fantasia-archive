@@ -89,7 +89,7 @@ export default {
       tags: 'projekthem, instrumentpanel, översikt, arbetsyta',
       projectOverviewBehavior: {
         subtitle: 'Beteende för projektöversikt',
-        tags: 'tips, tricks, visste du, översiktskort',
+        tags: 'tips, tricks, visste du, översiktskort, auto open, last document',
       }
     },
     welcomeScreen: {
@@ -117,6 +117,12 @@ export default {
       description: 'Den här inställningen gör FAs rullningslister bredare och tillåter därför manuell klickrullning direkt på dem för enheter som inte stöder standardrullning (till exempel möss utan rullningshjul).',
       tags: 'rullningslistens bredd, klicka rulla, mus utan hjul, styrkula, beröring',
     },
+    autoOpenLastDocument: {
+      title: 'Auto-open last document',
+      description: 'When opening a project, automatically open the last active document tab instead of showing the Project overview first.',
+      tags: 'auto open, last document, project open, restore tab, skip overview, workspace home, resume session'
+    },
+
     disableCategoryCount: {
       title: 'Dölj kategoriantal',
       description: 'Dölj kategorinummer i det hierarkiska trädet',

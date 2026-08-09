@@ -1,22 +1,15 @@
 @use '../theme/quasar-components/qDialog.variables' as *;
 
-/* Fantasy cyan rim: ring + top bloom + side feathers (dialogs, floating windows, menus).
+/* Fantasy cyan rim pieces (dialogs, floating windows, menus, Project overview graph).
  * box-shadow !important beats `.q-menu--dark { box-shadow: … !important }`. */
-@mixin fa-dialog-cyan-rim-chrome {
+
+/** Hard ring + elevation (pair with bloom when both live on one host). */
+@mixin fa-dialog-cyan-rim-surface {
   box-shadow: $qDialog-card-rim-boxShadow !important;
-  position: relative;
+}
 
-  /* Soft inward glow above opaque children (inset shadow on the host stays hidden under panels). */
-  &::after {
-    background: $qDialog-card-rim-after-background;
-    border-radius: inherit;
-    content: '';
-    inset: $qDialog-card-rim-after-inset;
-    pointer-events: none;
-    position: absolute;
-    z-index: $qDialog-card-rim-after-zIndex;
-  }
-
+/** Top bloom line (::before). Caller must set position:relative on the host. */
+@mixin fa-dialog-cyan-rim-top-bloom {
   &::before {
     background-image: $qDialog-card-rim-before-backgroundImage;
     background-position: $qDialog-card-rim-before-backgroundPosition;
@@ -29,4 +22,44 @@
     position: absolute;
     z-index: $qDialog-card-rim-before-zIndex;
   }
+}
+
+/** Inward side feathers (::after). Caller must set position:relative on the host. */
+@mixin fa-dialog-cyan-rim-side-feathers {
+  &::after {
+    background: $qDialog-card-rim-after-background;
+    border-radius: inherit;
+    content: '';
+    inset: $qDialog-card-rim-after-inset;
+    pointer-events: none;
+    position: absolute;
+    z-index: $qDialog-card-rim-after-zIndex;
+  }
+}
+
+/**
+ * Inward side feathers (::after) + top bloom (::before).
+ * Host needs position:relative; opaque children sit under these layers.
+ */
+@mixin fa-dialog-cyan-rim-bloom {
+  position: relative;
+
+  @include fa-dialog-cyan-rim-side-feathers;
+  @include fa-dialog-cyan-rim-top-bloom;
+}
+
+/** Full chrome — surface + bloom on the same host (dialogs, menus, Last opened). */
+@mixin fa-dialog-cyan-rim-chrome {
+  @include fa-dialog-cyan-rim-surface;
+  @include fa-dialog-cyan-rim-bloom;
+}
+
+/** Top-anchored quick dialogs (Quick Add, future Quick-*). Flat / non-fantasy elevation. */
+@mixin fa-dialog-top-popup-card-elevation {
+  box-shadow: $qDialog-topPopup-card-boxShadow;
+}
+
+/** Top-anchored quick dialogs under fantasy: cyan rim + stronger elevation. */
+@mixin fa-dialog-top-popup-card-elevation-fantasy {
+  box-shadow: $qDialog-topPopup-card-rim-boxShadow !important;
 }

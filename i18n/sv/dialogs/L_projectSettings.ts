@@ -147,7 +147,9 @@ export default {
         confirmDeleteButton: 'Bekräfta radering',
         message: 'Är du säker på att du vill radera den här dokumentmallen? Alla fält kopplade till den här mallen i andra mallar slutar fungera. Dessutom slutar anslutna dokument visa sina data om några fylldes i med den här mallen. Den här raderingen kan ha oavsiktliga bieffekter.'
       },
-      removeDisabledHasDocuments: 'Ta bort dokument som använder den här mallen innan du raderar den.'
+      removeDisabledHasDocuments: 'Ta bort dokument som använder den här mallen innan du raderar den.',
+      removeDisabledAssignedToWorld:
+        'Den här mallen är kopplad till en eller flera världar; ta bort tilldelningen från alla berörda världar först.'
     }
   }
 }

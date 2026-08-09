@@ -89,7 +89,7 @@ export default {
       tags: 'الصفحة الرئيسية للمشروع، لوحة المعلومات، نظرة عامة، مساحة العمل',
       projectOverviewBehavior: {
         subtitle: 'سلوك نظرة عامة على المشروع',
-        tags: 'نصائح، حيل، هل تعلم، بطاقة النظرة العامة',
+        tags: 'نصائح، حيل، هل تعلم، بطاقة النظرة العامة, auto open, last document',
       }
     },
     welcomeScreen: {
@@ -117,6 +117,12 @@ export default {
       description: 'يعمل هذا الإعداد على جعل أشرطة التمرير الخاصة بـ FA أوسع، وبالتالي يسمح بالتمرير اليدوي بالنقر عليها مباشرةً للأجهزة التي لا تدعم التمرير القياسي (على سبيل المثال، أجهزة الماوس التي لا تحتوي على عجلة تمرير).',
       tags: 'عرض شريط التمرير، انقر فوق التمرير، الماوس بدون عجلة، كرة التتبع، اللمس',
     },
+    autoOpenLastDocument: {
+      title: 'Auto-open last document',
+      description: 'When opening a project, automatically open the last active document tab instead of showing the Project overview first.',
+      tags: 'auto open, last document, project open, restore tab, skip overview, workspace home, resume session'
+    },
+
     disableCategoryCount: {
       title: 'إخفاء عدد الفئات',
       description: 'إخفاء أرقام الفئات في الشجرة الهرمية',

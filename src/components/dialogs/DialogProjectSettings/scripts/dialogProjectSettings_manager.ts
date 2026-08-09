@@ -50,11 +50,17 @@ const dialogProjectSettingsApi = createDialogProjectSettings({
   createDialogProjectSettingsDialogActions: (params) => {
     return buildDialogProjectSettingsDialogActions({
       FA_DIALOG_PROJECT_SETTINGS_GENERAL_TAB,
+      consumeProjectSettingsInitialTab: () => {
+        return S_DialogComponent().consumeProjectSettingsInitialTab()
+      },
       faProjectDocumentTemplatesFetchFreshForDialog,
       faProjectSettingsFetchFreshForDialog,
       faProjectWorldsFetchFreshForDialog,
       getCurrentLanguageCode: () => {
         return S_FaUserSettings().settings?.languageCode ?? 'en-US'
+      },
+      patchHideHierarchyTreeSilently: async (hideHierarchyTree) => {
+        await S_FaUserSettings().patchSettingsSilently({ hideHierarchyTree })
       },
       resolveNewTemplateDefaultDisplayName: () => {
         return i18n.global.t('dialogs.projectSettings.panels.documentTemplates.defaultNewTemplateName')

@@ -27,6 +27,7 @@ export default {
     openAdvancedSearchGuideDialog: 'Ανοίξτε τον Οδηγό σύνθετης αναζήτησης',
     openChangelogDialog: 'Ανοίξτε το Changelog',
     openKeybindSettingsDialog: 'Ανοίξτε τις Ρυθμίσεις Keybind',
+    openQuickAddDocumentDialog: 'Open Quick-Add New Document',
     openProjectSettingsDialog: 'Άνοιγμα ρυθμίσεων έργου',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'Αποθήκευση ρυθμίσεων έργου',

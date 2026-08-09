@@ -26,6 +26,7 @@ export default {
     openAppSettings: 'Ouvrir les paramètres de l\'application',
     openAppStyling: 'Ouvrez l\'application personnalisée CSS',
     openProjectStyling: 'Ouvrir un projet personnalisé CSS',
+    quickNewDocument: 'Quick-Add New Document',
     openProjectSettings: 'Ouvrir les paramètres du projet',
     showProjectDashboard: 'Afficher le tableau de bord du projet',
     toggleDeveloperTools: 'Toggle Outils de développement',

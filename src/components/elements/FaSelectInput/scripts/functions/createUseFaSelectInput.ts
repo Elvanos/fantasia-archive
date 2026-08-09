@@ -36,6 +36,7 @@ type T_faSelectInputApi = {
   optionLabelHighlightSegments: (
     opt: T_faSelectInputOption
   ) => T_faSelectInputLabelHighlightSegment[]
+  resolveOptionIcon: (opt: T_faSelectInputOption) => string | null
   selectRef: I_ref<T_faSelectInputQSelectRef | null>
 }
 
@@ -208,6 +209,14 @@ function createFaSelectInputApi (
     return deps.defaultChipColor
   }
 
+  function resolveOptionIcon (opt: T_faSelectInputOption): string | null {
+    return deps.resolveFaSelectInputOptionIcon(
+      opt,
+      input.getMode(),
+      deps.emptyDocumentTemplateIcon
+    )
+  }
+
   return {
     chipColorForOption,
     clearIsNewFlags,
@@ -219,6 +228,7 @@ function createFaSelectInputApi (
     onPopupShow,
     onUpdateModelValue,
     optionLabelHighlightSegments,
+    resolveOptionIcon,
     selectRef
   }
 }

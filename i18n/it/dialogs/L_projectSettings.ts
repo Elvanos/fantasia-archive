@@ -147,7 +147,9 @@ export default {
         confirmDeleteButton: 'Conferma eliminazione',
         message: 'Eliminare davvero questo modello di documento? Tutti i campi collegati a questo modello in altri modelli smetteranno di funzionare. Inoltre, tutti i documenti collegati smetteranno di mostrare i dati se erano stati compilati con questo modello. Questa eliminazione può avere effetti collaterali indesiderati.'
       },
-      removeDisabledHasDocuments: 'Rimuovere i documenti che usano questo modello prima di eliminarlo.'
+      removeDisabledHasDocuments: 'Rimuovere i documenti che usano questo modello prima di eliminarlo.',
+      removeDisabledAssignedToWorld:
+        'Questo modello è collegato a uno o più mondi; rimuovine prima l’assegnazione da tutti i mondi interessati.'
     }
   }
 }

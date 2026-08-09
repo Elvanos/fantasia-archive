@@ -12,6 +12,7 @@ test('Test that fixed strip left handlers dispatch existing faActionManager acti
   handlers.onToggleHierarchyTreeClick()
   handlers.onToggleAppNoteboardClick()
   handlers.onToggleProjectNoteboardClick()
+  handlers.onQuickAddClick()
 
   expect(runFaAction).toHaveBeenCalledWith('openKeybindSettingsDialog', undefined)
   expect(runFaAction).toHaveBeenCalledWith('openAdvancedSearchGuideDialog', undefined)
@@ -19,14 +20,14 @@ test('Test that fixed strip left handlers dispatch existing faActionManager acti
   expect(runFaAction).toHaveBeenCalledWith('toggleHierarchicalTree', undefined)
   expect(runFaAction).toHaveBeenCalledWith('toggleAppNoteboardWindow', undefined)
   expect(runFaAction).toHaveBeenCalledWith('toggleProjectNoteboardWindow', undefined)
+  expect(runFaAction).toHaveBeenCalledWith('openQuickAddDocumentDialog', undefined)
 })
 
-test('Test that fixed strip quick search and quick add handlers are placeholders', () => {
+test('Test that fixed strip quick search handler remains a placeholder', () => {
   const runFaAction = vi.fn()
   const handlers = buildProjectAppControlBarFixedStripLeftHandlers({ runFaAction })
 
   handlers.onQuickSearchClick()
-  handlers.onQuickAddClick()
 
   expect(runFaAction).not.toHaveBeenCalled()
 })

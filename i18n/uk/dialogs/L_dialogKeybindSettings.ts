@@ -26,6 +26,7 @@ export default {
     openAppSettings: 'Відкрийте налаштування програми',
     openAppStyling: 'Відкрити спеціальну програму CSS',
     openProjectStyling: 'Відкрити спеціальний проект CSS',
+    quickNewDocument: 'Quick-Add New Document',
     openProjectSettings: 'Відкрити параметри проекту',
     showProjectDashboard: 'Показати інформаційну панель проекту',
     toggleDeveloperTools: 'Перемкнути інструменти розробника',

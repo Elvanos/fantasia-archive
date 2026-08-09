@@ -6,6 +6,11 @@ import type { I_faOpenedDocumentTab } from 'app/types/I_faOpenedDocumentsDomain'
 export const PROJECT_APP_CONTROL_BAR_CATEGORY_TAB_ICON = 'mdi-folder-open'
 
 /**
+ * Matches FA_ICON_PICKER_EMPTY_PLACEHOLDER_ICON / hierarchy template default.
+ */
+export const PROJECT_APP_CONTROL_BAR_EMPTY_TEMPLATE_ICON = 'mdi-file-outline'
+
+/**
  * Tab / browse-row icon from the opened document's current category draft.
  */
 export function resolveProjectAppControlBarTabDisplayIcon (
@@ -14,5 +19,9 @@ export function resolveProjectAppControlBarTabDisplayIcon (
   if (tab.isCategoryDraft === true) {
     return PROJECT_APP_CONTROL_BAR_CATEGORY_TAB_ICON
   }
-  return tab.templateIcon
+  const trimmed = tab.templateIcon.trim()
+  if (trimmed.length > 0) {
+    return trimmed
+  }
+  return PROJECT_APP_CONTROL_BAR_EMPTY_TEMPLATE_ICON
 }

@@ -159,6 +159,7 @@ const {
   onPopupShow,
   onUpdateModelValue,
   optionLabelHighlightSegments,
+  resolveOptionIcon,
   selectRef
 } = useFaSelectInput({
   emitChange: (payload) => {
@@ -187,16 +188,6 @@ function objectOptionLabel (opt: T_faSelectInputOption): string {
     return opt
   }
   return opt.name
-}
-
-function resolveOptionIcon (opt: T_faSelectInputOption): string | null {
-  if (typeof opt === 'string') {
-    return null
-  }
-  if (opt.icon === undefined || opt.icon.length === 0) {
-    return null
-  }
-  return opt.icon
 }
 
 defineExpose({

@@ -15,6 +15,7 @@ export const Default: StoryObj<typeof meta> = {
     currentLanguageCode: 'en-US',
     nameHasError: false,
     removeDisabled: false,
+    removeDisabledReason: null,
     template: {
       documentCount: 0,
       icon: 'mdi-account',
@@ -31,6 +32,7 @@ export const NameValidationError: StoryObj<typeof meta> = {
     currentLanguageCode: 'en-US',
     nameHasError: true,
     removeDisabled: false,
+    removeDisabledReason: null,
     template: {
       documentCount: 0,
       icon: '',

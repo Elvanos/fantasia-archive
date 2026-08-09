@@ -5,6 +5,7 @@ export const FA_USER_SETTINGS_DEFAULTS: I_faUserSettings = {
   allowQuickPopupSameKeyClose: false,
   allowWiderScrollbars: false,
   appTheme: 'darkThemeFantasy',
+  autoOpenLastDocument: false,
   disableCategoryCount: false,
   compactTags: false,
   disableCloseAfterSelectQuickSearch: false,

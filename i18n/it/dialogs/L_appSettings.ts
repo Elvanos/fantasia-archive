@@ -89,7 +89,7 @@ export default {
       tags: 'home progetto, dashboard, panoramica, area di lavoro',
       projectOverviewBehavior: {
         subtitle: 'Comportamento panoramica del progetto',
-        tags: 'suggerimenti, trucchi, lo sapevi, scheda panoramica',
+        tags: 'suggerimenti, trucchi, lo sapevi, scheda panoramica, auto open, last document',
       }
     },
     welcomeScreen: {
@@ -117,6 +117,12 @@ export default {
       description: 'Questa impostazione allarga le barre di scorrimento di FA e pertanto consente lo scorrimento manuale con clic direttamente su di esse per i dispositivi che non supportano lo scorrimento standard (ad esempio mouse senza rotella di scorrimento).',
       tags: 'larghezza della barra di scorrimento, scorrimento con clic, mouse senza rotella, trackball, tocco',
     },
+    autoOpenLastDocument: {
+      title: 'Auto-open last document',
+      description: 'When opening a project, automatically open the last active document tab instead of showing the Project overview first.',
+      tags: 'auto open, last document, project open, restore tab, skip overview, workspace home, resume session'
+    },
+
     disableCategoryCount: {
       title: 'Nascondi il conteggio delle categorie',
       description: 'Nascondi i numeri di categoria nell’albero gerarchico',

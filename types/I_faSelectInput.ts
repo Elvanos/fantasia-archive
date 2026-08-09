@@ -104,10 +104,17 @@ export interface I_faSelectInputUseDeps {
     options: T_faSelectInputOptions
   ) => T_faSelectInputOption[]
   ref: <T>(value: T) => import('app/types/I_vueCompositionShims').I_ref<T>
+  resolveFaSelectInputOptionIcon: (
+    opt: T_faSelectInputOption,
+    mode: T_faSelectInputMode,
+    emptyPlaceholderIcon: string
+  ) => string | null
   splitFaSelectInputLabelForFilterHighlight: (
     label: string,
     needle: string
   ) => T_faSelectInputLabelHighlightSegment[]
+  /** Matches hierarchy / FaIconPicker empty placeholder (mdi-file-outline). */
+  emptyDocumentTemplateIcon: string
 }
 
 /** Parent/prop accessors + emits for FaSelectInput composable. */

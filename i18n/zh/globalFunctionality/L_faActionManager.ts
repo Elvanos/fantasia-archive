@@ -27,6 +27,7 @@ export default {
     openAdvancedSearchGuideDialog: '打开高级搜索指南',
     openChangelogDialog: '打开变更日志',
     openKeybindSettingsDialog: '打开按键绑定设置',
+    openQuickAddDocumentDialog: 'Open Quick-Add New Document',
     openProjectSettingsDialog: '打开项目设置',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: '保存项目设置',

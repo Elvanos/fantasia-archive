@@ -12,8 +12,95 @@ $projectOverview-hint-mascot-width: 135px;
 $projectOverview-hint-paddingBlock: 15px;
 $projectOverview-hint-paddingInline: 20px;
 $projectOverview-maxWidth: 1450px;
-$projectOverview-subtitle-marginTop: 40px;
+$projectOverview-subtitle-marginTop: 15px;
+$projectOverview-subtitle-marginTop-fantasy: -8px;
+/* Any theme when Disable app control bar (no flow spacer). */
+$projectOverview-subtitle-marginTop-controlBarDisabled: 20px;
 $projectOverview-subtitle-opacity: 0.8;
 $projectOverview-title-fontWeight: 500;
 $projectOverview-title-marginBottom: 30px;
 $projectOverview-title-marginTop: 10px;
+
+/* Chart + last-opened (ported from FA 1.0 ProjectScreen layout values) */
+$projectOverview-content-gap: 0;
+$projectOverview-documentDistributionTitle-gap: 8px;
+$projectOverview-documentDistributionTitle-paddingInline: 32px;
+$projectOverview-graph-apex-paddingBottom: 92px;
+$projectOverview-graph-apex-paddingInline: 40px;
+/* Match Quasar $qCard-border-radius — hard rim on __graphParent (flat + fantasy). */
+$projectOverview-graph-card-borderRadius: 5px;
+$projectOverview-graph-bar-hover-fill: fa-v('primary', $primary);
+$projectOverview-graph-bar-hover-fill-opacity: 0.1;
+/* FA 1.0 used 425px; +20 after title/pad tighten; +2 on svg clears diagonal labels. */
+$projectOverview-graph-apex-svg-height: 447px;
+/* Tips-hidden: chart 666 + 2 — keep in sync with FA_PROJECT_OVERVIEW_CHART_HEIGHT_TIPS_HIDDEN_PX. */
+$projectOverview-graph-apex-svg-height-tipsHidden: 668px;
+$projectOverview-graph-apex-svg-height-css: var(
+  --fa-projectOverview-graph-apex-svg-height,
+  #{$projectOverview-graph-apex-svg-height}
+);
+$projectOverview-graph-card-height: 587px;
+/* When hideTooltipsProject is on — keep in sync with FA_PROJECT_OVERVIEW_GRAPH_CARD_HEIGHT_TIPS_HIDDEN_PX. */
+$projectOverview-graph-card-height-tipsHidden: 808px;
+/* Runtime override via --fa-projectOverview-graph-card-height on .projectOverview. */
+$projectOverview-graph-card-height-css: var(
+  --fa-projectOverview-graph-card-height,
+  #{$projectOverview-graph-card-height}
+);
+/* Compact card beside Last opened — keep in sync with FA_PROJECT_OVERVIEW_GRAPH_CARD_WIDTH_WITH_LAST_OPENED_PX. */
+$projectOverview-graph-card-width: 1022px;
+/* Fullsize card when Last opened is hidden — keep in sync with FA_PROJECT_OVERVIEW_GRAPH_CARD_WIDTH_FULLSIZE_PX. */
+$projectOverview-graph-card-width-fullsize: 1386px;
+/* Empty CTA single-button mode — fluid card chrome capped at 950px. */
+$projectOverview-graph-card-width-emptyCta-max: 950px;
+/* IndexPage q-pa-xl inline pad — keep empty CTA side gutters equal to chart mode. */
+$projectOverview-indexPage-paddingInline: 48px;
+/* Page transition layer: 950 card + q-pa-xl × 2 so side pad is not stolen from card width. */
+$projectOverview-emptyCta-pageLayer-maxWidth: $projectOverview-graph-card-width-emptyCta-max + (2 * $projectOverview-indexPage-paddingInline);
+$projectOverview-graph-categoryLabel-fontSize: 15px;
+$projectOverview-graph-categoryLabel-fontWeight: 500;
+$projectOverview-graph-categoryLabel-letterSpacing: 0.3px;
+$projectOverview-graphTooltip-inlineGap: 4px;
+/* Match Quasar $tooltip-border-radius ($generic-border-radius) — flat .q-tooltip. */
+$projectOverview-graphTooltip-borderRadius-flat: 4px;
+$projectOverview-graphTooltipCount-color: fa-v('positive', $positive);
+$projectOverview-lastOpened-avatar-minWidth: 32px;
+$projectOverview-lastOpened-avatar-paddingInline: 8px;
+$projectOverview-lastOpened-deadMarker-marginRight: 0.25em;
+$projectOverview-lastOpened-list-padding: 16px;
+$projectOverview-lastOpened-list-paddingBottom: 28px;
+$projectOverview-lastOpened-list-paddingInline: 32px;
+$projectOverview-lastOpened-marginLeft: 30px;
+$projectOverview-lastOpened-row-paddingBlock: 12px;
+$projectOverview-lastOpened-row-paddingInline: 8px;
+$projectOverview-lastOpened-row-color: fa-v('text-workspace-row', $text-workspace-row);
+$projectOverview-lastOpened-row-hover-color: fa-v('primary-bright', $primary-bright);
+$projectOverview-lastOpened-title-fontSize: 1.5rem;
+$projectOverview-lastOpened-title-fontWeight: 400;
+$projectOverview-lastOpened-title-lineHeight: 1.2;
+$projectOverview-lastOpened-title-marginBottom: 16px;
+$projectOverview-lastOpened-title-marginTop: 24px;
+$projectOverview-lastOpened-title-paddingInline: 32px;
+$projectOverview-lastOpened-width: 334px;
+/* Last-opened world indicator size lives in lastOpened.unscoped (beats Quasar 24px side icon). */
+/* Empty graph CTA — outline q-btn size lg; radius from theme .q-btn. */
+$projectOverview-emptyPrompt-button-fontWeight: 500;
+/* size=lg + q-py-xs ≈ 51px; bump to ~60px. */
+$projectOverview-emptyPrompt-button-minHeight: 60px;
+/* Quasar q-mb-xl on welcome wrap + q-mt-md on button wrap. */
+$projectOverview-emptyPrompt-buttonWrap-marginTop: 16px;
+$projectOverview-emptyPrompt-welcomeWrap-marginBottom: 48px;
+/* FA 1.0 app.scss body h6 */
+$projectOverview-emptyPrompt-welcome-fontSize: 20px;
+$projectOverview-emptyPrompt-welcome-fontWeight: 500;
+$projectOverview-emptyPrompt-welcome-lineHeight: 1.8;
+$projectOverview-worldLegendCount-color: fa-v('positive', $positive);
+$projectOverview-worldLegendRow-columnGap: 6px;
+$projectOverview-worldLegendRow-rowGap: 8px;
+$projectOverview-worldLegendSwatch-borderColor: var(--fa-color-black);
+$projectOverview-worldLegendSwatch-borderRadius: 50%;
+$projectOverview-worldLegendSwatch-borderWidth: 1px;
+$projectOverview-worldLegendSwatch-size: 14px;
+$projectOverview-worldLegendTooltip-maxWidth: 320px;
+/* Flat global tip is 6px 10px — this legend needs +8px each side. */
+$projectOverview-worldLegendTooltip-padding-flat: 14px 18px;

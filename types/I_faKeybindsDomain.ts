@@ -10,6 +10,7 @@ export const FA_KEYBIND_COMMAND_IDS = [
   'openProjectStyling',
   'openProjectSettings',
   'showProjectDashboard',
+  'quickNewDocument',
   'toggleDeveloperTools',
   'toggleAppNoteboard',
   'toggleProjectNoteboard',

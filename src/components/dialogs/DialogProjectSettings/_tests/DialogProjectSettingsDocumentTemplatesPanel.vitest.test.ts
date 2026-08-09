@@ -18,7 +18,8 @@ test('Test that DialogProjectSettingsDocumentTemplatesPanel renders empty state 
   const w = mount(DialogProjectSettingsDocumentTemplatesPanel, {
     props: {
       currentLanguageCode: 'en-US',
-      templates: []
+      templates: [],
+      worlds: [],
     },
     global: {
       mocks: {
@@ -48,7 +49,8 @@ test('Test that DialogProjectSettingsDocumentTemplatesPanel emits addTemplate fr
   const w = mount(DialogProjectSettingsDocumentTemplatesPanel, {
     props: {
       currentLanguageCode: 'en-US',
-      templates: []
+      templates: [],
+      worlds: [],
     },
     global: {
       mocks: {
@@ -83,7 +85,8 @@ test('Test that DialogProjectSettingsDocumentTemplatesPanel binds nameHasError o
   const w = mount(DialogProjectSettingsDocumentTemplatesPanel, {
     props: {
       currentLanguageCode: 'en-US',
-      templates: [invalidTemplate]
+      templates: [invalidTemplate],
+      worlds: [],
     },
     global: {
       mocks: {
@@ -135,7 +138,8 @@ test('Test that DialogProjectSettingsDocumentTemplatesPanel renders list and det
   const w = mount(DialogProjectSettingsDocumentTemplatesPanel, {
     props: {
       currentLanguageCode: 'en-US',
-      templates: [templateA]
+      templates: [templateA],
+      worlds: [],
     },
     global: {
       mocks: {
@@ -199,7 +203,8 @@ test('Test that DialogProjectSettingsDocumentTemplatesPanel forwards update temp
   const w = mount(DialogProjectSettingsDocumentTemplatesPanel, {
     props: {
       currentLanguageCode: 'en-US',
-      templates: [templateA, reordered[0]!]
+      templates: [templateA, reordered[0]!],
+      worlds: [],
     },
     global: {
       mocks: {
@@ -232,7 +237,8 @@ test('Test that DialogProjectSettingsDocumentTemplatesPanel forwards detail and 
   const w = mount(DialogProjectSettingsDocumentTemplatesPanel, {
     props: {
       currentLanguageCode: 'en-US',
-      templates: [templateA]
+      templates: [templateA],
+      worlds: [],
     },
     global: {
       mocks: {
@@ -326,7 +332,8 @@ test('Test that DialogProjectSettingsDocumentTemplatesPanel resyncs selection wh
   const w = mount(DialogProjectSettingsDocumentTemplatesPanel, {
     props: {
       currentLanguageCode: 'en-US',
-      templates: [templateA]
+      templates: [templateA],
+      worlds: [],
     },
     global: {
       mocks: {
@@ -382,7 +389,8 @@ test('Test that DialogProjectSettingsDocumentTemplatesPanel hides detail when se
   const w = mount(DialogProjectSettingsDocumentTemplatesPanel, {
     props: {
       currentLanguageCode: 'en-US',
-      templates: [templateA]
+      templates: [templateA],
+      worlds: [],
     },
     global: {
       mocks: {

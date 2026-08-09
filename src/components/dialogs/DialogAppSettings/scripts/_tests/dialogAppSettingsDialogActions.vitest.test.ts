@@ -274,9 +274,9 @@ test('updateLocalSetting returns early when localSettings is null', () => {
 
 /**
  * createDialogAppSettingsDialogActions
- * updateLocalSetting updates the dialog draft only; persisted user settings stay unchanged until Save.
+ * Hide tips on project overview stays draft-only until Save (no live overview preview).
  */
-test('updateLocalSetting does not patch hideTooltipsProject on the user settings store', () => {
+test('updateLocalSetting does not preview hideTooltipsProject through the user settings store', () => {
   const store = createAppSettingsStoreMock({
     settings: {
       ...FA_USER_SETTINGS_DEFAULTS,
@@ -307,9 +307,7 @@ test('updateLocalSetting does not patch hideTooltipsProject on the user settings
 
   expect(store.settings?.hideTooltipsProject).toBe(false)
   expect(localSettings.value?.hideTooltipsProject).toBe(true)
-  expect(store.setAppSettingsDialogPreview).toHaveBeenCalledWith({
-    hideTooltipsProject: true
-  })
+  expect(store.setAppSettingsDialogPreview).not.toHaveBeenCalled()
 })
 
 /**

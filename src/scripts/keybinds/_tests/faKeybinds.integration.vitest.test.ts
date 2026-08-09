@@ -36,7 +36,8 @@ vi.mock('../functions/faKeybindCommandDefinitions', async (importOriginal) => {
 
 import type { I_faChordSerialized } from 'app/types/I_faKeybindsDomain'
 
-import { FA_KEYBIND_COMMAND_DEFINITIONS, findFaKeybindCommandDefinition } from '../functions/faKeybindCommandDefinitions'
+import { FA_KEYBIND_COMMAND_DEFINITIONS } from '../functions/faKeybindCommandDefinitions'
+import { findFaKeybindCommandDefinition } from '../findFaKeybindCommandDefinitionWiring'
 import { faKeybindFindChordConflict } from '../faKeybindsChordDisplayAndConflict_manager'
 import { formatFaKeybindChordForUi } from '../faKeybindsChordUiFormatting_manager'
 import {
@@ -518,8 +519,7 @@ test('createFaKeybindKeydownHandler does nothing when normalized chord is null',
 
 test('findFaKeybindCommandDefinition returns undefined for unknown ids', () => {
   expect(findFaKeybindCommandDefinition('openAppSettings')).toBeDefined()
-  // @ts-expect-error — deliberate unknown id for runtime guard coverage
-  expect(findFaKeybindCommandDefinition('notARealCommand')).toBeUndefined()
+  expect(findFaKeybindCommandDefinition('notARealCommand' as never)).toBeUndefined()
 })
 
 test('FA_KEYBIND_COMMAND_DEFINITIONS lists expected commands', () => {
@@ -536,6 +536,7 @@ test('FA_KEYBIND_COMMAND_DEFINITIONS lists expected commands', () => {
     'openKeybindSettings',
     'openProjectSettings',
     'openProjectStyling',
+    'quickNewDocument',
     'saveDocument',
     'saveDocumentKeepEditMode',
     'showProjectDashboard',

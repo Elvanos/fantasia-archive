@@ -82,6 +82,16 @@ export const FA_KEYBIND_COMMAND_DEFINITIONS: I_faKeybindCommandDefinition[] = [
   },
   {
     defaultChord: {
+      code: 'KeyN',
+      mods: ['primary']
+    },
+    editable: true,
+    firesInEditableFields: false,
+    id: 'quickNewDocument',
+    messageKey: 'dialogs.keybindSettings.commands.quickNewDocument'
+  },
+  {
+    defaultChord: {
       code: 'KeyO',
       mods: [
         'alt',
@@ -238,9 +248,3 @@ export const FA_KEYBIND_COMMAND_DEFINITIONS: I_faKeybindCommandDefinition[] = [
     messageKey: 'dialogs.keybindSettings.commands.moveDocumentTabRight'
   }
 ]
-
-export function findFaKeybindCommandDefinition (
-  id: I_faKeybindCommandDefinition['id']
-): I_faKeybindCommandDefinition | undefined {
-  return FA_KEYBIND_COMMAND_DEFINITIONS.find((d) => d.id === id)
-}

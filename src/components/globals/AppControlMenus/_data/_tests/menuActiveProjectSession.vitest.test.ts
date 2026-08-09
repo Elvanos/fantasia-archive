@@ -204,6 +204,19 @@ test('Test that buildDocumentsMenu disables project-scoped rows when hasActivePr
 })
 
 /**
+ * Documents menu
+ * Quick-Add enables with an active project and routes through openQuickAddDocumentDialog.
+ */
+test('Test that buildDocumentsMenu enables quick add and fires openQuickAddDocumentDialog', () => {
+  const menu = buildDocumentsMenu({ hasActiveProject: true })
+  const items = menu.data.filter((row) => row.mode === 'item')
+  expect(items[0]!.conditions).toBe(true)
+  expect(items[0]!.keybindCommandId).toBe('quickNewDocument')
+  items[0]!.trigger?.()
+  expect(runFaActionMock).toHaveBeenCalledWith('openQuickAddDocumentDialog', undefined)
+})
+
+/**
  * Tools menu
  * Import / Export App Configuration fires the centralized action regardless of loaded project session.
  */

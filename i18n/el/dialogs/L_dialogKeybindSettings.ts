@@ -26,6 +26,7 @@ export default {
     openAppSettings: 'Ανοίξτε τις Ρυθμίσεις εφαρμογής',
     openAppStyling: 'Άνοιγμα προσαρμοσμένης εφαρμογής CSS',
     openProjectStyling: 'Άνοιγμα προσαρμοσμένου έργου CSS',
+    quickNewDocument: 'Quick-Add New Document',
     openProjectSettings: 'Άνοιγμα ρυθμίσεων έργου',
     showProjectDashboard: 'Εμφάνιση πίνακα ελέγχου έργου',
     toggleDeveloperTools: 'Εναλλαγή Εργαλείων προγραμματιστή',

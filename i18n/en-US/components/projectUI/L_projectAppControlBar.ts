@@ -18,7 +18,7 @@ export default {
   copyCurrentDocumentTooltip: 'Copy current document',
   addNewDocumentUnderThisTooltip: 'Add new document under this',
   forceCloseAllTabs: 'Force close all tabs',
-  forceCloseAllTabsExceptThisOne: 'Force close all tabs except for this one',
+  forceCloseAllTabsExceptThisOne: 'Force close all tabs except for this',
   moveTabLeft: 'Move tab left',
   moveTabRight: 'Move tab right',
   saveDocumentKeepEditModeTooltip: 'Save document without exiting edit mode',

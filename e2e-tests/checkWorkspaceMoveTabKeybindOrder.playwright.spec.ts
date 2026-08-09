@@ -292,7 +292,7 @@ test.describe.serial('Opened documents E2E — cold restore move-tab keybind ord
     })
   })
 
-  test('Cold restart keeps move-left tab order and active route', async () => {
+  test('Cold restart keeps move-left tab order on Project overview', async () => {
     expect(e2eMoveTabIdA.length).toBeGreaterThan(0)
     expect(e2eMoveTabIdB.length).toBeGreaterThan(0)
     expect(e2eMoveTabIdC.length).toBeGreaterThan(0)
@@ -308,6 +308,9 @@ test.describe.serial('Opened documents E2E — cold restore move-tab keybind ord
     await expect.poll(async () => {
       return readOpenedTabDocumentIds(appWindow)
     }, { timeout: 15_000 }).toEqual([e2eMoveTabIdB, e2eMoveTabIdA, e2eMoveTabIdC])
-    await expectFaPlaywrightE2eHashRoute(appWindow, `/home/document/${e2eMoveTabIdB}`)
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
+    await expect(
+      appWindow.locator('[data-test-locator="projectOverview"]')
+    ).toBeVisible({ timeout: 15_000 })
   })
 })

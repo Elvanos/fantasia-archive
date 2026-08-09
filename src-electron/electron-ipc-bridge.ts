@@ -150,7 +150,10 @@ export const FA_PROJECT_CONTENT_IPC = {
   moveDocumentInHierarchyAsync: 'fa-project-content-move-document-in-hierarchy-async',
   reindexDocumentSiblingsInHierarchyAsync:
     'fa-project-content-reindex-document-siblings-in-hierarchy-async',
-  searchProjectHierarchyAsync: 'fa-project-content-search-project-hierarchy-async'
+  searchProjectHierarchyAsync: 'fa-project-content-search-project-hierarchy-async',
+  listDocumentLastOpenedAsync: 'fa-project-content-list-document-last-opened-async',
+  recordDocumentLastOpenedAsync: 'fa-project-content-record-document-last-opened-async',
+  listDocumentDistributionAsync: 'fa-project-content-list-document-distribution-async'
 } as const
 
 /**

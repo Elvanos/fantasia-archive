@@ -1,4 +1,10 @@
 <template>
+  <q-separator
+    class="projectAppControlBarTabContextMenu__separatorPrimaryBright"
+    dark
+    role="separator"
+  />
+
   <q-item
     v-close-popup
     clickable

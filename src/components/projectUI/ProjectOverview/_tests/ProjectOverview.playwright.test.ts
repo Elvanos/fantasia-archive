@@ -77,12 +77,41 @@ const defaultActiveProjectSeed: I_faComponentTestingStoreSeed = {
 
 async function remountProjectOverviewAfterStoreSeed (
   page: Page,
-  seed: I_faComponentTestingStoreSeed
+  seed: I_faComponentTestingStoreSeed,
+  options?: {
+    totalDocumentCount?: number
+  }
 ): Promise<void> {
   await page.waitForFunction(() => {
     return typeof window.__faComponentTestingPatchStores === 'function'
   }, { timeout: 30_000 })
   await patchFaPlaywrightComponentHarnessStores(page, seed)
+  const totalDocumentCount = options?.totalDocumentCount ?? 0
+  await page.evaluate((docCount) => {
+    const bridge = window.faContentBridgeAPIs
+    if (bridge?.projectContent === undefined) {
+      return
+    }
+    bridge.projectContent.listDocumentDistribution = async () => {
+      return {
+        templates: docCount > 0
+          ? [{
+              templateId: 'playwright-template',
+              titlePluralTranslationsJson: '{"en-US":"Heroes"}',
+              icon: 'mdi-sword',
+              sortOrder: 0
+            }]
+          : [],
+        worlds: [],
+        counts: [],
+        documentTemplateTotalCount: docCount > 0 ? 1 : 0,
+        totalDocumentCount: docCount
+      }
+    }
+    bridge.projectContent.listDocumentLastOpened = async () => {
+      return { items: [] }
+    }
+  }, totalDocumentCount)
   await page.evaluate(async () => {
     const root = document.querySelector('#q-app') as HTMLElement & {
       __vue_app__?: {
@@ -128,7 +157,9 @@ test.describe.serial('Project overview (active project, tips card)', () => {
     })
     electronApp = launched.electronApp
     appWindow = launched.appWindow
-    await remountProjectOverviewAfterStoreSeed(appWindow, defaultActiveProjectSeed)
+    await remountProjectOverviewAfterStoreSeed(appWindow, defaultActiveProjectSeed, {
+      totalDocumentCount: 2
+    })
   })
 
   test.afterAll(async ({}, afterAllTestInfo) => {
@@ -220,6 +251,8 @@ test.describe.serial('Project overview (tips card hidden)', () => {
     await remountProjectOverviewAfterStoreSeed(appWindow, {
       ...defaultActiveProjectSeed,
       hideTooltipsProject: true
+    }, {
+      totalDocumentCount: 2
     })
   })
 
@@ -265,6 +298,8 @@ test.describe.serial('Project overview (tips card help icon)', () => {
     await remountProjectOverviewAfterStoreSeed(appWindow, {
       ...defaultActiveProjectSeed,
       hidePlushes: true
+    }, {
+      totalDocumentCount: 2
     })
   })
 

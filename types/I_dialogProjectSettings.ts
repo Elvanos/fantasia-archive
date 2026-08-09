@@ -54,6 +54,7 @@ export type T_dialogProjectSettingsDialogActionsParams = {
   baselineWorlds: Ref<I_dialogProjectSettingsWorldDraft[] | null>
   dialogModel: Ref<boolean>
   documentName: Ref<string>
+  hadWorldTemplatePlacementsAtDialogOpen: Ref<boolean>
   localDocumentTemplates: Ref<I_dialogProjectSettingsDocumentTemplateDraft[] | null>
   localSettings: Ref<I_faProjectSettingsRoot | null>
   localWorlds: Ref<I_dialogProjectSettingsWorldDraft[] | null>
@@ -77,6 +78,7 @@ export type T_dialogProjectSettingsUseHookDeps = {
     baselineWorlds: Ref<I_dialogProjectSettingsWorldDraft[] | null>
     dialogModel: Ref<boolean>
     documentName: Ref<string>
+    hadWorldTemplatePlacementsAtDialogOpen: Ref<boolean>
     localDocumentTemplates: Ref<I_dialogProjectSettingsDocumentTemplateDraft[] | null>
     localSettings: Ref<I_faProjectSettingsRoot | null>
     localWorlds: Ref<I_dialogProjectSettingsWorldDraft[] | null>

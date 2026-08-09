@@ -24,6 +24,7 @@ export const Default: StoryObj<typeof meta> = {
     onToggleAppNoteboardClick: () => {},
     onToggleHierarchyTreeClick: () => {},
     onToggleProjectNoteboardClick: () => {},
+    quickAddKeybindLabel: 'Ctrl + N',
     quickAddTooltip: 'Quick add',
     quickSearchTooltip: 'Quick search',
     showAppNoteboardContentDot: true,

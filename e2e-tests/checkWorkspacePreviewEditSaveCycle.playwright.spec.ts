@@ -272,6 +272,14 @@ test.describe.serial('Opened documents E2E — cold restart keeps preview cycle 
     await e2eExpectFaActiveProjectStoreName(appWindow, PREVIEW_CYCLE_E2E_PROJECT_NAME)
     await expectFaPlaywrightE2eWorkspaceShell(appWindow)
 
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
+    await appWindow.locator(
+      `[data-test-locator="projectAppControlBar-tab-${e2ePreviewCycleDocumentId}"]`
+    ).click()
+    await expectFaPlaywrightE2eHashRoute(
+      appWindow,
+      `/home/document/${e2ePreviewCycleDocumentId}`
+    )
     await expect(
       appWindow.locator(`[data-test-locator="${selectorList.documentPreviewTitle}"]`)
     ).toHaveText(PREVIEW_CYCLE_E2E_SAVED_LABEL, { timeout: 15_000 })

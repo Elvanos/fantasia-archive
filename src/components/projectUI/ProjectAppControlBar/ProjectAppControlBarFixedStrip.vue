@@ -24,6 +24,7 @@
             :on-toggle-app-noteboard-click="onToggleAppNoteboardClick"
             :on-toggle-hierarchy-tree-click="onToggleHierarchyTreeClick"
             :on-toggle-project-noteboard-click="onToggleProjectNoteboardClick"
+            :quick-add-keybind-label="quickAddKeybindLabel"
             :quick-add-tooltip="quickAddTooltip"
             :quick-search-tooltip="quickSearchTooltip"
             :show-app-noteboard-content-dot="showAppNoteboardContentDot"
@@ -105,6 +106,7 @@ defineProps<{
   onToggleAppNoteboardClick: () => void
   onToggleHierarchyTreeClick: () => void
   onToggleProjectNoteboardClick: () => void
+  quickAddKeybindLabel: string | null
   quickAddTooltip: string
   quickSearchTooltip: string
   saveDocumentButtonColor: T_projectAppControlBarSaveButtonColor

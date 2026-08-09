@@ -1,0 +1,376 @@
+@use './variables' as *;
+@use '../../../../css/globals/faColorBead.mixin.scss' as colorBead;
+@use '../../../../css/globals/faDialogCyanRim.mixin.scss' as dialogCyanRim;
+@use '../../../../css/globals/faTooltipParchmentFrame.mixin.scss' as tooltipParchment;
+@use '../../../../css/theme/quasar-components/qCard.variables' as qCard;
+@use '../../../../css/theme/quasar-components/qDialog.variables' as qDialog;
+@use '../../../../css/theme/quasar-components/qTooltip.variables' as *;
+
+.projectOverview {
+  &__content {
+    display: flex;
+    width: 100%;
+
+    /* Empty CTA row — same fluid cap as __graphCard--emptyCta. */
+    &--emptyCta {
+      margin-inline: auto;
+      max-width: $projectOverview-graph-card-width-emptyCta-max;
+      width: 100%;
+    }
+  }
+
+  /* Quasar items-center shrink-wraps; stretch when empty CTA is showing. */
+  &:has(&__content--emptyCta) {
+    align-items: stretch;
+  }
+
+  /* FA 1.0 .documentGraphParent — chrome shell; horizontal scroll is on __graphScroll. */
+  &__graphParent {
+    border-radius: $projectOverview-graph-card-borderRadius;
+    box-shadow: $qCard-boxShadow;
+    height: $projectOverview-graph-card-height-css;
+    margin: auto;
+    max-height: $projectOverview-graph-card-height-css;
+    min-height: $projectOverview-graph-card-height-css;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+
+    &--fullsize {
+      width: 100%;
+    }
+
+    /* Empty CTA chrome shell — same fluid cap as __graphCard--emptyCta.
+     * overflow visible so fantasy cyan rim box-shadow is not clipped. */
+    &--emptyCta {
+      max-width: $projectOverview-graph-card-width-emptyCta-max;
+      overflow: visible;
+      width: 100%;
+    }
+  }
+
+  &__graphScroll {
+    border-radius: inherit;
+    height: 100%;
+    overflow: auto hidden;
+    width: 100%;
+  }
+
+  /* FA 1.0 .documentGraphWrapper — width set inline from resolveProjectOverviewGraphCardWidthPx. */
+  &__graphCard {
+    background: transparent;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: $projectOverview-graph-card-height-css;
+    min-height: $projectOverview-graph-card-height-css;
+    overflow: visible;
+    width: $projectOverview-graph-card-width;
+  }
+
+  /* Empty CTA: fluid card, max 950px (create / assign / create-document). */
+  &__graphCard--emptyCta {
+    margin-inline: auto;
+    max-width: $projectOverview-graph-card-width-emptyCta-max;
+    min-width: 0;
+    width: 100%;
+  }
+
+  /* Title row keeps natural height; apexHost / empty CTA eat remaining card space. */
+  &__graphTitleSection {
+    flex: 0 0 auto;
+    /* Beat Quasar .q-card__section 16px so title top matches Last opened (24px margin only). */
+    padding-block: 0;
+    padding-inline: $projectOverview-documentDistributionTitle-paddingInline;
+  }
+
+  &__documentDistributionTitle {
+    align-items: center;
+    display: inline-flex;
+    flex-wrap: wrap;
+    font-size: $projectOverview-lastOpened-title-fontSize;
+    font-weight: $projectOverview-lastOpened-title-fontWeight;
+    gap: $projectOverview-documentDistributionTitle-gap;
+    line-height: $projectOverview-lastOpened-title-lineHeight;
+    margin-bottom: $projectOverview-lastOpened-title-marginBottom;
+    margin-top: $projectOverview-lastOpened-title-marginTop;
+    position: relative;
+    z-index: 100;
+  }
+
+  &__emptyCtaSection {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  /* FA 1.0: welcome col q-mb-xl + button col q-mt-md q-mb-xl. */
+  &__emptyPromptWelcomeWrap {
+    margin-bottom: $projectOverview-emptyPrompt-welcomeWrap-marginBottom;
+  }
+
+  &__emptyPromptButtonWrap {
+    margin-top: $projectOverview-emptyPrompt-buttonWrap-marginTop;
+  }
+
+  /* FA 1.0 app.scss h6 */
+  &__emptyPromptWelcome {
+    font-size: $projectOverview-emptyPrompt-welcome-fontSize;
+    font-weight: $projectOverview-emptyPrompt-welcome-fontWeight;
+    line-height: $projectOverview-emptyPrompt-welcome-lineHeight;
+  }
+
+  /* Outline size=lg + q-px-xl q-py-xs; radius from theme. */
+  &__emptyPromptButton {
+    font-weight: $projectOverview-emptyPrompt-button-fontWeight;
+    min-height: $projectOverview-emptyPrompt-button-minHeight !important;
+  }
+
+  &__worldLegendTooltip.q-tooltip {
+    display: flex;
+    flex-direction: column;
+    max-width: $projectOverview-worldLegendTooltip-maxWidth;
+  }
+
+  &__worldLegendRow {
+    align-items: center;
+    column-gap: $projectOverview-worldLegendRow-columnGap;
+    display: flex;
+    line-height: 1;
+
+    &:not(:last-child) {
+      margin-bottom: $projectOverview-worldLegendRow-rowGap;
+    }
+  }
+
+  /* Match Project Settings worlds tab swatches: circle + outline; fantasy bead shading. */
+  &__worldLegendSwatch {
+    border:
+      $projectOverview-worldLegendSwatch-borderWidth
+      solid
+      $projectOverview-worldLegendSwatch-borderColor;
+    border-radius: $projectOverview-worldLegendSwatch-borderRadius;
+    box-sizing: border-box;
+    display: block;
+    flex: 0 0 auto;
+    height: $projectOverview-worldLegendSwatch-size;
+    pointer-events: none;
+    width: $projectOverview-worldLegendSwatch-size;
+  }
+
+  &__worldLegendLine {
+    line-height: 1.2;
+    min-height: $projectOverview-worldLegendSwatch-size;
+    min-width: 0;
+  }
+
+  &__worldLegendCount {
+    color: $projectOverview-worldLegendCount-color;
+  }
+
+  &__apexHost {
+    /* Grow into leftover card space but never shrink under svg+padding (clips labels). */
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    overflow: visible;
+    width: 100%;
+
+    /* Chart unmounted while settling — skip Quasar dimmed wash; spinner only. */
+    .q-inner-loading,
+    .q-inner-loading--dark {
+      background: transparent;
+    }
+
+    .vue-apexcharts {
+      width: 100%;
+    }
+
+    .apexcharts-canvas {
+      /* FA 1.0: padding sits outside svg height so labels are not clipped. */
+      box-sizing: content-box !important;
+      padding-bottom: $projectOverview-graph-apex-paddingBottom;
+      padding-left: $projectOverview-graph-apex-paddingInline;
+      padding-right: $projectOverview-graph-apex-paddingInline;
+      width: 100% !important;
+
+      path {
+        stroke: none !important;
+      }
+
+      /* Tint existing segment fill toward primary (attribute fill stays; CSS paints the mix). */
+      .apexcharts-bar-area:hover {
+        /* type(<color>) — angle brackets are CSS attr() syntax, not SCSS operators. */
+        /* stylelint-disable scss/operator-no-unspaced */
+        fill:
+          color-mix(
+            in srgb,
+            #{$projectOverview-graph-bar-hover-fill}
+            #{$projectOverview-graph-bar-hover-fill-opacity * 100%},
+            attr(fill type(<color>))
+          );
+        /* stylelint-enable scss/operator-no-unspaced */
+      }
+
+      svg {
+        height: $projectOverview-graph-apex-svg-height-css;
+        margin-bottom: -40px;
+        overflow: visible;
+      }
+    }
+
+    /* FA 1.0 .docCountLabel — Apex applies cssClass on x-axis category labels. */
+    .projectOverview__graphCategoryLabel {
+      font-size: $projectOverview-graph-categoryLabel-fontSize;
+      font-weight: $projectOverview-graph-categoryLabel-fontWeight;
+      letter-spacing: $projectOverview-graph-categoryLabel-letterSpacing;
+    }
+  }
+
+  &__graphTooltipTitleRow {
+    align-items: center;
+    column-gap: $projectOverview-worldLegendRow-columnGap;
+    display: flex;
+    line-height: 1;
+  }
+
+  &__graphTooltipTitle {
+    align-items: center;
+    column-gap: $projectOverview-graphTooltip-inlineGap;
+    display: flex;
+    flex-wrap: wrap;
+    font-weight: 600;
+    line-height: 1.2;
+    min-width: 0;
+  }
+
+  &__graphTooltipCountValue {
+    color: $projectOverview-graphTooltipCount-color;
+    font-weight: 600;
+  }
+}
+
+body.fa-appTheme--flat .projectOverview__worldLegendTooltip.q-tooltip {
+  padding: $projectOverview-worldLegendTooltip-padding-flat;
+}
+
+body.fa-appTheme--fantasy .projectOverview__worldLegendSwatch {
+  @include colorBead.fa-color-bead-shading;
+}
+
+/*
+ * Fantasy graph chrome on the non-scrolling shell (__graphParent):
+ * fill + hard ring + top bloom + side feathers (same stack as Last opened / dialogs).
+ * Horizontal scroll stays on __graphScroll so glow does not drift with the chart.
+ * Border-radius lives on base __graphParent (flat + fantasy).
+ */
+body.fa-appTheme--fantasy .projectOverview__graphParent {
+  @include dialogCyanRim.fa-dialog-cyan-rim-chrome;
+
+  background: qDialog.$qDialog-card-backgroundColor !important;
+}
+
+/*
+ * Empty CTA fills the page panel (often ≤950px). Outside 1px rim ring clips under
+ * pageTransitionHost overflow:hidden — paint hard rim as border; keep bloom/feathers.
+ */
+body.fa-appTheme--fantasy .projectOverview__graphParent--emptyCta {
+  border: 1px solid qDialog.$qDialog-card-rim-borderColor;
+  box-shadow: #{qCard.$qCard-boxShadow} !important;
+  overflow: visible;
+}
+
+/*
+ * Empty CTA outline is wide (size lg + q-px-xl). Fantasy idle bottom bloom + hover
+ * external glow read as a broken bottom stroke on that size — keep Quasar ::before rim only.
+ */
+body.fa-appTheme--fantasy .projectOverview__emptyPromptButton.q-btn--outline {
+  --fa-outline-btn-ext-glow: 0;
+
+  box-shadow: none;
+
+  &::after {
+    content: none;
+    display: none;
+  }
+
+  &:hover:not(.disabled, [disabled], [aria-disabled='true']) {
+    --fa-outline-btn-ext-glow: 0;
+  }
+}
+
+body.fa-appTheme--fantasy .projectOverview__graphCard {
+  background: transparent;
+  box-shadow: none;
+}
+
+/*
+ * Apex custom tip chrome — match app .q-tooltip (flat accent / fantasy parchment).
+ * Style the INNER .projectOverview__graphTooltip only. Do not put parchment
+ * position/filter on the Apex root — that breaks absolute left/top placement.
+ */
+.apexcharts-tooltip.projectOverview__apexTooltip {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  opacity: 0 !important;
+  padding: 0 !important;
+  /* Opacity only — never tween left/top (Apex fights our above-bar pin). */
+  transition: opacity 0.12s ease !important;
+  visibility: hidden;
+  /* Above .projectOverview__documentDistributionTitle (z-index 100). */
+  z-index: 101;
+
+  .apexcharts-tooltip-arrow {
+    display: none;
+  }
+}
+
+/*
+ * Pin with CSS vars + !important so Apex inline left/top cannot move the tip.
+ * Stay hidden until both active (Apex) and anchored (our coords).
+ */
+.apexcharts-tooltip.projectOverview__apexTooltip.projectOverview__apexTooltip--anchored.apexcharts-active {
+  left: var(--fa-po-tt-left) !important;
+  opacity: 1 !important;
+  top: var(--fa-po-tt-top) !important;
+  transition: opacity 0.12s ease !important;
+  visibility: visible;
+}
+
+.apexcharts-tooltip.projectOverview__apexTooltip .projectOverview__graphTooltip {
+  font-size: $qTooltip-fontSize;
+  font-weight: $qTooltip-fontWeight;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  max-width: $qTooltip-maxWidth;
+  white-space: normal;
+
+  .projectOverview__graphTooltipTitleRow {
+    align-items: center;
+    line-height: 1;
+  }
+
+  .projectOverview__graphTooltipTitle {
+    align-items: center;
+    column-gap: $projectOverview-graphTooltip-inlineGap;
+    line-height: 1.2;
+  }
+
+  .projectOverview__worldLegendSwatch {
+    align-self: center;
+    flex-shrink: 0;
+  }
+}
+
+body.fa-appTheme--flat .apexcharts-tooltip.projectOverview__apexTooltip .projectOverview__graphTooltip {
+  background: $qTooltip-flat-backgroundColor;
+  border-radius: $projectOverview-graphTooltip-borderRadius-flat;
+  box-shadow: $qTooltip-flat-boxShadow;
+  color: $qTooltip-flat-color;
+  padding: $qTooltip-flat-padding;
+}
+
+body.fa-appTheme--fantasy .apexcharts-tooltip.projectOverview__apexTooltip .projectOverview__graphTooltip {
+  @include tooltipParchment.fa-tooltip-parchment-surface;
+}

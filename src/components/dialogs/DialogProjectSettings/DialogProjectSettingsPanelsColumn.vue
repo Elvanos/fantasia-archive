@@ -54,6 +54,7 @@
               v-if="props.documentTemplates !== null"
               :current-language-code="props.currentLanguageCode"
               :templates="props.documentTemplates"
+              :worlds="props.worlds"
               @add-template="emit('addDocumentTemplate')"
               @remove-template="emit('removeDocumentTemplate', $event)"
               @update:templates="emit('update:documentTemplates', $event)"

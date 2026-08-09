@@ -34,6 +34,7 @@ export interface I_faUserSettings {
   allowQuickPopupSameKeyClose: boolean
   allowWiderScrollbars: boolean
   appTheme: T_faUserSettingsAppTheme
+  autoOpenLastDocument: boolean
   disableCategoryCount: boolean
   compactTags: boolean
   disableCloseAfterSelectQuickSearch: boolean

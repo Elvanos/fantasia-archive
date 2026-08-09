@@ -2,6 +2,10 @@
   <section
     class="projectOverview column items-center full-width"
     data-test-locator="projectOverview"
+    :style="{
+      '--fa-projectOverview-graph-apex-svg-height': `${chartHeightPx + 2}px`,
+      '--fa-projectOverview-graph-card-height': `${graphCardHeightPx}px`
+    }"
   >
     <h5
       class="projectOverview__subtitle text-white text-center q-my-none"
@@ -46,12 +50,52 @@
         </div>
       </div>
     </div>
+
+    <!-- Chart (+ empty CTA inside card) and optional last opened -->
+    <div
+      class="projectOverview__content row items-start no-wrap full-width"
+      :class="{ 'projectOverview__content--emptyCta': showEmptyCta }"
+      data-test-locator="projectOverview-content"
+    >
+      <ProjectOverviewChartPanel
+        :chart-height-px="chartHeightPx"
+        :chart-loading="chartLoading"
+        :chart-options="chartOptions"
+        :chart-series="chartSeries"
+        :empty-cta-mode="emptyCtaMode"
+        :fullsize="!showContentRow || lastOpenedItems.length === 0"
+        :graph-card-width-px="graphCardWidthPx"
+        :on-empty-cta-click="onEmptyCtaClick"
+        :show-empty-cta="showEmptyCta"
+        :total-document-count="totalDocumentCount"
+      />
+
+      <ProjectOverviewLastOpenedList
+        v-if="showContentRow && lastOpenedItems.length > 0"
+        :items="lastOpenedItems"
+        :on-context-add-under="onLastOpenedContextAddUnder"
+        :on-context-copy-background-color="onLastOpenedContextCopyBackgroundColor"
+        :on-context-copy-document="onLastOpenedContextCopyDocument"
+        :on-context-copy-name="onLastOpenedContextCopyName"
+        :on-context-copy-text-color="onLastOpenedContextCopyTextColor"
+        :on-context-delete="onLastOpenedContextDelete"
+        :on-context-edit="onLastOpenedContextEdit"
+        :on-context-open="onLastOpenedContextOpen"
+        :on-row-aux-click="onLastOpenedRowAuxClick"
+        :on-row-click="onLastOpenedRowClick"
+        :resolve-item-chrome-style="resolveLastOpenedItemChromeStyle"
+        :resolve-world-indicator-color="resolveLastOpenedWorldIndicatorColor"
+        :show-world-indicators="showWorldIndicators"
+      />
+    </div>
   </section>
 </template>
 
 <script lang="ts" setup>
 import FantasiaMascotImage from 'app/src/components/elements/FantasiaMascotImage/FantasiaMascotImage.vue'
 
+import ProjectOverviewChartPanel from './ProjectOverviewChartPanel.vue'
+import ProjectOverviewLastOpenedList from './ProjectOverviewLastOpenedList.vue'
 import { useProjectOverview } from './scripts/projectOverview_manager'
 
 defineOptions({
@@ -59,10 +103,35 @@ defineOptions({
 })
 
 const {
+  chartHeightPx,
+  chartLoading,
+  chartOptions,
+  chartSeries,
+  emptyCtaMode,
+  graphCardHeightPx,
+  graphCardWidthPx,
+  lastOpenedItems,
+  onEmptyCtaClick,
+  onLastOpenedContextAddUnder,
+  onLastOpenedContextCopyBackgroundColor,
+  onLastOpenedContextCopyDocument,
+  onLastOpenedContextCopyName,
+  onLastOpenedContextCopyTextColor,
+  onLastOpenedContextDelete,
+  onLastOpenedContextEdit,
+  onLastOpenedContextOpen,
+  onLastOpenedRowAuxClick,
+  onLastOpenedRowClick,
   projectDisplayName,
   randomTipCaption,
+  resolveLastOpenedItemChromeStyle,
+  resolveLastOpenedWorldIndicatorColor,
+  showContentRow,
+  showEmptyCta,
   showMascotInTipCard,
-  showTipCard
+  showTipCard,
+  showWorldIndicators,
+  totalDocumentCount
 } = useProjectOverview()
 </script>
 
@@ -92,3 +161,5 @@ const {
 </style>
 
 <style lang="scss" src="./styles/ProjectOverview.hint.unscoped.scss"></style>
+<style lang="scss" src="./styles/ProjectOverview.chart.unscoped.scss"></style>
+<style lang="scss" src="./styles/ProjectOverview.lastOpened.unscoped.scss"></style>

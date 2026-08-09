@@ -1,5 +1,6 @@
 import { computed, nextTick, ref } from 'vue'
 
+import { FA_ICON_PICKER_EMPTY_PLACEHOLDER_ICON } from 'app/types/I_faIconPickerInput'
 import {
   FA_SELECT_INPUT_DEFAULT_CHIP_COLOR,
   FA_SELECT_INPUT_NEW_CHIP_COLOR
@@ -13,6 +14,7 @@ import {
   filterFaSelectInputOptionsByQuery,
   isFaSelectInputObjectMode,
   normalizeFaSelectInputOptions,
+  resolveFaSelectInputOptionIcon,
   shouldShowFaSelectInputSelectedChip,
   splitFaSelectInputLabelForFilterHighlight
 } from 'app/src/scripts/faSelectInput/faSelectInput_manager'
@@ -29,11 +31,13 @@ export const useFaSelectInput = createUseFaSelectInput({
   createFaSelectInputNewItem,
   createId: () => crypto.randomUUID(),
   defaultChipColor: FA_SELECT_INPUT_DEFAULT_CHIP_COLOR,
+  emptyDocumentTemplateIcon: FA_ICON_PICKER_EMPTY_PLACEHOLDER_ICON,
   filterFaSelectInputOptionsByQuery,
   isFaSelectInputObjectMode,
   newChipColor: FA_SELECT_INPUT_NEW_CHIP_COLOR,
   nextTick,
   normalizeFaSelectInputOptions,
   ref,
+  resolveFaSelectInputOptionIcon,
   splitFaSelectInputLabelForFilterHighlight
 })

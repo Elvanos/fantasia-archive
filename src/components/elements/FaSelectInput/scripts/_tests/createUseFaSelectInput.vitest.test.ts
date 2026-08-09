@@ -15,6 +15,7 @@ import {
   filterFaSelectInputOptionsByQuery,
   isFaSelectInputObjectMode,
   normalizeFaSelectInputOptions,
+  resolveFaSelectInputOptionIcon,
   splitFaSelectInputLabelForFilterHighlight
 } from 'app/src/scripts/faSelectInput/faSelectInput_manager'
 
@@ -29,12 +30,14 @@ function createTestUseFaSelectInput () {
     createFaSelectInputNewItem,
     createId: () => 'fixed-uuid',
     defaultChipColor: FA_SELECT_INPUT_DEFAULT_CHIP_COLOR,
+    emptyDocumentTemplateIcon: 'mdi-file-outline',
     filterFaSelectInputOptionsByQuery,
     isFaSelectInputObjectMode,
     newChipColor: FA_SELECT_INPUT_NEW_CHIP_COLOR,
     nextTick,
     normalizeFaSelectInputOptions,
     ref,
+    resolveFaSelectInputOptionIcon,
     splitFaSelectInputLabelForFilterHighlight
   })
 }

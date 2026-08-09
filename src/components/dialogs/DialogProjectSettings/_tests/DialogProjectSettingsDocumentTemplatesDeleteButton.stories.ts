@@ -12,12 +12,21 @@ export default meta
 
 export const Enabled: StoryObj<typeof meta> = {
   args: {
-    removeDisabled: false
+    removeDisabled: false,
+    removeDisabledReason: null
   }
 }
 
-export const Disabled: StoryObj<typeof meta> = {
+export const DisabledHasDocuments: StoryObj<typeof meta> = {
   args: {
-    removeDisabled: true
+    removeDisabled: true,
+    removeDisabledReason: 'hasDocuments'
+  }
+}
+
+export const DisabledAssignedToWorld: StoryObj<typeof meta> = {
+  args: {
+    removeDisabled: true,
+    removeDisabledReason: 'assignedToWorld'
   }
 }

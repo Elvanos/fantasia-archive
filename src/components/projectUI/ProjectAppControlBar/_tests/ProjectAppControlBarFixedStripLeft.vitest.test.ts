@@ -52,6 +52,7 @@ const baseProps = {
   onToggleAppNoteboardClick: vi.fn(),
   onToggleHierarchyTreeClick: vi.fn(),
   onToggleProjectNoteboardClick: vi.fn(),
+  quickAddKeybindLabel: null as string | null,
   quickAddTooltip: 'Quick add',
   quickSearchTooltip: 'Quick search',
   showAppNoteboardContentDot: false,
@@ -141,6 +142,26 @@ test('Test that ProjectAppControlBarFixedStripLeft hides guides when showGuideBu
 
   expect(wrapper.find('[data-test-locator="projectAppControlBar-keyboardShortcutsButton"]').exists()).toBe(false)
   expect(wrapper.find('[data-test-locator="projectAppControlBar-toggleHierarchyTreeButton"]').exists()).toBe(true)
+
+  wrapper.unmount()
+})
+
+/**
+ * ProjectAppControlBarFixedStripLeft
+ * Shows Quick-add chord in tooltip when quickAddKeybindLabel is set.
+ */
+test('Test that ProjectAppControlBarFixedStripLeft shows quick-add keybind hint', () => {
+  const wrapper = mount(ProjectAppControlBarFixedStripLeft, {
+    props: {
+      ...baseProps,
+      quickAddKeybindLabel: 'Ctrl + N'
+    },
+    global: mountGlobal
+  })
+
+  expect(
+    wrapper.find('[data-test-locator="projectAppControlBar-quickAddButton-keybind"]').text()
+  ).toBe('(Ctrl + N)')
 
   wrapper.unmount()
 })

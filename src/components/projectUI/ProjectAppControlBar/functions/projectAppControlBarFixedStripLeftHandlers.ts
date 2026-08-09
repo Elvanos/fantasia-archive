@@ -41,7 +41,7 @@ export function buildProjectAppControlBarFixedStripLeftHandlers (input: {
   }
 
   function onQuickAddClick (): void {
-    // Placeholder until quick-add dialog ships.
+    input.runFaAction('openQuickAddDocumentDialog', undefined)
   }
 
   return {

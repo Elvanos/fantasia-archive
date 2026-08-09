@@ -29,7 +29,7 @@ function createHandlers (input: {
   focusTab?: (documentId: string) => Promise<void>
   openFromTree?: (
     documentId: string,
-    mode: 'leftNavigate',
+    mode: import('app/types/I_faOpenedDocumentsDomain').T_faOpenedDocumentOpenMode,
     treeMeta: { tabLabel: string, templateIcon: string }
   ) => Promise<void>
   requestDeleteDocument?: (documentId: string) => void
@@ -90,6 +90,21 @@ test('Test that handleOpenHierarchyTreeDocument opens and focuses a closed tab w
   })
   expect(focusTab).toHaveBeenCalledWith('doc-a')
   expect(enterDocumentEditMode).not.toHaveBeenCalled()
+})
+
+test('Test that handleOpenHierarchyTreeDocument honors middleBackground openMode', async () => {
+  const { focusTab, handlers, openFromTree } = createHandlers()
+
+  await handlers.handleOpenHierarchyTreeDocument({
+    documentId: 'doc-a',
+    openMode: 'middleBackground'
+  })
+
+  expect(openFromTree).toHaveBeenCalledWith('doc-a', 'middleBackground', {
+    tabLabel: 'Hero',
+    templateIcon: 'mdi-account'
+  })
+  expect(focusTab).toHaveBeenCalledWith('doc-a')
 })
 
 test('Test that handleEditHierarchyTreeDocument opens, focuses, and enters edit for a closed tab', async () => {

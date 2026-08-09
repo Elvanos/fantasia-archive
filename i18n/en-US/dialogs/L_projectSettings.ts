@@ -149,7 +149,9 @@ export default {
         confirmDeleteButton: 'Confirm delete',
         message: 'Are you sure you want to delete this document template? All fields connected to this template in any other template will stop working. Also, all connected documents will stop showing their data if any were filled using this template. This deletion might have unintended side effects.'
       },
-      removeDisabledHasDocuments: 'Remove documents using this template before deleting it.'
+      removeDisabledHasDocuments: 'Remove documents using this template before deleting it.',
+      removeDisabledAssignedToWorld:
+        'This template is connected to one or more worlds, please un-assign it first from all affected worlds.'
     }
   }
 }

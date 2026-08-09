@@ -89,7 +89,7 @@ export default {
       tags: 'αρχική έργου, πίνακας, επισκόπηση, χώρος εργασίας',
       projectOverviewBehavior: {
         subtitle: 'Συμπεριφορά επισκόπησης έργου',
-        tags: 'συμβουλές, κόλπα, γνωρίζατε, κάρτα επισκόπησης',
+        tags: 'συμβουλές, κόλπα, γνωρίζατε, κάρτα επισκόπησης, auto open, last document',
       }
     },
     welcomeScreen: {
@@ -117,6 +117,12 @@ export default {
       description: 'Αυτή η ρύθμιση κάνει τις γραμμές κύλισης του FA ευρύτερες και επομένως επιτρέπει τη μη αυτόματη κύλιση με κλικ απευθείας σε αυτές για συσκευές που δεν υποστηρίζουν τυπική κύλιση (για παράδειγμα ποντίκια χωρίς τροχό κύλισης).',
       tags: 'Πλάτος γραμμής κύλισης, κύλιση κλικ, ποντίκι χωρίς τροχό, trackball, αφή',
     },
+    autoOpenLastDocument: {
+      title: 'Auto-open last document',
+      description: 'When opening a project, automatically open the last active document tab instead of showing the Project overview first.',
+      tags: 'auto open, last document, project open, restore tab, skip overview, workspace home, resume session'
+    },
+
     disableCategoryCount: {
       title: 'Απόκρυψη αριθμού κατηγοριών',
       description: 'Απόκρυψη αριθμών κατηγορίας στο ιεραρχικό δέντρο',

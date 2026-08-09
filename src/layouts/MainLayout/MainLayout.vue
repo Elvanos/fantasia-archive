@@ -67,6 +67,12 @@
                   v-if="Component !== null && childRoute !== undefined"
                   :key="resolveMainLayoutOutletKeyFromRoute(childRoute)"
                   class="appShellLayout__pageTransitionLayer"
+                  :class="{
+                    'appShellLayout__pageTransitionLayer--emptyCta':
+                      projectOverviewInitialEmptyPromptActive,
+                    'appShellLayout__pageTransitionLayer--initialEmptyPrompt':
+                      projectOverviewInitialEmptyPromptActive
+                  }"
                 >
                   <component :is="Component" />
                 </div>
@@ -92,6 +98,12 @@
               v-if="Component !== null && childRoute !== undefined"
               :key="resolveMainLayoutOutletKeyFromRoute(childRoute)"
               class="appShellLayout__pageTransitionLayer"
+              :class="{
+                'appShellLayout__pageTransitionLayer--emptyCta':
+                  projectOverviewInitialEmptyPromptActive,
+                'appShellLayout__pageTransitionLayer--initialEmptyPrompt':
+                  projectOverviewInitialEmptyPromptActive
+              }"
             >
               <component :is="Component" />
             </div>
@@ -116,6 +128,7 @@ import { useMainLayout, useMainLayoutWorkspaceSidebar } from './scripts/mainLayo
 import { useMainLayoutHideHierarchyTree } from './scripts/mainLayoutHideHierarchyTreeWiring'
 import { handleMainLayoutWorkspaceDocumentOpenRequest } from './scripts/mainLayoutWorkspaceDocumentOpenWiring'
 import { useFaAppHeaderChromeSpellcheckRefreshVisible } from 'app/src/components/globals/GlobalLanguageSelector/scripts/faAppHeaderChromeSpellcheckReserveWiring'
+import { useProjectOverviewInitialEmptyPromptActive } from 'app/src/components/projectUI/ProjectOverview/scripts/projectOverviewInitialEmptyPromptChromeWiring'
 
 defineOptions({
   name: 'MainLayout'
@@ -139,6 +152,7 @@ const {
 } = useMainLayoutWorkspaceSidebar()
 
 const { hideHierarchyTree } = useMainLayoutHideHierarchyTree()
+const projectOverviewInitialEmptyPromptActive = useProjectOverviewInitialEmptyPromptActive()
 
 const sidebarSplitterLimits = computed((): [number, number] => {
   if (hideHierarchyTree.value) {
@@ -228,6 +242,14 @@ const faAppHeaderChromeSpellcheckRefreshVisible = useFaAppHeaderChromeSpellcheck
 .appShellLayout__pageTransitionLayer {
   min-height: inherit;
   width: 100%;
+}
+
+.appShellLayout__pageTransitionLayer--initialEmptyPrompt {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
 }
 </style>
 

@@ -122,6 +122,7 @@ test('Test that DialogProjectSettingsDocumentTemplatesDetailPanel renders templa
       currentLanguageCode: 'en-US',
       nameHasError: false,
       removeDisabled: false,
+      removeDisabledReason: null,
       template: buildDialogProjectSettingsDocumentTemplateDraft({
         icon: 'mdi-account',
         worldAppendixTranslations: { 'en-US': 'Notes' }
@@ -144,6 +145,7 @@ test('Test that DialogProjectSettingsDocumentTemplatesDetailPanel wires locale t
       currentLanguageCode: 'de',
       nameHasError: false,
       removeDisabled: false,
+      removeDisabledReason: null,
       template: buildDialogProjectSettingsDocumentTemplateDraft()
     },
     global: detailPanelMountGlobal
@@ -204,6 +206,7 @@ test('Test that DialogProjectSettingsDocumentTemplatesDetailPanel forwards field
       currentLanguageCode: 'en-US',
       nameHasError: true,
       removeDisabled: false,
+      removeDisabledReason: null,
       template: buildDialogProjectSettingsDocumentTemplateDraft()
     },
     global: {

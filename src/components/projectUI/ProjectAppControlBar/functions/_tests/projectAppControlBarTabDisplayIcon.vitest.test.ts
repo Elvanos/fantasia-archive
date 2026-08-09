@@ -2,6 +2,7 @@ import { expect, test } from 'vitest'
 
 import {
   PROJECT_APP_CONTROL_BAR_CATEGORY_TAB_ICON,
+  PROJECT_APP_CONTROL_BAR_EMPTY_TEMPLATE_ICON,
   resolveProjectAppControlBarTabDisplayIcon
 } from '../projectAppControlBarTabDisplayIcon'
 
@@ -23,4 +24,19 @@ test('Test that resolveProjectAppControlBarTabDisplayIcon returns template icon 
     isCategoryDraft: false,
     templateIcon: 'mdi-skull'
   })).toBe('mdi-skull')
+})
+
+/**
+ * resolveProjectAppControlBarTabDisplayIcon
+ * Empty template icon falls back to the shared document placeholder.
+ */
+test('Test that resolveProjectAppControlBarTabDisplayIcon falls back for empty template icon', () => {
+  expect(resolveProjectAppControlBarTabDisplayIcon({
+    isCategoryDraft: false,
+    templateIcon: ''
+  })).toBe(PROJECT_APP_CONTROL_BAR_EMPTY_TEMPLATE_ICON)
+  expect(resolveProjectAppControlBarTabDisplayIcon({
+    isCategoryDraft: false,
+    templateIcon: '  '
+  })).toBe(PROJECT_APP_CONTROL_BAR_EMPTY_TEMPLATE_ICON)
 })

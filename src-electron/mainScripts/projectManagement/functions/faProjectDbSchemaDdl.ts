@@ -11,6 +11,10 @@ export const FA_PROJECT_TABLE_DOCUMENT_TAGS = 'document_tags'
 export const FA_PROJECT_TABLE_WORLD_TEMPLATE_GROUPS = 'world_template_groups'
 export const FA_PROJECT_TABLE_WORLD_TEMPLATE_PLACEMENTS = 'world_template_placements'
 export const FA_PROJECT_TABLE_OPENED_DOCUMENTS = 'opened_documents'
+export const FA_PROJECT_TABLE_DOCUMENT_LAST_OPENED = 'document_last_opened'
+
+/** Max rows retained in document_last_opened (newest first), matching FA 1.0. */
+export const FA_PROJECT_DOCUMENT_LAST_OPENED_MAX = 50
 
 /** documents tree anchor FK to world_template_placements.id */
 export const FA_PROJECT_DOCUMENT_TREE_PLACEMENT_ID_COLUMN = 'tree_placement_id'
@@ -61,8 +65,8 @@ export const FA_PROJECT_DOCUMENT_TREE_LEGACY_SORT_ORDER_COLUMN = 'sort_order'
 export const FA_PROJECT_DOCUMENT_TREE_LEGACY_PLACEMENT_PARENT_SORT_INDEX =
   'idx_documents_placement_parent_sort'
 
-/** Default worlds.color hex when inserting worlds without an override. */
-export const FA_PROJECT_WORLD_DEFAULT_COLOR = '#808080'
+/** Default worlds.color when inserting worlds without an override (empty = optional). */
+export const FA_PROJECT_WORLD_DEFAULT_COLOR = ''
 
 /**
  * worlds.color CHECK: empty string (optional color) or #RRGGBB.
@@ -347,6 +351,22 @@ CREATE TABLE IF NOT EXISTS ${FA_PROJECT_TABLE_OPENED_DOCUMENTS} (
 }
 
 /**
+ * Creates document_last_opened MRU table (schema version 8 / fresh bootstrap).
+ */
+export function applyFaProjectDocumentLastOpenedSchemaV1 (db: I_faProjectDbExec): void {
+  db.exec(`
+CREATE TABLE IF NOT EXISTS ${FA_PROJECT_TABLE_DOCUMENT_LAST_OPENED} (
+  document_id TEXT NOT NULL PRIMARY KEY
+    REFERENCES ${FA_PROJECT_TABLE_DOCUMENTS}(id) ON DELETE CASCADE,
+  opened_at_ms INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_document_last_opened_opened_at_ms
+  ON ${FA_PROJECT_TABLE_DOCUMENT_LAST_OPENED}(opened_at_ms DESC);
+`)
+}
+
+/**
  * Creates worldbuilding content tables and indexes for schema version 1.
  * Idempotent when tables already exist.
  */
@@ -354,4 +374,5 @@ export function applyFaProjectContentSchemaV1 (db: I_faProjectDbExec): void {
   applyFaProjectContentSchemaV1CoreTables(db)
   applyFaProjectContentSchemaV1DocumentsAndIndexes(db)
   applyFaProjectOpenedDocumentsSchemaV1(db)
+  applyFaProjectDocumentLastOpenedSchemaV1(db)
 }

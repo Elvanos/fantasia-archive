@@ -89,7 +89,7 @@ export default {
       tags: 'início do projeto, painel, visão geral, área de trabalho',
       projectOverviewBehavior: {
         subtitle: 'Comportamento da visão geral do projeto',
-        tags: 'dicas, truques, você sabia, cartão de visão geral',
+        tags: 'dicas, truques, você sabia, cartão de visão geral, auto open, last document',
       }
     },
     welcomeScreen: {
@@ -117,6 +117,12 @@ export default {
       description: 'Esta configuração torna as barras de rolagem de FA mais largas e, portanto, permite a rolagem manual por clique diretamente nelas para dispositivos que não suportam rolagem padrão (por exemplo, mouses sem roda de rolagem).',
       tags: 'largura da barra de rolagem, clique em rolagem, mouse sem roda, trackball, toque',
     },
+    autoOpenLastDocument: {
+      title: 'Auto-open last document',
+      description: 'When opening a project, automatically open the last active document tab instead of showing the Project overview first.',
+      tags: 'auto open, last document, project open, restore tab, skip overview, workspace home, resume session'
+    },
+
     disableCategoryCount: {
       title: 'Ocultar contagem de categorias',
       description: 'Ocultar números de categoria na árvore hierárquica',

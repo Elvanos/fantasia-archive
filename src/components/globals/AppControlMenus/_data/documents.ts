@@ -6,12 +6,17 @@ import {
   faMenuItem,
   faMenuSeparator
 } from 'app/src/components/globals/AppControlMenus/_data/menuDataHelpers'
+import { runFaAction } from 'app/src/scripts/actionManager/faActionManagerRun_manager'
 
-export function buildDocumentsMenu (_session: I_appMenuBuildSession): I_appMenuList {
+export function buildDocumentsMenu (session: I_appMenuBuildSession): I_appMenuList {
+  const gate = session.hasActiveProject
+
   return {
     data: [
       faMenuItem('appControlMenus.documents.items.quickAddNewDocument', 'mdi-text-box-plus-outline', {
-        conditions: false
+        conditions: gate,
+        keybindCommandId: 'quickNewDocument',
+        trigger: () => runFaAction('openQuickAddDocumentDialog', undefined)
       }),
       faMenuItem('appControlMenus.documents.items.quickSearchDocument', 'mdi-database-search', {
         conditions: false

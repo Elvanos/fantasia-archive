@@ -89,7 +89,7 @@ export default {
       tags: 'домашня сторінка проєкту, панель, огляд, робоча область',
       projectOverviewBehavior: {
         subtitle: 'Поведінка огляду проєкту',
-        tags: 'поради, хитрощі, чи знали ви, картка огляду',
+        tags: 'поради, хитрощі, чи знали ви, картка огляду, auto open, last document',
       }
     },
     welcomeScreen: {
@@ -117,6 +117,12 @@ export default {
       description: 'Цей параметр робить смуги прокручування FA ширшими, а тому дозволяє ручне прокручування безпосередньо на них для пристроїв, які не підтримують стандартне прокручування (наприклад, миші без колеса прокручування).',
       tags: 'ширина смуги прокручування, прокручування клацанням, миша без колеса, трекбол, сенсорний екран',
     },
+    autoOpenLastDocument: {
+      title: 'Auto-open last document',
+      description: 'When opening a project, automatically open the last active document tab instead of showing the Project overview first.',
+      tags: 'auto open, last document, project open, restore tab, skip overview, workspace home, resume session'
+    },
+
     disableCategoryCount: {
       title: 'Приховати кількість категорій',
       description: 'Приховати номери категорій в ієрархічному дереві',

@@ -14,6 +14,7 @@ const FA_KEYBIND_COMMAND_TO_ACTION_ID: Readonly<Partial<Record<T_faKeybindComman
   openProjectStyling: 'openProjectStylingDialog',
   openProjectSettings: 'openProjectSettingsDialog',
   showProjectDashboard: 'showProjectDashboard',
+  quickNewDocument: 'openQuickAddDocumentDialog',
   toggleDeveloperTools: 'toggleDeveloperTools',
   toggleAppNoteboard: 'toggleAppNoteboardWindow',
   toggleProjectNoteboard: 'toggleProjectNoteboardWindow',

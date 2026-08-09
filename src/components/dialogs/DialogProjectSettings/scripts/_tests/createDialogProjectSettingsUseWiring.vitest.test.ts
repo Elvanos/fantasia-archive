@@ -39,6 +39,7 @@ test('Test that useDialogProjectSettings validation computeds tolerate null draf
       baselineWorlds: ref(null),
       dialogModel: ref(false),
       documentName: ref(''),
+      hadWorldTemplatePlacementsAtDialogOpen: ref(false),
       localDocumentTemplates: ref(null),
       localSettings: ref(null),
       localWorlds: ref(null),

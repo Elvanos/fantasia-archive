@@ -57,7 +57,7 @@ test('Test that resolveProjectAppControlBarTabWorldIndicatorColor resolves color
 
 /**
  * resolveProjectAppControlBarTabWorldColor
- * Returns null for missing, blank, or unknown world ids and empty colors.
+ * Returns null for missing/unknown world ids; blank saved color → primary-bright.
  */
 test('Test that resolveProjectAppControlBarTabWorldColor returns null for invalid world ids', () => {
   const worlds = [{
@@ -71,7 +71,7 @@ test('Test that resolveProjectAppControlBarTabWorldColor returns null for invali
   expect(resolveProjectAppControlBarTabWorldColor(worlds, 'missing-world')).toBeNull()
 })
 
-test('Test that resolveProjectAppControlBarTabWorldColor returns null for blank world colors', () => {
+test('Test that resolveProjectAppControlBarTabWorldColor falls back to primary-bright for blank world colors', () => {
   const color = resolveProjectAppControlBarTabWorldColor(
     [{
       color: '   ',
@@ -79,7 +79,7 @@ test('Test that resolveProjectAppControlBarTabWorldColor returns null for blank 
     }],
     'world-1'
   )
-  expect(color).toBeNull()
+  expect(color).toBe('var(--fa-color-primary-bright)')
 })
 
 test('Test that resolveProjectAppControlBarTabWorldColor trims world colors', () => {

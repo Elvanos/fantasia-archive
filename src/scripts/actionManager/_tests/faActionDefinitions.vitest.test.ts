@@ -7,6 +7,7 @@ import type { I_faAppConfigApplyResult } from 'app/types/I_faAppConfigDomain'
 import { FA_ACTION_IDS, type T_faActionId } from 'app/types/I_faActionManagerDomain'
 
 const userSettingsFixture = vi.hoisted(() => ({
+  allowQuickPopupSameKeyClose: false,
   hideHierarchyTree: false,
   preventFilledAppNoteBoardPopup: false,
   preventFilledProjectNoteBoardPopup: false
@@ -28,6 +29,10 @@ const projectNoteboardTextFixture = vi.hoisted(() => ({
   text: ''
 }))
 
+const hierarchyTreeWorldsFixture = vi.hoisted(() => ({
+  worlds: [] as Array<{ placements: unknown[] }>
+}))
+
 const {
   applyLanguageMock,
   applyImportMock,
@@ -47,6 +52,7 @@ const {
   refreshProjectNoteboardMock,
   refreshProjectSidebarMock,
   refreshProjectStylingMock,
+  refreshHierarchyTreeLayoutMock,
   refreshWebContentsMock,
   resizeWindowMock,
   savePersistedCssFromEditorMock,
@@ -80,6 +86,7 @@ const {
   refreshProjectNoteboardMock: vi.fn(async () => false),
   refreshProjectSidebarMock: vi.fn(async () => undefined),
   refreshProjectStylingMock: vi.fn(async () => undefined),
+  refreshHierarchyTreeLayoutMock: vi.fn(async () => undefined),
   refreshRecentProjectsMock: vi.fn(async () => undefined),
   refreshSettingsMock: vi.fn(async () => undefined),
   refreshWebContentsMock: vi.fn(async () => true),
@@ -179,6 +186,15 @@ vi.mock('app/src/stores/S_FaProjectSidebar', () => ({
   })
 }))
 
+vi.mock('app/src/stores/S_FaProjectHierarchyTree', () => ({
+  S_FaProjectHierarchyTree: () => ({
+    get worlds () {
+      return hierarchyTreeWorldsFixture.worlds
+    },
+    refreshLayout: refreshHierarchyTreeLayoutMock
+  })
+}))
+
 vi.mock('app/src/stores/S_FaProjectStyling', () => ({
   S_FaProjectStyling: () => ({
     refreshProjectStyling: refreshProjectStylingMock,
@@ -253,6 +269,7 @@ beforeEach(() => {
   updateSettingsMock.mockImplementation(async () => undefined)
   patchSettingsSilentlyMock.mockReset()
   patchSettingsSilentlyMock.mockImplementation(async () => undefined)
+  userSettingsFixture.allowQuickPopupSameKeyClose = false
   userSettingsFixture.hideHierarchyTree = false
   userSettingsFixture.preventFilledAppNoteBoardPopup = false
   userSettingsFixture.preventFilledProjectNoteBoardPopup = false
@@ -270,6 +287,9 @@ beforeEach(() => {
   refreshProjectSidebarMock.mockImplementation(async () => undefined)
   refreshProjectStylingMock.mockReset()
   refreshProjectStylingMock.mockImplementation(async () => undefined)
+  refreshHierarchyTreeLayoutMock.mockReset()
+  refreshHierarchyTreeLayoutMock.mockImplementation(async () => undefined)
+  hierarchyTreeWorldsFixture.worlds = []
   savePersistedCssFromEditorMock.mockReset()
   savePersistedCssFromEditorMock.mockImplementation(async (): Promise<boolean> => true)
   refreshSettingsMock.mockReset()
@@ -544,6 +564,38 @@ test('Test that openNewProjectDialog handler opens the NewProject dialog', () =>
   expect(openDialogComponentMock).toHaveBeenCalledWith('NewProject')
 })
 
+test('Test that openQuickAddDocumentDialog handler opens QuickAddDocument when a project is active', () => {
+  definitionFor('openQuickAddDocumentDialog').handler(undefined)
+  expect(openDialogComponentMock).toHaveBeenCalledWith('QuickAddDocument')
+})
+
+test('Test that openQuickAddDocumentDialog dismisses when allowQuickPopupSameKeyClose and dialog open', () => {
+  userSettingsFixture.allowQuickPopupSameKeyClose = true
+  tryDismissFaComponentDialogIfOpenMock.mockReturnValueOnce(true)
+  definitionFor('openQuickAddDocumentDialog').handler(undefined)
+  expect(tryDismissFaComponentDialogIfOpenMock).toHaveBeenCalledWith('QuickAddDocument')
+  expect(openDialogComponentMock).not.toHaveBeenCalled()
+})
+
+test('Test that openQuickAddDocumentDialog skips dismiss when allowQuickPopupSameKeyClose is off', () => {
+  userSettingsFixture.allowQuickPopupSameKeyClose = false
+  tryDismissFaComponentDialogIfOpenMock.mockReturnValueOnce(true)
+  definitionFor('openQuickAddDocumentDialog').handler(undefined)
+  expect(tryDismissFaComponentDialogIfOpenMock).not.toHaveBeenCalled()
+  expect(openDialogComponentMock).toHaveBeenCalledWith('QuickAddDocument')
+})
+
+test('Test that openQuickAddDocumentDialog no-ops without an active project', () => {
+  const prior = faActiveProjectFixture.activeProject
+  faActiveProjectFixture.activeProject = null as never
+  try {
+    definitionFor('openQuickAddDocumentDialog').handler(undefined)
+    expect(openDialogComponentMock).not.toHaveBeenCalled()
+  } finally {
+    faActiveProjectFixture.activeProject = prior
+  }
+})
+
 test('Test that createNewProject handler delegates to S_FaActiveProject when creation succeeds', async () => {
   await (definitionFor('createNewProject').handler({ projectName: 'Realm' }) as Promise<unknown>)
   expect(createProjectFromUserInputMock).toHaveBeenCalledWith('Realm')
@@ -551,11 +603,24 @@ test('Test that createNewProject handler delegates to S_FaActiveProject when cre
   expect(refreshProjectNoteboardMock).toHaveBeenCalledOnce()
   expect(refreshProjectSidebarMock).toHaveBeenCalledOnce()
   expect(refreshProjectStylingMock).toHaveBeenCalledOnce()
+  expect(refreshHierarchyTreeLayoutMock).toHaveBeenCalledOnce()
+  expect(patchSettingsSilentlyMock).toHaveBeenCalledWith({ hideHierarchyTree: true })
   expect(Notify.create).toHaveBeenCalledWith({
     message:
       'globalFunctionality.faProjectSession.notifyProjectCreated|Fixture Realm',
     type: 'positive'
   })
+})
+
+/**
+ * createNewProject
+ * Leaves hideHierarchyTree alone when the new project already has world template placements.
+ */
+test('Test that createNewProject skips auto-hide when world template placements exist', async () => {
+  hierarchyTreeWorldsFixture.worlds = [{ placements: [{ id: 'p1' }] }]
+  await (definitionFor('createNewProject').handler({ projectName: 'Realm' }) as Promise<unknown>)
+  expect(refreshHierarchyTreeLayoutMock).toHaveBeenCalledOnce()
+  expect(patchSettingsSilentlyMock).not.toHaveBeenCalled()
 })
 
 /**
@@ -599,6 +664,8 @@ test('Test that loadExistingProject handler delegates to openProjectFromUserDial
   expect(refreshProjectNoteboardMock).toHaveBeenCalledOnce()
   expect(refreshProjectSidebarMock).toHaveBeenCalledOnce()
   expect(refreshProjectStylingMock).toHaveBeenCalledOnce()
+  expect(refreshHierarchyTreeLayoutMock).toHaveBeenCalledOnce()
+  expect(patchSettingsSilentlyMock).toHaveBeenCalledWith({ hideHierarchyTree: true })
   expect(Notify.create).toHaveBeenCalledWith({
     message:
       'globalFunctionality.faProjectSession.notifyProjectLoaded|Fixture Realm',
@@ -634,6 +701,8 @@ test('Test that loadExistingProject handler delegates to openProjectFromKnownPat
   expect(refreshProjectNoteboardMock).toHaveBeenCalledOnce()
   expect(refreshProjectSidebarMock).toHaveBeenCalledOnce()
   expect(refreshProjectStylingMock).toHaveBeenCalledOnce()
+  expect(refreshHierarchyTreeLayoutMock).toHaveBeenCalledOnce()
+  expect(patchSettingsSilentlyMock).toHaveBeenCalledWith({ hideHierarchyTree: true })
 })
 
 test('Test that loadExistingProject handler throws when open succeeds but active project is missing', async () => {
@@ -672,6 +741,8 @@ test('Test that loadExistingProject handler shows warning notify when open flow 
   expect(refreshProjectNoteboardMock).not.toHaveBeenCalled()
   expect(refreshProjectSidebarMock).not.toHaveBeenCalled()
   expect(refreshProjectStylingMock).not.toHaveBeenCalled()
+  expect(refreshHierarchyTreeLayoutMock).not.toHaveBeenCalled()
+  expect(patchSettingsSilentlyMock).not.toHaveBeenCalled()
   expect(refreshRecentProjectsMock).toHaveBeenCalledOnce()
 })
 
@@ -688,6 +759,8 @@ test('Test that loadExistingProject handler shows warning when user dialog flow 
   expect(refreshProjectNoteboardMock).not.toHaveBeenCalled()
   expect(refreshProjectSidebarMock).not.toHaveBeenCalled()
   expect(refreshProjectStylingMock).not.toHaveBeenCalled()
+  expect(refreshHierarchyTreeLayoutMock).not.toHaveBeenCalled()
+  expect(patchSettingsSilentlyMock).not.toHaveBeenCalled()
 })
 
 test('Test that loadExistingProject handler skips warning when resumeActiveSession is true on reuse', async () => {

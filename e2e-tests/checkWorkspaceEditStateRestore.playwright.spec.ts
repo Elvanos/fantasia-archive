@@ -330,6 +330,7 @@ test.describe.serial('Opened documents E2E — cold restore dual editState', () 
       )
     ).toBeVisible()
 
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
     await activateOpenedDocumentTab(appWindow, e2eEditStateEditDocumentId)
     await expectDocumentWorkspaceEditMode(appWindow)
     await activateOpenedDocumentTab(appWindow, e2eEditStatePreviewDocumentId)

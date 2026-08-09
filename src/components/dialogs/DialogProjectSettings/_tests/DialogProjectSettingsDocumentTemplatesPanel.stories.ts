@@ -13,7 +13,8 @@ export default meta
 export const Empty: StoryObj<typeof meta> = {
   args: {
     currentLanguageCode: 'en-US',
-    templates: []
+    templates: [],
+    worlds: []
   }
 }
 
@@ -27,6 +28,7 @@ export const WithTemplates: StoryObj<typeof meta> = {
       titlePluralTranslations: { 'en-US': 'Character' },
       titleSingularTranslations: {},
       worldAppendixTranslations: {}
-    }]
+    }],
+    worlds: []
   }
 }

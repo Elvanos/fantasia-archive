@@ -147,7 +147,9 @@ export default {
         confirmDeleteButton: 'Vahvista poisto',
         message: 'Haluatko varmasti poistaa tämän asiakirjamallin? Kaikki tähän malliin liittyvät kentät muissa malleissa lakkaavat toimimasta. Lisäksi kaikki liitetyt asiakirjat lakkaavat näyttämästä tietojaan, jos niihin on täytetty tietoja tällä mallilla. Tällä poistolla voi olla odottamattomia sivuvaikutuksia.'
       },
-      removeDisabledHasDocuments: 'Poista tätä mallia käyttävät asiakirjat ennen sen poistamista.'
+      removeDisabledHasDocuments: 'Poista tätä mallia käyttävät asiakirjat ennen sen poistamista.',
+      removeDisabledAssignedToWorld:
+        'Tämä malli on yhdistetty yhteen tai useampaan maailmaan; poista sen määritys ensin kaikista asianomaisista maailmoista.'
     }
   }
 }

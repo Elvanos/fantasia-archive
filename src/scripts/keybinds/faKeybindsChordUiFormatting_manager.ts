@@ -1,4 +1,4 @@
-import { findFaKeybindCommandDefinition } from './functions/faKeybindCommandDefinitions'
+import { findFaKeybindCommandDefinition } from './findFaKeybindCommandDefinitionWiring'
 import {
   faKeybindResolveEffectiveChord,
   sortFaKeybindMods

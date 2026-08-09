@@ -21,6 +21,10 @@ I_appSettingsStaticOption
     category: 'visualAccessibility',
     subcategory: 'visualsAppwideFunctionality'
   },
+  autoOpenLastDocument: {
+    category: 'projectOverview',
+    subcategory: 'projectOverviewBehavior'
+  },
   disableCategoryCount: {
     category: 'hierarchicalTree',
     subcategory: 'informationDisplaySettings'
