@@ -36,6 +36,7 @@ export default defineConfig((ctx) => {
       'i18n',
       'faDisableMiddleClickAutoscroll',
       'axios',
+      'apexcharts',
       'externalLinkManagement',
       'notify-defaults',
       'tooltip-defaults',

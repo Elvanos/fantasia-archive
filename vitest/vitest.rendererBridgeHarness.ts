@@ -78,6 +78,8 @@ export function createResetFaVitestRendererHarness (
     setActivePinia(createPinia())
     i18nLocaleRef.value = 'en-US'
 
+    let userSettingsState = { ...FA_USER_SETTINGS_DEFAULTS }
+
     window.faContentBridgeAPIs = {
       faWindowControl: {
         checkWindowMaximized: vi.fn(async () => false),
@@ -108,8 +110,13 @@ export function createResetFaVitestRendererHarness (
         getProjectVersion: vi.fn(async () => '0.0.0-unit-test')
       },
       faUserSettings: {
-        getSettings: vi.fn(async () => ({ ...FA_USER_SETTINGS_DEFAULTS })),
-        setSettings: vi.fn(async () => {})
+        getSettings: vi.fn(async () => ({ ...userSettingsState })),
+        setSettings: vi.fn(async (updateObject) => {
+          userSettingsState = {
+            ...userSettingsState,
+            ...updateObject
+          }
+        })
       },
       faKeybinds: {
         getKeybinds: vi.fn(async () => ({

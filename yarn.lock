@@ -2650,6 +2650,11 @@ ansi-styles@^6.1.0, ansi-styles@^6.2.1:
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-6.2.3.tgz#c044d5dcc521a076413472597a1acb1f103c4041"
   integrity sha512-4Dj6M28JB+oAH8kFkTLUo+a2jwOFkuqb3yucU0CANcRRUbxS0cP0nZYCGjcc3BNXwRIsUVmDGgzawme7zvJHvg==
 
+apexcharts@^6.7.0:
+  version "6.7.0"
+  resolved "https://registry.yarnpkg.com/apexcharts/-/apexcharts-6.7.0.tgz#c386f0c695a11e1fcb49e6cb66a07b511f336c97"
+  integrity sha512-1Z8AACzw2W2I/JOLh2jHVVHWYtOIf1Yr9/A99r1+YJwb31V2Wmi4fzfscWOJAAf47nW4qRWvLm+ZLEm0GeiqjQ==
+
 app-builder-lib@26.15.3:
   version "26.15.3"
   resolved "https://registry.yarnpkg.com/app-builder-lib/-/app-builder-lib-26.15.3.tgz#0fa6c965e307bb6d86226407c750a45b3fd6b1bf"
@@ -9678,6 +9683,11 @@ vue-tsc@^2.2.0:
   dependencies:
     "@volar/typescript" "2.4.15"
     "@vue/language-core" "2.2.12"
+
+vue3-apexcharts@^1.11.1:
+  version "1.11.1"
+  resolved "https://registry.yarnpkg.com/vue3-apexcharts/-/vue3-apexcharts-1.11.1.tgz#5a9f8a319ae196e0490bc5413ab68bb400685c55"
+  integrity sha512-MbN3vg8bMG19wc0Lm1HkeQvODgLm56DgpIxtNUO0xpf/JCzYWVGE4jzXp2JISzy2s3Kul1yOxNQUYsLvKQ5L9g==
 
 vue@^3.5.21, vue@^3.5.32:
   version "3.5.32"
