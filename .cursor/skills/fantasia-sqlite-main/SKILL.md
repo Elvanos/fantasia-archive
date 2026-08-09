@@ -22,7 +22,7 @@ Schema/IPC changes → update docs same commit ([docs-database.mdc](../../rules/
 - **`better-sqlite3`** — main process only
 - **`.faproject`** SQLite under **`src-electron/mainScripts/projectManagement/`**; renderer via **`window.faContentBridgeAPIs.projectManagement`**
 - **E2E paths**: **`e2eSetNextProjectCreatePath`** / **`e2eSetNextProjectOpenPath`** in **`playwrightE2eProjectPaths.ts`**
-- **`user_version` max 7** today (**`FA_PROJECT_USER_VERSION_SUPPORTED_MAX`**) — worlds, documents, templates, media, junctions, per-world template layout, per-locale translations, document category/status/tree-order/extra-classes patches; **v6** **worlds.color_pallete**→**color_palette**; **v7** **`tags`** + **`document_tags`**; Project Settings snapshots via **`saveWorldsSnapshot`**, **`saveDocumentTemplatesSnapshot`**
+- **`user_version` max 8** today (**`FA_PROJECT_USER_VERSION_SUPPORTED_MAX`**) — worlds, documents, templates, media, junctions, per-world template layout, per-locale translations, document category/status/tree-order/extra-classes patches; **v6** **worlds.color_pallete**→**color_palette**; **v7** **`tags`** + **`document_tags`**; **v8** **`document_last_opened`** MRU (Project overview); Project Settings snapshots via **`saveWorldsSnapshot`**, **`saveDocumentTemplatesSnapshot`**
 - **Pre-release flatten**: may squash ladder **to** version **1** for dev resets — [fantasia-flatten-database-schemas](../fantasia-flatten-database-schemas/SKILL.md) (distinct from live supported max **7**)
 
 ## Principles

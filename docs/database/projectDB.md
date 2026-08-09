@@ -8,22 +8,23 @@ SQLite **`documents`** = worldbuilding entities (world + optional template). ≠
 
 ## Schema version (`PRAGMA user_version`)
 
-Fresh files bootstrap to **v7**. Live upgrade ladder **v1→v7** ships. Pre-release flatten (squash to single bootstrap) separate — [fantasia-flatten-database-schemas](../../.cursor/skills/fantasia-flatten-database-schemas/SKILL.md).
+Fresh files bootstrap to **v8**. Live upgrade ladder **v1→v8** ships. Pre-release flatten (squash to single bootstrap) separate — [fantasia-flatten-database-schemas](../../.cursor/skills/fantasia-flatten-database-schemas/SKILL.md).
 
 | Version | Contents |
 |---------|----------|
 | **0** | Uninitialized file (bootstrap target on first open/create). |
-| **1** | Full schema: **`project_data`** KV, worldbuilding **content tables** (**`worlds`** incl. **`color_palette`** + **`display_name_translations_json`**, **`document_templates`** incl. **`sort_order`**, **`world_appendix`**, **`icon`**, **`title_translations_json`** + **`title_singular_translations_json`** + **`world_appendix_translations_json`**, **`documents`** incl. **`tree_placement_id`** + **`tree_parent_document_id`** + **`tree_custom_sort_order`** + **`document_text_color`** + **`document_background_color`**, **`media`**, **`document_media`**, **`world_template_groups`** + **`world_template_placements`** layout incl. **`nickname`** + **`nickname_translations_json`** + **`nickname_singular_translations_json`** + **`display_name_translations_json`**, **`opened_documents`** singleton snapshot), default **world** seed on create. Idempotent **`applyFaProjectDocumentsHierarchySchemaPatch`** runs on every open at version **1** for legacy files missing hierarchy columns or still using pre-rename **`placement_id`** / **`parent_document_id`** / **`sort_order`** on **`documents`**; **`tree_custom_sort_order`** creation-time backfill runs **only when that column is first added**, not on re-apply. Idempotent **`applyFaProjectOpenedDocumentsSchemaV1`** creates **`opened_documents`** when missing on existing v1 files. |
+| **1** | Full schema: **`project_data`** KV, worldbuilding **content tables** (**`worlds`** incl. **`color_palette`** + **`display_name_translations_json`**, **`document_templates`** incl. **`sort_order`**, **`world_appendix`**, **`icon`**, **`title_translations_json`** + **`title_singular_translations_json`** + **`world_appendix_translations_json`**, **`documents`** incl. **`tree_placement_id`** + **`tree_parent_document_id`** + **`tree_custom_sort_order`** + **`document_text_color`** + **`document_background_color`**, **`media`**, **`document_media`**, **`world_template_groups`** + **`world_template_placements`** layout incl. **`nickname`** + **`nickname_translations_json`** + **`nickname_singular_translations_json`** + **`display_name_translations_json`**, **`opened_documents`** singleton snapshot, **`document_last_opened`** MRU), default **world** seed on create. Idempotent **`applyFaProjectDocumentsHierarchySchemaPatch`** runs on every open at version **1** for legacy files missing hierarchy columns or still using pre-rename **`placement_id`** / **`parent_document_id`** / **`sort_order`** on **`documents`**; **`tree_custom_sort_order`** creation-time backfill runs **only when that column is first added**, not on re-apply. Idempotent **`applyFaProjectOpenedDocumentsSchemaV1`** creates **`opened_documents`** when missing on existing v1 files. Idempotent **`applyFaProjectDocumentLastOpenedSchemaPatch`** creates **`document_last_opened`** when missing. |
 | **2** | Adds **`documents.is_category`** (`INTEGER NOT NULL DEFAULT 0`, `CHECK (is_category IN (0, 1))`). Idempotent **`applyFaProjectDocumentCategorySchemaPatch`** runs on every open at version **2** for legacy files missing the column. Idempotent **`applyFaProjectWorldColorEmptyAllowedSchemaPatch`** rebuilds **`worlds`** when **`color`** CHECK still requires strict **`#RRGGBB`** (no empty), so optional empty world color can persist. Idempotent **`applyFaProjectDocumentAppearanceEmptyColorSchemaPatch`** rebuilds **`documents`** when appearance color CHECKs still reject empty string (NULL-or-hex only). |
 | **3** | Adds **`documents.is_finished`**, **`documents.is_minor`**, **`documents.is_dead`** (each `INTEGER NOT NULL DEFAULT 0`, `CHECK (… IN (0, 1))`). Idempotent **`applyFaProjectDocumentStatusFlagsSchemaPatch`** runs on every open at version **3** for legacy files missing any column. |
 | **4** | Adds **`documents.tree_order_number`** (`INTEGER NOT NULL DEFAULT -9007199254740991`, empty sentinel = **`Number.MIN_SAFE_INTEGER`**). Display-only hierarchy badge value; **does not** change sibling sort (**`tree_custom_sort_order`** only). Idempotent **`applyFaProjectDocumentTreeOrderNumberSchemaPatch`** runs on every open at version **4** for legacy files missing the column. |
 | **5** | Adds **`documents.extra_classes`** (`TEXT NOT NULL DEFAULT ''`, max length **512**). Space-separated HTML class list for **Custom Project CSS** targeting on the document workspace page. Idempotent **`applyFaProjectDocumentExtraClassesSchemaPatch`** runs on every open at version **5** for legacy files missing the column. |
 | **6** | Renames **worlds.color_pallete** → **worlds.color_palette** (ALTER TABLE … RENAME COLUMN). Idempotent when **color_palette** already present or **color_pallete** absent. Fresh bootstrap DDL uses **color_palette** directly. |
 | **7** | Adds per-world **`tags`** (`id`, `world_id`, `name`, timestamps) + **`document_tags`** M:N (`document_id`, `tag_id`, `sort_order`) with case-insensitive unique tag names per world. Idempotent **`applyFaProjectTagsSchemaPatch`** runs on every open at version **7**. Fresh bootstrap DDL includes both tables. |
+| **8** | Adds **`document_last_opened`** (`document_id` PK → **`documents(id)`** ON DELETE CASCADE, **`opened_at_ms`**) for Project overview MRU (newest first, max **50**). Idempotent **`applyFaProjectDocumentLastOpenedSchemaPatch`** runs on every open at version **8**. Fresh bootstrap DDL includes the table. |
 
-**Supported max:** **`FA_PROJECT_USER_VERSION_SUPPORTED_MAX = 7`** in **`faProjectDbMigrateWiring.ts`**.
+**Supported max:** **`FA_PROJECT_USER_VERSION_SUPPORTED_MAX = 8`** in **`faProjectDbMigrateWiring.ts`**.
 
-**Migration entry:** **`applyFaProjectMigrations(db, displayProjectName)`** — fresh files start at **0**, bootstrap to **v7** + seed a default **world** when empty; files at **v7** run idempotent patches only; files at **v6** migrate to **v7** then run patches; earlier versions climb **vN→…→v7** then run patches. Any other version is unsupported and throws. Older pre-release dev **.faproject** files must be recreated after a flatten.
+**Migration entry:** **`applyFaProjectMigrations(db, displayProjectName)`** — fresh files start at **0**, bootstrap to **v8** + seed a default **world** when empty; files at **v8** run idempotent patches only; files at **v7** migrate to **v8** then run patches; earlier versions climb **vN→…→v8** then run patches. Any other version is unsupported and throws. Older pre-release dev **.faproject** files must be recreated after a flatten.
 
 **Worlds vs document templates on create:** **`seedFaProjectDefaultWorldIfEmpty`** runs after bootstrap and inserts one default **world** when the table is empty. **Document templates are never auto-seeded** — a new **`.faproject`** may have zero **`document_templates`** rows until the user adds them in **Project Settings**.
 
@@ -59,7 +60,7 @@ PKs **TEXT UUID v4** on entity tables. Timestamps **`created_at_ms`** / **`updat
 | `id` | TEXT PK | UUID |
 | `display_name` | TEXT | Denormalized canonical name cache (non-empty after save; **en-US** resolution) |
 | `display_name_translations_json` | TEXT | JSON keyed by interface language code; at least one non-empty locale required on save |
-| `color` | TEXT | Optional **`#RRGGBB`** hex; empty string allowed (UI falls back to theme primary); column default **`#808080`** on insert without override; `CHECK (color = '' OR (length(color) = 7 AND substr(color, 1, 1) = '#'))` |
+| `color` | TEXT | Optional **`#RRGGBB`** hex; empty string allowed (UI falls back to theme primary); column default **empty** on insert without override; `CHECK (color = '' OR (length(color) = 7 AND substr(color, 1, 1) = '#'))` |
 | `color_palette` | TEXT | Semicolon-separated **`#RRGGBB`** hex list (max **2000** chars); default empty |
 | `sort_order` | INTEGER | Zero-based GUI order; new worlds append **`MAX(sort_order) + 1`** |
 | `created_at_ms`, `updated_at_ms` | INTEGER | |
@@ -183,7 +184,16 @@ Indexes: **`idx_world_template_placements_world_root_sort`**, **`idx_world_templ
 
 **Pre-release history:** A legacy **`world_document_templates`** M:N junction existed in flattened-away schema revisions; it is gone and existing links are not migrated.
 
-Indexes: **`idx_documents_world_id`**, **`idx_documents_template_id`**, **`idx_documents_tree_placement_parent_sort`**, **`idx_document_media_media_id`**, **`idx_tags_world_id_name_nocase`**, **`idx_tags_world_id`**, **`idx_document_tags_tag_id_sort`**, **`idx_worlds_sort_order`**, **`idx_document_templates_sort_order`**.
+Indexes: **`idx_documents_world_id`**, **`idx_documents_template_id`**, **`idx_documents_tree_placement_parent_sort`**, **`idx_document_media_media_id`**, **`idx_tags_world_id_name_nocase`**, **`idx_tags_world_id`**, **`idx_document_tags_tag_id_sort`**, **`idx_document_last_opened_opened_at_ms`**, **`idx_worlds_sort_order`**, **`idx_document_templates_sort_order`**.
+
+### `document_last_opened` (MRU for Project overview)
+
+| Column | Notes |
+|--------|--------|
+| `document_id` | TEXT PK, FK → **`documents.id`** **ON DELETE CASCADE** |
+| `opened_at_ms` | INTEGER Unix ms — last open time |
+
+Retains newest **50** rows (`FA_PROJECT_DOCUMENT_LAST_OPENED_MAX`). **Modules:** **`faProjectDocumentLastOpenedQueryWiring.ts`**, **`faProjectDocumentLastOpenedPersistWiring.ts`**, **`faProjectDocumentDistributionQueryWiring.ts`**, **`faProjectDocumentLastOpenedSchemaPatchWiring.ts`**.
 
 ### `opened_documents`
 
@@ -206,6 +216,7 @@ Singleton workspace tab snapshot (one row, **`id = 1`**).
 | Document ↔ media | `document_media` |
 | World → tags | `tags.world_id` |
 | Document ↔ tags | `document_tags` (+ per-tag `sort_order`) |
+| Document → last opened | `document_last_opened` (MRU, max 50) |
 | World template layout | **`world_template_groups`** + **`world_template_placements`** (one placement per template per world) |
 | Template → field definitions (planned) | `template_fields` — see [templateCustomFields.md](templateCustomFields.md) |
 | Document → custom field values (planned) | `document_field_values`, link tables — see [templateCustomFields.md](templateCustomFields.md) |
@@ -254,6 +265,10 @@ src-electron/mainScripts/projectManagement/
     faProjectTagsSqlHelpersWiring.ts
     faProjectTagsQueryWiring.ts
     faProjectTagsPersistWiring.ts
+    faProjectDocumentLastOpenedSchemaPatchWiring.ts
+    faProjectDocumentLastOpenedQueryWiring.ts
+    faProjectDocumentLastOpenedPersistWiring.ts
+    faProjectDocumentDistributionQueryWiring.ts
 ```
 
 **Barrel:** **`projectManagement_manager.ts`** re-exports lifecycle + **`runWithFaProjectDatabase*`**; content persist modules imported from IPC registration.
@@ -309,6 +324,9 @@ All content handlers wrap **`runWithFaProjectDatabaseForIpcAsync`**.
 | `reorder-documents-under-tag-async` | `reorderFaProjectDocumentsUnderTag` |
 | `rename-tag-async` | `renameFaProjectTag` (may merge into existing case-insensitive name) |
 | `delete-tag-async` | `deleteFaProjectTag` |
+| `list-document-last-opened-async` | `listFaProjectDocumentLastOpened` |
+| `record-document-last-opened-async` | `recordFaProjectDocumentLastOpened` (upsert + trim to max 50) |
+| `list-document-distribution-async` | `listFaProjectDocumentDistribution` — chart categories = **placed** templates only; payload also **`documentTemplateTotalCount`** (all **`document_templates`** rows, incl. unassigned) for overview empty CTA |
 | `list-workspace-hierarchy-layout-async` | `listFaProjectWorkspaceHierarchyLayout` |
 | `list-placement-document-children-async` | `listFaProjectPlacementDocumentChildren` |
 | `move-document-in-hierarchy-async` | `moveFaProjectDocumentInHierarchy` |

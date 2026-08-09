@@ -1,6 +1,6 @@
 # Document template custom fields (approved design)
 
-**Status:** Architecture approved. **Not implemented** in SQLite, IPC, or UI. Shipped **`user_version` max 7** per [projectDB.md](projectDB.md) (includes **`worlds.color`**, **`worlds.color_palette`**, **`worlds.sort_order`**, per-world template layout via **`world_template_groups`** / **`world_template_placements`**, per-locale translations, default-world seed on create, document hierarchy/status/appearance/`extra_classes`, per-world **`tags`** / **`document_tags`**). Custom fields = **separate future migration** after supported max (**v8+**).
+**Status:** Architecture approved. **Not implemented** in SQLite, IPC, or UI. Shipped **`user_version` max 8** per [projectDB.md](projectDB.md) (includes **`worlds.color`**, **`worlds.color_palette`**, **`worlds.sort_order`**, per-world template layout via **`world_template_groups`** / **`world_template_placements`**, per-locale translations, default-world seed on create, document hierarchy/status/appearance/`extra_classes`, per-world **`tags`** / **`document_tags`**, **`document_last_opened`** MRU). Custom fields = **separate future migration** after supported max (**v9+**).
 
 ## Problem
 
