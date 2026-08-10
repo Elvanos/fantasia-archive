@@ -2,6 +2,7 @@ import type {
   I_createUseDialogQuickAddDocumentDeps,
   I_dialogQuickAddDocumentSession
 } from 'app/types/I_createUseDialogQuickAddDocument'
+import type { T_faSelectInputModelValue } from 'app/types/I_faSelectInput'
 import type { T_dialogName } from 'app/types/T_appDialogsAndDocuments'
 
 import {
@@ -50,7 +51,6 @@ export function wireDialogQuickAddDocumentOpenClose (
     cancelDialogQuickAddDocumentTemplateFocus(session)
     session.selectedTemplateId.value = null
     session.selectedWorldId.value = null
-    session.filteredTemplateOptions.value = []
     session.worlds.value = []
     session.templatesById.value = new Map()
   }
@@ -94,30 +94,49 @@ export function wireDialogQuickAddDocumentOpenClose (
   }
 }
 
+function resolveDialogQuickAddDocumentSelectId (
+  value: T_faSelectInputModelValue | null | undefined
+): string | null {
+  if (value === null || value === undefined) {
+    return null
+  }
+  if (typeof value === 'string') {
+    return value.length > 0 ? value : null
+  }
+  if (Array.isArray(value)) {
+    return null
+  }
+  return value.id.length > 0 ? value.id : null
+}
+
 /**
- * World change reopens template menu; template select creates a temporary document.
+ * World change / world re-click reopens template menu; template select creates a temporary document.
  */
 export function wireDialogQuickAddDocumentSelectHandlers (
   deps: I_createUseDialogQuickAddDocumentDeps,
   session: I_dialogQuickAddDocumentSession,
   closeDialog: () => void
 ): {
-    onTemplateSelect: (templateId: string | null | undefined) => Promise<void>
-    onWorldSelect: (worldId: string | null | undefined) => void
+    onTemplateSelect: (value: T_faSelectInputModelValue | null | undefined) => Promise<void>
+    onWorldSelect: (value: T_faSelectInputModelValue | null | undefined) => void
   } {
-  const onWorldSelect = (worldId: string | null | undefined): void => {
-    const nextWorldId = typeof worldId === 'string' && worldId.length > 0 ? worldId : null
+  const onWorldSelect = (
+    value: T_faSelectInputModelValue | null | undefined
+  ): void => {
+    const nextWorldId = resolveDialogQuickAddDocumentSelectId(value)
     session.selectedWorldId.value = nextWorldId
     session.selectedTemplateId.value = null
-    session.filteredTemplateOptions.value = []
     if (session.skipNextWorldChangeReopen.value) {
       return
     }
     scheduleDialogQuickAddDocumentTemplateFocus(deps, session)
   }
 
-  const onTemplateSelect = async (templateId: string | null | undefined): Promise<void> => {
-    if (typeof templateId !== 'string' || templateId.length === 0) {
+  const onTemplateSelect = async (
+    value: T_faSelectInputModelValue | null | undefined
+  ): Promise<void> => {
+    const templateId = resolveDialogQuickAddDocumentSelectId(value)
+    if (templateId === null) {
       session.selectedTemplateId.value = null
       return
     }
@@ -125,15 +144,15 @@ export function wireDialogQuickAddDocumentSelectHandlers (
     if (worldId === null || worldId.length === 0) {
       return
     }
-    const option = session.templateOptions.value.find((row) => row.value === templateId)
-    if (option === undefined) {
+    const template = session.templatesById.value.get(templateId)
+    if (template === undefined) {
       return
     }
     session.selectedTemplateId.value = templateId
     const displayName = deps.resolveNewDocumentDisplayName({
       preferredLanguageCode: deps.resolvePreferredLanguageCode(),
-      titlePluralTranslations: option.titlePluralTranslations,
-      titleSingularTranslations: option.titleSingularTranslations
+      titlePluralTranslations: template.titlePluralTranslations,
+      titleSingularTranslations: template.titleSingularTranslations
     })
     // FA 1.0 closes first, then creates — keeps dismiss snappy while create runs.
     closeDialog()

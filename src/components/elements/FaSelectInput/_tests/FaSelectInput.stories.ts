@@ -194,3 +194,109 @@ export const TagsMulti: StoryObj<typeof meta> = {
     `
   })
 }
+
+/** Inline closed field (icon+label, no chip) with colored world glyph. */
+export const InlineColoredOtherType: StoryObj<typeof meta> = {
+  args: {
+    mode: 'otherType',
+    modelValue: {
+      color: '#e91e63',
+      icon: 'mdi-earth',
+      id: 'world-1',
+      name: 'Eldoria'
+    },
+    options: [
+      {
+        color: '#e91e63',
+        icon: 'mdi-earth',
+        id: 'world-1',
+        name: 'Eldoria'
+      },
+      {
+        color: '#3f51b5',
+        icon: 'mdi-earth',
+        id: 'world-2',
+        name: 'Aurelion'
+      }
+    ],
+    selectionPresentation: 'inline',
+    testLocator: 'faSelectInput-story-inline'
+  },
+  render: (args) => ({
+    components: {
+      FaSelectInput
+    },
+    setup () {
+      const value = ref(args.modelValue)
+      return {
+        args,
+        value
+      }
+    },
+    template: `
+      <div class="q-pa-md" style="max-width: 420px;">
+        <FaSelectInput
+          v-model="value"
+          mode="otherType"
+          selection-presentation="inline"
+          :options="args.options"
+          :test-locator="args.testLocator"
+          label="Inline world"
+        />
+      </div>
+    `
+  })
+}
+
+/** Quick Add–style mandatory single: chip without remove X. */
+export const ChipNonRemovableOtherType: StoryObj<typeof meta> = {
+  args: {
+    chipRemovable: false,
+    mode: 'otherType',
+    modelValue: {
+      color: '#e91e63',
+      icon: 'mdi-earth',
+      id: 'world-1',
+      name: 'Eldoria'
+    },
+    options: [
+      {
+        color: '#e91e63',
+        icon: 'mdi-earth',
+        id: 'world-1',
+        name: 'Eldoria'
+      },
+      {
+        color: '#3f51b5',
+        icon: 'mdi-earth',
+        id: 'world-2',
+        name: 'Aurelion'
+      }
+    ],
+    testLocator: 'faSelectInput-story-chip-non-removable'
+  },
+  render: (args) => ({
+    components: {
+      FaSelectInput
+    },
+    setup () {
+      const value = ref(args.modelValue)
+      return {
+        args,
+        value
+      }
+    },
+    template: `
+      <div class="q-pa-md" style="max-width: 420px;">
+        <FaSelectInput
+          v-model="value"
+          mode="otherType"
+          :chip-removable="false"
+          :options="args.options"
+          :test-locator="args.testLocator"
+          label="World"
+        />
+      </div>
+    `
+  })
+}

@@ -8,11 +8,26 @@ import { S_FaUserSettings } from 'src/stores/S_FaUserSettings'
 
 /**
  * Loads worlds + document templates for Quick-Add Document option lists.
+ * Component Playwright may seed window.__faComponentTestingQuickAddDocumentSources when
+ * contextBridge freezes projectContent list methods (same frozen-bridge constraint as hierarchy tree).
  */
 export async function loadDialogQuickAddDocumentSources (): Promise<{
   templates: I_dialogQuickAddDocumentTemplateSource[]
   worlds: I_dialogQuickAddDocumentWorldSource[]
 }> {
+  const testingSources = window.__faComponentTestingQuickAddDocumentSources
+  if (testingSources !== undefined) {
+    return {
+      templates: testingSources.templates.map((template) => ({ ...template })),
+      worlds: testingSources.worlds.map((world) => ({
+        ...world,
+        templateLayout: {
+          groups: world.templateLayout.groups.map((group) => ({ ...group })),
+          placements: world.templateLayout.placements.map((placement) => ({ ...placement }))
+        }
+      }))
+    }
+  }
   const api = window.faContentBridgeAPIs?.projectContent
   if (
     typeof api?.listWorldsForProjectSettings !== 'function' ||

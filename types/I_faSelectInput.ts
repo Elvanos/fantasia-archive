@@ -10,10 +10,15 @@ export type T_faSelectInputMode =
   | 'tags'
   | 'media'
 
+/** Closed-field presentation for FaSelectInput. */
+export type T_faSelectInputSelectionPresentation = 'chips' | 'inline'
+
 /** Object option / selection item for non-simple modes. */
 export interface I_faSelectInputObjectItem {
   id: string
   name: string
+  /** Optional glyph tint for fa-color-glyph (e.g. world color). */
+  color?: string
   documentType?: string
   icon?: string
   isNew?: boolean
@@ -71,6 +76,21 @@ export const FA_SELECT_INPUT_DEFAULT_CHIP_COLOR = 'accent'
 /** Quasar text-color on chips (FA1 dark on accent/teal). */
 export const FA_SELECT_INPUT_CHIP_TEXT_COLOR = 'dark'
 
+/**
+ * Empty options-selected-class — Quasar default text-{color} would brighten selected labels.
+ * Selected rows use side bars only; label color matches idle items.
+ */
+export const FA_SELECT_INPUT_OPTIONS_SELECTED_CLASS = ''
+
+/**
+ * QSelect virtual-scroll slice size — tall menus need a large first paint before
+ * scrollViewSize is measured (else empty gap until scroll).
+ */
+export const FA_SELECT_INPUT_VIRTUAL_SCROLL_SLICE_SIZE = 80
+
+/** Quasar default non-optionsDense option row estimate (px). */
+export const FA_SELECT_INPUT_VIRTUAL_SCROLL_ITEM_SIZE = 48
+
 /** Deps injected into createUseFaSelectInput. */
 export interface I_faSelectInputUseDeps {
   appendFaSelectInputCreatedValue: (
@@ -122,6 +142,7 @@ export interface I_faSelectInputUseInput {
   emitChange: (payload: I_faSelectInputChangePayload) => void
   emitModelValue: (value: T_faSelectInputModelValue) => void
   emitNewValue: (value: string | I_faSelectInputObjectItem) => void
+  emitOptionActivate: (value: T_faSelectInputOption) => void
   emitRequestOptions: () => void
   getAllowCreateNew: () => boolean
   getClearInputOnSelect: () => boolean

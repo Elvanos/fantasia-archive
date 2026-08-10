@@ -6,9 +6,12 @@ import {
   FA_SELECT_INPUT_NEW_CHIP_COLOR
 } from 'app/types/I_faSelectInput'
 
+import { buildFaColorGlyphCssCustomProperties } from 'app/src/scripts/faColorContrast/faColorContrast_manager'
 import {
   appendFaSelectInputCreatedValue,
+  bindFaSelectInputOptionItemActivateProps,
   clearFaSelectInputIsNewFlags,
+  createBuildFaSelectInputOptionIconStyle,
   createFaSelectInputChangePayload,
   createFaSelectInputNewItem,
   filterFaSelectInputOptionsByQuery,
@@ -16,12 +19,32 @@ import {
   normalizeFaSelectInputOptions,
   resolveFaSelectInputOptionIcon,
   shouldShowFaSelectInputSelectedChip,
-  splitFaSelectInputLabelForFilterHighlight
+  splitFaSelectInputLabelForFilterHighlight,
+  stripFaSelectInputOptionItemActiveClass
 } from 'app/src/scripts/faSelectInput/faSelectInput_manager'
 
+import { createFaSelectInputApi } from './functions/createFaSelectInputApi'
 import { createUseFaSelectInput } from './functions/createUseFaSelectInput'
+import {
+  resolveFaSelectInputObjectOptionLabel,
+  resolveFaSelectInputOptionIconClass,
+  resolveFaSelectInputOptionIconStyle,
+  shouldShowFaSelectInputInlineSelection
+} from './functions/faSelectInputPresentation'
 
-export { shouldShowFaSelectInputSelectedChip }
+export {
+  bindFaSelectInputOptionItemActivateProps,
+  resolveFaSelectInputObjectOptionLabel,
+  resolveFaSelectInputOptionIconClass,
+  resolveFaSelectInputOptionIconStyle,
+  shouldShowFaSelectInputInlineSelection,
+  shouldShowFaSelectInputSelectedChip,
+  stripFaSelectInputOptionItemActiveClass
+}
+
+export const buildFaSelectInputOptionIconStyle = createBuildFaSelectInputOptionIconStyle({
+  buildFaColorGlyphCssCustomProperties
+})
 
 export const useFaSelectInput = createUseFaSelectInput({
   appendFaSelectInputCreatedValue,
@@ -40,4 +63,4 @@ export const useFaSelectInput = createUseFaSelectInput({
   ref,
   resolveFaSelectInputOptionIcon,
   splitFaSelectInputLabelForFilterHighlight
-})
+}, createFaSelectInputApi)

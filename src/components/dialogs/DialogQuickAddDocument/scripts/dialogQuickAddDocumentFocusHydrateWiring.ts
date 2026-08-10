@@ -1,33 +1,23 @@
 import type { I_createUseDialogQuickAddDocumentDeps } from 'app/types/I_createUseDialogQuickAddDocument'
-import type { I_dialogQuickAddDocumentQSelectLike } from 'app/types/I_createUseDialogQuickAddDocument'
+import type { I_dialogQuickAddDocumentFaSelectInputLike } from 'app/types/I_createUseDialogQuickAddDocument'
 import type { I_dialogQuickAddDocumentSession } from 'app/types/I_createUseDialogQuickAddDocument'
-import type { T_dialogQuickAddDocumentSelectFilterUpdate } from 'app/types/I_createUseDialogQuickAddDocument'
 import type { I_dialogQuickAddDocumentTemplateSource } from 'app/types/I_dialogQuickAddDocument'
 import type { I_dialogQuickAddDocumentWorldSource } from 'app/types/I_dialogQuickAddDocument'
 import type { I_ref } from 'app/types/I_vueCompositionShims'
 
-import { filterDialogQuickAddDocumentTemplateOptionsByNeedle } from './functions/dialogQuickAddDocumentTemplateFilter'
-
 /**
- * True when the value looks like a Quasar q-select that can open its popup
- * and highlight options (FA 1.0 refocusSelect APIs).
+ * True when the value exposes FaSelectInput openPopup (template auto-open).
  */
-export function isDialogQuickAddDocumentQSelectLike (
+export function isDialogQuickAddDocumentFaSelectInputLike (
   value: unknown
-): value is I_dialogQuickAddDocumentQSelectLike {
+): value is I_dialogQuickAddDocumentFaSelectInputLike {
   if (value === null || typeof value !== 'object') {
     return false
   }
   const candidate = value as {
-    moveOptionSelection?: unknown
-    setOptionIndex?: unknown
-    showPopup?: unknown
+    openPopup?: unknown
   }
-  return (
-    typeof candidate.showPopup === 'function' &&
-    typeof candidate.setOptionIndex === 'function' &&
-    typeof candidate.moveOptionSelection === 'function'
-  )
+  return typeof candidate.openPopup === 'function'
 }
 
 /**
@@ -40,23 +30,14 @@ export function cancelDialogQuickAddDocumentTemplateFocus (
 }
 
 /**
- * FA 1.0 refocusSelect — highlight first menu option for keyboard Enter.
- */
-export function highlightDialogQuickAddDocumentFirstTemplateOption (
-  select: I_dialogQuickAddDocumentQSelectLike
-): void {
-  select.setOptionIndex(-1)
-  select.moveOptionSelection(1, true)
-}
-
-/**
- * FA 1.0 NewDocument timing (nextTick + sleep) + Quasar 2 showPopup, then first-item highlight.
+ * FA 1.0 NewDocument timing (nextTick + sleep) + opt-in FaSelectInput openPopup.
+ * First-option keyboard highlight is owned by FaSelectInput on popup-show.
  */
 export async function focusDialogQuickAddDocumentTemplateSelectAfterShow (
   deps: Pick<I_createUseDialogQuickAddDocumentDeps, 'nextTick' | 'sleep' | 'templateFocusMs'>,
   session: Pick<
     I_dialogQuickAddDocumentSession,
-    'dialogModel' | 'filteredTemplateOptions' | 'focusGeneration' | 'templateOptions' | 'templateSelectRef'
+    'dialogModel' | 'focusGeneration' | 'templateSelectRef'
   >,
   focusGeneration: number
 ): Promise<void> {
@@ -69,19 +50,10 @@ export async function focusDialogQuickAddDocumentTemplateSelectAfterShow (
     return
   }
   const select = session.templateSelectRef.value
-  if (!isDialogQuickAddDocumentQSelectLike(select)) {
+  if (!isDialogQuickAddDocumentFaSelectInputLike(select)) {
     return
   }
-  // Seed options before open so the menu is not empty if @filter lags.
-  session.filteredTemplateOptions.value = [...session.templateOptions.value]
-  select.showPopup()
-  await deps.nextTick()
-  if (session.focusGeneration.value !== focusGeneration) {
-    return
-  }
-  if (session.filteredTemplateOptions.value.length > 0) {
-    highlightDialogQuickAddDocumentFirstTemplateOption(select)
-  }
+  select.openPopup()
 }
 
 /**
@@ -91,7 +63,7 @@ export function scheduleDialogQuickAddDocumentTemplateFocus (
   deps: Pick<I_createUseDialogQuickAddDocumentDeps, 'nextTick' | 'sleep' | 'templateFocusMs'>,
   session: Pick<
     I_dialogQuickAddDocumentSession,
-    'dialogModel' | 'filteredTemplateOptions' | 'focusGeneration' | 'templateOptions' | 'templateSelectRef'
+    'dialogModel' | 'focusGeneration' | 'templateSelectRef'
   >
 ): number {
   session.focusGeneration.value += 1
@@ -101,60 +73,17 @@ export function scheduleDialogQuickAddDocumentTemplateFocus (
 }
 
 /**
- * After filter update, highlight the first option (FA 1.0 refocusSelect via nextTick).
- */
-export async function refocusDialogQuickAddDocumentTemplateSelect (
-  deps: Pick<I_createUseDialogQuickAddDocumentDeps, 'nextTick'>,
-  templateSelectRef: I_ref<I_dialogQuickAddDocumentQSelectLike | null>
-): Promise<void> {
-  await deps.nextTick()
-  const select = templateSelectRef.value
-  if (!isDialogQuickAddDocumentQSelectLike(select)) {
-    return
-  }
-  highlightDialogQuickAddDocumentFirstTemplateOption(select)
-}
-
-/**
- * Template `:ref` binder — keeps session.templateSelectRef on the Quasar q-select instance.
+ * Template `:ref` binder — keeps session.templateSelectRef on FaSelectInput expose.
  */
 export function bindDialogQuickAddDocumentTemplateSelectRef (
-  templateSelectRef: I_ref<I_dialogQuickAddDocumentQSelectLike | null>,
+  templateSelectRef: I_ref<I_dialogQuickAddDocumentFaSelectInputLike | null>,
   el: unknown
 ): void {
-  if (!isDialogQuickAddDocumentQSelectLike(el)) {
+  if (!isDialogQuickAddDocumentFaSelectInputLike(el)) {
     templateSelectRef.value = null
     return
   }
   templateSelectRef.value = el
-}
-
-/**
- * Quasar q-select @filter handler — FA 1.0 filterNewSelect + first-option highlight.
- * Quasar 2 invokes update's afterFn with the select instance after options apply.
- */
-export function filterDialogQuickAddDocumentTemplateSelect (
-  session: Pick<
-    I_dialogQuickAddDocumentSession,
-    'filteredTemplateOptions' | 'templateOptions'
-  >,
-  val: string,
-  update: T_dialogQuickAddDocumentSelectFilterUpdate
-): void {
-  const nextOptions = filterDialogQuickAddDocumentTemplateOptionsByNeedle(
-    session.templateOptions.value,
-    val
-  )
-  update(
-    () => {
-      session.filteredTemplateOptions.value = nextOptions
-    },
-    (select) => {
-      if (nextOptions.length > 0) {
-        highlightDialogQuickAddDocumentFirstTemplateOption(select)
-      }
-    }
-  )
 }
 
 /**

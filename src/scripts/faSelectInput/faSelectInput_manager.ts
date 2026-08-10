@@ -1,3 +1,7 @@
+import {
+  createBuildFaSelectInputOptionIconStyle,
+  resolveFaSelectInputOptionIconColor
+} from './functions/buildFaSelectInputOptionIconStyle'
 import { clearFaSelectInputIsNewFlags } from './functions/faSelectInputClearIsNew'
 import { createFaSelectInputNewItem } from './functions/faSelectInputCreateNewItem'
 import {
@@ -18,10 +22,16 @@ import {
 import { splitFaSelectInputLabelForFilterHighlight } from './functions/faSelectInputLabelFilterHighlight'
 import { resolveFaSelectInputOptionIcon } from './functions/resolveFaSelectInputOptionIcon'
 import { shouldShowFaSelectInputSelectedChip } from './functions/faSelectInputSelectedChipVisibility'
+import {
+  bindFaSelectInputOptionItemActivateProps,
+  stripFaSelectInputOptionItemActiveClass
+} from './functions/stripFaSelectInputOptionItemActiveClass'
 
 export {
   appendFaSelectInputCreatedValue,
+  bindFaSelectInputOptionItemActivateProps,
   clearFaSelectInputIsNewFlags,
+  createBuildFaSelectInputOptionIconStyle,
   createFaSelectInputChangePayload,
   createFaSelectInputEmptyModel,
   createFaSelectInputNewItem,
@@ -32,6 +42,8 @@ export {
   normalizeFaSelectInputOptions,
   resolveFaSelectInputChangeAction,
   resolveFaSelectInputOptionIcon,
+  resolveFaSelectInputOptionIconColor,
   shouldShowFaSelectInputSelectedChip,
-  splitFaSelectInputLabelForFilterHighlight
+  splitFaSelectInputLabelForFilterHighlight,
+  stripFaSelectInputOptionItemActiveClass
 }

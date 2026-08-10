@@ -2,8 +2,6 @@
  * Filter needle match spans use .faSelectInput__optionMatch (primary-bright).
  */
 
-@use '../../../globals/AppControlMenus/styles/contextMenuSeparators.mixin' as contextMenuSeparators;
-
 .faSelectInput {
   width: $faSelectInput-width;
 
@@ -41,8 +39,16 @@ body .faSelectInput__menu.q-menu {
     font-weight: $faSelectInput-optionMatch-fontWeight;
   }
 
-  .faSelectInput__separatorAlt {
-    @include contextMenuSeparators.fa-context-menu-separator-alt;
+  /* separatorAlt as border — keeps one virtual-scroll root per option. */
+  .q-item.faSelectInput__option--separatorAlt {
+    border-top:
+      $faSelectInput-menu-separatorAlt-height
+      solid
+      color-mix(
+        in srgb,
+        #{$faSelectInput-menu-separatorAlt-color} #{percentage($faSelectInput-menu-separatorAlt-opacity)},
+        transparent
+      );
   }
 
   .q-item {
@@ -56,14 +62,21 @@ body .faSelectInput__menu.q-menu {
     }
   }
 
-  /* Selected: bars only — no Quasar active fill. */
+  /* Selected: side bars + idle non-match text. Filter optionMatch gold still applies. */
   .q-item--active:not(.noHigh) {
     background: $faSelectInput-menu-activeItem-backgroundColor !important;
-  }
+    color: $faSelectInput-menu-item-color !important;
 
-  .q-item--active:not(.noHigh),
-  .q-item.q-manual-focusable--focused:not(.disabled, [disabled], [aria-disabled='true']) {
-    color: inherit;
+    .q-item__label,
+    .q-item__section--main {
+      color: $faSelectInput-menu-item-color !important;
+      font-weight: $faSelectInput-menu-item-fontWeight !important;
+    }
+
+    .faSelectInput__optionMatch {
+      color: $faSelectInput-optionMatch-color !important;
+      font-weight: $faSelectInput-optionMatch-fontWeight !important;
+    }
 
     &::before,
     &::after {
@@ -86,16 +99,11 @@ body .faSelectInput__menu.q-menu {
   }
 }
 
-/* Selected: kill hover/focus wash (beats body.desktop .q-hoverable:hover). */
-body.desktop .faSelectInput__menu.q-menu {
-  .q-item--active.q-focusable:focus > .q-focus-helper,
-  .q-item--active.q-hoverable:hover > .q-focus-helper,
-  .q-item--active.q-manual-focusable--focused > .q-focus-helper {
-    opacity: $faSelectInput-menu-activeItem-focusHelper-opacity !important;
-
-    &::after,
-    &::before {
-      opacity: $faSelectInput-menu-activeItem-focusHelper-opacity !important;
-    }
-  }
+/*
+ * Flat: solid option color from --fa-color-glyph-base (inline style).
+ * Fantasy: global body.fa-appTheme--fantasy .fa-color-glyph adds shading.
+ */
+.faSelectInput .fa-color-glyph,
+.faSelectInput__menu .fa-color-glyph {
+  color: var(--fa-color-glyph-base);
 }

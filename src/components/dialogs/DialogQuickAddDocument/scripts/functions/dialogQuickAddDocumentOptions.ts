@@ -102,7 +102,7 @@ export function collectDialogQuickAddDocumentTemplateIdsForWorld (
 }
 
 /**
- * Builds world q-select options from sorted world sources.
+ * Builds world FaSelectInput options from sorted world sources.
  */
 export function buildDialogQuickAddDocumentWorldOptions (input: {
   preferredLanguageCode: T_faUserSettingsLanguageCode
@@ -121,14 +121,14 @@ export function buildDialogQuickAddDocumentWorldOptions (input: {
     return {
       color: world.color,
       icon: FA_DIALOG_QUICK_ADD_DOCUMENT_WORLD_ICON,
-      label: label.length > 0 ? label : world.id,
-      value: world.id
+      id: world.id,
+      name: label.length > 0 ? label : world.id
     }
   })
 }
 
 /**
- * Builds template q-select options for the selected world.
+ * Builds template FaSelectInput options for the selected world.
  * Only templates mapped in that world's hierarchy layout (DFS order); no project-wide extras.
  */
 export function buildDialogQuickAddDocumentTemplateOptions (input: {
@@ -150,10 +150,8 @@ export function buildDialogQuickAddDocumentTemplateOptions (input: {
     const label = input.resolveTemplateLabel(template, input.preferredLanguageCode)
     options.push({
       icon: template.icon,
-      label: label.length > 0 ? label : template.id,
-      titlePluralTranslations: template.titlePluralTranslations,
-      titleSingularTranslations: template.titleSingularTranslations,
-      value: template.id
+      id: template.id,
+      name: label.length > 0 ? label : template.id
     })
   }
   return options

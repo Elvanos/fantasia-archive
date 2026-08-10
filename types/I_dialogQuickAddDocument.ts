@@ -1,6 +1,7 @@
 import type { I_faProjectDocumentTemplateTitleSingularTranslations } from 'app/types/I_faProjectDocumentTemplateTitleSingularTranslations'
 import type { I_faProjectDocumentTemplateTitleTranslations } from 'app/types/I_faProjectDocumentTemplateTitleTranslations'
 import type { I_faProjectWorldDisplayNameTranslations } from 'app/types/I_faProjectWorldDisplayNameTranslations'
+import type { I_faSelectInputObjectItem } from 'app/types/I_faSelectInput'
 
 /** One layout group used when sorting Quick-Add templates like the hierarchy tree. */
 export interface I_dialogQuickAddDocumentWorldLayoutGroup {
@@ -37,21 +38,8 @@ export interface I_dialogQuickAddDocumentTemplateSource {
   titleSingularTranslations: I_faProjectDocumentTemplateTitleSingularTranslations
 }
 
-/** q-select option for the world field. */
-export interface I_dialogQuickAddDocumentWorldOption {
-  /** Raw worlds.color for fa-color-glyph styling. */
-  color: string
-  /** World glyph (mdi-earth), colored via option color. */
-  icon: string
-  label: string
-  value: string
-}
+/** FaSelectInput option for the world field (includes color for fa-color-glyph). */
+export type I_dialogQuickAddDocumentWorldOption = I_faSelectInputObjectItem
 
-/** q-select option for the template field. */
-export interface I_dialogQuickAddDocumentTemplateOption {
-  icon: string
-  label: string
-  titlePluralTranslations: I_faProjectDocumentTemplateTitleTranslations
-  titleSingularTranslations: I_faProjectDocumentTemplateTitleSingularTranslations
-  value: string
-}
+/** FaSelectInput option for the template field. */
+export type I_dialogQuickAddDocumentTemplateOption = I_faSelectInputObjectItem

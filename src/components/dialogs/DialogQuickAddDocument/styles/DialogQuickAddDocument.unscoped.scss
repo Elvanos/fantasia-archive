@@ -1,5 +1,3 @@
-@use '../../../globals/AppControlMenus/styles/contextMenuSeparators.mixin' as contextMenuSeparators;
-
 .q-dialog.dialogComponent.dialogQuickAddDocument > .q-dialog__inner {
   align-self: flex-start;
   margin-top: $dialogQuickAddDocument-marginTop;
@@ -24,13 +22,7 @@
   color: var(--fa-color-glyph-base);
 }
 
-/* Teleported q-select menu; stack above modal QDialog chrome. FA 1.0 menuResizer = 600px. */
+/* Teleported FaSelectInput menu; stack above modal QDialog chrome. */
 .dialogQuickAddDocument__selectMenu.q-menu {
-  min-width: $dialogQuickAddDocument-selectMenu-minWidth !important;
-  width: $dialogQuickAddDocument-selectMenu-width !important;
   z-index: $dialogQuickAddDocument-selectMenu-zIndex !important;
-
-  .dialogQuickAddDocument__separatorAlt {
-    @include contextMenuSeparators.fa-context-menu-separator-alt;
-  }
 }

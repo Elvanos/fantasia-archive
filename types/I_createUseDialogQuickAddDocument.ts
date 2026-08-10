@@ -5,39 +5,28 @@ import type {
   I_dialogQuickAddDocumentWorldOption,
   I_dialogQuickAddDocumentWorldSource
 } from 'app/types/I_dialogQuickAddDocument'
+import type { T_faSelectInputModelValue } from 'app/types/I_faSelectInput'
 import type { I_faTemporaryOpenedDocumentCreateInput } from 'app/types/I_faOpenedDocumentsDomain'
 import type { T_dialogName } from 'app/types/T_appDialogsAndDocuments'
 import type { T_faUserSettingsLanguageCode } from 'app/types/faUserSettingsLanguageRegistry'
 import type { I_computedRef, I_ref } from 'app/types/I_vueCompositionShims'
 
-/** Quasar q-select instance methods used for template auto-open + first-option highlight. */
-export interface I_dialogQuickAddDocumentQSelectLike {
-  moveOptionSelection: (offset: number, skipInputValue?: boolean) => void
-  setOptionIndex: (index: number) => void
-  showPopup: () => void
+/** FaSelectInput expose used for template auto-open (opt-in openPopup). */
+export interface I_dialogQuickAddDocumentFaSelectInputLike {
+  openPopup: () => void
 }
-
-/**
- * Quasar q-select @filter update callback.
- * Second arg runs after options apply (Quasar 2) — use for setOptionIndex / moveOptionSelection.
- */
-export type T_dialogQuickAddDocumentSelectFilterUpdate = (
-  fn: () => void,
-  afterFn?: (select: I_dialogQuickAddDocumentQSelectLike) => void
-) => void
 
 /** Mutable refs held for one Quick-Add Document dialog session. */
 export interface I_dialogQuickAddDocumentSession {
   dialogModel: I_ref<boolean>
   documentName: I_ref<string>
-  filteredTemplateOptions: I_ref<I_dialogQuickAddDocumentTemplateOption[]>
   focusGeneration: I_ref<number>
   selectedTemplateId: I_ref<string | null>
   selectedWorldId: I_ref<string | null>
   showWorldSelect: I_computedRef<boolean>
   skipNextWorldChangeReopen: I_ref<boolean>
   templateOptions: I_computedRef<I_dialogQuickAddDocumentTemplateOption[]>
-  templateSelectRef: I_ref<I_dialogQuickAddDocumentQSelectLike | null>
+  templateSelectRef: I_ref<I_dialogQuickAddDocumentFaSelectInputLike | null>
   templatesById: I_ref<Map<string, I_dialogQuickAddDocumentTemplateSource>>
   worldOptions: I_computedRef<I_dialogQuickAddDocumentWorldOption[]>
   worlds: I_ref<I_dialogQuickAddDocumentWorldSource[]>
@@ -48,16 +37,17 @@ export interface I_dialogQuickAddDocumentApi {
   bindTemplateSelectRef: (el: unknown) => void
   dialogModel: I_ref<boolean>
   documentName: I_ref<string>
-  filteredTemplateOptions: I_ref<I_dialogQuickAddDocumentTemplateOption[]>
   onDialogHide: () => void
   onDialogShow: () => void
-  onTemplateFilter: (val: string, update: T_dialogQuickAddDocumentSelectFilterUpdate) => void
-  onTemplateSelect: (templateId: string | null | undefined) => Promise<void>
-  onWorldSelect: (worldId: string | null | undefined) => void
+  onTemplateSelect: (value: T_faSelectInputModelValue | null | undefined) => Promise<void>
+  onWorldSelect: (value: T_faSelectInputModelValue | null | undefined) => void
   selectedTemplateId: I_ref<string | null>
+  selectedTemplateOption: I_computedRef<I_dialogQuickAddDocumentTemplateOption | null>
   selectedWorldId: I_ref<string | null>
+  selectedWorldOption: I_computedRef<I_dialogQuickAddDocumentWorldOption | null>
   showWorldSelect: I_computedRef<boolean>
-  templateSelectRef: I_ref<I_dialogQuickAddDocumentQSelectLike | null>
+  templateOptions: I_computedRef<I_dialogQuickAddDocumentTemplateOption[]>
+  templateSelectRef: I_ref<I_dialogQuickAddDocumentFaSelectInputLike | null>
   worldOptions: I_computedRef<I_dialogQuickAddDocumentWorldOption[]>
 }
 

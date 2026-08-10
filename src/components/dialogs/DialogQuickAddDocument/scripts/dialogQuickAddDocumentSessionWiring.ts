@@ -1,20 +1,16 @@
 import type {
   I_createUseDialogQuickAddDocumentDeps,
   I_dialogQuickAddDocumentApi,
-  I_dialogQuickAddDocumentQSelectLike,
+  I_dialogQuickAddDocumentFaSelectInputLike,
   I_dialogQuickAddDocumentSession
 } from 'app/types/I_createUseDialogQuickAddDocument'
 import type {
-  I_dialogQuickAddDocumentTemplateOption,
   I_dialogQuickAddDocumentTemplateSource,
   I_dialogQuickAddDocumentWorldSource
 } from 'app/types/I_dialogQuickAddDocument'
 import type { T_dialogName } from 'app/types/T_appDialogsAndDocuments'
 
-import {
-  bindDialogQuickAddDocumentTemplateSelectRef,
-  filterDialogQuickAddDocumentTemplateSelect
-} from './dialogQuickAddDocumentFocusHydrateWiring'
+import { bindDialogQuickAddDocumentTemplateSelectRef } from './dialogQuickAddDocumentFocusHydrateWiring'
 import {
   wireDialogQuickAddDocumentOpenClose,
   wireDialogQuickAddDocumentSelectHandlers
@@ -29,8 +25,7 @@ function createDialogQuickAddDocumentSession (
   const templatesById = deps.ref(new Map<string, I_dialogQuickAddDocumentTemplateSource>())
   const selectedWorldId = deps.ref<string | null>(null)
   const selectedTemplateId = deps.ref<string | null>(null)
-  const templateSelectRef = deps.ref<I_dialogQuickAddDocumentQSelectLike | null>(null)
-  const filteredTemplateOptions = deps.ref<I_dialogQuickAddDocumentTemplateOption[]>([])
+  const templateSelectRef = deps.ref<I_dialogQuickAddDocumentFaSelectInputLike | null>(null)
   const focusGeneration = deps.ref(0)
   const skipNextWorldChangeReopen = deps.ref(false)
   deps.registerComponentDialogStackGuard(dialogModel)
@@ -58,7 +53,6 @@ function createDialogQuickAddDocumentSession (
   return {
     dialogModel,
     documentName,
-    filteredTemplateOptions,
     focusGeneration,
     selectedTemplateId,
     selectedWorldId,
@@ -87,30 +81,40 @@ export function runDialogQuickAddDocumentSession (
     openClose.closeDialog
   )
 
-  const onTemplateFilter = (
-    val: string,
-    update: (fn: () => void, afterFn?: (select: I_dialogQuickAddDocumentQSelectLike) => void) => void
-  ): void => {
-    filterDialogQuickAddDocumentTemplateSelect(session, val, update)
-  }
-
   const bindTemplateSelectRef = (el: unknown): void => {
     bindDialogQuickAddDocumentTemplateSelectRef(session.templateSelectRef, el)
   }
+
+  const selectedWorldOption = deps.computed(() => {
+    const worldId = session.selectedWorldId.value
+    if (worldId === null) {
+      return null
+    }
+    return session.worldOptions.value.find((row) => row.id === worldId) ?? null
+  })
+
+  const selectedTemplateOption = deps.computed(() => {
+    const templateId = session.selectedTemplateId.value
+    if (templateId === null) {
+      return null
+    }
+    return session.templateOptions.value.find((row) => row.id === templateId) ?? null
+  })
 
   return {
     bindTemplateSelectRef,
     dialogModel: session.dialogModel,
     documentName: session.documentName,
-    filteredTemplateOptions: session.filteredTemplateOptions,
     onDialogHide: openClose.onDialogHide,
     onDialogShow: openClose.onDialogShow,
-    onTemplateFilter,
     onTemplateSelect: selectHandlers.onTemplateSelect,
     onWorldSelect: selectHandlers.onWorldSelect,
     selectedTemplateId: session.selectedTemplateId,
+    selectedTemplateOption,
     selectedWorldId: session.selectedWorldId,
+    selectedWorldOption,
     showWorldSelect: session.showWorldSelect,
+    templateOptions: session.templateOptions,
     templateSelectRef: session.templateSelectRef,
     worldOptions: session.worldOptions
   }

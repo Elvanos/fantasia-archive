@@ -23,126 +23,37 @@
           v-if="showWorldSelect"
           class="dialogQuickAddDocument__worldSelect q-mb-md"
         >
-          <q-select
-            :model-value="selectedWorldId"
-            color="primary-bright"
+          <FaSelectInput
+            :model-value="selectedWorldOption"
             dark
             dense
-            data-test-locator="dialogQuickAddDocument-select-world"
-            emit-value
             filled
-            :aria-label="$t('dialogs.quickAddDocument.worldLabel')"
-            map-options
-            menu-anchor="bottom middle"
-            menu-self="top middle"
+            mode="otherType"
             :options="worldOptions"
-            option-label="label"
-            option-value="value"
-            outlined
-            popup-content-class="dialogQuickAddDocument__selectMenu"
+            popup-content-class="faSelectInput__menu dialogQuickAddDocument__selectMenu"
+            selection-presentation="inline"
+            test-locator="dialogQuickAddDocument-select-world"
+            :aria-label="$t('dialogs.quickAddDocument.worldLabel')"
+            @option-activate="onWorldSelect"
             @update:model-value="onWorldSelect"
-          >
-            <template #option="scope">
-              <div
-                class="dialogQuickAddDocument__optionWrap"
-                :data-test-locator="`dialogQuickAddDocument-world-option-${scope.index}`"
-              >
-                <q-separator
-                  v-if="scope.index > 0"
-                  class="dialogQuickAddDocument__separatorAlt"
-                  :data-test-locator="`dialogQuickAddDocument-world-separatorAlt-${scope.index}`"
-                />
-                <q-item
-                  v-bind="scope.itemProps"
-                >
-                  <q-item-section avatar>
-                    <q-icon
-                      class="fa-color-glyph"
-                      :name="scope.opt.icon"
-                      :style="buildDialogQuickAddDocumentWorldOptionIconStyle(scope.opt.color)"
-                    />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>
-                      {{ scope.opt.label }}
-                    </q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-            </template>
-            <template #selected-item="scope">
-              <div class="dialogQuickAddDocument__selectedWorld row items-center no-wrap">
-                <q-icon
-                  class="fa-color-glyph q-mr-sm"
-                  :name="scope.opt.icon"
-                  :style="buildDialogQuickAddDocumentWorldOptionIconStyle(scope.opt.color)"
-                />
-                <span>{{ scope.opt.label }}</span>
-              </div>
-            </template>
-          </q-select>
+          />
         </div>
 
         <div class="dialogQuickAddDocument__templateSelect">
-          <q-select
+          <FaSelectInput
             :ref="bindTemplateSelectRef"
-            :model-value="selectedTemplateId"
-            color="primary-bright"
+            :model-value="selectedTemplateOption"
             dark
             dense
-            data-test-locator="dialogQuickAddDocument-select-template"
-            emit-value
             filled
-            input-debounce="0"
+            mode="otherType"
+            :options="templateOptions"
+            popup-content-class="faSelectInput__menu dialogQuickAddDocument__selectMenu"
+            selection-presentation="inline"
+            test-locator="dialogQuickAddDocument-select-template"
             :aria-label="$t('dialogs.quickAddDocument.templateLabel')"
-            map-options
-            menu-anchor="bottom middle"
-            menu-self="top middle"
-            :options="filteredTemplateOptions"
-            option-label="label"
-            option-value="value"
-            outlined
-            popup-content-class="dialogQuickAddDocument__selectMenu"
-            use-input
-            @filter="onTemplateFilter"
             @update:model-value="(value) => void onTemplateSelect(value)"
-          >
-            <template #option="scope">
-              <div
-                class="dialogQuickAddDocument__optionWrap"
-                :data-test-locator="`dialogQuickAddDocument-template-option-${scope.index}`"
-              >
-                <q-separator
-                  v-if="scope.index > 0"
-                  class="dialogQuickAddDocument__separatorAlt"
-                  :data-test-locator="`dialogQuickAddDocument-template-separatorAlt-${scope.index}`"
-                />
-                <q-item
-                  v-bind="scope.itemProps"
-                >
-                  <q-item-section avatar>
-                    <q-icon
-                      :name="scope.opt.icon"
-                    />
-                  </q-item-section>
-                  <q-item-section>
-                    <q-item-label>
-                      {{ scope.opt.label }}
-                    </q-item-label>
-                  </q-item-section>
-                </q-item>
-              </div>
-            </template>
-            <template #selected-item="scope">
-              <div class="dialogQuickAddDocument__selectedTemplate row items-center no-wrap">
-                <q-icon
-                  class="q-mr-sm"
-                  :name="scope.opt.icon"
-                />
-                <span>{{ scope.opt.label }}</span>
-              </div>
-            </template>
-          </q-select>
+          />
         </div>
       </q-card-section>
 
@@ -165,10 +76,9 @@
 <script setup lang="ts">
 import type { T_dialogName } from 'app/types/T_appDialogsAndDocuments'
 
-import {
-  buildDialogQuickAddDocumentWorldOptionIconStyle,
-  useDialogQuickAddDocument
-} from './scripts/dialogQuickAddDocument_manager'
+import FaSelectInput from 'app/src/components/elements/FaSelectInput/FaSelectInput.vue'
+
+import { useDialogQuickAddDocument } from './scripts/dialogQuickAddDocument_manager'
 
 defineOptions({
   name: 'DialogQuickAddDocument'
@@ -182,15 +92,14 @@ const {
   bindTemplateSelectRef,
   dialogModel,
   documentName,
-  filteredTemplateOptions,
   onDialogHide,
   onDialogShow,
-  onTemplateFilter,
   onTemplateSelect,
   onWorldSelect,
-  selectedTemplateId,
-  selectedWorldId,
+  selectedTemplateOption,
+  selectedWorldOption,
   showWorldSelect,
+  templateOptions,
   worldOptions
 } = useDialogQuickAddDocument(props)
 </script>
