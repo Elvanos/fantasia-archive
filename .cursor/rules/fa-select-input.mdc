@@ -44,13 +44,17 @@ Domain barrel: **`src/scripts/faSelectInput/faSelectInput_manager.ts`**.
 
 Menu width **600px** — **`$faSelectInput-menu-width`** / **`minWidth`** / **`maxWidth`** in **`styles/_variables.scss`** (forwarded via **`src/css/quasar.variables.scss`**). Keep in sync with **`FaSelectInput.unscoped.scss`**.
 
-Hardcoded on SFC: **`menu-anchor="bottom middle"`**, **`menu-self="top middle"`**, **`popup-content-class="faSelectInput__menu"`**, **`use-chips`**, **`use-input`**, **`input-debounce="0"`**.
+Hardcoded on SFC: **`menu-anchor="bottom middle"`**, **`menu-self="top middle"`**, default **`popup-content-class="faSelectInput__menu"`**, **`use-input`**, **`input-debounce="0"`**. **`use-chips`** when **`selectionPresentation`** is **`chips`** (default). **`chipRemovable`** (default **`true`**) — set **`false`** for mandatory single chip without X.
 
 ## Menu / option styling
 
-- Active row: side bars only (no Quasar active wash) — unscoped menu sheet
-- Between options: **`q-separator.faSelectInput__separatorAlt`** + **`fa-context-menu-separator-alt`** mixin ([fa-context-menu-dividers.mdc](fa-context-menu-dividers.mdc))
-- Filter matches: **`faSelectInput__optionMatch`** (primary-bright, weight **500**)
+- Active/selected row: side bars; non-match text = idle; hover/keyboard wash same as other rows
+- Between options: CSS **`faSelectInput__option--separatorAlt`** border on item (not **`q-separator`**) so virtual-scroll has one root per option; large **`virtual-scroll-slice-size`** fills tall menus on first open ([fa-context-menu-dividers.mdc](fa-context-menu-dividers.mdc))
+- Filter matches: **`faSelectInput__optionMatch`** (primary-bright, weight **500**) — selected rows included
+- Optional object **`color`**: **`fa-color-glyph`** + CSS custom properties
+- Default first-option keyboard highlight on open/filter; **`openPopup()`** expose for parent-driven open; **Tab keyup** opens menu (not focus-`showPopup` — click race)
+- Kill Quasar selected **whole-label** text paint: **`FA_SELECT_INPUT_OPTIONS_SELECTED_CLASS`** + **`bindFaSelectInputOptionItemActivateProps`** / strip activeClass (not filter optionMatch)
+- **`option-activate`**: option click **or Enter** on focused option (incl. single reselect skipping **`update:modelValue`**) — Quick Add world → reopen template
 
 ## i18n and Storybook
 
@@ -68,7 +72,8 @@ Hardcoded on SFC: **`menu-anchor="bottom middle"`**, **`menu-self="top middle"`*
 - Element: **`FaSelectInput/_tests/FaSelectInput.vitest.test.ts`**
 - Composable: **`scripts/_tests/createUseFaSelectInput.vitest.test.ts`**
 - Domain: **`src/scripts/faSelectInput/functions/_tests/faSelectInputDomain.vitest.test.ts`**
-- Smoke: **`DocumentWorkspacePageSelectSmoke`** + colocated Vitest (not Playwright yet)
+- Smoke: **`DocumentWorkspacePageSelectSmoke`** + colocated Vitest
+- Playwright component: **`FaSelectInput/_tests/FaSelectInput.playwright.test.ts`**
 
 ## Related
 

@@ -38,25 +38,31 @@ App Settings enum **`q-select`** stays in **`DialogAppSettingsSettingBlock`** un
 | **`mode`** | Required — **`simple`** \| **`document`** \| **`otherType`** \| **`tags`** \| **`media`** (stub) |
 | **`modelValue`** | String(s) or object item(s) / **`null`** per mode |
 | **`options`** | Strings or **`I_faSelectInputObjectItem`** list |
-| **`testLocator`** | Root **`data-test-locator`**; chip / option / separatorAlt suffixes |
+| **`testLocator`** | Root **`data-test-locator`**; chip / option / separator-alt attrs |
 | **`allowCreateNew`** | Opt-in Enter create-new (default **`false`**) |
 | **`clearInputOnSelect`** | Opt-in clear filter text after select/create (default **`false`**; chip stays) |
+| **`chipRemovable`** | Chip X remove control (default **`true`**); set **`false`** for mandatory single (chip stays, no X) |
 | **`filterFn`** | Optional override of default filter |
 | **`multiple`**, **`label`**, **`loading`**, **`disable`**, Quasar chrome | Standard defaults: dense filled dark, color **`primary-bright`** |
 
-**Emits:** **`update:modelValue`**, **`change`** (`{ action, value }`), **`new-value`**, **`request-options`** (focus + popup-show).
+**Emits:** **`update:modelValue`**, **`change`** (`{ action, value }`), **`new-value`**, **`request-options`** (focus + popup-show), **`option-activate`** (option click or Enter on focused option, including single reselect).
 
-**Expose:** **`clearIsNewFlags(ids)`** — strip **`isNew`** after save.
+**Expose:** **`clearIsNewFlags(ids)`**, **`openPopup()`**.
 
-**Test hooks:** **`{testLocator}`**, **`-chip`**, **`-option-{index}`**, **`-separatorAlt-{index}`** (index ≥ 1).
+**Test hooks:** **`{testLocator}`**, **`-filter`**, **`-chip`**, **`-selected`** (inline), **`-option-{index}`**, **`data-test-locator-separator-alt`** on option (index ≥ 1).
 
 ## UX behavior
 
-- Chips always; hide empty single selection; **`isNew`** → teal-3 chip else accent; text dark
-- Object **`icon`** on chip/option when non-empty
+- Default presentation **chips**; **`selectionPresentation="inline"`** for icon+label closed field (no chips)
+- **`chipRemovable`** default **`true`**; mandatory single parents set **`false`** (chip, no X)
+- Optional object **`color`** tints icons via **`fa-color-glyph`**
+- Hide empty single selection chip; **`isNew`** → teal-3 chip else accent; text dark
+- Object **`icon`** on chip/option/inline when non-empty
 - Filter highlight = whole whitespace-delimited words matching needle words (not letter-only wash)
-- Menu fixed **600px**, center under field (**`bottom middle`** / **`top middle`**)
-- **separatorAlt** between options; selected row = side bars only
+- **Default:** keyboard-highlight first option on popup-show and after every filter update (model unchanged)
+- **Focus opens menu:** Tab / Shift+Tab via **`keyup` Tab** (not `@focus` `showPopup` — that races Quasar click toggle; **`QSelect` `inheritAttrs: false`** drops wrapper `@mousedown`); parents may still call **`openPopup()`** (Quick Add template)
+- Menu fixed **600px**, center under field (**`bottom middle`** / **`top middle`**); optional **`popupContentClass`**
+- **separatorAlt** via CSS border on option item (single virtual-scroll root); **`virtual-scroll-slice-size` 80** fills tall menus on first open; selected = side bars + idle non-match text; filter **optionMatch** gold on selected too; hover/keyboard wash same as other rows
 - Create-new: trim; simple string or object **`{ id: crypto.randomUUID(), name, isNew: true }`**
 
 ## File map
@@ -103,8 +109,9 @@ See [fantasia-two-level-architecture](../fantasia-two-level-architecture/SKILL.m
 | Vitest (composable) | **`scripts/_tests/createUseFaSelectInput.vitest.test.ts`** |
 | Vitest (domain) | **`src/scripts/faSelectInput/functions/_tests/faSelectInputDomain.vitest.test.ts`** |
 | Smoke | **`DocumentWorkspacePageSelectSmoke.vitest.test.ts`** |
+| Playwright component | **`FaSelectInput/_tests/FaSelectInput.playwright.test.ts`** — Tab open, reopen click, filter type, separator-alt, tall menu fill, selected-option close |
 
-No Playwright specs yet.
+Quick Add dialog PW/E2E also exercise **`FaSelectInput`** world/template fields.
 
 ## Related
 
