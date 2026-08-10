@@ -8,11 +8,17 @@ const STORYBOOK_WORKSPACE_HOME_ACTIVE_PROJECT = {
   filePath: 'C:\\Storybook\\Aurelion Citadel.faproject',
   id: 'storybook-aurelion-citadel',
   name: 'Aurelion Citadel'
-}
+} as const
 
-function patchStorybookWorkspaceHomePreviewStores (hideTooltipsProject: boolean): void {
-  S_FaActiveProject().$patch({
-    activeProject: STORYBOOK_WORKSPACE_HOME_ACTIVE_PROJECT
+/**
+ * Seeds Pinia for /home previews: active project session and project-overview tip visibility.
+ * Uses setActiveProject — activeProject is readonly(); $patch does not apply.
+ */
+export function seedStorybookWorkspaceHomePreviewStores (hideTooltipsProject: boolean): void {
+  S_FaActiveProject().setActiveProject({
+    filePath: STORYBOOK_WORKSPACE_HOME_ACTIVE_PROJECT.filePath,
+    id: STORYBOOK_WORKSPACE_HOME_ACTIVE_PROJECT.id,
+    name: STORYBOOK_WORKSPACE_HOME_ACTIVE_PROJECT.name
   })
   S_FaUserSettings().$patch({
     settings: {
@@ -27,7 +33,7 @@ function patchStorybookWorkspaceHomePreviewStores (hideTooltipsProject: boolean)
  * Seeds Pinia for /home previews: active project session and visible project-overview tips.
  */
 export const withStorybookWorkspaceHomePreview: Decorator = (story) => {
-  patchStorybookWorkspaceHomePreviewStores(false)
+  seedStorybookWorkspaceHomePreviewStores(false)
   return story()
 }
 
@@ -35,6 +41,6 @@ export const withStorybookWorkspaceHomePreview: Decorator = (story) => {
  * Same active project as workspace home, with Hide tips on project overview enabled.
  */
 export const withStorybookWorkspaceHomePreviewTipsHidden: Decorator = (story) => {
-  patchStorybookWorkspaceHomePreviewStores(true)
+  seedStorybookWorkspaceHomePreviewStores(true)
   return story()
 }

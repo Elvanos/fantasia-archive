@@ -35,6 +35,7 @@ import L_unsortedAppTexts from 'app/i18n/en-US/globalFunctionality/L_unsortedApp
 import L_appUpdateCheck from 'app/i18n/en-US/globalFunctionality/L_appUpdateCheck'
 import L_mainLayout from 'app/i18n/en-US/layouts/L_mainLayout'
 import L_ErrorNotFound from 'app/i18n/en-US/pages/L_ErrorNotFound'
+import L_projectAppControlBar from 'app/i18n/en-US/components/projectUI/L_projectAppControlBar'
 import L_projectOverview from 'app/i18n/en-US/components/projectUI/ProjectOverview/L_projectOverview'
 import L_projectHierarchyTree from 'app/i18n/en-US/components/projectUI/ProjectHierarchyTree/L_projectHierarchyTree'
 import L_projectHierarchyTreeSearch from 'app/i18n/en-US/components/projectUI/ProjectHierarchyTreeSearch/L_projectHierarchyTreeSearch'
@@ -107,6 +108,7 @@ const defaultMessages: Record<string, unknown> = {
   faIconPickerInput: L_FaIconPickerInput,
   faLocaleTranslationsInput: L_FaLocaleTranslationsInput,
   projectUI: {
+    projectAppControlBar: L_projectAppControlBar,
     projectHierarchyTree: L_projectHierarchyTree,
     projectHierarchyTreeSearch: L_projectHierarchyTreeSearch,
     projectOverview: L_projectOverview

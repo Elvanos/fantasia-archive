@@ -4,11 +4,16 @@ import type { TestInfo } from '@playwright/test'
 import {
   e2eExpectFaActiveProjectStoreName
 } from 'app/helpers/playwrightHelpers_e2e/e2eExpectFaActiveProjectStore'
+import {
+  e2eExpandWorldAndPlacementNodes,
+  e2eRefreshHierarchyTreeLayout
+} from 'app/helpers/playwrightHelpers_e2e/e2eWorkspaceHierarchyTreeHelpers'
 import { launchFaPlaywrightE2eAppWindow } from 'app/helpers/playwrightHelpers_e2e/faPlaywrightE2eAppLifecycle'
 import {
   expectFaPlaywrightE2eHashRoute,
   expectFaPlaywrightE2eWorkspaceShell
 } from 'app/helpers/playwrightHelpers_e2e/faPlaywrightE2eAppShellAssertions'
+import { ensureFaPlaywrightE2eHierarchyTreeVisible } from 'app/helpers/playwrightHelpers_e2e/ensureFaPlaywrightE2eHierarchyTreeVisible'
 import {
   navigateFaPlaywrightE2eToSplashRoute
 } from 'app/helpers/playwrightHelpers_e2e/faPlaywrightE2eNavigateHome'
@@ -168,42 +173,7 @@ async function seedTreeDocumentAndRefreshHierarchy (
 }
 
 async function refreshHierarchyTreeLayout (page: Page): Promise<void> {
-  await page.evaluate(async () => {
-    const root = globalThis.document.querySelector('#q-app') as HTMLElement & {
-      __vue_app__?: {
-        config: {
-          globalProperties: {
-            $pinia?: {
-              _s?: Map<string, {
-                refreshLayout?: () => Promise<void>
-              }>
-            }
-          }
-        }
-      }
-    }
-    const hierarchyStore = root?.__vue_app__?.config.globalProperties.$pinia?._s?.get('S_FaProjectHierarchyTree')
-    if (typeof hierarchyStore?.refreshLayout === 'function') {
-      await hierarchyStore.refreshLayout()
-    }
-  })
-}
-
-async function expandWorldAndPlacementNodes (page: Page): Promise<void> {
-  const worldOpenIcon = page.locator(
-    `[data-test-locator="${selectorList.nodeWorld}"]`
-  ).locator('xpath=ancestor::div[contains(@class,"projectHierarchyTree__nodeRow")][1]')
-    .locator('[data-test-locator="projectHierarchyTree-openIconWrapper"]')
-  await worldOpenIcon.dispatchEvent('pointerdown')
-  await worldOpenIcon.click({ force: true })
-
-  const placementOpenIcon = page.locator(
-    `[data-test-locator="${selectorList.nodeTemplatePlacement}"]`
-  ).locator('xpath=ancestor::div[contains(@class,"projectHierarchyTree__nodeRow")][1]')
-    .locator('[data-test-locator="projectHierarchyTree-openIconWrapper"]')
-  await expect(placementOpenIcon).toHaveCount(1, { timeout: 15_000 })
-  await placementOpenIcon.dispatchEvent('pointerdown')
-  await placementOpenIcon.click({ force: true })
+  await e2eRefreshHierarchyTreeLayout(page)
 }
 
 test.describe.serial('Opened documents E2E — tree chrome settings before cold restart', () => {
@@ -247,10 +217,11 @@ test.describe.serial('Opened documents E2E — tree chrome settings before cold 
     e2eTreeChromeDocumentId = await seedTreeDocumentAndRefreshHierarchy(appWindow)
     expect(e2eTreeChromeDocumentId.length).toBeGreaterThan(0)
 
+    await ensureFaPlaywrightE2eHierarchyTreeVisible(appWindow)
     await expect(
       appWindow.locator(`[data-test-locator="${selectorList.hierarchyTreeHost}"]`)
     ).toBeVisible({ timeout: 15_000 })
-    await expandWorldAndPlacementNodes(appWindow)
+    await e2eExpandWorldAndPlacementNodes(appWindow)
 
     await expect(
       appWindow.locator(`[data-test-locator="${selectorList.orderNumberBadge}"]`)
@@ -344,6 +315,7 @@ test.describe.serial('Opened documents E2E — cold restart keeps tree chrome se
     await clickFaPlaywrightE2eSplashResumePrimarySegment(appWindow)
     await e2eExpectFaActiveProjectStoreName(appWindow, TREE_CHROME_E2E_PROJECT_NAME)
     await expectFaPlaywrightE2eWorkspaceShell(appWindow)
+    await ensureFaPlaywrightE2eHierarchyTreeVisible(appWindow)
 
     await expect(
       appWindow.locator(`[data-test-locator="${selectorList.hierarchyTreeHost}"]`)

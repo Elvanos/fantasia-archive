@@ -14,6 +14,7 @@ import * as QuasarAll from 'quasar'
 import { ClosePopup, Dark, Dialog, Notify, Quasar, Ripple } from 'quasar'
 import { runTooltipDefaultsBoot } from 'app/src/boot/scripts/tooltipDefaultsBoot_manager'
 import QMarkdownPlugin from '@quasar/quasar-ui-qmarkdown'
+import VueApexCharts from 'vue3-apexcharts'
 
 import type { Preview } from '@storybook/vue3-vite'
 import type { QuasarPluginOptions } from 'quasar'
@@ -137,6 +138,10 @@ setup((app) => {
 
   runTooltipDefaultsBoot()
 
+  // Match app boot 'src/boot/apexcharts.ts' so Project Overview stacked chart mounts in canvas/VRT.
+  /* eslint-disable vue/multi-word-component-names, vue/component-definition-name-casing -- third-party tag name */
+  app.component('apexchart', VueApexCharts)
+  /* eslint-enable vue/multi-word-component-names, vue/component-definition-name-casing */
   app.use(storybookPinia)
   app.use(storybookI18n)
   // Match Quasar CLI order: framework first, then QMarkdown boot-equivalent plugin.

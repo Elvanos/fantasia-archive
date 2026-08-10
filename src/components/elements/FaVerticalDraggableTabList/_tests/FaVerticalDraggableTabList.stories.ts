@@ -13,7 +13,7 @@ const meta = {
       }
     }
   },
-  tags: ['autodocs', 'skip-visual'],
+  tags: ['autodocs'],
   title: 'Components/elements/FaVerticalDraggableTabList'
 } satisfies Meta<typeof FaVerticalDraggableTabList>
 

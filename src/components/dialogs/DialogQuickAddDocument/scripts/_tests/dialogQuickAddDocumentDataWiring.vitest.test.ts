@@ -15,6 +15,7 @@ import {
 
 beforeEach(() => {
   vi.restoreAllMocks()
+  delete window.__faComponentTestingQuickAddDocumentSources
 })
 
 /**
@@ -123,6 +124,74 @@ test('Test that loadDialogQuickAddDocumentSources falls back empty template icon
     }],
     worlds: []
   })
+})
+
+/**
+ * loadDialogQuickAddDocumentSources
+ * Component Playwright probe bypasses frozen contextBridge list methods.
+ */
+test('Test that loadDialogQuickAddDocumentSources prefers component testing probe', async () => {
+  window.__faComponentTestingQuickAddDocumentSources = {
+    templates: [{
+      icon: 'mdi-account',
+      id: 'tpl-probe',
+      titlePluralTranslations: { 'en-US': 'Heroes' },
+      titleSingularTranslations: { 'en-US': 'Hero' }
+    }],
+    worlds: [{
+      color: '#4caf50',
+      displayNameTranslations: { 'en-US': 'Probe World' },
+      id: 'world-probe',
+      sortOrder: 0,
+      templateLayout: {
+        groups: [{
+          id: 'group-probe',
+          rootSortOrder: 0
+        }],
+        placements: [{
+          documentTemplateId: 'tpl-probe',
+          groupId: 'group-probe',
+          groupSortOrder: 0,
+          rootSortOrder: null
+        }]
+      }
+    }]
+  }
+  window.faContentBridgeAPIs = {
+    projectContent: {
+      listDocumentTemplatesForProjectSettings: vi.fn(async () => ({ items: [] })),
+      listWorldsForProjectSettings: vi.fn(async () => ({ items: [] }))
+    }
+  } as unknown as typeof window.faContentBridgeAPIs
+
+  await expect(loadDialogQuickAddDocumentSources()).resolves.toEqual({
+    templates: [{
+      icon: 'mdi-account',
+      id: 'tpl-probe',
+      titlePluralTranslations: { 'en-US': 'Heroes' },
+      titleSingularTranslations: { 'en-US': 'Hero' }
+    }],
+    worlds: [{
+      color: '#4caf50',
+      displayNameTranslations: { 'en-US': 'Probe World' },
+      id: 'world-probe',
+      sortOrder: 0,
+      templateLayout: {
+        groups: [{
+          id: 'group-probe',
+          rootSortOrder: 0
+        }],
+        placements: [{
+          documentTemplateId: 'tpl-probe',
+          groupId: 'group-probe',
+          groupSortOrder: 0,
+          rootSortOrder: null
+        }]
+      }
+    }]
+  })
+  expect(window.faContentBridgeAPIs.projectContent.listWorldsForProjectSettings)
+    .not.toHaveBeenCalled()
 })
 
 /**

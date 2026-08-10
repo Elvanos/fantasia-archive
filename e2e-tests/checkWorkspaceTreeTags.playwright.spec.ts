@@ -158,9 +158,6 @@ test.describe.serial('Opened documents E2E — hierarchy tree tag rename merge d
     expect(seeded.tagIdsByName.Shared).toBeTruthy()
     e2eTreeTagsSeeded = true
 
-    await expect(
-      appWindow.locator(`[data-test-locator="${selectorList.hierarchyTreeHost}"]`)
-    ).toBeVisible({ timeout: 15_000 })
     await e2eExpandWorldAndTagNode(appWindow, TREE_TAGS_E2E_TAG_ALPHA)
     await expect(tagLabelLocator(appWindow, TREE_TAGS_E2E_TAG_ALPHA)).toBeVisible({ timeout: 15_000 })
     await expect(tagLabelLocator(appWindow, TREE_TAGS_E2E_TAG_BETA)).toBeVisible()
@@ -209,15 +206,16 @@ test.describe.serial('Opened documents E2E — hierarchy tree tag rename merge d
     await expect(tagLabelLocator(appWindow, TREE_TAGS_E2E_TAG_RENAMED)).toHaveCount(0)
 
     // e2eExpandWorldAndTagNode already expands Shared; do not toggle again (would collapse).
+    // Doc may appear under multiple tag branches after merge — assert at least one visible.
     await expect(
       appWindow.locator(`[data-test-locator="${selectorList.nodeDocumentLabel}"]`).filter({
         hasText: TREE_TAGS_E2E_DOC_A
-      })
+      }).first()
     ).toBeVisible({ timeout: 15_000 })
     await expect(
       appWindow.locator(`[data-test-locator="${selectorList.nodeDocumentLabel}"]`).filter({
         hasText: TREE_TAGS_E2E_DOC_B
-      })
+      }).first()
     ).toBeVisible()
     expect(e2eTreeTagsSeeded).toBe(true)
     await expect(

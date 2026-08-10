@@ -12,7 +12,8 @@ import {
   e2eHierarchyTreeSelectorList,
   e2eReadPlacementChildrenForParent,
   e2eRefreshHierarchyTreeLayout,
-  e2eSeedHierarchyPlacementWithDocuments
+  e2eSeedHierarchyPlacementWithDocuments,
+  ensureFaPlaywrightE2eHierarchyTreeVisible
 } from 'app/helpers/playwrightHelpers_e2e/e2eWorkspaceHierarchyTreeHelpers'
 import { launchFaPlaywrightE2eAppWindow } from 'app/helpers/playwrightHelpers_e2e/faPlaywrightE2eAppLifecycle'
 import {
@@ -148,12 +149,20 @@ test.describe.serial('Opened documents E2E — temporary save parent-chain fallb
       parentId: e2eTempFallbackParentId
     })
     await e2eRefreshHierarchyTreeLayout(appWindow)
+    await ensureFaPlaywrightE2eHierarchyTreeVisible(appWindow)
 
     await expect(
       appWindow.locator(`[data-test-locator="${selectorList.hierarchyTreeHost}"]`)
     ).toBeVisible({ timeout: 15_000 })
     await e2eExpandWorldAndPlacementNodes(appWindow)
-    await e2eExpandHierarchyDocumentNode(appWindow, e2eTempFallbackGrandparentId)
+
+    const parentNode = appWindow.locator(
+      `[data-test-hierarchy-node-id="${e2eTempFallbackParentId}"]`
+    )
+    if (await parentNode.count() === 0) {
+      await e2eExpandHierarchyDocumentNode(appWindow, e2eTempFallbackGrandparentId)
+    }
+    await expect(parentNode).toHaveCount(1, { timeout: 15_000 })
 
     const parentRow = appWindow.locator(
       `[data-test-hierarchy-node-id="${e2eTempFallbackParentId}"]`

@@ -103,6 +103,12 @@ test.describe.serial('Opened documents E2E — toggle hierarchy tree before cold
       `[data-test-locator="${selectorList.hierarchyTreeHost}"]`
     )
     const fixedStrip = appWindow.locator(selectorList.projectAppControlBarFixedStrip)
+
+    // Empty-layout create auto-hides the tree; show it before the hide/show cycle.
+    await appWindow.locator(`[data-test-locator="${selectorList.projectAppControlBar}"]`).click()
+    if (await hierarchyHost.count() === 0) {
+      await appWindow.keyboard.press(FA_PLAYWRIGHT_PRESS_DEFAULT_TOGGLE_HIERARCHICAL_TREE)
+    }
     await expect(hierarchyHost).toBeVisible({ timeout: 15_000 })
     await expect(fixedStrip).not.toHaveClass(/projectAppControlBar--fixedStrip--treeHidden/)
 

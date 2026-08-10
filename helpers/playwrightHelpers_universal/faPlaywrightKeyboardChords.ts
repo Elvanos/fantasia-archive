@@ -77,6 +77,22 @@ export function getFaPlaywrightDefaultOpenAppSettingsPressString (
 }
 
 /**
+ * Default **Quick-Add New Document** chord: **primary** + **N** (see
+ * 'FA_KEYBIND_COMMAND_DEFINITIONS' for 'quickNewDocument').
+ */
+export function getFaPlaywrightDefaultQuickNewDocumentPressString (
+  platform: NodeJS.Platform = process.platform
+): string {
+  return platform === 'darwin' ? 'Meta+N' : 'Control+N'
+}
+
+/**
+ * Default **Toggle hierarchical tree** chord: literal **Ctrl+Alt+Shift+T**.
+ */
+export const FA_PLAYWRIGHT_PRESS_DEFAULT_TOGGLE_HIERARCHICAL_TREE =
+  'Control+Alt+Shift+T' as const
+
+/**
  * Default **Edit current document** chord: **primary** + **E**.
  */
 export function getFaPlaywrightDefaultEditDocumentPressString (

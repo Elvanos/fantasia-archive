@@ -145,9 +145,6 @@ test.describe.serial('Opened documents E2E — delete document from hierarchy tr
     expect(e2eTreeDeleteDocumentId.length).toBeGreaterThan(0)
     expect(e2eTreeDeleteSurvivorDocumentId.length).toBeGreaterThan(0)
 
-    await expect(
-      appWindow.locator(`[data-test-locator="${selectorList.hierarchyTreeHost}"]`)
-    ).toBeVisible({ timeout: 15_000 })
     await e2eExpandWorldAndPlacementNodes(appWindow)
     await e2eClickHierarchyDocumentLabel(appWindow, TREE_DELETE_E2E_LABEL)
     await expectFaPlaywrightE2eHashRoute(appWindow, `/home/document/${e2eTreeDeleteDocumentId}`)

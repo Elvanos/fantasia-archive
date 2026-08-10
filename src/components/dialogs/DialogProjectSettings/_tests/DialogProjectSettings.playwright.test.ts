@@ -864,7 +864,10 @@ test.describe.serial('DialogProjectSettings functional flow', () => {
     await appWindow.keyboard.press('Escape')
 
     await openDocumentTemplatesCategory(appWindow, 4)
-    await appWindow.locator(`[data-test-locator="${selectorList.documentTemplatesTab}"]`).first().click()
+    // Prior world-layout steps leave templates assigned; delete stays disabled for those.
+    // Add an unassigned template so countdown confirm chrome can be asserted.
+    await appWindow.locator(`[data-test-locator="${selectorList.documentTemplatesAddButton}"]`).click()
+    await appWindow.locator(`[data-test-locator="${selectorList.documentTemplatesTab}"]`).last().click()
     await appWindow.locator(`[data-test-locator="${selectorList.documentTemplatesRemoveButton}"]`).click()
     await expect(
       appWindow.locator(`[data-test-locator="${selectorList.documentTemplatesDeleteConfirmCountdown}"]`)

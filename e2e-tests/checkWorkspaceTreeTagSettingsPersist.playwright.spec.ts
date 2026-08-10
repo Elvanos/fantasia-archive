@@ -149,9 +149,6 @@ test.describe.serial('Opened documents E2E — tree tag settings before cold res
     e2eTreeTagSettingsDocumentId = seeded.documents[0]?.id ?? ''
     expect(e2eTreeTagSettingsDocumentId.length).toBeGreaterThan(0)
 
-    await expect(
-      appWindow.locator(`[data-test-locator="${selectorList.hierarchyTreeHost}"]`)
-    ).toBeVisible({ timeout: 15_000 })
     await e2eExpandWorldAndTagNode(appWindow, TREE_TAG_SETTINGS_E2E_TAG_NAME)
     await expect(
       appWindow.locator(`[data-test-locator="${selectorList.nodeTagLabel}"]`).filter({
@@ -269,9 +266,6 @@ test.describe.serial('Opened documents E2E — cold restart keeps tree tag setti
     await e2eExpectFaActiveProjectStoreName(appWindow, TREE_TAG_SETTINGS_E2E_PROJECT_NAME)
     await expectFaPlaywrightE2eWorkspaceShell(appWindow)
 
-    await expect(
-      appWindow.locator(`[data-test-locator="${selectorList.hierarchyTreeHost}"]`)
-    ).toBeVisible({ timeout: 15_000 })
     await e2eRefreshHierarchyTreeLayout(appWindow)
 
     await expect.poll(async () => {

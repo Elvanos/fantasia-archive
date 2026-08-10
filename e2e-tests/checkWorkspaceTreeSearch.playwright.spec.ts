@@ -12,7 +12,8 @@ import {
   e2eExpandWorldAndPlacementNodes,
   e2eHierarchyTreeSelectorList,
   e2eRefreshHierarchyTreeLayout,
-  e2eSeedHierarchyPlacementWithDocuments
+  e2eSeedHierarchyPlacementWithDocuments,
+  ensureFaPlaywrightE2eHierarchyTreeVisible
 } from 'app/helpers/playwrightHelpers_e2e/e2eWorkspaceHierarchyTreeHelpers'
 import { launchFaPlaywrightE2eAppWindow } from 'app/helpers/playwrightHelpers_e2e/faPlaywrightE2eAppLifecycle'
 import {
@@ -142,6 +143,7 @@ test.describe.serial('Opened documents E2E — hierarchy tree search reveal and 
       parentId
     })
     await e2eRefreshHierarchyTreeLayout(appWindow)
+    await ensureFaPlaywrightE2eHierarchyTreeVisible(appWindow)
 
     await expect(
       appWindow.locator(`[data-test-locator="${selectorList.hierarchyTreeHost}"]`)
@@ -151,11 +153,23 @@ test.describe.serial('Opened documents E2E — hierarchy tree search reveal and 
     const leafLabel = appWindow.locator(
       `[data-test-locator="${e2eHierarchyTreeSelectorList.nodeDocument}${e2eHierarchyTreeSelectorList.nodeDocumentLabelSuffix}"]`
     ).filter({ hasText: TREE_SEARCH_E2E_LEAF_LABEL })
-    await expect(leafLabel).toHaveCount(0)
 
     const parentTreeItem = appWindow.locator(
       `[data-test-hierarchy-node-id="${parentId}"]`
     ).locator('xpath=ancestor::*[@role="treeitem"][1]')
+    if (await parentTreeItem.count() > 0 &&
+      (await parentTreeItem.getAttribute('aria-expanded')) === 'true'
+    ) {
+      const openIcon = parentTreeItem.locator(
+        '[data-test-locator="projectHierarchyTree-openIconWrapper"]'
+      )
+      if (await openIcon.count() > 0) {
+        await openIcon.dispatchEvent('pointerdown')
+        await openIcon.click({ force: true })
+      }
+    }
+    await expect(leafLabel).toHaveCount(0, { timeout: 15_000 })
+
     await e2eExpandHierarchyDocumentNode(appWindow, parentId)
     await expect(leafLabel).toBeVisible({ timeout: 15_000 })
     await parentTreeItem.locator(

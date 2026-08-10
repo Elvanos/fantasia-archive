@@ -4,6 +4,9 @@ import type { TestInfo } from '@playwright/test'
 import {
   e2eExpectFaActiveProjectStoreName
 } from 'app/helpers/playwrightHelpers_e2e/e2eExpectFaActiveProjectStore'
+import {
+  e2eSeedHierarchyPlacementWithDocuments
+} from 'app/helpers/playwrightHelpers_e2e/e2eWorkspaceHierarchyTreeHelpers'
 import { launchFaPlaywrightE2eAppWindow } from 'app/helpers/playwrightHelpers_e2e/faPlaywrightE2eAppLifecycle'
 import {
   expectFaPlaywrightE2eHashRoute,
@@ -13,9 +16,14 @@ import {
   navigateFaPlaywrightE2eToSplashRoute
 } from 'app/helpers/playwrightHelpers_e2e/faPlaywrightE2eNavigateHome'
 import {
-  e2eSetNextProjectCreatePath
+  gotoFaPlaywrightE2eNonexistentRouteFor404
+} from 'app/helpers/playwrightHelpers_e2e/faPlaywrightE2eNavigate404'
+import {
+  e2eSetNextProjectCreatePath,
+  tryUnlinkE2eFaprojectFixture
 } from 'app/helpers/playwrightHelpers_e2e/playwrightE2eProjectPaths'
 import { FA_FRONTEND_RENDER_TIMER } from 'app/helpers/playwrightHelpers_universal/faPlaywrightElectronLaunchConstants'
+import { FA_PLAYWRIGHT_PRESS_DEFAULT_SHOW_PROJECT_DASHBOARD } from 'app/helpers/playwrightHelpers_universal/faPlaywrightKeyboardChords'
 import { tearDownFaPlaywrightElectronSerialSuite } from 'app/helpers/playwrightHelpers_universal/faPlaywrightSerialSuiteLifecycleTeardown'
 import appSettingsMessages from 'app/i18n/en-US/dialogs/L_appSettings'
 import L_faProjectSession from 'app/i18n/en-US/globalFunctionality/L_faProjectSession'
@@ -39,6 +47,8 @@ const selectorList = {
   dialogAppSettingsTitle: 'dialogAppSettings-title',
   dialogNewProjectCreate: 'dialogNewProject-button-create',
   dialogNewProjectNameInput: 'dialogNewProject-input-name',
+  fantasiaMascotImage: 'fantasiaMascotImage-image',
+  hidePlushesSearchSetting: 'dialogAppSettings-search-setting-hidePlushes',
   hideTooltipsProjectSearchSetting: 'dialogAppSettings-search-setting-hideTooltipsProject',
   projectOverviewTipCard: 'projectOverview-tipCard',
   quasarToggle: '.q-toggle',
@@ -54,6 +64,8 @@ const defaultChord = {
 
 const hideTooltipsProjectTitle =
   appSettingsMessages.appOptions.hideTooltipsProject.title
+const hidePlushesTitle =
+  appSettingsMessages.appOptions.hidePlushes.title
 
 const E2E_PROJECT_OVERVIEW_TIPS_NAME = 'E2E project overview tips'
 const E2E_PROJECT_OVERVIEW_TIPS_FIXTURE = 'e2e-project-overview-tips.faproject'
@@ -131,6 +143,17 @@ async function setHideTooltipsProjectInDialog (page: Page, wantOn: boolean): Pro
   await setQuasarToggleInRow(toggle, wantOn)
 }
 
+async function setHidePlushesInDialog (page: Page, wantOn: boolean): Promise<void> {
+  await fillAppSettingsSearch(page, hidePlushesTitle)
+  const settingRow = page.locator(`[data-test-locator="${selectorList.hidePlushesSearchSetting}"]`)
+  await expect(settingRow).toBeVisible()
+  await expect(
+    settingRow.locator('[data-test-locator="dialogAppSettings-search-settingLabel"]')
+  ).toHaveText(hidePlushesTitle)
+  const toggle = settingRow.locator(selectorList.quasarToggle).first()
+  await setQuasarToggleInRow(toggle, wantOn)
+}
+
 async function createE2eProjectOnHome (
   page: Page,
   electron: ElectronApplication
@@ -150,6 +173,23 @@ async function createE2eProjectOnHome (
   ))).toBeVisible()
   await expectFaPlaywrightE2eHashRoute(page, '/home')
   await expectFaPlaywrightE2eWorkspaceShell(page)
+
+  // Tip card only renders when totalDocumentCount > 0; remount Overview after seed.
+  await e2eSeedHierarchyPlacementWithDocuments(page, {
+    documents: [{
+      displayName: 'E2E Overview Tips Doc',
+      sortOrder: 0
+    }],
+    templateDisplayName: 'E2E Tips Characters',
+    templatePluralTitle: 'Characters',
+    templateSingularTitle: 'Character'
+  })
+  // Leave /home then return so Project Overview remounts against seeded SQLite rows.
+  await gotoFaPlaywrightE2eNonexistentRouteFor404(page)
+  await triggerGlobalShortcut(page, FA_PLAYWRIGHT_PRESS_DEFAULT_SHOW_PROJECT_DASHBOARD)
+  await expectFaPlaywrightE2eHashRoute(page, '/home')
+  await expectFaPlaywrightE2eWorkspaceShell(page)
+  await page.waitForTimeout(FA_FRONTEND_RENDER_TIMER)
 }
 
 function projectOverviewTipCard (page: Page) {
@@ -164,6 +204,9 @@ test.describe.serial('Project overview tips (App Settings)', () => {
   test.beforeAll(async ({}, testInfo) => {
     suiteTestInfo = testInfo
     const launched = await launchFaPlaywrightE2eAppWindow({
+      afterIsolationResetBeforeLaunch (): void {
+        tryUnlinkE2eFaprojectFixture(E2E_PROJECT_OVERVIEW_TIPS_FIXTURE)
+      },
       buildLaunchEnv (): Record<string, string> {
         return {
           TEST_ENV: extraEnvSettings.TEST_ENV
@@ -194,19 +237,19 @@ test.describe.serial('Project overview tips (App Settings)', () => {
   })
 
   /**
-   * Enabling Hide tips on project overview in App Settings hides the card immediately without saving.
+   * Hide tips on project overview is draft-only until Save (no live overview preview).
    */
-  test('Hide tips on project overview hides the tips card live while App Settings stays open', async () => {
+  test('Hide tips on project overview stays draft-only while App Settings stays open', async () => {
     await expect(projectOverviewTipCard(appWindow)).toBeVisible()
     await openAppSettingsDialog(appWindow)
     await setHideTooltipsProjectInDialog(appWindow, true)
-    await expect(projectOverviewTipCard(appWindow)).toBeHidden()
+    await expect(projectOverviewTipCard(appWindow)).toBeVisible()
   })
 
   /**
-   * Closing App Settings without saving restores the tips card when the toggle was only a draft.
+   * Closing App Settings without saving leaves the tips card visible when the toggle was only a draft.
    */
-  test('closing App Settings without saving restores the project overview tips card', async () => {
+  test('closing App Settings without saving leaves the project overview tips card visible', async () => {
     await closeAppSettingsDialog(appWindow)
     await expect(projectOverviewTipCard(appWindow)).toBeVisible()
   })
@@ -229,5 +272,26 @@ test.describe.serial('Project overview tips (App Settings)', () => {
     await setHideTooltipsProjectInDialog(appWindow, false)
     await saveAppSettingsDialog(appWindow)
     await expect(projectOverviewTipCard(appWindow)).toBeVisible()
+  })
+
+  /**
+   * Hide Fantasia mascot removes the tips-card mascot image without an icon replacement.
+   */
+  test('saving Hide Fantasia mascot omits the tips card mascot image', async () => {
+    const tipCard = projectOverviewTipCard(appWindow)
+    await expect(tipCard).toBeVisible()
+    await expect(
+      tipCard.locator(`[data-test-locator="${selectorList.fantasiaMascotImage}"]`)
+    ).toHaveCount(1)
+
+    await openAppSettingsDialog(appWindow)
+    await setHidePlushesInDialog(appWindow, true)
+    await saveAppSettingsDialog(appWindow)
+
+    await expect(tipCard).toBeVisible()
+    await expect(
+      tipCard.locator(`[data-test-locator="${selectorList.fantasiaMascotImage}"]`)
+    ).toHaveCount(0)
+    await expect(tipCard.locator('.projectOverview__hintIcon')).toHaveCount(0)
   })
 })

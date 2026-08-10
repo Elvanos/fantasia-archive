@@ -116,9 +116,6 @@ test.describe.serial('Opened documents E2E — create document from tree UI', ()
     e2eTreeCreatePlacementId = seeded.placementId
     expect(e2eTreeCreatePlacementId.length).toBeGreaterThan(0)
 
-    await expect(
-      appWindow.locator(`[data-test-locator="${selectorList.hierarchyTreeHost}"]`)
-    ).toBeVisible({ timeout: 15_000 })
     await e2eExpandWorldAndPlacementNodes(appWindow)
 
     await appWindow.locator(

@@ -13,9 +13,9 @@ const meta = {
     }
   },
   /**
-   * Countdown timer animates confirm label; VRT baselines would thrash.
+   * Closed trigger only in Default story — confirm countdown stays off-canvas for VRT.
    */
-  tags: ['autodocs', 'skip-visual'],
+  tags: ['autodocs'],
   title: 'Components/elements/FaDeleteConfirmButton'
 } satisfies Meta<typeof FaDeleteConfirmButton>
 

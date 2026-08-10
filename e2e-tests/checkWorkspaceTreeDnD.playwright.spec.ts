@@ -140,9 +140,6 @@ test.describe.serial('Opened documents E2E — hierarchy tree document DnD', () 
     expect(e2eTreeDndAlphaId.length).toBeGreaterThan(0)
     expect(e2eTreeDndBravoId.length).toBeGreaterThan(0)
 
-    await expect(
-      appWindow.locator(`[data-test-locator="${selectorList.hierarchyTreeHost}"]`)
-    ).toBeVisible({ timeout: 15_000 })
     await e2eExpandWorldAndPlacementNodes(appWindow)
 
     const placementSiblingLabels = appWindow.locator(

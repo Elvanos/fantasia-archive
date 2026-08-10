@@ -4,7 +4,7 @@ import FaLocaleTranslationsInputMenuPanel from '../FaLocaleTranslationsInputMenu
 
 const meta = {
   component: FaLocaleTranslationsInputMenuPanel,
-  tags: ['autodocs', 'skip-visual'],
+  tags: ['autodocs'],
   title: 'Components/elements/FaLocaleTranslationsInputMenuPanel'
 } satisfies Meta<typeof FaLocaleTranslationsInputMenuPanel>
 

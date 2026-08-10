@@ -134,9 +134,6 @@ test.describe.serial('Opened documents E2E — tree open tab order and middle-cl
     expect(e2eTreeOpenTabIdA.length).toBeGreaterThan(0)
     expect(e2eTreeOpenTabIdB.length).toBeGreaterThan(0)
 
-    await expect(
-      appWindow.locator(`[data-test-locator="${selectorList.hierarchyTreeHost}"]`)
-    ).toBeVisible({ timeout: 15_000 })
     await e2eExpandWorldAndPlacementNodes(appWindow)
 
     await e2eClickHierarchyDocumentLabel(appWindow, TREE_OPEN_TABS_E2E_LABEL_A)

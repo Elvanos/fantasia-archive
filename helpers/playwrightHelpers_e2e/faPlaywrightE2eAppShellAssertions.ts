@@ -42,13 +42,15 @@ export async function expectFaPlaywrightE2eWelcomeShell (page: Page): Promise<vo
 }
 
 /**
- * Workspace route shows the left drawer inside the MainLayout shell.
+ * Workspace route shows MainLayout workspace chrome.
+ * Empty-layout create may auto-hide the hierarchy drawer; require the project app control bar
+ * (not nested under drawer) instead of assuming the drawer is open.
  */
 export async function expectFaPlaywrightE2eWorkspaceShell (page: Page): Promise<void> {
   const mainLayout = page.locator('[data-test-locator="mainLayout"]')
-  await expect(mainLayout).toBeVisible()
+  await expect(mainLayout).toBeVisible({ timeout: 15_000 })
   await expect(mainLayout).toHaveClass(/appShellLayout--workspace/)
-  await expect(page.locator(
-    '[data-test-locator="mainLayout"].appShellLayout--workspace [data-test-locator="mainLayout-drawer"]'
-  )).toBeVisible()
+  await expect(page.locator('[data-test-locator="projectAppControlBar"]')).toBeVisible({
+    timeout: 15_000
+  })
 }

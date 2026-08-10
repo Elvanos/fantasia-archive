@@ -1,5 +1,5 @@
 /** @vitest-environment node */
-import { expect, test } from 'vitest'
+import { expect, test, vi } from 'vitest'
 
 import { clearFaSelectInputIsNewFlags } from '../faSelectInputClearIsNew'
 import { createFaSelectInputNewItem } from '../faSelectInputCreateNewItem'
@@ -21,6 +21,10 @@ import {
   isFaSelectInputObjectItem
 } from '../filterFaSelectInputOptionsByQuery'
 import { resolveFaSelectInputOptionIcon } from '../resolveFaSelectInputOptionIcon'
+import {
+  bindFaSelectInputOptionItemActivateProps,
+  stripFaSelectInputOptionItemActiveClass
+} from '../stripFaSelectInputOptionItemActiveClass'
 
 /**
  * filterFaSelectInputOptionsByQuery
@@ -481,4 +485,58 @@ test('Test that resolveFaSelectInputOptionIcon hides absent icons outside docume
     id: '1',
     name: 'Tag'
   }, 'tags', 'mdi-file-outline')).toBe('mdi-tag')
+})
+
+/**
+ * stripFaSelectInputOptionItemActiveClass
+ * Removes Quasar text-{color} activeClass; keeps other itemProps.
+ */
+test('Test that stripFaSelectInputOptionItemActiveClass drops activeClass only', () => {
+  expect(stripFaSelectInputOptionItemActiveClass({
+    active: true,
+    activeClass: 'text-primary-bright',
+    clickable: true
+  })).toEqual({
+    active: true,
+    clickable: true
+  })
+  expect(stripFaSelectInputOptionItemActiveClass({
+    clickable: true
+  })).toEqual({
+    clickable: true
+  })
+})
+
+/**
+ * bindFaSelectInputOptionItemActivateProps
+ * Keeps Quasar onClick and always runs onActivate (reselect path).
+ */
+test('Test that bindFaSelectInputOptionItemActivateProps wraps onClick and strips activeClass', () => {
+  const previousOnClick = vi.fn()
+  const onActivate = vi.fn()
+  const bound = bindFaSelectInputOptionItemActivateProps({
+    active: true,
+    activeClass: 'text-primary-bright',
+    onClick: previousOnClick
+  }, onActivate)
+
+  expect(bound).not.toHaveProperty('activeClass')
+  const evt = new Event('click')
+  bound.onClick(evt)
+  expect(previousOnClick).toHaveBeenCalledWith(evt)
+  expect(onActivate).toHaveBeenCalledTimes(1)
+})
+
+/**
+ * bindFaSelectInputOptionItemActivateProps
+ * Still emits onActivate when Quasar itemProps omit onClick.
+ */
+test('Test that bindFaSelectInputOptionItemActivateProps runs onActivate without prior onClick', () => {
+  const onActivate = vi.fn()
+  const bound = bindFaSelectInputOptionItemActivateProps({
+    active: false
+  }, onActivate)
+
+  bound.onClick(new Event('click'))
+  expect(onActivate).toHaveBeenCalledTimes(1)
 })

@@ -210,8 +210,8 @@ test('Test that buildDialogQuickAddDocumentTemplateOptions lists only world-mapp
     templatesById,
     world
   })
-  expect(options.map((option) => option.value)).toEqual(['tpl-hero', 'tpl-place'])
-  expect(options.map((option) => option.label)).toEqual(['Heroes', 'Places'])
+  expect(options.map((option) => option.id)).toEqual(['tpl-hero', 'tpl-place'])
+  expect(options.map((option) => option.name)).toEqual(['Heroes', 'Places'])
 })
 
 /**
@@ -252,14 +252,14 @@ test('Test that buildDialogQuickAddDocumentWorldOptions labels worlds for q-sele
     {
       color: '#4caf50',
       icon: 'mdi-earth',
-      label: 'world-a',
-      value: 'world-a'
+      id: 'world-a',
+      name: 'world-a'
     },
     {
       color: '#4caf50',
       icon: 'mdi-earth',
-      label: 'world-b',
-      value: 'world-b'
+      id: 'world-b',
+      name: 'world-b'
     }
   ])
 })
@@ -274,7 +274,7 @@ test('Test that buildDialogQuickAddDocumentWorldOptions falls back to world id f
     resolveWorldLabel: () => '',
     worlds: [makeWorld('world-a', 0)]
   })
-  expect(options[0]?.label).toBe('world-a')
+  expect(options[0]?.name).toBe('world-a')
 })
 
 /**
@@ -296,10 +296,8 @@ test('Test that buildDialogQuickAddDocumentTemplateOptions skips missing templat
   })
   expect(options).toEqual([{
     icon: 'mdi-tpl-hero',
-    label: 'tpl-hero',
-    titlePluralTranslations: { 'en-US': '' },
-    titleSingularTranslations: { 'en-US': '' },
-    value: 'tpl-hero'
+    id: 'tpl-hero',
+    name: 'tpl-hero'
   }])
 })
 

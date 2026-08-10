@@ -27,7 +27,7 @@ const withSplashControlsRecentProjects: Decorator = (story) => {
 const meta = {
   component: SplashControlsResumeDropdown,
   decorators: [splashResumeDropdownCanvasDecorator],
-  tags: ['autodocs', 'skip-visual'],
+  tags: ['autodocs'],
   title: 'Components/other/SplashControlsResumeDropdown'
 } satisfies Meta<typeof SplashControlsResumeDropdown>
 

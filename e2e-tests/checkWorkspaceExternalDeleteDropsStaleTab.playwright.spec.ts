@@ -256,6 +256,28 @@ test.describe.serial('Opened documents E2E — external delete drops stale tab b
         `[data-test-locator="projectAppControlBar-tab-${e2eExternalDeleteSurvivorDocumentId}"]`
       )
     ).toBeVisible()
+
+    // hydrateFromProjectDatabase navigates to /home when autoOpenLastDocument is off;
+    // force the survivor document route for the remainder of this suite.
+    await appWindow.evaluate(async (survivorId) => {
+      const root = document.querySelector('#q-app') as HTMLElement & {
+        __vue_app__?: {
+          config: {
+            globalProperties: {
+              $router: {
+                replace: (location: { path: string }) => Promise<void>
+              }
+            }
+          }
+        }
+      }
+      const router = root?.__vue_app__?.config.globalProperties.$router
+      if (router === undefined) {
+        throw new Error('Vue router missing in E2E app')
+      }
+      await router.replace({ path: `/home/document/${survivorId}` })
+    }, e2eExternalDeleteSurvivorDocumentId)
+
     await expectFaPlaywrightE2eHashRoute(
       appWindow,
       `/home/document/${e2eExternalDeleteSurvivorDocumentId}`

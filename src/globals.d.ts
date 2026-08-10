@@ -15,7 +15,13 @@ import type { I_faUserSettingsAPI } from 'app/types/I_faUserSettingsDomain'
 import type { I_faProjectContentAPI } from 'app/types/I_faProjectContentAPI'
 import type { I_faProjectManagementAPI } from 'app/types/I_faProjectManagementDomain'
 import type { I_faActiveProject } from 'app/types/I_faActiveProjectDomain'
+import type { I_dialogQuickAddDocumentTemplateSource } from 'app/types/I_dialogQuickAddDocument'
+import type { I_dialogQuickAddDocumentWorldSource } from 'app/types/I_dialogQuickAddDocument'
 import type { I_faComponentTestingStoreSeed } from 'app/types/I_faComponentTestingStoreSeed'
+import type {
+  I_faProjectDocumentDistributionResult,
+  I_faProjectDocumentLastOpenedListResult
+} from 'app/types/I_faProjectDocumentLastOpenedDomain'
 
 declare global{
   interface Window {
@@ -23,6 +29,31 @@ declare global{
      * Component-testing harness: patches Pinia stores from Playwright (installed when TEST_ENV is 'components').
      */
     __faComponentTestingPatchStores?: (seed: I_faComponentTestingStoreSeed) => void
+
+    /**
+     * Component-testing harness: Quick Add worlds/templates when contextBridge freezes projectContent lists.
+     */
+    __faComponentTestingQuickAddDocumentSources?: {
+      templates: I_dialogQuickAddDocumentTemplateSource[]
+      worlds: I_dialogQuickAddDocumentWorldSource[]
+    }
+
+    /**
+     * Component-testing harness: Project Overview distribution / last-opened when contextBridge freezes list methods.
+     */
+    __faComponentTestingProjectOverviewLists?: {
+      distribution?: I_faProjectDocumentDistributionResult
+      lastOpened?: I_faProjectDocumentLastOpenedListResult
+    }
+
+    /**
+     * Component Playwright: captures createTemporaryDocument inputs from Quick Add selection.
+     */
+    __faQuickAddCreateTemporarySpyCalls?: Array<{
+      displayName: string
+      templateId: string
+      worldId: string
+    }>
 
     /**
      * Component-testing harness: hierarchy search override invoke probe (TEST_ENV components).

@@ -59,7 +59,7 @@ export async function navigateFaPlaywrightE2eToHomeRoute (page: Page): Promise<v
       state: 'visible',
       timeout: FA_E2E_ROUTE_SHELL_TIMEOUT_MS
     })
-    await page.locator('[data-test-locator="mainLayout-drawer"]').waitFor({
+    await page.locator('[data-test-locator="projectAppControlBar"]').waitFor({
       state: 'visible',
       timeout: FA_E2E_ROUTE_SHELL_TIMEOUT_MS
     })
@@ -73,7 +73,7 @@ export async function navigateFaPlaywrightE2eToHomeRoute (page: Page): Promise<v
     state: 'visible',
     timeout: FA_E2E_ROUTE_SHELL_TIMEOUT_MS
   })
-  await page.locator('[data-test-locator="mainLayout-drawer"]').waitFor({
+  await page.locator('[data-test-locator="projectAppControlBar"]').waitFor({
     state: 'visible',
     timeout: FA_E2E_ROUTE_SHELL_TIMEOUT_MS
   })

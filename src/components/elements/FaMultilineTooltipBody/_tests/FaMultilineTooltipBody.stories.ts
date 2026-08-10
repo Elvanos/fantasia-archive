@@ -4,7 +4,7 @@ import FaMultilineTooltipBody from '../FaMultilineTooltipBody.vue'
 
 const meta = {
   component: FaMultilineTooltipBody,
-  tags: ['autodocs', 'skip-visual'],
+  tags: ['autodocs'],
   title: 'Components/elements/FaMultilineTooltipBody'
 } satisfies Meta<typeof FaMultilineTooltipBody>
 

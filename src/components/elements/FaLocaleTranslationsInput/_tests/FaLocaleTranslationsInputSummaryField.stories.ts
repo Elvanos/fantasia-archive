@@ -4,7 +4,7 @@ import FaLocaleTranslationsInputSummaryField from '../FaLocaleTranslationsInputS
 
 const meta = {
   component: FaLocaleTranslationsInputSummaryField,
-  tags: ['autodocs', 'skip-visual'],
+  tags: ['autodocs'],
   title: 'Components/elements/FaLocaleTranslationsInputSummaryField'
 } satisfies Meta<typeof FaLocaleTranslationsInputSummaryField>
 

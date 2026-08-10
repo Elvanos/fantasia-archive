@@ -4,7 +4,7 @@ import FaIconPickerInputMenuPanel from '../FaIconPickerInputMenuPanel.vue'
 
 const meta = {
   component: FaIconPickerInputMenuPanel,
-  tags: ['autodocs', 'skip-visual'],
+  tags: ['autodocs'],
   title: 'Components/elements/FaIconPickerInputMenuPanel'
 } satisfies Meta<typeof FaIconPickerInputMenuPanel>
 

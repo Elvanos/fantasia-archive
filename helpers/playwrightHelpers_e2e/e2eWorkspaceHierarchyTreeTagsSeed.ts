@@ -1,6 +1,7 @@
 import type { Page } from 'playwright'
 import { expect } from '@playwright/test'
 
+import { ensureFaPlaywrightE2eHierarchyTreeVisible } from 'app/helpers/playwrightHelpers_e2e/ensureFaPlaywrightE2eHierarchyTreeVisible'
 import { e2eSeedHierarchyPlacementWithDocuments as e2eSeedHierarchyPlacementRaw } from 'app/helpers/playwrightHelpers_e2e/e2eWorkspaceHierarchyTreeSeed'
 import {
   e2eHierarchyTreeSelectorList,
@@ -101,6 +102,7 @@ export async function e2eExpandWorldAndTagNode (
   page: Page,
   tagName?: string
 ): Promise<void> {
+  await ensureFaPlaywrightE2eHierarchyTreeVisible(page)
   await expect(
     page.locator(`[data-test-locator="${e2eHierarchyTreeSelectorList.hierarchyTreeHost}"]`)
   ).toBeVisible({ timeout: 15_000 })

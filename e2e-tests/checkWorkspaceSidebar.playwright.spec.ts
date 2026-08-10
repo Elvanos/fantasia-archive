@@ -7,6 +7,7 @@ import {
   expectFaPlaywrightE2eHashRoute,
   expectFaPlaywrightE2eWorkspaceShell
 } from 'app/helpers/playwrightHelpers_e2e/faPlaywrightE2eAppShellAssertions'
+import { ensureFaPlaywrightE2eHierarchyTreeVisible } from 'app/helpers/playwrightHelpers_e2e/ensureFaPlaywrightE2eHierarchyTreeVisible'
 import {
   navigateFaPlaywrightE2eToSplashRoute
 } from 'app/helpers/playwrightHelpers_e2e/faPlaywrightE2eNavigateHome'
@@ -69,6 +70,7 @@ async function createE2eProjectOnWorkspaceRoute (
   await e2eExpectFaActiveProjectStoreName(page, WORKSPACE_SIDEBAR_E2E_DISPLAY_NAME)
   await expectFaPlaywrightE2eHashRoute(page, '/home')
   await expectFaPlaywrightE2eWorkspaceShell(page)
+  await ensureFaPlaywrightE2eHierarchyTreeVisible(page)
 }
 
 test.describe.serial('Workspace sidebar E2E — fresh profile: drag splitter and persist width', () => {
@@ -185,6 +187,7 @@ test.describe.serial('Workspace sidebar E2E — cold restart: restored width fro
     await e2eExpectFaActiveProjectStoreName(appWindow, WORKSPACE_SIDEBAR_E2E_DISPLAY_NAME)
     await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
     await expectFaPlaywrightE2eWorkspaceShell(appWindow)
+    await ensureFaPlaywrightE2eHierarchyTreeVisible(appWindow)
 
     const panelWidthPx = await readFaPlaywrightE2eWorkspaceSidebarPanelWidthPx(appWindow)
     const bridgeWidthPx = await readFaPlaywrightE2eProjectSidebarWidthFromBridge(appWindow)

@@ -17,7 +17,6 @@ function makeSession (): I_dialogQuickAddDocumentSession {
   return {
     dialogModel: ref(false),
     documentName: ref(''),
-    filteredTemplateOptions: ref([]),
     focusGeneration: ref(0),
     selectedTemplateId: ref<string | null>(null),
     selectedWorldId: ref<string | null>('world-a'),
@@ -25,13 +24,18 @@ function makeSession (): I_dialogQuickAddDocumentSession {
     skipNextWorldChangeReopen: ref(false),
     templateOptions: computed(() => [{
       icon: 'mdi-x',
-      label: 'Heroes',
-      titlePluralTranslations: { 'en-US': 'Heroes' },
-      titleSingularTranslations: { 'en-US': 'Hero' },
-      value: 'tpl-hero'
+      id: 'tpl-hero',
+      name: 'Heroes'
     }]),
     templateSelectRef: ref(null),
-    templatesById: ref(new Map<string, I_dialogQuickAddDocumentTemplateSource>()),
+    templatesById: ref(new Map<string, I_dialogQuickAddDocumentTemplateSource>([
+      ['tpl-hero', {
+        icon: 'mdi-x',
+        id: 'tpl-hero',
+        titlePluralTranslations: { 'en-US': 'Heroes' },
+        titleSingularTranslations: { 'en-US': 'Hero' }
+      }]
+    ])),
     worldOptions: computed(() => []),
     worlds: ref<I_dialogQuickAddDocumentWorldSource[]>([])
   }
@@ -117,7 +121,10 @@ test('Test that onTemplateSelect closes dialog before createTemporaryDocument', 
   const session = makeSession()
   const { onTemplateSelect } = wireDialogQuickAddDocumentSelectHandlers(deps, session, closeDialog)
 
-  await onTemplateSelect('tpl-hero')
+  await onTemplateSelect({
+    id: 'tpl-hero',
+    name: 'Heroes'
+  })
   expect(callOrder).toEqual(['close', 'create'])
   expect(createTemporaryDocument).toHaveBeenCalledWith({
     displayName: 'Heroes',
@@ -142,6 +149,32 @@ test('Test that onWorldSelect clears template and skips reopen during hydrate', 
   expect(session.selectedWorldId.value).toBeNull()
   expect(session.selectedTemplateId.value).toBeNull()
   expect(sleep).not.toHaveBeenCalled()
+})
+
+/**
+ * wireDialogQuickAddDocumentSelectHandlers
+ * Same world id still schedules template open (re-click selected world).
+ */
+test('Test that onWorldSelect schedules template focus when world id unchanged', async () => {
+  const openPopup = vi.fn()
+  const deps = makeDeps({
+    sleep: async () => undefined,
+    templateFocusMs: 0
+  })
+  const session = makeSession()
+  session.selectedWorldId.value = 'world-a'
+  session.dialogModel.value = true
+  session.templateSelectRef.value = { openPopup }
+  const { onWorldSelect } = wireDialogQuickAddDocumentSelectHandlers(deps, session, vi.fn())
+
+  onWorldSelect({
+    id: 'world-a',
+    name: 'Earth'
+  })
+  await nextTick()
+  await Promise.resolve()
+  expect(session.selectedWorldId.value).toBe('world-a')
+  expect(openPopup).toHaveBeenCalledTimes(1)
 })
 
 /**

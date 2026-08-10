@@ -26,7 +26,7 @@ const meta = {
   parameters: {
     layout: 'fullscreen'
   },
-  tags: ['autodocs', 'skip-visual'],
+  tags: ['autodocs'],
   title: 'Components/other/SplashControlsStoryStage'
 } satisfies Meta<typeof SplashControlsStoryStage>
 

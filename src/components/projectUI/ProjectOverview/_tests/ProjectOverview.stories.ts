@@ -1,11 +1,20 @@
 import type { Decorator, Meta, StoryObj } from '@storybook/vue3-vite'
 
-import {
-  withStorybookWorkspaceHomePreview,
-  withStorybookWorkspaceHomePreviewTipsHidden
-} from '../../../../../.storybook-workspace/.storybook/decorators/withStorybookWorkspaceHomePreview'
-
 import ProjectOverview from '../ProjectOverview.vue'
+import {
+  buildProjectOverviewStoryContentBridgeOverrides,
+  withProjectOverviewStoryEmptyAssignTemplate,
+  withProjectOverviewStoryEmptyCreateDocument,
+  withProjectOverviewStoryEmptyCreateTemplate,
+  withProjectOverviewStoryPopulatedTipVisible,
+  withProjectOverviewStoryPopulatedTipsHidden
+} from './projectOverviewStoryDecorators'
+import {
+  projectOverviewStoryEmptyDistribution,
+  projectOverviewStoryLastOpenedItems,
+  projectOverviewStoryStackedDistribution,
+  projectOverviewStoryTemplatesOnlyDistribution
+} from './projectOverviewStoryFixtures'
 
 const projectOverviewCanvasDecorator: Decorator = (story) => {
   return {
@@ -13,7 +22,7 @@ const projectOverviewCanvasDecorator: Decorator = (story) => {
       story
     },
     template: `
-      <div class="bg-dark flex flex-center" style="min-height: 580px; padding: 24px; width: 100%;">
+      <div class="bg-dark flex flex-center" style="min-height: 900px; padding: 24px; width: 100%;">
         <story />
       </div>
     `
@@ -37,11 +46,66 @@ const meta = {
 
 export default meta
 
+/** Zero documents and zero templates — welcome empty CTA (create template). */
 export const Default: StoryObj<typeof meta> = {
-  decorators: [withStorybookWorkspaceHomePreview]
+  decorators: [withProjectOverviewStoryEmptyCreateTemplate],
+  parameters: {
+    contentBridgeOverrides: buildProjectOverviewStoryContentBridgeOverrides({
+      distribution: projectOverviewStoryEmptyDistribution,
+      lastOpenedItems: []
+    })
+  }
 }
 
+/** Templates exist without world placements — assign-template empty CTA. */
+export const EmptyCtaAssignTemplate: StoryObj<typeof meta> = {
+  name: 'States/EmptyCtaAssignTemplate',
+  decorators: [withProjectOverviewStoryEmptyAssignTemplate],
+  parameters: {
+    contentBridgeOverrides: buildProjectOverviewStoryContentBridgeOverrides({
+      distribution: projectOverviewStoryTemplatesOnlyDistribution,
+      lastOpenedItems: []
+    })
+  }
+}
+
+/** Placed template with zero documents — create-first-document empty CTA. */
+export const EmptyCtaCreateDocument: StoryObj<typeof meta> = {
+  name: 'States/EmptyCtaCreateDocument',
+  decorators: [withProjectOverviewStoryEmptyCreateDocument],
+  parameters: {
+    contentBridgeOverrides: buildProjectOverviewStoryContentBridgeOverrides({
+      distribution: projectOverviewStoryTemplatesOnlyDistribution,
+      lastOpenedItems: []
+    })
+  }
+}
+
+/**
+ * Docs > 0 with tips on: tip card, stacked chart + legend, last opened
+ * (dead / category / plain / multi-world indicators). Math.random fixed for VRT.
+ */
+export const PopulatedWithTipCard: StoryObj<typeof meta> = {
+  name: 'States/PopulatedWithTipCard',
+  decorators: [withProjectOverviewStoryPopulatedTipVisible],
+  parameters: {
+    contentBridgeOverrides: buildProjectOverviewStoryContentBridgeOverrides({
+      distribution: projectOverviewStoryStackedDistribution,
+      lastOpenedItems: projectOverviewStoryLastOpenedItems
+    })
+  }
+}
+
+/**
+ * Same populated chart + last opened with Hide tips on project overview.
+ */
 export const TipsCardHidden: StoryObj<typeof meta> = {
   name: 'States/TipsCardHidden',
-  decorators: [withStorybookWorkspaceHomePreviewTipsHidden]
+  decorators: [withProjectOverviewStoryPopulatedTipsHidden],
+  parameters: {
+    contentBridgeOverrides: buildProjectOverviewStoryContentBridgeOverrides({
+      distribution: projectOverviewStoryStackedDistribution,
+      lastOpenedItems: projectOverviewStoryLastOpenedItems
+    })
+  }
 }

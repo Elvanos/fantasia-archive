@@ -32,6 +32,14 @@ const EXCLUDED_STORY_IDS = new Set<string>([
 ])
 
 /**
+ * Stories keep tags: ['skip-visual'] by policy (not EXCLUDED_STORY_IDS):
+ * - Title-bar: GlobalLanguageSelector*
+ * - Injectors / hosts: _FaUserCssInjector, _FaProjectUserCssInjector, _FaModalAndFloatingWindowHost, floating teleport/resize
+ * - Foundation catalogues: FoundationColorPalette, FoundationTextList
+ * - Dense fragment forests covered by component PW: DialogProjectSettings*, ProjectHierarchyTree* menus/nodes,
+ *   ProjectAppControlBar* menu rows, DialogAppSettings* panels, DialogActionMonitor*, DialogKeybindSettings*
+ */
+/**
  * Stories may opt out of the iframe root render probe when they intentionally mount no DOM under '#storybook-root' / '#root' (rare).
  * Prefer fixing the story; use this tag only with maintainer review. Excluded story ids above remain the primary skip mechanism.
  */

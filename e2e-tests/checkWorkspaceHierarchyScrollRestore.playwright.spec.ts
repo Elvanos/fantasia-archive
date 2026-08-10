@@ -9,6 +9,7 @@ import {
   expectFaPlaywrightE2eHashRoute,
   expectFaPlaywrightE2eWorkspaceShell
 } from 'app/helpers/playwrightHelpers_e2e/faPlaywrightE2eAppShellAssertions'
+import { ensureFaPlaywrightE2eHierarchyTreeVisible } from 'app/helpers/playwrightHelpers_e2e/ensureFaPlaywrightE2eHierarchyTreeVisible'
 import {
   navigateFaPlaywrightE2eToSplashRoute
 } from 'app/helpers/playwrightHelpers_e2e/faPlaywrightE2eNavigateHome'
@@ -58,6 +59,7 @@ async function createE2eProjectOnWorkspaceRoute (
   await e2eExpectFaActiveProjectStoreName(page, SCROLL_RESTORE_E2E_PROJECT_NAME)
   await expectFaPlaywrightE2eHashRoute(page, '/home')
   await expectFaPlaywrightE2eWorkspaceShell(page)
+  await ensureFaPlaywrightE2eHierarchyTreeVisible(page)
 }
 
 async function persistHierarchyScrollTopPx (
@@ -202,6 +204,7 @@ test.describe.serial('Hierarchy tree E2E — cold restore scrollTopPx', () => {
     await clickFaPlaywrightE2eSplashResumePrimarySegment(appWindow)
     await e2eExpectFaActiveProjectStoreName(appWindow, SCROLL_RESTORE_E2E_PROJECT_NAME)
     await expectFaPlaywrightE2eWorkspaceShell(appWindow)
+    await ensureFaPlaywrightE2eHierarchyTreeVisible(appWindow)
 
     await expect(
       appWindow.locator(`[data-test-locator="${selectorList.hierarchyTreeHost}"]`)

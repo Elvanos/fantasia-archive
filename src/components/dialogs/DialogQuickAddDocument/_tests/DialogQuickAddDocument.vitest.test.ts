@@ -1,3 +1,5 @@
+/** @vitest-environment jsdom */
+/* eslint-disable vue/one-component-per-file -- QDialog + FaSelectInput stubs colocated with mount helpers */
 import { flushPromises, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { defineComponent } from 'vue'
@@ -26,9 +28,61 @@ const quickAddQDialogStub = defineComponent({
   `
 })
 
+const faSelectInputStub = defineComponent({
+  name: 'FaSelectInput',
+  props: {
+    modelValue: {
+      default: null,
+      type: [Object, String, Array]
+    },
+    options: {
+      default: () => [],
+      type: Array
+    },
+    popupContentClass: {
+      default: '',
+      type: String
+    },
+    chipRemovable: {
+      default: true,
+      type: Boolean
+    },
+    selectionPresentation: {
+      default: 'chips',
+      type: String
+    },
+    testLocator: {
+      type: String,
+      required: true
+    }
+  },
+  emits: ['update:modelValue'],
+  template: `
+    <div
+      class="fa-select-input-stub"
+      :data-test-locator="testLocator"
+      :data-popup-content-class="popupContentClass"
+      :data-chip-removable="chipRemovable ? 'true' : 'false'"
+      :data-selection-presentation="selectionPresentation"
+      @click="$emit('update:modelValue', options[0] ?? null)"
+    >
+      <div
+        v-for="(opt, index) in options"
+        :key="index"
+        :data-test-locator="testLocator + '-option-' + index"
+      />
+      <hr
+        v-if="options.length > 1"
+        :data-test-locator="testLocator + '-separatorAlt-1'"
+      />
+    </div>
+  `
+})
+
 const quickAddDialogGlobal = {
   mocks: { $t: (k: string) => k },
   stubs: {
+    FaSelectInput: faSelectInputStub,
     QBtn: {
       props: {
         label: {
@@ -41,17 +95,7 @@ const quickAddDialogGlobal = {
     QCard: { template: '<div><slot /></div>' },
     QCardActions: { template: '<div><slot /></div>' },
     QCardSection: { template: '<div><slot /></div>' },
-    QDialog: quickAddQDialogStub,
-    QIcon: { template: '<i />' },
-    QItem: { template: '<div><slot /></div>' },
-    QItemLabel: { template: '<div><slot /></div>' },
-    QItemSection: { template: '<div><slot /></div>' },
-    QSelect: {
-      template: '<div class="q-select-stub" v-bind="$attrs"><slot name="option" :opt="{ icon: \'mdi-earth\', label: \'Opt\', color: \'#abc\' }" :index="0" :itemProps="{}" /><slot name="option" :opt="{ icon: \'mdi-earth\', label: \'Opt2\', color: \'#def\' }" :index="1" :itemProps="{}" /><slot name="selected-item" :opt="{ icon: \'mdi-earth\', label: \'Opt\', color: \'#abc\' }" /></div>'
-    },
-    QSeparator: {
-      template: '<hr v-bind="$attrs" />'
-    }
+    QDialog: quickAddQDialogStub
   }
 } as const
 
@@ -150,7 +194,7 @@ test('Test that DialogQuickAddDocument reacts to directInput prop after mount', 
 
 /**
  * DialogQuickAddDocument
- * Show/hide and select updates exercise template option slots and handlers.
+ * Show/hide and select updates exercise FaSelectInput handlers.
  */
 test('Test that DialogQuickAddDocument show hide and select handlers run', async () => {
   window.faContentBridgeAPIs = {
@@ -188,29 +232,10 @@ test('Test that DialogQuickAddDocument show hide and select handlers run', async
   const pinia = createPinia()
   setActivePinia(pinia)
 
-  const emittingSelectStub = {
-    template: `
-      <div
-        class="q-select-stub"
-        v-bind="$attrs"
-        @click="$emit('update:modelValue', null)"
-        @focus="$emit('filter', 'Hero', (fn, afterFn) => { fn(); afterFn && afterFn({ moveOptionSelection: () => undefined, setOptionIndex: () => undefined, showPopup: () => undefined }) })"
-      >
-        <slot name="option" :opt="{ icon: 'mdi-x', label: 'Opt', color: '#abc' }" :index="0" :itemProps="{}" />
-        <slot name="option" :opt="{ icon: 'mdi-y', label: 'Opt2', color: '#def' }" :index="1" :itemProps="{}" />
-        <slot name="selected-item" :opt="{ icon: 'mdi-x', label: 'Opt', color: '#abc' }" />
-      </div>
-    `
-  }
-
   const w = mount(DialogQuickAddDocument, {
     global: {
-      mocks: { $t: (k: string) => k },
-      plugins: [pinia],
-      stubs: {
-        ...quickAddDialogGlobal.stubs,
-        QSelect: emittingSelectStub
-      }
+      ...quickAddDialogGlobal,
+      plugins: [pinia]
     },
     props: { directInput: 'QuickAddDocument' }
   })
@@ -221,13 +246,9 @@ test('Test that DialogQuickAddDocument show hide and select handlers run', async
   await dialog.vm.$emit('show')
   await flushPromises()
 
-  expect(w.html()).toContain('Opt')
+  expect(w.find('[data-test-locator="dialogQuickAddDocument-select-template"]').exists()).toBe(true)
 
-  const selects = w.findAll('.q-select-stub')
-  expect(selects.length).toBe(1)
-  await selects[0]!.trigger('focus')
-  await flushPromises()
-  await selects[0]!.trigger('click')
+  await w.find('[data-test-locator="dialogQuickAddDocument-select-template"]').trigger('click')
   await flushPromises()
 
   await dialog.vm.$emit('update:modelValue', false)
@@ -287,28 +308,21 @@ test('Test that DialogQuickAddDocument hides world select for a single world', a
   await flushPromises()
 
   expect(w.find('[data-test-locator="dialogQuickAddDocument-select-world"]').exists()).toBe(false)
-  expect(w.find('[data-test-locator="dialogQuickAddDocument-select-template"]').exists()).toBe(true)
-  expect(
-    w.find('[data-test-locator="dialogQuickAddDocument-select-template"]').attributes('popup-content-class')
-  ).toBe('dialogQuickAddDocument__selectMenu')
-  expect(
-    w.find('[data-test-locator="dialogQuickAddDocument-select-template"]').attributes('use-input')
-  ).toBeDefined()
-  expect(
-    w.find('[data-test-locator="dialogQuickAddDocument-select-template"]').attributes('menu-anchor')
-  ).toBe('bottom middle')
-  expect(
-    w.find('[data-test-locator="dialogQuickAddDocument-select-template"]').attributes('menu-self')
-  ).toBe('top middle')
+  const templateSelect = w.find('[data-test-locator="dialogQuickAddDocument-select-template"]')
+  expect(templateSelect.exists()).toBe(true)
+  expect(templateSelect.attributes('data-popup-content-class'))
+    .toContain('dialogQuickAddDocument__selectMenu')
+  expect(templateSelect.attributes('data-selection-presentation')).toBe('inline')
+  expect(templateSelect.attributes('data-chip-removable')).toBe('true')
 
   w.unmount()
 })
 
 /**
  * DialogQuickAddDocument
- * Multi-world: world select centers like template menu and shows separatorAlt between options.
+ * Multi-world: world + template FaSelectInput options and separator hooks render.
  */
-test('Test that DialogQuickAddDocument world select is centered and shows separatorAlt', async () => {
+test('Test that DialogQuickAddDocument world select shows with option hooks', async () => {
   window.faContentBridgeAPIs = {
     ...window.faContentBridgeAPIs,
     projectContent: {
@@ -351,28 +365,10 @@ test('Test that DialogQuickAddDocument world select is centered and shows separa
   const pinia = createPinia()
   setActivePinia(pinia)
 
-  const worldEmittingSelectStub = {
-    template: `
-      <div
-        class="q-select-stub"
-        v-bind="$attrs"
-        @click="$emit('update:modelValue', 'world-2')"
-      >
-        <slot name="option" :opt="{ icon: 'mdi-earth', label: 'Earth', color: '#e91e63' }" :index="0" :itemProps="{}" />
-        <slot name="option" :opt="{ icon: 'mdi-earth', label: 'Venus', color: '#3f51b5' }" :index="1" :itemProps="{}" />
-        <slot name="selected-item" :opt="{ icon: 'mdi-earth', label: 'Earth', color: '#e91e63' }" />
-      </div>
-    `
-  }
-
   const w = mount(DialogQuickAddDocument, {
     global: {
-      mocks: { $t: (k: string) => k },
-      plugins: [pinia],
-      stubs: {
-        ...quickAddDialogGlobal.stubs,
-        QSelect: worldEmittingSelectStub
-      }
+      ...quickAddDialogGlobal,
+      plugins: [pinia]
     },
     props: { directInput: 'QuickAddDocument' }
   })
@@ -384,12 +380,13 @@ test('Test that DialogQuickAddDocument world select is centered and shows separa
 
   const worldSelect = w.find('[data-test-locator="dialogQuickAddDocument-select-world"]')
   expect(worldSelect.exists()).toBe(true)
-  expect(worldSelect.attributes('menu-anchor')).toBe('bottom middle')
-  expect(worldSelect.attributes('menu-self')).toBe('top middle')
-  expect(w.find('[data-test-locator="dialogQuickAddDocument-world-separatorAlt-1"]').exists()).toBe(true)
-  expect(w.find('[data-test-locator="dialogQuickAddDocument-template-separatorAlt-1"]').exists()).toBe(true)
-  expect(w.find('[data-test-locator="dialogQuickAddDocument-world-option-0"]').exists()).toBe(true)
-  expect(w.find('[data-test-locator="dialogQuickAddDocument-template-option-0"]').exists()).toBe(true)
+  expect(worldSelect.attributes('data-selection-presentation')).toBe('inline')
+  expect(worldSelect.attributes('data-chip-removable')).toBe('true')
+  expect(w.find('[data-test-locator="dialogQuickAddDocument-select-world-separatorAlt-1"]').exists())
+    .toBe(true)
+  expect(w.find('[data-test-locator="dialogQuickAddDocument-select-world-option-0"]').exists())
+    .toBe(true)
+  expect(w.find('[data-test-locator="dialogQuickAddDocument-select-template"]').exists()).toBe(true)
 
   await worldSelect.trigger('click')
   await flushPromises()

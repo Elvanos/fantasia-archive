@@ -137,9 +137,6 @@ test.describe.serial('Opened documents E2E — hierarchy sort and add-under save
     e2eTreeSortParentId = seeded.documents[0]?.id ?? ''
     expect(e2eTreeSortPlacementId.length).toBeGreaterThan(0)
 
-    await expect(
-      appWindow.locator(`[data-test-locator="${selectorList.hierarchyTreeHost}"]`)
-    ).toBeVisible({ timeout: 15_000 })
     await e2eExpandWorldAndPlacementNodes(appWindow)
 
     await e2eOpenHierarchyNodeContextMenu(appWindow, e2eTreeSortPlacementId)

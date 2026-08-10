@@ -53,10 +53,10 @@ function makeTemplate (id: string, plural: string): I_dialogQuickAddDocumentTemp
 function createDeps (overrides?: Partial<I_createUseDialogQuickAddDocumentDeps>): {
   createTemporaryDocument: ReturnType<typeof vi.fn>
   deps: I_createUseDialogQuickAddDocumentDeps
-  showPopupCalls: { count: number }
+  openPopupCalls: { count: number }
 } {
   const createTemporaryDocument = vi.fn(async () => 'temp-doc')
-  const showPopupCalls = { count: 0 }
+  const openPopupCalls = { count: 0 }
   const worlds = [
     makeWorld('world-b', 1, ['tpl-place']),
     makeWorld('world-a', 0, ['tpl-hero'])
@@ -105,7 +105,7 @@ function createDeps (overrides?: Partial<I_createUseDialogQuickAddDocumentDeps>)
   return {
     createTemporaryDocument,
     deps,
-    showPopupCalls
+    openPopupCalls
   }
 }
 
@@ -125,16 +125,14 @@ test('Test that dialogQuickAddDocumentDialogInput matchers accept only QuickAddD
  * Opens via directInput, hydrates worlds, and creates a temporary document on template pick.
  */
 test('Test that createUseDialogQuickAddDocument creates temporary document then closes', async () => {
-  const { createTemporaryDocument, deps, showPopupCalls } = createDeps()
+  const { createTemporaryDocument, deps, openPopupCalls } = createDeps()
   const useDialog = createUseDialogQuickAddDocument(deps)
   const api = useDialog({ directInput: 'QuickAddDocument' })
   expect(api.dialogModel.value).toBe(true)
 
   api.templateSelectRef.value = {
-    moveOptionSelection: () => undefined,
-    setOptionIndex: () => undefined,
-    showPopup: (): void => {
-      showPopupCalls.count += 1
+    openPopup: (): void => {
+      openPopupCalls.count += 1
     }
   }
   api.onDialogShow()
@@ -142,16 +140,13 @@ test('Test that createUseDialogQuickAddDocument creates temporary document then 
 
   expect(api.selectedWorldId.value).toBe('world-a')
   expect(api.showWorldSelect.value).toBe(true)
-  expect(api.worldOptions.value.map((row) => row.value)).toEqual(['world-a', 'world-b'])
-  expect(showPopupCalls.count).toBeGreaterThan(0)
+  expect(api.worldOptions.value.map((row) => row.id)).toEqual(['world-a', 'world-b'])
+  expect(openPopupCalls.count).toBeGreaterThan(0)
 
-  api.onTemplateFilter('', (fn, afterFn) => {
-    fn()
-    afterFn?.(api.templateSelectRef.value as never)
+  await api.onTemplateSelect({
+    id: 'tpl-hero',
+    name: 'Heroes'
   })
-  expect(api.filteredTemplateOptions.value.map((row) => row.value)).toEqual(['tpl-hero'])
-
-  await api.onTemplateSelect('tpl-hero')
   expect(createTemporaryDocument).toHaveBeenCalledWith({
     displayName: 'Heroes',
     templateId: 'tpl-hero',
@@ -165,29 +160,93 @@ test('Test that createUseDialogQuickAddDocument creates temporary document then 
  * World change clears template and re-opens the template select after hydrate skip flag clears.
  */
 test('Test that createUseDialogQuickAddDocument world change clears template and reopens popup', async () => {
-  const { deps, showPopupCalls } = createDeps({
+  const { deps, openPopupCalls } = createDeps({
     onMounted: () => undefined
   })
   const useDialog = createUseDialogQuickAddDocument(deps)
   const api = useDialog({})
   api.dialogModel.value = true
   api.templateSelectRef.value = {
-    moveOptionSelection: () => undefined,
-    setOptionIndex: () => undefined,
-    showPopup: (): void => {
-      showPopupCalls.count += 1
+    openPopup: (): void => {
+      openPopupCalls.count += 1
     }
   }
   api.onDialogShow()
   await flushPromises()
 
-  showPopupCalls.count = 0
-  api.onWorldSelect('world-b')
+  openPopupCalls.count = 0
+  api.onWorldSelect({
+    id: 'world-b',
+    name: 'world-b'
+  })
   await flushPromises()
 
   expect(api.selectedWorldId.value).toBe('world-b')
   expect(api.selectedTemplateId.value).toBeNull()
-  expect(showPopupCalls.count).toBeGreaterThan(0)
+  expect(openPopupCalls.count).toBeGreaterThan(0)
   api.onDialogHide()
   expect(api.selectedWorldId.value).toBeNull()
+})
+
+/**
+ * runDialogQuickAddDocumentSession selectedWorldOption / selectedTemplateOption
+ * Null ids and unmatched ids yield null; matching ids resolve option rows from world/template lists.
+ */
+test('Test that runDialogQuickAddDocumentSession selected options resolve and null out', async () => {
+  const { deps } = createDeps({
+    onMounted: () => undefined
+  })
+  const useDialog = createUseDialogQuickAddDocument(deps)
+  const api = useDialog({})
+
+  expect(api.selectedWorldOption.value).toBeNull()
+  expect(api.selectedTemplateOption.value).toBeNull()
+
+  api.dialogModel.value = true
+  api.onDialogShow()
+  await flushPromises()
+
+  expect(api.selectedWorldId.value).toBe('world-a')
+  expect(api.selectedWorldOption.value).toMatchObject({
+    id: 'world-a',
+    name: 'world-a'
+  })
+  expect(api.selectedTemplateOption.value).toBeNull()
+
+  api.selectedTemplateId.value = 'tpl-hero'
+  expect(api.selectedTemplateOption.value).toMatchObject({
+    id: 'tpl-hero',
+    name: 'Heroes'
+  })
+
+  api.selectedWorldId.value = 'missing-world'
+  expect(api.selectedWorldOption.value).toBeNull()
+  api.selectedTemplateId.value = 'missing-template'
+  expect(api.selectedTemplateOption.value).toBeNull()
+
+  api.onDialogHide()
+  expect(api.selectedWorldId.value).toBeNull()
+  expect(api.selectedTemplateId.value).toBeNull()
+  expect(api.selectedWorldOption.value).toBeNull()
+  expect(api.selectedTemplateOption.value).toBeNull()
+})
+
+/**
+ * runDialogQuickAddDocumentSession bindTemplateSelectRef
+ * Forwards FaSelectInput-like exposes into session.templateSelectRef; ignores non-select values.
+ */
+test('Test that runDialogQuickAddDocumentSession bindTemplateSelectRef wires FaSelectInput ref', () => {
+  const { deps } = createDeps({
+    onMounted: () => undefined
+  })
+  const useDialog = createUseDialogQuickAddDocument(deps)
+  const api = useDialog({})
+  const select = {
+    openPopup: vi.fn()
+  }
+
+  api.bindTemplateSelectRef({ nope: true })
+  expect(api.templateSelectRef.value).toBeNull()
+  api.bindTemplateSelectRef(select)
+  expect(api.templateSelectRef.value?.openPopup).toBe(select.openPopup)
 })

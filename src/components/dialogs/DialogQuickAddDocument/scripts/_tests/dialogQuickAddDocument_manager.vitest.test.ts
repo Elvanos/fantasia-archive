@@ -87,9 +87,7 @@ test('Test that useDialogQuickAddDocument from the manager creates a temporary d
 
       onMounted(() => {
         api.templateSelectRef.value = {
-          moveOptionSelection: () => undefined,
-          setOptionIndex: () => undefined,
-          showPopup: () => undefined
+          openPopup: () => undefined
         }
         api.onDialogShow()
       })
