@@ -24,6 +24,7 @@ import {
 } from 'app/helpers/playwrightHelpers_universal/faPlaywrightKeyboardChords'
 import { tearDownFaPlaywrightElectronSerialSuite } from 'app/helpers/playwrightHelpers_universal/faPlaywrightSerialSuiteLifecycleTeardown'
 import quickAddMessages from 'app/i18n/en-US/dialogs/L_dialogQuickAddDocument'
+import quickSearchMessages from 'app/i18n/en-US/dialogs/L_dialogQuickSearchDocument'
 
 /**
  * Extra env settings to trigger E2E via Playwright (isolated userData).
@@ -41,6 +42,9 @@ const selectorList = {
   nameInput: 'dialogNewProject-input-name',
   projectAppControlBar: 'projectAppControlBar',
   quickAddButton: 'projectAppControlBar-quickAddButton',
+  quickSearchButton: 'projectAppControlBar-quickSearchButton',
+  quickSearchCloseButton: 'dialogQuickSearchDocument-button-close',
+  quickSearchWorldSelect: 'dialogQuickSearchDocument-select-world',
   splashNew: 'splashPage-btn-new',
   templateOption0: 'dialogQuickAddDocument-select-template-option-0',
   templateSelect: 'dialogQuickAddDocument-select-template',
@@ -53,6 +57,7 @@ const selectorList = {
 const QUICK_ADD_E2E_FAPROJECT = 'e2e-quick-add-document.faproject'
 const QUICK_ADD_E2E_PROJECT_NAME = 'E2E Quick Add Document project'
 const QUICK_ADD_HYDRATE_SETTLE_MS = 600
+const SECOND_WORLD_DISPLAY_NAME = 'E2E Second World'
 
 async function prepareRendererForGlobalShortcuts (page: Page): Promise<void> {
   await page.bringToFront()
@@ -95,9 +100,24 @@ async function openQuickAddViaControlBar (page: Page): Promise<void> {
   await page.waitForTimeout(QUICK_ADD_HYDRATE_SETTLE_MS)
 }
 
+async function openQuickSearchViaControlBar (page: Page): Promise<void> {
+  await page.locator(`[data-test-locator="${selectorList.quickSearchButton}"]`).click()
+  await expect(page.locator('.q-dialog.dialogQuickSearchDocument')).toBeVisible({ timeout: 15_000 })
+  await expect(page.locator('#dialogQuickSearchDocument-title')).toHaveText(quickSearchMessages.title)
+  await page.waitForTimeout(QUICK_ADD_HYDRATE_SETTLE_MS)
+}
+
 async function dismissPortaledSelectMenus (page: Page): Promise<void> {
   await page.keyboard.press('Escape')
   await page.waitForTimeout(200)
+}
+
+async function closeQuickAddDialog (page: Page): Promise<void> {
+  await dismissPortaledSelectMenus(page)
+  await page.locator(`[data-test-locator="${selectorList.closeButton}"]`).click()
+  await expect(page.locator('.q-dialog.dialogQuickAddDocument')).toBeHidden({
+    timeout: 15_000
+  })
 }
 
 /**
@@ -107,7 +127,7 @@ async function e2eSeedSecondWorldWithPlacement (page: Page): Promise<{
   templateId: string
   worldId: string
 }> {
-  return page.evaluate(async () => {
+  return page.evaluate(async (secondWorldDisplayName) => {
     const content = window.faContentBridgeAPIs?.projectContent
     if (content === undefined) {
       throw new Error('Project content bridge unavailable')
@@ -118,7 +138,7 @@ async function e2eSeedSecondWorldWithPlacement (page: Page): Promise<{
       throw new Error('No default world in E2E project')
     }
     const secondWorld = await content.createWorld({
-      displayName: 'E2E Second World'
+      displayName: secondWorldDisplayName
     })
     const secondTemplate = await content.createDocumentTemplate({
       displayName: 'E2E Place Template'
@@ -166,7 +186,7 @@ async function e2eSeedSecondWorldWithPlacement (page: Page): Promise<{
       },
       {
         id: secondWorld.id,
-        displayNameTranslations: { 'en-US': 'E2E Second World' },
+        displayNameTranslations: { 'en-US': secondWorldDisplayName },
         color: '#2196f3',
         colorPalette: '',
         templateLayout: {
@@ -188,7 +208,7 @@ async function e2eSeedSecondWorldWithPlacement (page: Page): Promise<{
       templateId: secondTemplate.id,
       worldId: secondWorld.id
     }
-  })
+  }, SECOND_WORLD_DISPLAY_NAME)
 }
 
 test.describe.serial('Quick Add Document E2E', () => {
@@ -383,6 +403,51 @@ test.describe.serial('Quick Add Document E2E', () => {
     await dismissPortaledSelectMenus(appWindow)
     await appWindow.locator(`[data-test-locator="${selectorList.closeButton}"]`).click()
     await expect(appWindow.locator('.q-dialog.dialogQuickAddDocument')).toBeHidden({
+      timeout: 15_000
+    })
+  })
+
+  /**
+   * Quick Add and Quick Search share project dialog UI pref last_selected_world_id.
+   */
+  test('Shared last_selected_world_id persists across Quick Add reopen and Quick Search', async () => {
+    await openQuickAddViaControlBar(appWindow)
+
+    const worldSelect = appWindow.locator(`[data-test-locator="${selectorList.worldSelect}"]`)
+    const worldSelectSelected = appWindow.locator(
+      `[data-test-locator="${selectorList.worldSelect}-selected"]`
+    )
+    await expect(worldSelect).toHaveCount(1)
+    await worldSelect.click()
+    await expect(
+      appWindow.locator(`[data-test-locator="${selectorList.worldOption1}"]`)
+    ).toBeVisible({ timeout: 15_000 })
+    await appWindow.locator(`[data-test-locator="${selectorList.worldOption1}"]`).click()
+    await appWindow.waitForTimeout(QUICK_ADD_HYDRATE_SETTLE_MS)
+    await expect(worldSelectSelected).toContainText(SECOND_WORLD_DISPLAY_NAME, {
+      timeout: 15_000
+    })
+
+    await closeQuickAddDialog(appWindow)
+
+    await openQuickAddViaControlBar(appWindow)
+    await expect(worldSelectSelected).toContainText(SECOND_WORLD_DISPLAY_NAME, { timeout: 15_000 })
+    await closeQuickAddDialog(appWindow)
+
+    await openQuickSearchViaControlBar(appWindow)
+    const quickSearchWorldSelectSelected = appWindow.locator(
+      `[data-test-locator="${selectorList.quickSearchWorldSelect}-selected"]`
+    )
+    await expect(
+      appWindow.locator(`[data-test-locator="${selectorList.quickSearchWorldSelect}"]`)
+    ).toHaveCount(1)
+    await expect(quickSearchWorldSelectSelected).toContainText(SECOND_WORLD_DISPLAY_NAME, {
+      timeout: 15_000
+    })
+
+    await dismissPortaledSelectMenus(appWindow)
+    await appWindow.locator(`[data-test-locator="${selectorList.quickSearchCloseButton}"]`).click()
+    await expect(appWindow.locator('.q-dialog.dialogQuickSearchDocument')).toBeHidden({
       timeout: 15_000
     })
   })

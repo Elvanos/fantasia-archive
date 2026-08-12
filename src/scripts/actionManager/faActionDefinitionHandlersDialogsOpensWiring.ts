@@ -121,6 +121,19 @@ async function handleOpenQuickAddDocumentDialog (
   deps.openDialogComponent('QuickAddDocument')
 }
 
+async function handleOpenQuickSearchDocumentDialog (
+  deps: I_createFaActionDefinitionHandlersDialogsDeps
+): Promise<void> {
+  if (!deps.S_FaActiveProject().hasActiveProject) {
+    return
+  }
+  const allowSameKeyClose = deps.S_FaUserSettings().settings?.allowQuickPopupSameKeyClose === true
+  if (allowSameKeyClose && deps.tryDismissFaComponentDialogIfOpen('QuickSearchDocument')) {
+    return
+  }
+  deps.openDialogComponent('QuickSearchDocument')
+}
+
 export function buildFaActionDefinitionHandlersDialogsOpens (
   deps: I_createFaActionDefinitionHandlersDialogsDeps
 ): {
@@ -140,6 +153,7 @@ export function buildFaActionDefinitionHandlersDialogsOpens (
     handleOpenImportExportAppConfigDialog: () => Promise<void>
     handleOpenNewProjectDialog: () => Promise<void>
     handleOpenQuickAddDocumentDialog: () => Promise<void>
+    handleOpenQuickSearchDocumentDialog: () => Promise<void>
   } {
   return {
     handleOpenKeybindSettingsDialog: () => handleOpenKeybindSettingsDialog(deps),
@@ -157,6 +171,7 @@ export function buildFaActionDefinitionHandlersDialogsOpens (
     handleOpenActionMonitorDialog: () => handleOpenActionMonitorDialog(deps),
     handleOpenImportExportAppConfigDialog: () => handleOpenImportExportAppConfigDialog(deps),
     handleOpenNewProjectDialog: () => handleOpenNewProjectDialog(deps),
-    handleOpenQuickAddDocumentDialog: () => handleOpenQuickAddDocumentDialog(deps)
+    handleOpenQuickAddDocumentDialog: () => handleOpenQuickAddDocumentDialog(deps),
+    handleOpenQuickSearchDocumentDialog: () => handleOpenQuickSearchDocumentDialog(deps)
   }
 }

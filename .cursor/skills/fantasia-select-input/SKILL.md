@@ -41,13 +41,14 @@ App Settings enum **`q-select`** stays in **`DialogAppSettingsSettingBlock`** un
 | **`testLocator`** | Root **`data-test-locator`**; chip / option / separator-alt attrs |
 | **`allowCreateNew`** | Opt-in Enter create-new (default **`false`**) |
 | **`clearInputOnSelect`** | Opt-in clear filter text after select/create (default **`false`**; chip stays) |
+| **`activateOnly`** | Opt-in: option click/Enter emit **`option-activate` only** — no Quasar model select / menu close (Quick Search stay-open) |
 | **`chipRemovable`** | Chip X remove control (default **`true`**); set **`false`** for mandatory single (chip stays, no X) |
 | **`filterFn`** | Optional override of default filter |
 | **`multiple`**, **`label`**, **`loading`**, **`disable`**, Quasar chrome | Standard defaults: dense filled dark, color **`primary-bright`** |
 
 **Emits:** **`update:modelValue`**, **`change`** (`{ action, value }`), **`new-value`**, **`request-options`** (focus + popup-show), **`option-activate`** (option click or Enter on focused option, including single reselect).
 
-**Expose:** **`clearIsNewFlags(ids)`**, **`openPopup()`**.
+**Expose:** **`clearIsNewFlags(ids)`**, **`openPopup()`**, **`getFilterNeedle()`**.
 
 **Test hooks:** **`{testLocator}`**, **`-filter`**, **`-chip`**, **`-selected`** (inline), **`-option-{index}`**, **`data-test-locator-separator-alt`** on option (index ≥ 1).
 
@@ -55,14 +56,14 @@ App Settings enum **`q-select`** stays in **`DialogAppSettingsSettingBlock`** un
 
 - Default presentation **chips**; **`selectionPresentation="inline"`** for icon+label closed field (no chips)
 - **`chipRemovable`** default **`true`**; mandatory single parents set **`false`** (chip, no X)
-- Optional object **`color`** tints icons via **`fa-color-glyph`**
+- Optional object **`color`** tints icons via **`fa-color-glyph`** (object icons always get that class + glyph CSS vars; flat = solid color; fantasy = shading; missing color uses workspace-row default base)
 - Hide empty single selection chip; **`isNew`** → teal-3 chip else accent; text dark
 - Object **`icon`** on chip/option/inline when non-empty
-- Filter highlight = whole whitespace-delimited words matching needle words (not letter-only wash)
+- Filter = FA 1.0 multi-token match: space-split query words AND-matched against distinct label words (equality and/or includes); highlight claimed words only (not letter-only wash); results sorted exact → full-word → partial
 - **Default:** keyboard-highlight first option on popup-show and after every filter update (model unchanged)
 - **Focus opens menu:** Tab / Shift+Tab via **`keyup` Tab** (not `@focus` `showPopup` — that races Quasar click toggle; **`QSelect` `inheritAttrs: false`** drops wrapper `@mousedown`); parents may still call **`openPopup()`** (Quick Add template)
 - Menu fixed **600px**, center under field (**`bottom middle`** / **`top middle`**); optional **`popupContentClass`**
-- **separatorAlt** via CSS border on option item (single virtual-scroll root); **`virtual-scroll-slice-size` 80** fills tall menus on first open; selected = side bars + idle non-match text; filter **optionMatch** gold on selected too; hover/keyboard wash same as other rows
+- **separatorAlt** via CSS border on option item (single virtual-scroll root); **`virtual-scroll-slice-size` 80** fills tall menus on first open; selected = side bars on **`::before`** + idle non-match text; filter **optionMatch** gold on selected too; fantasy hover/keyboard = menu bottom-edge glow (**`faMenuItemGlow`** on **`::after`**); label/icon stay idle color (no hover wash tint)
 - Create-new: trim; simple string or object **`{ id: crypto.randomUUID(), name, isNew: true }`**
 
 ## File map

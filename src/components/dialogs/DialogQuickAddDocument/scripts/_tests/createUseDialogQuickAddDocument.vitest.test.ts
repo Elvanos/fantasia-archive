@@ -87,6 +87,16 @@ function createDeps (overrides?: Partial<I_createUseDialogQuickAddDocumentDeps>)
       hook()
     },
     pickFirstWorldId: pickFirstDialogQuickAddDocumentWorldId,
+    pickWorldIdWithSavedPreference: ({ worlds, savedWorldId, pickFirstWorldId }) => {
+      if (savedWorldId !== null && savedWorldId.length > 0) {
+        const match = worlds.find((world) => world.id === savedWorldId)
+        if (match !== undefined) {
+          return match.id
+        }
+      }
+      return pickFirstWorldId(worlds)
+    },
+    readLastSelectedWorldId: async () => null,
     ref,
     registerComponentDialogStackGuard: vi.fn(),
     resolveDialogComponentStoreOrNull: () => dialogStore,
@@ -100,6 +110,7 @@ function createDeps (overrides?: Partial<I_createUseDialogQuickAddDocumentDeps>)
     sleep: async () => undefined,
     templateFocusMs: 0,
     watch,
+    writeLastSelectedWorldId: async () => undefined,
     ...overrides
   }
   return {
@@ -128,7 +139,12 @@ test('Test that createUseDialogQuickAddDocument creates temporary document then 
   const { createTemporaryDocument, deps, openPopupCalls } = createDeps()
   const useDialog = createUseDialogQuickAddDocument(deps)
   const api = useDialog({ directInput: 'QuickAddDocument' })
+  await flushPromises()
+
   expect(api.dialogModel.value).toBe(true)
+  expect(api.selectedWorldId.value).toBe('world-a')
+  expect(api.showWorldSelect.value).toBe(true)
+  expect(api.worldOptions.value.map((row) => row.id)).toEqual(['world-a', 'world-b'])
 
   api.templateSelectRef.value = {
     openPopup: (): void => {
@@ -138,9 +154,6 @@ test('Test that createUseDialogQuickAddDocument creates temporary document then 
   api.onDialogShow()
   await flushPromises()
 
-  expect(api.selectedWorldId.value).toBe('world-a')
-  expect(api.showWorldSelect.value).toBe(true)
-  expect(api.worldOptions.value.map((row) => row.id)).toEqual(['world-a', 'world-b'])
   expect(openPopupCalls.count).toBeGreaterThan(0)
 
   await api.onTemplateSelect({
@@ -229,6 +242,36 @@ test('Test that runDialogQuickAddDocumentSession selected options resolve and nu
   expect(api.selectedTemplateId.value).toBeNull()
   expect(api.selectedWorldOption.value).toBeNull()
   expect(api.selectedTemplateOption.value).toBeNull()
+})
+
+/**
+ * runDialogQuickAddDocumentSession onWorldFilterEnter
+ * Enter on the world filter re-runs onWorldSelect for the current world option.
+ */
+test('Test that runDialogQuickAddDocumentSession onWorldFilterEnter reselects current world', async () => {
+  const openPopup = vi.fn()
+  const { deps } = createDeps({
+    onMounted: () => undefined,
+    sleep: async () => undefined,
+    templateFocusMs: 0
+  })
+  const useDialog = createUseDialogQuickAddDocument(deps)
+  const api = useDialog({})
+
+  api.dialogModel.value = true
+  api.onDialogShow()
+  await flushPromises()
+  api.templateSelectRef.value = { openPopup }
+
+  api.onWorldFilterEnter(new Event('keydown'))
+  await flushPromises()
+  expect(openPopup).toHaveBeenCalledTimes(2)
+
+  api.selectedWorldId.value = null
+  openPopup.mockClear()
+  api.onWorldFilterEnter(new Event('keydown'))
+  await flushPromises()
+  expect(openPopup).not.toHaveBeenCalled()
 })
 
 /**

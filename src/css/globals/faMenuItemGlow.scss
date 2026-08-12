@@ -5,6 +5,7 @@
  * Same bottom-edge gold highlight + bloom as flat buttons / horizontal tabs
  * (fa-tab-edge-glow bottom). Idle hidden; hover/focus reveals.
  * Flat theme keeps Quasar focus-helper wash.
+ * Includes FaSelectInput menus (selected side bars use ::before only — ::after stays free for glow).
  */
 
 /* Kill Quasar hover/focus wash (must compound body.desktop + fantasy). */

@@ -321,6 +321,10 @@ const baseBridge = () => {
       getProjectSidebar,
       getHierarchyTreeUiState,
       getOpenedDocumentsSnapshot,
+      getProjectDialogUiPref: async () => ({
+        key: 'last_selected_world_id' as const,
+        value: null
+      }),
       getProjectStyling,
       getRecentProjects: async () => [],
       resolveRecentProjectMruHeadForOpen: async () => ({ outcome: 'empty' as const }),
@@ -332,6 +336,7 @@ const baseBridge = () => {
       setProjectSidebar,
       setHierarchyTreeUiState,
       saveOpenedDocumentsSnapshot,
+      setProjectDialogUiPref: async () => true,
       setProjectStyling,
       stageE2eNextCreatePath: async () => false,
       stageE2eNextOpenPath: async () => false

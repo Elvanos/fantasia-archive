@@ -179,11 +179,6 @@ export default {
       description: 'Se non ti piacciono i suggerimenti per la visualizzazione del documento, puoi disattivarli globalmente qui.',
       tags: 'testo al passaggio del mouse, aiuto sul campo, popover, suggerimenti per la visualizzazione del documento',
     },
-    disableQuickSearchCategoryPrecheck: {
-      title: 'Non precontrollare il filtro della categoria',
-      description: 'Normalmente le categorie sono incluse nella ricerca rapida. L\'abilitazione di questa opzione inverte tale comportamento.',
-      tags: 'filtro di categoria, ambito di ricerca, include categorie, filtro predefinito',
-    },
     disableSpellCheck: {
       title: 'Disabilita il controllo ortografico',
       description: 'Disabilita il controllo ortografico, grammaticale e delle parole nella modalità di modifica del documento.',

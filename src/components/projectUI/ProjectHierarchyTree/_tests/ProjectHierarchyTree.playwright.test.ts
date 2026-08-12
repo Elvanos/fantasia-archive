@@ -1372,7 +1372,10 @@ test.describe.serial('Project hierarchy tree document open edit expand', () => {
     expect(session.tabs.some((tab) => tab.documentId === PARENT_DOCUMENT_ID)).toBe(false)
   })
 
-  test('Check if middle-click opens a document tab and focuses it', async () => {
+  /**
+   * Middle-click uses middleBackground openMode — appends tab, keeps prior active + route.
+   */
+  test('Check if middle-click opens a document tab in the background', async () => {
     await remountHierarchyTreeAfterStoreSeed(appWindow, defaultHierarchySeed, workspaceTreeRemountOptions)
 
     await appWindow.locator(
@@ -1397,13 +1400,14 @@ test.describe.serial('Project hierarchy tree document open edit expand', () => {
     }).toBe(true)
 
     const session = await readOpenedDocumentsSession(appWindow)
-    expect(session.activeDocumentId).toBe(BACKGROUND_DOCUMENT_ID)
+    expect(session.activeDocumentId).toBe(DOCUMENT_ID)
     expect(session.tabs.some((tab) => tab.documentId === DOCUMENT_ID)).toBe(true)
+    expect(session.tabs.some((tab) => tab.documentId === BACKGROUND_DOCUMENT_ID)).toBe(true)
     await expect.poll(async () => {
       return await appWindow.evaluate(() => {
         return window.location.hash
       })
-    }).toContain(`/home/document/${BACKGROUND_DOCUMENT_ID}`)
+    }).toContain(`/home/document/${DOCUMENT_ID}`)
   })
 })
 

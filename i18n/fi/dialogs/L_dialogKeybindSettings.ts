@@ -27,6 +27,7 @@ export default {
     openAppStyling: 'Avaa mukautettu sovellus CSS',
     openProjectStyling: 'Avaa mukautettu projekti CSS',
     quickNewDocument: 'Quick-Add New Document',
+    quickExistingDocument: 'Quick-search existing document',
     openProjectSettings: 'Avaa projektiasetukset',
     showProjectDashboard: 'Näytä projektin hallintapaneeli',
     toggleDeveloperTools: 'Vaihda Kehittäjätyökalut',

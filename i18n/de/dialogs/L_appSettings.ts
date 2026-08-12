@@ -179,11 +179,6 @@ export default {
       description: 'Wenn Ihnen die Tooltips in der Dokumentansicht nicht gefallen, können Sie sie hier global deaktivieren.',
       tags: 'Hovertext, Feldhilfe, Popover, Hinweise zur Dokumentansicht',
     },
-    disableQuickSearchCategoryPrecheck: {
-      title: 'Überprüfen Sie den Kategoriefilter nicht vorab',
-      description: 'Normalerweise werden Kategorien in die Schnellsuche einbezogen. Durch Aktivieren dieser Option wird dieses Verhalten umgekehrt.',
-      tags: 'Kategoriefilter, Suchbereich, Kategorien einschließen, Standardfilter',
-    },
     disableSpellCheck: {
       title: 'Rechtschreibprüfung deaktivieren',
       description: 'Deaktiviert die Rechtschreib-, Grammatik- und Wortprüfung im Dokumentbearbeitungsmodus.',

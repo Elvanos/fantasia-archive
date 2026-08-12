@@ -11,9 +11,10 @@ import type { T_dialogName } from 'app/types/T_appDialogsAndDocuments'
 import type { T_faUserSettingsLanguageCode } from 'app/types/faUserSettingsLanguageRegistry'
 import type { I_computedRef, I_ref } from 'app/types/I_vueCompositionShims'
 
-/** FaSelectInput expose used for template auto-open (opt-in openPopup). */
+/** FaSelectInput expose used for template auto-open / world menu dismiss. */
 export interface I_dialogQuickAddDocumentFaSelectInputLike {
-  openPopup: () => void
+  hidePopup?: () => void
+  openPopup?: () => void
 }
 
 /** Mutable refs held for one Quick-Add Document dialog session. */
@@ -29,17 +30,20 @@ export interface I_dialogQuickAddDocumentSession {
   templateSelectRef: I_ref<I_dialogQuickAddDocumentFaSelectInputLike | null>
   templatesById: I_ref<Map<string, I_dialogQuickAddDocumentTemplateSource>>
   worldOptions: I_computedRef<I_dialogQuickAddDocumentWorldOption[]>
+  worldSelectRef: I_ref<I_dialogQuickAddDocumentFaSelectInputLike | null>
   worlds: I_ref<I_dialogQuickAddDocumentWorldSource[]>
 }
 
 /** Public API returned by runDialogQuickAddDocumentSession / useDialogQuickAddDocument. */
 export interface I_dialogQuickAddDocumentApi {
   bindTemplateSelectRef: (el: unknown) => void
+  bindWorldSelectRef: (el: unknown) => void
   dialogModel: I_ref<boolean>
   documentName: I_ref<string>
   onDialogHide: () => void
   onDialogShow: () => void
   onTemplateSelect: (value: T_faSelectInputModelValue | null | undefined) => Promise<void>
+  onWorldFilterEnter: (event: Event) => void
   onWorldSelect: (value: T_faSelectInputModelValue | null | undefined) => void
   selectedTemplateId: I_ref<string | null>
   selectedTemplateOption: I_computedRef<I_dialogQuickAddDocumentTemplateOption | null>
@@ -86,8 +90,16 @@ export interface I_createUseDialogQuickAddDocumentDeps {
   onBeforeUnmount: (hook: () => void) => void
   onMounted: (hook: () => void) => void
   pickFirstWorldId: (
-    worlds: readonly I_dialogQuickAddDocumentWorldSource[]
+    worlds: readonly { id: string }[]
   ) => string | null
+  pickWorldIdWithSavedPreference: (input: {
+    worlds: readonly { id: string }[]
+    savedWorldId: string | null
+    pickFirstWorldId: (
+      worlds: readonly { id: string }[]
+    ) => string | null
+  }) => string | null
+  readLastSelectedWorldId: () => Promise<string | null>
   ref: <T>(value: T) => I_ref<T>
   registerComponentDialogStackGuard: (dialogModel: I_ref<boolean>) => void
   resolveDialogComponentStoreOrNull: () => I_dialogComponentStoreLike | null
@@ -115,4 +127,5 @@ export interface I_createUseDialogQuickAddDocumentDeps {
     source: I_ref<unknown> | (() => unknown),
     effect: (value?: unknown, oldValue?: unknown) => void | Promise<void>
   ) => void
+  writeLastSelectedWorldId: (worldId: string) => Promise<void>
 }

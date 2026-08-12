@@ -4,6 +4,7 @@ import { FA_PROJECT_MANAGEMENT_IPC } from 'app/src-electron/electron-ipc-bridge'
 import { registerFaProjectManagementLifecycleIpc } from 'app/src-electron/mainScripts/ipcManagement/registerFaProjectManagementLifecycleIpc'
 import { registerFaProjectManagementProjectSettingsIpc } from 'app/src-electron/mainScripts/ipcManagement/registerFaProjectManagementProjectSettingsIpc'
 import { registerFaProjectManagementProjectSidebarIpc } from 'app/src-electron/mainScripts/ipcManagement/registerFaProjectManagementProjectSidebarIpc'
+import { registerFaProjectManagementDialogUiPrefIpc } from 'app/src-electron/mainScripts/ipcManagement/registerFaProjectManagementDialogUiPrefIpc'
 import { registerFaProjectManagementHierarchyTreeUiStateIpc } from 'app/src-electron/mainScripts/ipcManagement/registerFaProjectManagementHierarchyTreeUiStateIpc'
 import { registerFaProjectManagementOpenedDocumentsIpc } from 'app/src-electron/mainScripts/ipcManagement/registerFaProjectManagementOpenedDocumentsIpc'
 import { registerFaProjectManagementE2eStagingIpc } from 'app/src-electron/mainScripts/ipcManagement/registerFaProjectManagementE2eStagingIpc'
@@ -126,6 +127,8 @@ export function registerFaProjectManagementIpc (): void {
   registerFaProjectManagementProjectSettingsIpc()
 
   registerFaProjectManagementProjectSidebarIpc()
+
+  registerFaProjectManagementDialogUiPrefIpc()
 
   registerFaProjectManagementHierarchyTreeUiStateIpc()
 

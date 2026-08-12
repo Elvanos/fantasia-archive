@@ -6,6 +6,11 @@ import { resolveFaProjectDocumentTemplateDisplayTitleFromFields } from 'app/src/
 import { resolveFaProjectWorldDisplayName } from 'app/src/scripts/projectWorlds/faProjectWorldDisplayName_manager'
 import { createResolveDialogComponentStore } from 'app/src/components/dialogs/DialogAboutFantasiaArchive/scripts/functions/createResolveDialogComponentStore'
 import { resolveProjectHierarchyTreeNewDocumentDisplayName } from 'app/src/components/projectUI/ProjectHierarchyTree/functions/projectHierarchyTreeAddNewDocumentLabel'
+import {
+  pickFaProjectDialogLastSelectedWorldId,
+  readFaProjectLastSelectedWorldId,
+  writeFaProjectLastSelectedWorldId
+} from 'app/src/scripts/projectDialogUiPref/projectDialogUiPref_manager'
 import { S_DialogComponent } from 'src/stores/S_Dialog'
 import { S_FaOpenedDocuments } from 'src/stores/S_FaOpenedDocuments'
 
@@ -45,6 +50,8 @@ export const useDialogQuickAddDocument = createUseDialogQuickAddDocument({
   onBeforeUnmount,
   onMounted,
   pickFirstWorldId: pickFirstDialogQuickAddDocumentWorldId,
+  pickWorldIdWithSavedPreference: pickFaProjectDialogLastSelectedWorldId,
+  readLastSelectedWorldId: readFaProjectLastSelectedWorldId,
   ref,
   registerComponentDialogStackGuard,
   resolveDialogComponentStoreOrNull: resolveDialogComponentStoreOrNullBinding,
@@ -65,7 +72,8 @@ export const useDialogQuickAddDocument = createUseDialogQuickAddDocument({
     })
   },
   templateFocusMs: FA_DIALOG_QUICK_ADD_DOCUMENT_TEMPLATE_FOCUS_MS,
-  watch
+  watch,
+  writeLastSelectedWorldId: writeFaProjectLastSelectedWorldId
 })
 
 export { FA_DIALOG_QUICK_ADD_DOCUMENT_TEMPLATE_FOCUS_MS }

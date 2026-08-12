@@ -233,6 +233,14 @@ test('registerFaProjectManagementIpc registers project-noteboard and project-sty
     expect.any(Function)
   )
   expect(ipcMainHandleMock).toHaveBeenCalledWith(
+    FA_PROJECT_MANAGEMENT_IPC.getProjectDialogUiPrefAsync,
+    expect.any(Function)
+  )
+  expect(ipcMainHandleMock).toHaveBeenCalledWith(
+    FA_PROJECT_MANAGEMENT_IPC.setProjectDialogUiPrefAsync,
+    expect.any(Function)
+  )
+  expect(ipcMainHandleMock).toHaveBeenCalledWith(
     FA_PROJECT_MANAGEMENT_IPC.getProjectStylingAsync,
     expect.any(Function)
   )

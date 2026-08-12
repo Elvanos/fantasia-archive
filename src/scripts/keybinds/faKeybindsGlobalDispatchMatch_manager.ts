@@ -1,4 +1,4 @@
-import { FA_KEYBIND_COMMAND_DEFINITIONS } from './functions/faKeybindCommandDefinitions'
+import { FA_KEYBIND_COMMAND_DEFINITIONS } from './faKeybindCommandDefinitions_manager'
 import {
   faKeybindChordsEqual,
   faKeybindResolveEffectiveChord

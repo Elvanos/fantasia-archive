@@ -76,6 +76,7 @@ const baseProps = {
   onToggleProjectNoteboardClick: vi.fn(),
   quickAddKeybindLabel: null as string | null,
   quickAddTooltip: 'Quick add',
+  quickSearchKeybindLabel: null as string | null,
   quickSearchTooltip: 'Quick search',
   saveDocumentButtonColor: 'primary-bright' as const,
   saveDocumentKeepEditModeKeybindLabel: 'Ctrl+Shift+S',
@@ -306,9 +307,9 @@ test('Test that ProjectAppControlBarFixedStrip hides function and content button
 
 /**
  * ProjectAppControlBarFixedStrip
- * Quick search stays disabled; quick add is enabled once DialogQuickAddDocument ships.
+ * Quick search and quick add are both enabled when content buttons show.
  */
-test('Test that ProjectAppControlBarFixedStrip disables only quick search button', async () => {
+test('Test that ProjectAppControlBarFixedStrip enables quick search and quick add buttons', async () => {
   const wrapper = mount(ProjectAppControlBarFixedStrip, {
     props: baseProps,
     global: mountGlobal,
@@ -325,7 +326,7 @@ test('Test that ProjectAppControlBarFixedStrip disables only quick search button
   )
   expect(quickSearch).not.toBeNull()
   expect(quickAdd).not.toBeNull()
-  expect(quickSearch?.hasAttribute('disable')).toBe(true)
+  expect(quickSearch?.hasAttribute('disable')).toBe(false)
   expect(quickAdd?.hasAttribute('disable')).toBe(false)
 
   wrapper.unmount()

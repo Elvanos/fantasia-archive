@@ -29,6 +29,7 @@ export default {
     openProjectSettings: 'Open Project Settings',
     showProjectDashboard: 'Show Project Dashboard',
     quickNewDocument: 'Quick-Add New Document',
+    quickExistingDocument: 'Quick-search existing document',
     toggleDeveloperTools: 'Toggle Developer Tools',
     toggleAppNoteboard: 'Toggle App Noteboard',
     toggleProjectNoteboard: 'Toggle Project Noteboard',

@@ -179,11 +179,6 @@ export default {
       description: 'Hvis du ikke liker verktøytipsene for dokumentvisning, kan du slå dem av globalt her.',
       tags: 'hover tekst, felthjelp, popover, dokumentvisning hint',
     },
-    disableQuickSearchCategoryPrecheck: {
-      title: 'Ikke forhåndssjekk kategorifilteret',
-      description: 'Normalt er kategorier inkludert i hurtigsøket. Aktivering av dette alternativet reverserer atferden.',
-      tags: 'kategorifilter, søkeomfang, inkludere kategorier, standardfilter',
-    },
     disableSpellCheck: {
       title: 'Deaktiver stavekontroll',
       description: 'Deaktiverer stave-, grammatikk- og ordkontroll i dokumentredigeringsmodus.',

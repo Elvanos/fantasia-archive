@@ -56,6 +56,7 @@
       :on-toggle-project-noteboard-click="onToggleProjectNoteboardClick"
       :quick-add-keybind-label="quickAddKeybindLabel"
       :quick-add-tooltip="quickAddTooltip"
+      :quick-search-keybind-label="quickSearchKeybindLabel"
       :quick-search-tooltip="quickSearchTooltip"
       :save-document-button-color="saveDocumentButtonColor"
       :save-document-keep-edit-mode-keybind-label="saveDocumentKeepEditModeKeybindLabel"
@@ -156,6 +157,7 @@ const {
   onTabReorder,
   openedDocumentTabs,
   quickAddKeybindLabel,
+  quickSearchKeybindLabel,
   resolveDocumentTabLabel,
   resolveDocumentTabAppearanceChrome,
   resolveDocumentTabDisplayIcon,

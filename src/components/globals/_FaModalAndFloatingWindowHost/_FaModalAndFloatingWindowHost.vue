@@ -13,6 +13,7 @@
     <DialogImportExportAppConfig />
     <DialogNewProject />
     <DialogQuickAddDocument />
+    <DialogQuickSearchDocument />
   </div>
 </template>
 
@@ -20,6 +21,7 @@
 import DialogMarkdownDocument from 'app/src/components/dialogs/DialogMarkdownDocument/DialogMarkdownDocument.vue'
 import DialogNewProject from 'app/src/components/dialogs/DialogNewProject/DialogNewProject.vue'
 import DialogQuickAddDocument from 'app/src/components/dialogs/DialogQuickAddDocument/DialogQuickAddDocument.vue'
+import DialogQuickSearchDocument from 'app/src/components/dialogs/DialogQuickSearchDocument/DialogQuickSearchDocument.vue'
 import DialogAboutFantasiaArchive from 'app/src/components/dialogs/DialogAboutFantasiaArchive/DialogAboutFantasiaArchive.vue'
 import DialogActionMonitor from 'app/src/components/dialogs/DialogActionMonitor/DialogActionMonitor.vue'
 import DialogKeybindSettings from 'app/src/components/dialogs/DialogKeybindSettings/DialogKeybindSettings.vue'

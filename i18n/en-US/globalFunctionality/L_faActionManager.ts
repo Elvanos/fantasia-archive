@@ -24,6 +24,7 @@ export default {
     moveActiveOpenedDocumentTabRight: 'Move document tab right',
     openAboutFantasiaArchiveDialog: 'Open About Fantasia Archive',
     openQuickAddDocumentDialog: 'Open Quick-Add New Document',
+    openQuickSearchDocumentDialog: 'Open Quick-Search Existing Document',
     openActionMonitorDialog: 'Open Action Monitor',
     openAdvancedSearchGuideDialog: 'Open Advanced Search Guide',
     openChangelogDialog: 'Open Changelog',

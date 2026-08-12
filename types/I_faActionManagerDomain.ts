@@ -21,6 +21,7 @@ export const FA_ACTION_IDS = [
   'openProjectStylingDialog',
   'openProjectSettingsDialog',
   'openQuickAddDocumentDialog',
+  'openQuickSearchDocumentDialog',
   'showProjectDashboard',
   'saveProjectSettings',
   'saveAppStyling',
@@ -140,6 +141,7 @@ export interface I_faActionPayloadMap {
   openImportExportAppConfigDialog: void
   openNewProjectDialog: void
   openQuickAddDocumentDialog: void
+  openQuickSearchDocumentDialog: void
   loadExistingProject: I_faLoadExistingProjectPayload
   createNewProject: { projectName: string }
   exportAppConfigPackage: {
@@ -176,9 +178,18 @@ export interface I_faActionPayloadMap {
     documentId: string
     openMode?: import('app/types/I_faOpenedDocumentsDomain').T_faOpenedDocumentOpenMode | undefined
   }
-  editHierarchyTreeDocument: { documentId: string }
-  copyHierarchyTreeDocument: { documentId: string }
-  addHierarchyTreeChildDocument: { documentId: string }
+  editHierarchyTreeDocument: {
+    documentId: string
+    openMode?: import('app/types/I_faOpenedDocumentsDomain').T_faOpenedDocumentOpenMode | undefined
+  }
+  copyHierarchyTreeDocument: {
+    documentId: string
+    openMode?: import('app/types/I_faOpenedDocumentsDomain').T_faOpenedDocumentOpenMode | undefined
+  }
+  addHierarchyTreeChildDocument: {
+    documentId: string
+    openMode?: import('app/types/I_faOpenedDocumentsDomain').T_faOpenedDocumentOpenMode | undefined
+  }
   deleteHierarchyTreeDocument: { documentId: string }
   sortHierarchyTreeDocuments: {
     direction: 'asc' | 'desc'

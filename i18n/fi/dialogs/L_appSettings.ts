@@ -179,11 +179,6 @@ export default {
       description: 'Jos et pidä asiakirjanäkymän työkaluvihjeistä, voit poistaa ne käytöstä maailmanlaajuisesti täällä.',
       tags: 'hover teksti, kenttäohje, ponnahdusikkuna, asiakirjanäkymävinkit',
     },
-    disableQuickSearchCategoryPrecheck: {
-      title: 'Älä esitarkista luokkasuodatinta',
-      description: 'Yleensä luokat sisällytetään pikahakuun. Tämän vaihtoehdon käyttöönotto kumoaa tämän toiminnan.',
-      tags: 'luokkasuodatin, haun laajuus, sisällytä luokat, oletussuodatin',
-    },
     disableSpellCheck: {
       title: 'Poista oikeinkirjoituksen tarkistus käytöstä',
       description: 'Poistaa käytöstä oikeinkirjoituksen, kieliopin ja sanan tarkistuksen asiakirjan muokkaustilassa.',

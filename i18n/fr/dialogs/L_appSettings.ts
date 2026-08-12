@@ -179,11 +179,6 @@ export default {
       description: 'Si vous n\'aimez pas les info-bulles d\'affichage du document, vous pouvez les désactiver globalement ici.',
       tags: 'texte de survol, aide sur les champs, popover, conseils d\'affichage du document',
     },
-    disableQuickSearchCategoryPrecheck: {
-      title: 'Ne pas pré-vérifier le filtre de catégorie',
-      description: 'Normalement, les catégories sont incluses dans la recherche rapide. L\'activation de cette option inverse ce comportement.',
-      tags: 'filtre de catégorie, étendue de recherche, inclure des catégories, filtre par défaut',
-    },
     disableSpellCheck: {
       title: 'Désactiver la vérification orthographique',
       description: 'Désactive la vérification orthographique, grammaticale et des mots en mode édition de document.',

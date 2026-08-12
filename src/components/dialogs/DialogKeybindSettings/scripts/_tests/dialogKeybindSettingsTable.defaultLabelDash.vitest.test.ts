@@ -6,8 +6,8 @@
 
 import { expect, test, vi } from 'vitest'
 
-vi.mock('app/src/scripts/keybinds/functions/faKeybindCommandDefinitions', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('app/src/scripts/keybinds/functions/faKeybindCommandDefinitions')>()
+vi.mock('app/src/scripts/keybinds/faKeybindCommandDefinitions_manager', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('app/src/scripts/keybinds/faKeybindCommandDefinitions_manager')>()
   return {
     ...actual,
     FA_KEYBIND_COMMAND_DEFINITIONS: actual.FA_KEYBIND_COMMAND_DEFINITIONS.map((d) => {

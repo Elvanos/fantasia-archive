@@ -27,6 +27,7 @@ export default {
     openAppStyling: 'Åpne egendefinert app CSS',
     openProjectStyling: 'Åpne tilpasset prosjekt CSS',
     quickNewDocument: 'Quick-Add New Document',
+    quickExistingDocument: 'Quick-search existing document',
     openProjectSettings: 'Åpne prosjektinnstillinger',
     showProjectDashboard: 'Vis prosjektdashbord',
     toggleDeveloperTools: 'Slå av/på utviklerverktøy',

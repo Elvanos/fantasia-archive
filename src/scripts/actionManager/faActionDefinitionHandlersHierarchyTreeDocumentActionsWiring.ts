@@ -10,8 +10,14 @@ import {
 
 type T_hierarchyTreeDocumentActionsHandlerDeps = {
   S_FaOpenedDocuments: () => {
-    createTemporaryDocumentCopyFromSource: (documentId: string) => Promise<string | null>
-    createTemporaryDocumentUnderParentDocument: (documentId: string) => Promise<string | null>
+    createTemporaryDocumentCopyFromSource: (
+      documentId: string,
+      openMode?: T_faOpenedDocumentOpenMode | undefined
+    ) => Promise<string | null>
+    createTemporaryDocumentUnderParentDocument: (
+      documentId: string,
+      openMode?: T_faOpenedDocumentOpenMode | undefined
+    ) => Promise<string | null>
     enterDocumentEditMode: (documentId: string) => void
     focusTab: (documentId: string) => Promise<void>
     openFromTree: (
@@ -101,7 +107,7 @@ async function runHierarchyTreeDocumentOpenEditAction (
   if (steps.shouldOpenFromTree) {
     await openedDocumentsStore.openFromTree(input.documentId, treeOpenMode, treeMeta)
   }
-  if (steps.shouldFocusTab) {
+  if (steps.shouldFocusTab && treeOpenMode !== 'middleBackground') {
     await openedDocumentsStore.focusTab(input.documentId)
   }
   if (steps.shouldEnterEditMode) {
@@ -129,25 +135,35 @@ function createHandleOpenHierarchyTreeDocument (
 
 function createHandleEditHierarchyTreeDocument (
   deps: T_hierarchyTreeDocumentActionsHandlerDeps
-): (payload: { documentId: string }) => Promise<T_faActionHandlerContinuation | void> {
+): (payload: {
+    documentId: string
+    openMode?: T_faOpenedDocumentOpenMode | undefined
+  }) => Promise<T_faActionHandlerContinuation | void> {
   return async function handleEditHierarchyTreeDocument (payload: {
     documentId: string
+    openMode?: T_faOpenedDocumentOpenMode | undefined
   }): Promise<T_faActionHandlerContinuation | void> {
     return runHierarchyTreeDocumentOpenEditAction(deps, {
       documentId: payload.documentId,
-      mode: 'edit'
+      mode: 'edit',
+      openMode: payload.openMode
     })
   }
 }
 
 function createHandleCopyHierarchyTreeDocument (
   deps: T_hierarchyTreeDocumentActionsHandlerDeps
-): (payload: { documentId: string }) => Promise<T_faActionHandlerContinuation | void> {
+): (payload: {
+    documentId: string
+    openMode?: T_faOpenedDocumentOpenMode | undefined
+  }) => Promise<T_faActionHandlerContinuation | void> {
   return async function handleCopyHierarchyTreeDocument (payload: {
     documentId: string
+    openMode?: T_faOpenedDocumentOpenMode | undefined
   }): Promise<T_faActionHandlerContinuation | void> {
     const newDocumentId = await deps.S_FaOpenedDocuments().createTemporaryDocumentCopyFromSource(
-      payload.documentId
+      payload.documentId,
+      payload.openMode
     )
     if (newDocumentId === null) {
       deps.notifyCreate({
@@ -163,12 +179,17 @@ function createHandleCopyHierarchyTreeDocument (
 
 function createHandleAddHierarchyTreeChildDocument (
   deps: T_hierarchyTreeDocumentActionsHandlerDeps
-): (payload: { documentId: string }) => Promise<T_faActionHandlerContinuation | void> {
+): (payload: {
+    documentId: string
+    openMode?: T_faOpenedDocumentOpenMode | undefined
+  }) => Promise<T_faActionHandlerContinuation | void> {
   return async function handleAddHierarchyTreeChildDocument (payload: {
     documentId: string
+    openMode?: T_faOpenedDocumentOpenMode | undefined
   }): Promise<T_faActionHandlerContinuation | void> {
     const newDocumentId = await deps.S_FaOpenedDocuments().createTemporaryDocumentUnderParentDocument(
-      payload.documentId
+      payload.documentId,
+      payload.openMode
     )
     if (newDocumentId === null) {
       deps.notifyCreate({
@@ -197,16 +218,25 @@ export function createFaActionDefinitionHandlersHierarchyTreeDocumentActions (
   deps: T_hierarchyTreeDocumentActionsHandlerDeps
 ): {
     handleAddHierarchyTreeChildDocument: (
-      payload: { documentId: string }
+      payload: {
+        documentId: string
+        openMode?: T_faOpenedDocumentOpenMode | undefined
+      }
     ) => Promise<T_faActionHandlerContinuation | void>
     handleCopyHierarchyTreeDocument: (
-      payload: { documentId: string }
+      payload: {
+        documentId: string
+        openMode?: T_faOpenedDocumentOpenMode | undefined
+      }
     ) => Promise<T_faActionHandlerContinuation | void>
     handleDeleteHierarchyTreeDocument: (
       payload: { documentId: string }
     ) => Promise<T_faActionHandlerContinuation | void>
     handleEditHierarchyTreeDocument: (
-      payload: { documentId: string }
+      payload: {
+        documentId: string
+        openMode?: T_faOpenedDocumentOpenMode | undefined
+      }
     ) => Promise<T_faActionHandlerContinuation | void>
     handleOpenHierarchyTreeDocument: (
       payload: {

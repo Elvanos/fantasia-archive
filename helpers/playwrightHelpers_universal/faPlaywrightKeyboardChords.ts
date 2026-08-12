@@ -87,6 +87,13 @@ export function getFaPlaywrightDefaultQuickNewDocumentPressString (
 }
 
 /**
+ * Default **Quick-Search Existing Document** chord: literal **Ctrl+Q** stored as
+ * **ctrl** (see 'FA_KEYBIND_COMMAND_DEFINITIONS' for 'quickExistingDocument').
+ * Playwright sends that combination on Windows, Linux, and macOS the same way.
+ */
+export const FA_PLAYWRIGHT_PRESS_DEFAULT_QUICK_EXISTING_DOCUMENT = 'Control+Q' as const
+
+/**
  * Default **Toggle hierarchical tree** chord: literal **Ctrl+Alt+Shift+T**.
  */
 export const FA_PLAYWRIGHT_PRESS_DEFAULT_TOGGLE_HIERARCHICAL_TREE =

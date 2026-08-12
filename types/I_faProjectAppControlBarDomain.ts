@@ -61,6 +61,7 @@ export interface I_projectAppControlBarComposableApi {
   advancedSearchGuideKeybindLabel: I_computedRef<string | null>
   keyboardShortcutsKeybindLabel: I_computedRef<string | null>
   quickAddKeybindLabel: I_computedRef<string | null>
+  quickSearchKeybindLabel: I_computedRef<string | null>
   toggleAppNoteboardKeybindLabel: I_computedRef<string | null>
   toggleHierarchyTreeKeybindLabel: I_computedRef<string | null>
   toggleProjectNoteboardKeybindLabel: I_computedRef<string | null>

@@ -1,4 +1,4 @@
-import { FA_KEYBIND_COMMAND_DEFINITIONS } from 'app/src/scripts/keybinds/functions/faKeybindCommandDefinitions'
+import { FA_KEYBIND_COMMAND_DEFINITIONS } from 'app/src/scripts/keybinds/faKeybindCommandDefinitions_manager'
 import {
   faKeybindChordsEqual,
   faKeybindExpandDefaultChord,

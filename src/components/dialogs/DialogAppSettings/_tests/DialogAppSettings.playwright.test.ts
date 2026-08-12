@@ -387,6 +387,67 @@ test.describe.serial('App settings dialog', () => {
     await clearAppSettingsSearch(appWindow)
   })
 
+  /**
+   * Quick-search/Quick-add dialog: Prevent close after selection title is searchable.
+   */
+  test('App settings search finds Prevent close after selection on quick-search popup', async () => {
+    await fillAppSettingsSearch(
+      appWindow,
+      appSettingsMessages.appOptions.disableCloseAfterSelectQuickSearch.title
+    )
+
+    const matchRoots = appWindow.locator('[data-test-locator^="dialogAppSettings-search-setting-"]')
+    await expect(matchRoots).toHaveCount(1)
+
+    const row = appWindow.locator(
+      `[data-test-locator="${appSettingsSearchSelector.setting('disableCloseAfterSelectQuickSearch')}"]`
+    )
+    await expect(row).toBeVisible()
+    await expect(row).toHaveAttribute(
+      'data-test-setting-id',
+      'disableCloseAfterSelectQuickSearch'
+    )
+
+    await clearAppSettingsSearch(appWindow)
+  })
+
+  /**
+   * Quick-search/Quick-add dialog: Close quick popups with same key title is searchable.
+   */
+  test('App settings search finds Close quick popups with same key', async () => {
+    await fillAppSettingsSearch(
+      appWindow,
+      appSettingsMessages.appOptions.allowQuickPopupSameKeyClose.title
+    )
+
+    const matchRoots = appWindow.locator('[data-test-locator^="dialogAppSettings-search-setting-"]')
+    await expect(matchRoots).toHaveCount(1)
+
+    const row = appWindow.locator(
+      `[data-test-locator="${appSettingsSearchSelector.setting('allowQuickPopupSameKeyClose')}"]`
+    )
+    await expect(row).toBeVisible()
+    await expect(row).toHaveAttribute('data-test-setting-id', 'allowQuickPopupSameKeyClose')
+
+    await clearAppSettingsSearch(appWindow)
+  })
+
+  /**
+   * Removed unfinished category-precheck toggle must not appear in settings search.
+   */
+  test('App settings search finds no Dont precheck category filter setting', async () => {
+    await fillAppSettingsSearch(appWindow, "Don't precheck category filter")
+
+    await expect(
+      appWindow.locator('[data-test-locator="dialogAppSettings-searchNoResults"]')
+    ).toBeVisible()
+    await expect(
+      appWindow.locator('[data-test-locator^="dialogAppSettings-search-setting-"]')
+    ).toHaveCount(0)
+
+    await clearAppSettingsSearch(appWindow)
+  })
+
   test('App settings search shows reading ErrorCard when query matches nothing', async () => {
     await fillAppSettingsSearch(appWindow, 'no-exist-text-test')
 

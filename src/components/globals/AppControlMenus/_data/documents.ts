@@ -19,7 +19,9 @@ export function buildDocumentsMenu (session: I_appMenuBuildSession): I_appMenuLi
         trigger: () => runFaAction('openQuickAddDocumentDialog', undefined)
       }),
       faMenuItem('appControlMenus.documents.items.quickSearchDocument', 'mdi-database-search', {
-        conditions: false
+        conditions: gate,
+        keybindCommandId: 'quickExistingDocument',
+        trigger: () => runFaAction('openQuickSearchDocumentDialog', undefined)
       }),
       faMenuSeparator('documents-sep-after-search'),
       faMenuItem('appControlMenus.documents.items.massDeleteDocument', 'mdi-text-box-remove-outline', {

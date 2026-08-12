@@ -23,8 +23,14 @@ const documentNode: I_faProjectHierarchyTreeHeTreeNode = {
 }
 
 function createHandlers (input: {
-  createTemporaryDocumentCopyFromSource?: (documentId: string) => Promise<string | null>
-  createTemporaryDocumentUnderParentDocument?: (documentId: string) => Promise<string | null>
+  createTemporaryDocumentCopyFromSource?: (
+    documentId: string,
+    openMode?: import('app/types/I_faOpenedDocumentsDomain').T_faOpenedDocumentOpenMode | undefined
+  ) => Promise<string | null>
+  createTemporaryDocumentUnderParentDocument?: (
+    documentId: string,
+    openMode?: import('app/types/I_faOpenedDocumentsDomain').T_faOpenedDocumentOpenMode | undefined
+  ) => Promise<string | null>
   enterDocumentEditMode?: (documentId: string) => void
   focusTab?: (documentId: string) => Promise<void>
   openFromTree?: (
@@ -104,7 +110,7 @@ test('Test that handleOpenHierarchyTreeDocument honors middleBackground openMode
     tabLabel: 'Hero',
     templateIcon: 'mdi-account'
   })
-  expect(focusTab).toHaveBeenCalledWith('doc-a')
+  expect(focusTab).not.toHaveBeenCalled()
 })
 
 test('Test that handleEditHierarchyTreeDocument opens, focuses, and enters edit for a closed tab', async () => {
@@ -117,6 +123,22 @@ test('Test that handleEditHierarchyTreeDocument opens, focuses, and enters edit 
     templateIcon: 'mdi-account'
   })
   expect(focusTab).toHaveBeenCalledWith('doc-a')
+  expect(enterDocumentEditMode).toHaveBeenCalledWith('doc-a')
+})
+
+test('Test that handleEditHierarchyTreeDocument middleBackground skips focus', async () => {
+  const { enterDocumentEditMode, focusTab, handlers, openFromTree } = createHandlers()
+
+  await handlers.handleEditHierarchyTreeDocument({
+    documentId: 'doc-a',
+    openMode: 'middleBackground'
+  })
+
+  expect(openFromTree).toHaveBeenCalledWith('doc-a', 'middleBackground', {
+    tabLabel: 'Hero',
+    templateIcon: 'mdi-account'
+  })
+  expect(focusTab).not.toHaveBeenCalled()
   expect(enterDocumentEditMode).toHaveBeenCalledWith('doc-a')
 })
 
@@ -164,8 +186,19 @@ test('Test that handleCopyHierarchyTreeDocument delegates to createTemporaryDocu
 
   const result = await handlers.handleCopyHierarchyTreeDocument({ documentId: 'doc-a' })
 
-  expect(createTemporaryDocumentCopyFromSource).toHaveBeenCalledWith('doc-a')
+  expect(createTemporaryDocumentCopyFromSource).toHaveBeenCalledWith('doc-a', undefined)
   expect(result).toEqual({ payloadPreview: 'copy-1' })
+})
+
+test('Test that handleCopyHierarchyTreeDocument passes middleBackground openMode', async () => {
+  const { createTemporaryDocumentCopyFromSource, handlers } = createHandlers()
+
+  await handlers.handleCopyHierarchyTreeDocument({
+    documentId: 'doc-a',
+    openMode: 'middleBackground'
+  })
+
+  expect(createTemporaryDocumentCopyFromSource).toHaveBeenCalledWith('doc-a', 'middleBackground')
 })
 
 test('Test that handleCopyHierarchyTreeDocument notifies when copy source cannot be duplicated', async () => {
@@ -187,8 +220,22 @@ test('Test that handleAddHierarchyTreeChildDocument delegates to createTemporary
 
   const result = await handlers.handleAddHierarchyTreeChildDocument({ documentId: 'doc-a' })
 
-  expect(createTemporaryDocumentUnderParentDocument).toHaveBeenCalledWith('doc-a')
+  expect(createTemporaryDocumentUnderParentDocument).toHaveBeenCalledWith('doc-a', undefined)
   expect(result).toEqual({ payloadPreview: 'child-1' })
+})
+
+test('Test that handleAddHierarchyTreeChildDocument passes middleBackground openMode', async () => {
+  const { createTemporaryDocumentUnderParentDocument, handlers } = createHandlers()
+
+  await handlers.handleAddHierarchyTreeChildDocument({
+    documentId: 'doc-a',
+    openMode: 'middleBackground'
+  })
+
+  expect(createTemporaryDocumentUnderParentDocument).toHaveBeenCalledWith(
+    'doc-a',
+    'middleBackground'
+  )
 })
 
 test('Test that handleAddHierarchyTreeChildDocument notifies when source cannot seed child', async () => {

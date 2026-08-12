@@ -54,6 +54,7 @@ const baseProps = {
   onToggleProjectNoteboardClick: vi.fn(),
   quickAddKeybindLabel: null as string | null,
   quickAddTooltip: 'Quick add',
+  quickSearchKeybindLabel: null as string | null,
   quickSearchTooltip: 'Quick search',
   showAppNoteboardContentDot: false,
   showContentButtons: true,

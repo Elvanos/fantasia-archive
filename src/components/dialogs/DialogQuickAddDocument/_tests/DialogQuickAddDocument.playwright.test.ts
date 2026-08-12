@@ -31,9 +31,10 @@ const extraEnvSettings = {
 const faFrontendRenderTimer: number = FA_FRONTEND_RENDER_TIMER
 
 /**
- * FA_DIALOG_QUICK_ADD_DOCUMENT_TEMPLATE_FOCUS_MS is 300; allow Electron paint slack after hydrate + showPopup.
+ * FA_DIALOG_QUICK_ADD_DOCUMENT_TEMPLATE_FOCUS_MS is 100; allow Electron paint slack after hydrate + showPopup.
+ * Enter reselect also waits QMenu transition (~350ms) before dual template openPopup.
  */
-const quickAddHydrateSettleMs = 600
+const quickAddHydrateSettleMs = 900
 
 /**
  * Object of string data selectors for the component
@@ -569,7 +570,7 @@ test.describe.serial('Quick Add Document dialog', () => {
   })
 
   /**
-   * Enter on the focused world option (same value) still schedules template openPopup.
+   * Enter on the world select filter (same selected world) schedules template openPopup.
    */
   test('Check that Enter on the current world option reopens the template menu', async () => {
     await prepareQuickAddHarness(appWindow, twoWorldsFixture)
@@ -585,8 +586,8 @@ test.describe.serial('Quick Add Document dialog', () => {
     await worldSelect.click()
     const worldOption0 = appWindow.locator(`[data-test-locator="${selectorList.worldOption0}"]`)
     await expect(worldOption0).toBeVisible({ timeout: 15_000 })
-    // Enter on the highlighted option row (same path as Quasar menu keyboard activate).
-    await worldOption0.press('Enter')
+    await appWindow.keyboard.press('Enter')
+    // Enter path: hidePopup + dual openPopup settle (2x templateFocusMs) + paint slack.
     await appWindow.waitForTimeout(quickAddHydrateSettleMs)
 
     await expect(templateOption0).toBeVisible({ timeout: 15_000 })

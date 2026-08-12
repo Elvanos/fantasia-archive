@@ -46,8 +46,9 @@ Fresh files bootstrap to **v8**. Live upgrade ladder **v1→v8** ships. Pre-rele
 | **`project_styling_x`**, **`project_styling_y`**, **`project_styling_width`**, **`project_styling_height`** | Project styling floating window frame |
 | **`sidebar_width`** | Workspace left sidebar width (pixels, integer) |
 | **`hierarchy_tree_ui_state`** | Workspace hierarchy tree expand/collapse + scroll JSON (`expandedNodeIds`, `scrollTopPx`) |
+| **`last_selected_world_id`** | Shared last world UUID for Quick-add / Quick-search (and future dialogs via allowlisted dialog UI pref IPC) |
 
-**Modules:** **`faProjectDataKvWiring.ts`**, **`faProjectSettingsPersistWiring.ts`**, **`faProjectNoteboardPersistWiring.ts`**, **`faProjectStylingPersistWiring.ts`**, **`faProjectSidebarPersistWiring.ts`**, **`faProjectHierarchyTreeUiStatePersistWiring.ts`**.
+**Modules:** **`faProjectDataKvWiring.ts`**, **`faProjectSettingsPersistWiring.ts`**, **`faProjectNoteboardPersistWiring.ts`**, **`faProjectStylingPersistWiring.ts`**, **`faProjectSidebarPersistWiring.ts`**, **`faProjectHierarchyTreeUiStatePersistWiring.ts`**, **`faProjectDialogUiPrefPersistWiring.ts`**.
 
 ## Content tables (schema version 1)
 

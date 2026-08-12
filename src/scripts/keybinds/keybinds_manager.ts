@@ -1,7 +1,7 @@
 /**
  * keybinds domain — re-exports functions/ and wiring managers.
  */
-export * from './functions/faKeybindCommandDefinitions'
+export * from './faKeybindCommandDefinitions_manager'
 export * from './functions/faKeybindsChordEqualityAndResolve'
 export * from './functions/faKeybindsGlobalDispatchEditable'
 export * from './faKeybindRunCommand_manager'

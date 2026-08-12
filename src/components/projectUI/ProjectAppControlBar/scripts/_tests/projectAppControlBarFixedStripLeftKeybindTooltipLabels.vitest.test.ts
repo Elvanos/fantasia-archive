@@ -22,4 +22,5 @@ test('Test that buildProjectAppControlBarFixedStripLeftKeybindTooltipLabels reso
   expect(labels.toggleAppNoteboardKeybindLabel.value).toBe('toggleAppNoteboard')
   expect(labels.toggleProjectNoteboardKeybindLabel.value).toBe('toggleProjectNoteboard')
   expect(labels.quickAddKeybindLabel.value).toBe('quickNewDocument')
+  expect(labels.quickSearchKeybindLabel.value).toBe('quickExistingDocument')
 })

@@ -28,6 +28,7 @@ export default {
     openChangelogDialog: 'Відкрийте журнал змін',
     openKeybindSettingsDialog: 'Відкрийте налаштування Keybind',
     openQuickAddDocumentDialog: 'Open Quick-Add New Document',
+    openQuickSearchDocumentDialog: 'Open Quick-Search Existing Document',
     openProjectSettingsDialog: 'Відкрити параметри проекту',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'Зберегти параметри проекту',

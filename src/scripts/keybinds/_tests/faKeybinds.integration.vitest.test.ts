@@ -19,8 +19,8 @@ vi.mock('../faKeybindRunCommand_manager', () => {
   }
 })
 
-vi.mock('../functions/faKeybindCommandDefinitions', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../functions/faKeybindCommandDefinitions')>()
+vi.mock('../faKeybindCommandDefinitions_manager', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../faKeybindCommandDefinitions_manager')>()
   const defs = actual.FA_KEYBIND_COMMAND_DEFINITIONS.map((d) => {
     return { ...d }
   })
@@ -36,7 +36,7 @@ vi.mock('../functions/faKeybindCommandDefinitions', async (importOriginal) => {
 
 import type { I_faChordSerialized } from 'app/types/I_faKeybindsDomain'
 
-import { FA_KEYBIND_COMMAND_DEFINITIONS } from '../functions/faKeybindCommandDefinitions'
+import { FA_KEYBIND_COMMAND_DEFINITIONS } from '../faKeybindCommandDefinitions_manager'
 import { findFaKeybindCommandDefinition } from '../findFaKeybindCommandDefinitionWiring'
 import { faKeybindFindChordConflict } from '../faKeybindsChordDisplayAndConflict_manager'
 import { formatFaKeybindChordForUi } from '../faKeybindsChordUiFormatting_manager'
@@ -536,6 +536,7 @@ test('FA_KEYBIND_COMMAND_DEFINITIONS lists expected commands', () => {
     'openKeybindSettings',
     'openProjectSettings',
     'openProjectStyling',
+    'quickExistingDocument',
     'quickNewDocument',
     'saveDocument',
     'saveDocumentKeepEditMode',
@@ -545,4 +546,15 @@ test('FA_KEYBIND_COMMAND_DEFINITIONS lists expected commands', () => {
     'toggleHierarchicalTree',
     'toggleProjectNoteboard'
   ])
+})
+
+/**
+ * Quick Add / Quick Search chords must fire while focus is in the popup filter input
+ * so allowQuickPopupSameKeyClose can dismiss via the same open action.
+ */
+test('quick popup commands fire in editable fields', () => {
+  for (const id of ['quickNewDocument', 'quickExistingDocument'] as const) {
+    const def = FA_KEYBIND_COMMAND_DEFINITIONS.find((row) => row.id === id)
+    expect(def?.firesInEditableFields).toBe(true)
+  }
 })

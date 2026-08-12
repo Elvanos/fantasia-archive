@@ -15,6 +15,7 @@ import {
   filterFaSelectInputOptionsByQuery,
   isFaSelectInputObjectMode,
   normalizeFaSelectInputOptions,
+  resolveFaSelectInputEnterActivateOption,
   resolveFaSelectInputOptionIcon,
   splitFaSelectInputLabelForFilterHighlight
 } from 'app/src/scripts/faSelectInput/faSelectInput_manager'
@@ -38,6 +39,7 @@ function createTestUseFaSelectInput () {
     nextTick,
     normalizeFaSelectInputOptions,
     ref,
+    resolveFaSelectInputEnterActivateOption,
     resolveFaSelectInputOptionIcon,
     splitFaSelectInputLabelForFilterHighlight
   }, createFaSelectInputApi)
@@ -60,6 +62,7 @@ test('Test that createUseFaSelectInput emits change and clears search on select 
     emitOptionActivate: vi.fn(),
     emitRequestOptions: vi.fn(),
     getAllowCreateNew: () => false,
+    getActivateOnly: () => false,
     getClearInputOnSelect: () => true,
     getFilterFn: () => undefined,
     getMode: () => 'simple',
@@ -98,6 +101,7 @@ test('Test that createUseFaSelectInput handles clear-input and no-op create/clea
     emitOptionActivate: vi.fn(),
     emitRequestOptions: vi.fn(),
     getAllowCreateNew: () => false,
+    getActivateOnly: () => false,
     getClearInputOnSelect: () => true,
     getFilterFn: () => undefined,
     getMode: () => 'simple',
@@ -120,6 +124,7 @@ test('Test that createUseFaSelectInput handles clear-input and no-op create/clea
     emitOptionActivate: vi.fn(),
     emitRequestOptions: vi.fn(),
     getAllowCreateNew: () => true,
+    getActivateOnly: () => false,
     getClearInputOnSelect: () => false,
     getFilterFn: () => undefined,
     getMode: () => 'simple',
@@ -141,6 +146,7 @@ test('Test that createUseFaSelectInput handles clear-input and no-op create/clea
     emitOptionActivate: vi.fn(),
     emitRequestOptions: vi.fn(),
     getAllowCreateNew: () => false,
+    getActivateOnly: () => false,
     getClearInputOnSelect: () => false,
     getFilterFn: () => undefined,
     getMode: () => 'document',
@@ -171,6 +177,7 @@ test('Test that createUseFaSelectInput create-new and clearIsNewFlags work for o
     emitOptionActivate: vi.fn(),
     emitRequestOptions: vi.fn(),
     getAllowCreateNew: () => true,
+    getActivateOnly: () => false,
     getClearInputOnSelect: () => false,
     getFilterFn: () => undefined,
     getMode: () => 'document',
@@ -226,6 +233,7 @@ test('Test that createUseFaSelectInput opens popup on Tab keyup not focus', asyn
     emitOptionActivate: vi.fn(),
     emitRequestOptions,
     getAllowCreateNew: () => false,
+    getActivateOnly: () => false,
     getClearInputOnSelect: () => false,
     getFilterFn: () => undefined,
     getMode: () => 'simple',
@@ -241,6 +249,7 @@ test('Test that createUseFaSelectInput opens popup on Tab keyup not focus', asyn
   expect(showPopup).not.toHaveBeenCalled()
 
   api.onSelectKeyup({ key: 'Tab' })
+  await nextTick()
   expect(showPopup).toHaveBeenCalledTimes(1)
 
   showPopup.mockClear()
@@ -253,10 +262,12 @@ test('Test that createUseFaSelectInput opens popup on Tab keyup not focus', asyn
 
 /**
  * createUseFaSelectInput
- * openPopup calls Quasar showPopup when available.
+ * openPopup focuses then calls Quasar showPopup on nextTick; hidePopup closes menu.
  */
-test('Test that createUseFaSelectInput openPopup calls showPopup', () => {
+test('Test that createUseFaSelectInput openPopup focuses then showPopup and hidePopup closes', async () => {
   const useFaSelectInput = createTestUseFaSelectInput()
+  const focus = vi.fn()
+  const hidePopup = vi.fn()
   const showPopup = vi.fn()
 
   const api = useFaSelectInput({
@@ -266,6 +277,7 @@ test('Test that createUseFaSelectInput openPopup calls showPopup', () => {
     emitOptionActivate: vi.fn(),
     emitRequestOptions: vi.fn(),
     getAllowCreateNew: () => false,
+    getActivateOnly: () => false,
     getClearInputOnSelect: () => false,
     getFilterFn: () => undefined,
     getMode: () => 'simple',
@@ -274,13 +286,26 @@ test('Test that createUseFaSelectInput openPopup calls showPopup', () => {
     getOptions: () => ['a', 'b']
   })
 
-  api.selectRef.value = { showPopup }
+  api.selectRef.value = {
+    focus,
+    hidePopup,
+    showPopup
+  }
   api.openPopup()
+  expect(focus).toHaveBeenCalledTimes(1)
+  expect(showPopup).not.toHaveBeenCalled()
+  await nextTick()
   expect(showPopup).toHaveBeenCalledTimes(1)
+
+  api.hidePopup()
+  expect(hidePopup).toHaveBeenCalledTimes(1)
 
   api.selectRef.value = null
   api.openPopup()
+  await nextTick()
   expect(showPopup).toHaveBeenCalledTimes(1)
+  api.hidePopup()
+  expect(hidePopup).toHaveBeenCalledTimes(1)
 })
 
 /**
@@ -298,6 +323,7 @@ test('Test that createUseFaSelectInput Enter emits option-activate for focused o
     emitOptionActivate,
     emitRequestOptions: vi.fn(),
     getAllowCreateNew: () => false,
+    getActivateOnly: () => false,
     getClearInputOnSelect: () => false,
     getFilterFn: () => undefined,
     getMode: () => 'simple',
@@ -317,9 +343,111 @@ test('Test that createUseFaSelectInput Enter emits option-activate for focused o
   api.onSelectKeydown({ key: 'ArrowDown' })
   expect(emitOptionActivate).not.toHaveBeenCalled()
 
+  // Index cleared (Quasar same-value Enter) → fall back to current model in filtered options.
+  api.selectRef.value = { getOptionIndex: () => -1 }
+  api.onSelectKeydown({ key: 'Enter' })
+  expect(emitOptionActivate).toHaveBeenCalledWith('Venus')
+})
+
+/**
+ * createUseFaSelectInput
+ * Enter with no resolvable option is a no-op (no option-activate).
+ */
+test('Test that createUseFaSelectInput Enter without resolvable option is no-op', () => {
+  const useFaSelectInput = createTestUseFaSelectInput()
+  const emitOptionActivate = vi.fn()
+
+  const api = useFaSelectInput({
+    emitChange: vi.fn(),
+    emitModelValue: vi.fn(),
+    emitNewValue: vi.fn(),
+    emitOptionActivate,
+    emitRequestOptions: vi.fn(),
+    getAllowCreateNew: () => false,
+    getActivateOnly: () => false,
+    getClearInputOnSelect: () => false,
+    getFilterFn: () => undefined,
+    getMode: () => 'simple',
+    getModelValue: () => null,
+    getMultiple: () => false,
+    getOptions: () => ['Mars', 'Venus']
+  })
+
   api.selectRef.value = { getOptionIndex: () => -1 }
   api.onSelectKeydown({ key: 'Enter' })
   expect(emitOptionActivate).not.toHaveBeenCalled()
+
+  api.onSelectKeydown({ keyCode: 13 })
+  expect(emitOptionActivate).not.toHaveBeenCalled()
+})
+
+/**
+ * createUseFaSelectInput
+ * activateOnly Enter prevents Quasar default select/close.
+ */
+test('Test that createUseFaSelectInput activateOnly Enter prevents default', () => {
+  const useFaSelectInput = createTestUseFaSelectInput()
+  const emitOptionActivate = vi.fn()
+  const preventDefault = vi.fn()
+
+  const api = useFaSelectInput({
+    emitChange: vi.fn(),
+    emitModelValue: vi.fn(),
+    emitNewValue: vi.fn(),
+    emitOptionActivate,
+    emitRequestOptions: vi.fn(),
+    getAllowCreateNew: () => false,
+    getActivateOnly: () => true,
+    getClearInputOnSelect: () => false,
+    getFilterFn: () => undefined,
+    getMode: () => 'simple',
+    getModelValue: () => null,
+    getMultiple: () => false,
+    getOptions: () => ['Mars', 'Venus']
+  })
+
+  api.onFilter('Ma', (callbackFn) => {
+    callbackFn()
+  })
+  api.selectRef.value = {
+    getOptionIndex: () => 0
+  }
+  api.onSelectKeydown({
+    key: 'Enter',
+    preventDefault
+  })
+  expect(preventDefault).toHaveBeenCalledTimes(1)
+  expect(emitOptionActivate).toHaveBeenCalledWith('Mars')
+})
+
+/**
+ * createUseFaSelectInput
+ * popup-show keeps the current filter needle (no empty flash).
+ */
+test('Test that createUseFaSelectInput popup-show preserves filter needle', () => {
+  const useFaSelectInput = createTestUseFaSelectInput()
+  const api = useFaSelectInput({
+    emitChange: vi.fn(),
+    emitModelValue: vi.fn(),
+    emitNewValue: vi.fn(),
+    emitOptionActivate: vi.fn(),
+    emitRequestOptions: vi.fn(),
+    getAllowCreateNew: () => false,
+    getActivateOnly: () => false,
+    getClearInputOnSelect: () => false,
+    getFilterFn: () => undefined,
+    getMode: () => 'simple',
+    getModelValue: () => '',
+    getMultiple: () => false,
+    getOptions: () => ['Mars', 'Venus']
+  })
+
+  api.onFilter('af 1', (callbackFn) => {
+    callbackFn()
+  })
+  expect(api.getFilterNeedle()).toBe('af 1')
+  api.onPopupShow()
+  expect(api.getFilterNeedle()).toBe('af 1')
 })
 
 /**
@@ -338,6 +466,7 @@ test('Test that createUseFaSelectInput highlights first option on popup show and
     emitOptionActivate: vi.fn(),
     emitRequestOptions: vi.fn(),
     getAllowCreateNew: () => false,
+    getActivateOnly: () => false,
     getClearInputOnSelect: () => false,
     getFilterFn: () => undefined,
     getMode: () => 'simple',
@@ -382,6 +511,7 @@ test('Test that createUseFaSelectInput highlights option labels from filter need
     emitOptionActivate: vi.fn(),
     emitRequestOptions: vi.fn(),
     getAllowCreateNew: () => false,
+    getActivateOnly: () => false,
     getClearInputOnSelect: () => false,
     getFilterFn: () => undefined,
     getMode: () => 'simple',

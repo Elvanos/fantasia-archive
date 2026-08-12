@@ -89,7 +89,6 @@ test('Test that useDialogQuickAddDocument from the manager creates a temporary d
         api.templateSelectRef.value = {
           openPopup: () => undefined
         }
-        api.onDialogShow()
       })
 
       return {
@@ -120,6 +119,12 @@ test('Test that useDialogQuickAddDocument from the manager creates a temporary d
 
   expect(wrapper.attributes('data-open')).toBe('true')
   expect(wrapper.attributes('data-world')).toBe('world-1')
+
+  const api = (wrapper.vm as unknown as { api: ReturnType<typeof useDialogQuickAddDocument> }).api
+  api.onDialogShow()
+  await flushPromises()
+  await vi.runAllTimersAsync()
+  await flushPromises()
 
   await wrapper.find('[data-test-locator="pick-template"]').trigger('click')
   await flushPromises()

@@ -22,8 +22,10 @@
         <div
           v-if="showWorldSelect"
           class="dialogQuickAddDocument__worldSelect q-mb-md"
+          @keydown.enter.capture="onWorldFilterEnter"
         >
           <FaSelectInput
+            :ref="bindWorldSelectRef"
             :model-value="selectedWorldOption"
             dark
             dense
@@ -90,11 +92,13 @@ const props = defineProps<{
 
 const {
   bindTemplateSelectRef,
+  bindWorldSelectRef,
   dialogModel,
   documentName,
   onDialogHide,
   onDialogShow,
   onTemplateSelect,
+  onWorldFilterEnter,
   onWorldSelect,
   selectedTemplateOption,
   selectedWorldOption,

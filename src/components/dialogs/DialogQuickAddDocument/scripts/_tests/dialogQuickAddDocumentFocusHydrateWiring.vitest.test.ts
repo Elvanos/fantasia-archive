@@ -41,6 +41,8 @@ function makeDeps (
     onBeforeUnmount: () => undefined,
     onMounted: () => undefined,
     pickFirstWorldId: () => null,
+    pickWorldIdWithSavedPreference: ({ pickFirstWorldId, worlds }) => pickFirstWorldId(worlds),
+    readLastSelectedWorldId: async () => null,
     ref,
     registerComponentDialogStackGuard: vi.fn(),
     resolveDialogComponentStoreOrNull: () => null,
@@ -52,6 +54,7 @@ function makeDeps (
     sleep: async () => undefined,
     templateFocusMs: 0,
     watch: () => undefined,
+    writeLastSelectedWorldId: async () => undefined,
     ...overrides
   }
 }
@@ -85,7 +88,7 @@ test('Test that focusDialogQuickAddDocumentTemplateSelectAfterShow calls openPop
   }
   const deps = makeDeps()
   await focusDialogQuickAddDocumentTemplateSelectAfterShow(deps, session, 1)
-  expect(select.openPopup).toHaveBeenCalledTimes(1)
+  expect(select.openPopup).toHaveBeenCalledTimes(2)
 })
 
 /**

@@ -179,11 +179,6 @@ export default {
       description: 'Si no le gustan las descripciones emergentes de la vista de documentos, puede desactivarlas globalmente aquí.',
       tags: 'texto al pasar el cursor, ayuda de campo, ventana emergente, sugerencias para ver documentos',
     },
-    disableQuickSearchCategoryPrecheck: {
-      title: 'No verificar previamente el filtro de categoría',
-      description: 'Normalmente, las categorías se incluyen en la búsqueda rápida. Habilitar esta opción revierte ese comportamiento.',
-      tags: 'filtro de categoría, alcance de búsqueda, incluir categorías, filtro predeterminado',
-    },
     disableSpellCheck: {
       title: 'Desactivar el corrector ortográfico',
       description: 'Desactiva la revisión ortográfica, gramatical y de palabras en el modo de edición de documentos.',

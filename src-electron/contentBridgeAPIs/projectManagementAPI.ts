@@ -18,6 +18,11 @@ import type {
 } from 'app/types/I_faProjectHierarchyTreeDomain'
 import type { I_faOpenedDocumentsSnapshot } from 'app/types/I_faOpenedDocumentsDomain'
 import type {
+  I_faProjectDialogUiPrefGetInput,
+  I_faProjectDialogUiPrefGetResult,
+  I_faProjectDialogUiPrefSetInput
+} from 'app/types/I_faProjectDialogUiPrefDomain'
+import type {
   I_faProjectSidebarPatch,
   I_faProjectSidebarRoot
 } from 'app/types/I_faProjectSidebarDomain'
@@ -59,6 +64,16 @@ export const projectManagementAPI: I_faProjectManagementAPI = {
     return await ipcRenderer.invoke(
       FA_PROJECT_MANAGEMENT_IPC.getProjectSidebarAsync
     ) as I_faProjectSidebarRoot
+  },
+
+  async getProjectDialogUiPref (
+    input: I_faProjectDialogUiPrefGetInput
+  ): Promise<I_faProjectDialogUiPrefGetResult> {
+    const payload = JSON.parse(JSON.stringify(input)) as I_faProjectDialogUiPrefGetInput
+    return await ipcRenderer.invoke(
+      FA_PROJECT_MANAGEMENT_IPC.getProjectDialogUiPrefAsync,
+      payload
+    ) as I_faProjectDialogUiPrefGetResult
   },
 
   async getHierarchyTreeUiState (): Promise<I_faProjectHierarchyTreeUiState> {
@@ -121,6 +136,14 @@ export const projectManagementAPI: I_faProjectManagementAPI = {
     const payload = JSON.parse(JSON.stringify(patch)) as I_faProjectSidebarPatch
     return await ipcRenderer.invoke(
       FA_PROJECT_MANAGEMENT_IPC.setProjectSidebarPatchAsync,
+      payload
+    ) as boolean
+  },
+
+  async setProjectDialogUiPref (input: I_faProjectDialogUiPrefSetInput): Promise<boolean> {
+    const payload = JSON.parse(JSON.stringify(input)) as I_faProjectDialogUiPrefSetInput
+    return await ipcRenderer.invoke(
+      FA_PROJECT_MANAGEMENT_IPC.setProjectDialogUiPrefAsync,
       payload
     ) as boolean
   },

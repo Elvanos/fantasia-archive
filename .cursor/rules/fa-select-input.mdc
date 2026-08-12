@@ -31,8 +31,8 @@ Create-new object items set **`isNew: true`** (teal chip). Parent calls expose *
 | Piece | Role |
 | --- | --- |
 | **`normalizeFaSelectInputOptions`** | Mode-filter option list; media → empty |
-| **`filterFaSelectInputOptionsByQuery`** | Default filter (string / name / id substring) |
-| **`splitFaSelectInputLabelForFilterHighlight`** | Whole-word match spans for option label |
+| **`filterFaSelectInputOptionsByQuery`** | Default filter — FA 1.0 multi-token label match (space-split AND); id fallback; rank sort |
+| **`splitFaSelectInputLabelForFilterHighlight`** | Highlight FA 1.0 claimed whitespace-delimited label words |
 | **`createFaSelectInputNewItem`** | Create-new payload (media → null) |
 | **`appendFaSelectInputCreatedValue`** / **`createFaSelectInputChangePayload`** | Model append + **`change`** action |
 | **`shouldShowFaSelectInputSelectedChip`** | Hide empty single selection chip |
@@ -48,13 +48,13 @@ Hardcoded on SFC: **`menu-anchor="bottom middle"`**, **`menu-self="top middle"`*
 
 ## Menu / option styling
 
-- Active/selected row: side bars; non-match text = idle; hover/keyboard wash same as other rows
+- Active/selected row: side bars (`::before` dual gradients); non-match text = idle; fantasy hover/keyboard = same bottom-edge glow as other **`q-menu`** rows (`faMenuItemGlow` on `::after`); label/icon colors never wash brighter on hover (flat or fantasy)
 - Between options: CSS **`faSelectInput__option--separatorAlt`** border on item (not **`q-separator`**) so virtual-scroll has one root per option; large **`virtual-scroll-slice-size`** fills tall menus on first open ([fa-context-menu-dividers.mdc](fa-context-menu-dividers.mdc))
 - Filter matches: **`faSelectInput__optionMatch`** (primary-bright, weight **500**) — selected rows included
-- Optional object **`color`**: **`fa-color-glyph`** + CSS custom properties
+- Optional object **`color`**: **`fa-color-glyph`** + CSS custom properties (object icons always classed + glyph vars; flat solid / fantasy shade; default base = workspace-row; custom color overrides)
 - Default first-option keyboard highlight on open/filter; **`openPopup()`** expose for parent-driven open; **Tab keyup** opens menu (not focus-`showPopup` — click race)
 - Kill Quasar selected **whole-label** text paint: **`FA_SELECT_INPUT_OPTIONS_SELECTED_CLASS`** + **`bindFaSelectInputOptionItemActivateProps`** / strip activeClass (not filter optionMatch)
-- **`option-activate`**: option click **or Enter** on focused option (incl. single reselect skipping **`update:modelValue`**) — Quick Add world → reopen template
+- **`option-activate`**: option click **or Enter** on focused option (incl. single reselect skipping **`update:modelValue`**) — Quick Add world → reopen template; **`activateOnly`** skips Quasar select/close entirely
 
 ## i18n and Storybook
 

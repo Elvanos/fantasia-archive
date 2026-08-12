@@ -172,7 +172,6 @@
       <q-btn
         color="primary-bright"
         data-test-locator="projectAppControlBar-quickSearchButton"
-        disable
         icon="mdi-database-search"
         outline
         @click="onQuickSearchClick"
@@ -182,7 +181,11 @@
           class="projectAppControlBar__buttonTooltip"
           self="top middle"
         >
-          {{ quickSearchTooltip }}
+          <ProjectAppControlBarButtonKeybindTooltip
+            :keybind-label="quickSearchKeybindLabel"
+            keybind-test-locator="projectAppControlBar-quickSearchButton-keybind"
+            :label="quickSearchTooltip"
+          />
         </q-tooltip>
       </q-btn>
       <q-btn
@@ -197,17 +200,11 @@
           class="projectAppControlBar__buttonTooltip"
           self="top middle"
         >
-          <div class="fa-tooltip-keybind-stack">
-            <span class="fa-tooltip-keybind-stack__label">
-              {{ quickAddTooltip }}
-            </span><div
-              v-if="quickAddKeybindLabel !== null"
-              class="fa-tooltip-keybind-hint fa-text-keybind-hint"
-              data-test-locator="projectAppControlBar-quickAddButton-keybind"
-            >
-              ({{ quickAddKeybindLabel }})
-            </div>
-          </div>
+          <ProjectAppControlBarButtonKeybindTooltip
+            :keybind-label="quickAddKeybindLabel"
+            keybind-test-locator="projectAppControlBar-quickAddButton-keybind"
+            :label="quickAddTooltip"
+          />
         </q-tooltip>
       </q-btn>
     </template>
@@ -216,6 +213,7 @@
 
 <script setup lang="ts">
 import FaCornerContentDot from 'app/src/components/elements/FaCornerContentDot/FaCornerContentDot.vue'
+import ProjectAppControlBarButtonKeybindTooltip from './ProjectAppControlBarButtonKeybindTooltip.vue'
 
 defineOptions({
   name: 'ProjectAppControlBarFixedStripLeft'
@@ -236,6 +234,7 @@ defineProps<{
   onToggleProjectNoteboardClick: () => void
   quickAddKeybindLabel: string | null
   quickAddTooltip: string
+  quickSearchKeybindLabel: string | null
   quickSearchTooltip: string
   showAppNoteboardContentDot: boolean
   showContentButtons: boolean

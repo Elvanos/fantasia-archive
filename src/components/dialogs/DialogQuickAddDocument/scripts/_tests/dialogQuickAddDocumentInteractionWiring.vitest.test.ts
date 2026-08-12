@@ -1,4 +1,5 @@
 import { expect, test, vi } from 'vitest'
+import { flushPromises } from '@vue/test-utils'
 import { computed, nextTick, reactive, ref, watch } from 'vue'
 
 import type {
@@ -37,6 +38,7 @@ function makeSession (): I_dialogQuickAddDocumentSession {
       }]
     ])),
     worldOptions: computed(() => []),
+    worldSelectRef: ref(null),
     worlds: ref<I_dialogQuickAddDocumentWorldSource[]>([])
   }
 }
@@ -62,6 +64,8 @@ function makeDeps (
     },
     onMounted: () => undefined,
     pickFirstWorldId: () => null,
+    pickWorldIdWithSavedPreference: ({ pickFirstWorldId, worlds }) => pickFirstWorldId(worlds),
+    readLastSelectedWorldId: async () => null,
     ref,
     registerComponentDialogStackGuard: vi.fn(),
     resolveDialogComponentStoreOrNull: () => null,
@@ -73,6 +77,7 @@ function makeDeps (
     sleep: async () => undefined,
     templateFocusMs: 0,
     watch,
+    writeLastSelectedWorldId: async () => undefined,
     ...overrides
   }
 }
@@ -171,10 +176,9 @@ test('Test that onWorldSelect schedules template focus when world id unchanged',
     id: 'world-a',
     name: 'Earth'
   })
-  await nextTick()
-  await Promise.resolve()
+  await flushPromises()
   expect(session.selectedWorldId.value).toBe('world-a')
-  expect(openPopup).toHaveBeenCalledTimes(1)
+  expect(openPopup).toHaveBeenCalledTimes(2)
 })
 
 /**
@@ -205,6 +209,7 @@ test('Test that openClose wiring opens from store and cancels focus on dialog cl
   dialogStore.dialogToOpen = 'QuickAddDocument'
   dialogStore.dialogUUID = 'uuid-2'
   await nextTick()
+  await flushPromises()
   expect(session.dialogModel.value).toBe(true)
   expect(session.documentName.value).toBe('QuickAddDocument')
 

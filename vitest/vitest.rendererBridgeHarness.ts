@@ -49,6 +49,10 @@ function buildVitestProjectManagementApiMock (): NonNullable<
       activeDocumentId: null,
       tabs: []
     })),
+    getProjectDialogUiPref: vi.fn(async () => ({
+      key: 'last_selected_world_id' as const,
+      value: null
+    })),
     getProjectStyling: vi.fn(async () => ({
       css: '',
       frame: null,
@@ -62,6 +66,7 @@ function buildVitestProjectManagementApiMock (): NonNullable<
     setProjectSidebar: vi.fn(async (): Promise<boolean> => true),
     setHierarchyTreeUiState: vi.fn(async (): Promise<boolean> => true),
     saveOpenedDocumentsSnapshot: vi.fn(async (): Promise<boolean> => true),
+    setProjectDialogUiPref: vi.fn(async (): Promise<boolean> => true),
     setProjectStyling: vi.fn(async (): Promise<boolean> => true),
     stageE2eNextCreatePath: vi.fn(async () => false),
     stageE2eNextOpenPath: vi.fn(async () => false)

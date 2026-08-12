@@ -53,6 +53,17 @@ export type T_faSelectInputLabelHighlightSegment = {
   text: string
 }
 
+/**
+ * FA 1.0 advancedDocumentFilter label-match result for FaSelectInput filter/highlight.
+ */
+export interface I_faSelectInputLabelQueryMatch {
+  exactMatch: boolean
+  fullWordMatch: number
+  matchedLabelWordsLower: readonly string[]
+  matches: boolean
+  partialWordMatch: number
+}
+
 export type T_faSelectInputChangeAction = 'add' | 'remove' | 'replace'
 
 export interface I_faSelectInputChangePayload {
@@ -124,6 +135,11 @@ export interface I_faSelectInputUseDeps {
     options: T_faSelectInputOptions
   ) => T_faSelectInputOption[]
   ref: <T>(value: T) => import('app/types/I_vueCompositionShims').I_ref<T>
+  resolveFaSelectInputEnterActivateOption: (input: {
+    filteredOptions: readonly T_faSelectInputOption[]
+    getOptionIndex?: (() => number) | undefined
+    modelValue: T_faSelectInputModelValue
+  }) => T_faSelectInputOption | undefined
   resolveFaSelectInputOptionIcon: (
     opt: T_faSelectInputOption,
     mode: T_faSelectInputMode,
@@ -144,6 +160,7 @@ export interface I_faSelectInputUseInput {
   emitNewValue: (value: string | I_faSelectInputObjectItem) => void
   emitOptionActivate: (value: T_faSelectInputOption) => void
   emitRequestOptions: () => void
+  getActivateOnly: () => boolean
   getAllowCreateNew: () => boolean
   getClearInputOnSelect: () => boolean
   getFilterFn: () => T_faSelectInputFilterFn | undefined

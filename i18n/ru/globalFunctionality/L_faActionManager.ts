@@ -28,6 +28,7 @@ export default {
     openChangelogDialog: 'Открыть журнал изменений',
     openKeybindSettingsDialog: 'Открыть настройки привязки клавиш',
     openQuickAddDocumentDialog: 'Open Quick-Add New Document',
+    openQuickSearchDocumentDialog: 'Open Quick-Search Existing Document',
     openProjectSettingsDialog: 'Открыть настройки проекта',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'Сохранить настройки проекта',

@@ -63,6 +63,9 @@ export const handleOpenNewProjectDialog =
 export const handleOpenQuickAddDocumentDialog =
   faActionDefinitionHandlersDialogsApi.handleOpenQuickAddDocumentDialog
 
+export const handleOpenQuickSearchDocumentDialog =
+  faActionDefinitionHandlersDialogsApi.handleOpenQuickSearchDocumentDialog
+
 export const handleCreateNewProject =
   faActionDefinitionHandlersDialogsApi.handleCreateNewProject
 

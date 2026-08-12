@@ -108,7 +108,7 @@ export default {
       tags: 'autosuggest, autocomplete, first match, filter list, pick existing, relationship search'
     },
     allowQuickPopupSameKeyClose: {
-      title: 'TODO - Close quick popups with same key',
+      title: 'Close quick popups with same key',
       description: 'Allows closing the quick-search and quick-add popups with the same key combination that was used to open them.',
       tags: 'toggle shortcut, same hotkey, quick add, dismiss popup'
     },
@@ -144,9 +144,9 @@ export default {
       }
     },
     disableCloseAfterSelectQuickSearch: {
-      title: 'TODO - Prevent close after selection on quick-search popup',
-      description: 'Normally the quick-search closes after an item is selected from it. Turning this feature on prevents that behavior, allowing you to open multiple search results one after the other.',
-      tags: 'keep open, multiple results, batch open, quick search stays open'
+      title: 'Prevent close after selection on quick-search popup',
+      description: 'Normally the quick-search closes after an item is selected from it and that document becomes the active tab. Turning this feature on keeps the popup open, leaves the search filter as-is (nothing selected into the field), and only appends each chosen document in the background so you can open multiple results without leaving search.',
+      tags: 'keep open, multiple results, batch open, quick search stays open, background tab'
     },
     disableAppControlBar: {
       title: 'Disable app control bar',
@@ -177,11 +177,6 @@ export default {
       title: 'TODO - Disable document tooltips',
       description: 'If you dislike the document-view tooltips, you can turn them off globally here.',
       tags: 'hover text, field help, popover, document view hints'
-    },
-    disableQuickSearchCategoryPrecheck: {
-      title: 'TODO - Don\'t precheck category filter',
-      description: 'Normally, categories are included in the quick-search. Enabling this option reverses that behavior.',
-      tags: 'category filter, search scope, include categories, default filter'
     },
     disableSpellCheck: {
       title: 'Disable spellcheck',

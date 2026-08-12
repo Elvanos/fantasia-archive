@@ -37,7 +37,7 @@ export function buildProjectAppControlBarFixedStripLeftHandlers (input: {
   }
 
   function onQuickSearchClick (): void {
-    // Placeholder until quick-search dialog ships.
+    input.runFaAction('openQuickSearchDocumentDialog', undefined)
   }
 
   function onQuickAddClick (): void {

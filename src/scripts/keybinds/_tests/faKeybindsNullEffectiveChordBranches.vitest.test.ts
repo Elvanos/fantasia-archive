@@ -21,8 +21,8 @@ vi.mock('../faKeybindRunCommand_manager', () => {
   }
 })
 
-vi.mock('../functions/faKeybindCommandDefinitions', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('../functions/faKeybindCommandDefinitions')>()
+vi.mock('../faKeybindCommandDefinitions_manager', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../faKeybindCommandDefinitions_manager')>()
   return {
     ...actual,
     FA_KEYBIND_COMMAND_DEFINITIONS: actual.FA_KEYBIND_COMMAND_DEFINITIONS.map((d) => {

@@ -18,7 +18,11 @@
   -webkit-mask-size: $qNotification-frame-maskSize;
   mask-size: $qNotification-frame-maskSize;
   padding: $qNotification-padding-vertical $qNotification-padding !important;
-  position: relative;
+  /*
+   * No position:relative on toast root — Quasar sets inline left before leave-active;
+   * relative makes that jump. Resting transform (caller) is the frame/progress
+   * containing block; leave-active absolute covers leave.
+   */
 
   &::before,
   &::after {

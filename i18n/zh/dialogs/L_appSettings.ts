@@ -179,11 +179,6 @@ export default {
       description: '如果您不喜欢文档视图工具提示，可以在此处全局关闭它们。',
       tags: '悬停文本、字段帮助、弹出窗口、文档视图提示',
     },
-    disableQuickSearchCategoryPrecheck: {
-      title: '不要预先检查类别过滤器',
-      description: '通常，类别包含在快速搜索中。启用此选项可逆转该行为。',
-      tags: '类别过滤器，搜索范围，包括类别，默认过滤器',
-    },
     disableSpellCheck: {
       title: '禁用拼写检查',
       description: '在文档编辑模式下禁用拼写、语法和单词检查。',

@@ -27,6 +27,7 @@ export default {
     openAppStyling: 'कस्टम ऐप खोलें CSS',
     openProjectStyling: 'कस्टम प्रोजेक्ट खोलें CSS',
     quickNewDocument: 'Quick-Add New Document',
+    quickExistingDocument: 'Quick-search existing document',
     openProjectSettings: 'प्रोजेक्ट सेटिंग्स खोलें',
     showProjectDashboard: 'प्रोजेक्ट डैशबोर्ड दिखाएँ',
     toggleDeveloperTools: 'डेवलपर टूल टॉगल करें',

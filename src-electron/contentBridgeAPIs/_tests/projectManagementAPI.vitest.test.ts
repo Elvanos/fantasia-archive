@@ -277,3 +277,39 @@ test('projectManagementAPI saveOpenedDocumentsSnapshot invokes IPC with cloned p
   )
   expect(snapshot.activeDocumentId).toBe('doc-1')
 })
+
+test('projectManagementAPI getProjectDialogUiPref invokes IPC with cloned payload', async () => {
+  invokeMock.mockResolvedValueOnce({
+    key: 'last_selected_world_id',
+    value: 'world-a'
+  })
+  const input = { key: 'last_selected_world_id' as const }
+  const r = await projectManagementAPI.getProjectDialogUiPref(input)
+  expect(r).toEqual({
+    key: 'last_selected_world_id',
+    value: 'world-a'
+  })
+  expect(invokeMock).toHaveBeenCalledWith(
+    FA_PROJECT_MANAGEMENT_IPC.getProjectDialogUiPrefAsync,
+    { key: 'last_selected_world_id' }
+  )
+  expect(input.key).toBe('last_selected_world_id')
+})
+
+test('projectManagementAPI setProjectDialogUiPref invokes IPC with cloned payload', async () => {
+  invokeMock.mockResolvedValueOnce(true)
+  const input = {
+    key: 'last_selected_world_id' as const,
+    value: 'world-b'
+  }
+  const ok = await projectManagementAPI.setProjectDialogUiPref(input)
+  expect(ok).toBe(true)
+  expect(invokeMock).toHaveBeenCalledWith(
+    FA_PROJECT_MANAGEMENT_IPC.setProjectDialogUiPrefAsync,
+    {
+      key: 'last_selected_world_id',
+      value: 'world-b'
+    }
+  )
+  expect(input.value).toBe('world-b')
+})

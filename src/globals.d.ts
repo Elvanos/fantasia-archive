@@ -17,6 +17,11 @@ import type { I_faProjectManagementAPI } from 'app/types/I_faProjectManagementDo
 import type { I_faActiveProject } from 'app/types/I_faActiveProjectDomain'
 import type { I_dialogQuickAddDocumentTemplateSource } from 'app/types/I_dialogQuickAddDocument'
 import type { I_dialogQuickAddDocumentWorldSource } from 'app/types/I_dialogQuickAddDocument'
+import type {
+  I_dialogQuickSearchDocumentDocumentSource,
+  I_dialogQuickSearchDocumentTemplateIconSource,
+  I_dialogQuickSearchDocumentWorldSource
+} from 'app/types/I_dialogQuickSearchDocument'
 import type { I_faComponentTestingStoreSeed } from 'app/types/I_faComponentTestingStoreSeed'
 import type {
   I_faProjectDocumentDistributionResult,
@@ -36,6 +41,15 @@ declare global{
     __faComponentTestingQuickAddDocumentSources?: {
       templates: I_dialogQuickAddDocumentTemplateSource[]
       worlds: I_dialogQuickAddDocumentWorldSource[]
+    }
+
+    /**
+     * Component-testing harness: Quick Search worlds/templates/documents when contextBridge freezes lists.
+     */
+    __faComponentTestingQuickSearchDocumentSources?: {
+      documents: Array<I_dialogQuickSearchDocumentDocumentSource & { worldId: string }>
+      templates: I_dialogQuickSearchDocumentTemplateIconSource[]
+      worlds: I_dialogQuickSearchDocumentWorldSource[]
     }
 
     /**

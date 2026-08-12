@@ -2,7 +2,7 @@ import type { ElectronApplication, Locator, Page } from 'playwright'
 import { expect, test } from '@playwright/test'
 import type { TestInfo } from '@playwright/test'
 import { buildDialogKeybindSettingsRows } from 'app/src/components/dialogs/DialogKeybindSettings/scripts/dialogKeybindSettingsTableBuild_manager'
-import { FA_KEYBIND_COMMAND_DEFINITIONS } from 'app/src/scripts/keybinds/functions/faKeybindCommandDefinitions'
+import { FA_KEYBIND_COMMAND_DEFINITIONS } from 'app/src/scripts/keybinds/faKeybindCommandDefinitions_manager'
 import { formatFaKeybindChordForUi } from 'app/src/scripts/keybinds/faKeybindsChordUiFormatting_manager'
 import { launchFaPlaywrightComponentHarnessWindow } from 'app/helpers/playwrightHelpers_component/faPlaywrightComponentHarnessLifecycle'
 import { FA_FRONTEND_RENDER_TIMER } from 'app/helpers/playwrightHelpers_universal/faPlaywrightElectronLaunchConstants'
@@ -87,6 +87,8 @@ const clearKeybindSettingsFilter = async (page: Page): Promise<void> => {
 const keybindSettingsDeveloperToolsFilterQuery = 'developer tools'
 
 const keybindSettingsActionMonitorFilterQuery = 'action monitor'
+
+const keybindSettingsQuickSearchFilterQuery = 'quick-search existing'
 
 /**
  * Filters the table like the developer-tools filter test, then returns the tbody row that shows that action name.
@@ -203,6 +205,27 @@ test.describe.serial('Keybind settings dialog list, defaults, and filter', () =>
     await expect(matchRow).toHaveCount(1)
     await expect(matchRow.locator('td').first()).toHaveText(
       keybindDialogMessages.commands.toggleDeveloperTools
+    )
+
+    await clearKeybindSettingsFilter(appWindow)
+  })
+
+  /**
+   * Filter isolates Quick-search existing document (Control+Q / openQuickSearchDocumentDialog).
+   */
+  test('Keybind settings filter finds Quick-search existing document as a single row', async () => {
+    await fillKeybindSettingsFilter(appWindow, keybindSettingsQuickSearchFilterQuery)
+
+    const tableRoot = appWindow.locator('.dialogKeybindSettings__table')
+    await expect(
+      tableRoot.locator(`[data-test-locator="${selectorList.userKeybindButton}"]`)
+    ).toHaveCount(1)
+    const matchRow = tableRoot.locator('tbody tr').filter({
+      hasText: keybindDialogMessages.commands.quickExistingDocument
+    })
+    await expect(matchRow).toHaveCount(1)
+    await expect(matchRow.locator('td').first()).toHaveText(
+      keybindDialogMessages.commands.quickExistingDocument
     )
 
     await clearKeybindSettingsFilter(appWindow)

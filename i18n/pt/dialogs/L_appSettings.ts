@@ -179,11 +179,6 @@ export default {
       description: 'Se você não gostar das dicas de visualização de documentos, poderá desativá-las globalmente aqui.',
       tags: 'texto instantâneo, ajuda de campo, popover, dicas de visualização de documento',
     },
-    disableQuickSearchCategoryPrecheck: {
-      title: 'Não verifique previamente o filtro de categoria',
-      description: 'Normalmente, as categorias são incluídas na pesquisa rápida. Habilitar esta opção reverte esse comportamento.',
-      tags: 'filtro de categoria, escopo de pesquisa, incluir categorias, filtro padrão',
-    },
     disableSpellCheck: {
       title: 'Desativar verificação ortográfica',
       description: 'Desativa a verificação ortográfica, gramatical e de palavras no modo de edição de documento.',

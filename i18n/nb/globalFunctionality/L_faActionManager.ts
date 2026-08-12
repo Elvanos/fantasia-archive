@@ -28,6 +28,7 @@ export default {
     openChangelogDialog: 'Åpne endringslogg',
     openKeybindSettingsDialog: 'Åpne Keybinding Settings',
     openQuickAddDocumentDialog: 'Open Quick-Add New Document',
+    openQuickSearchDocumentDialog: 'Open Quick-Search Existing Document',
     openProjectSettingsDialog: 'Åpne prosjektinnstillinger',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'Lagre prosjektinnstillinger',

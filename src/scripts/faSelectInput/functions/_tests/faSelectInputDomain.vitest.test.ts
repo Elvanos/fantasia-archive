@@ -15,12 +15,13 @@ import {
   normalizeFaSelectInputOptions
 } from '../faSelectInputModeNormalize'
 import { shouldShowFaSelectInputSelectedChip } from '../faSelectInputSelectedChipVisibility'
-import { splitFaSelectInputLabelForFilterHighlight } from '../faSelectInputLabelFilterHighlight'
 import {
   filterFaSelectInputOptionsByQuery,
-  isFaSelectInputObjectItem
+  isFaSelectInputObjectItem,
+  splitFaSelectInputLabelForFilterHighlight
 } from '../filterFaSelectInputOptionsByQuery'
 import { resolveFaSelectInputOptionIcon } from '../resolveFaSelectInputOptionIcon'
+import { resolveFaSelectInputEnterActivateOption } from '../resolveFaSelectInputEnterActivateOption'
 import {
   bindFaSelectInputOptionItemActivateProps,
   stripFaSelectInputOptionItemActiveClass
@@ -56,6 +57,113 @@ test('Test that filterFaSelectInputOptionsByQuery filters strings, names, and id
     {
       id: 'uuid-match',
       name: 'other'
+    }
+  ])
+})
+
+/**
+ * filterFaSelectInputOptionsByQuery
+ * FA 1.0 multi-token AND: each space-separated query word claims unused label words.
+ */
+test('Test that filterFaSelectInputOptionsByQuery matches FA 1.0 multi-word queries', () => {
+  const items = [
+    {
+      id: '1',
+      name: 'The Eldritch Dialogs'
+    },
+    {
+      id: '2',
+      name: 'Eldritch Deities'
+    },
+    {
+      id: '3',
+      name: 'Plain Name'
+    },
+    {
+      id: '4',
+      name: 'Eldritch Dialogs'
+    }
+  ] as const
+
+  expect(filterFaSelectInputOptionsByQuery('el d', items)).toEqual([
+    {
+      id: '1',
+      name: 'The Eldritch Dialogs'
+    },
+    {
+      id: '2',
+      name: 'Eldritch Deities'
+    },
+    {
+      id: '4',
+      name: 'Eldritch Dialogs'
+    }
+  ])
+  expect(filterFaSelectInputOptionsByQuery('el d', items).map((item) => {
+    return typeof item === 'string' ? item : item.name
+  })).not.toContain('Plain Name')
+  expect(filterFaSelectInputOptionsByQuery('eldritch dialogs', items)[0]).toEqual({
+    id: '4',
+    name: 'Eldritch Dialogs'
+  })
+})
+
+/**
+ * filterFaSelectInputOptionsByQuery
+ * Id fallback is contiguous full needle only — not per-token UUID hex includes.
+ */
+test('Test that filterFaSelectInputOptionsByQuery does not false-match UUID hex tokens', () => {
+  const items = [
+    {
+      id: 'c0af11de-1234-4abc-9def-000000000001',
+      name: 'Events #9'
+    },
+    {
+      id: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+      name: 'Afflictions / Boons / Conditions #11'
+    },
+    {
+      id: 'uuid-match-af 11-end',
+      name: 'other'
+    }
+  ] as const
+
+  expect(filterFaSelectInputOptionsByQuery('af 11', items)).toEqual([
+    {
+      id: 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
+      name: 'Afflictions / Boons / Conditions #11'
+    },
+    {
+      id: 'uuid-match-af 11-end',
+      name: 'other'
+    }
+  ])
+})
+
+/**
+ * filterFaSelectInputOptionsByQuery
+ * Ranks full-word hits above partial-only includes (FA 1.0 sort).
+ */
+test('Test that filterFaSelectInputOptionsByQuery ranks full-word matches above partial', () => {
+  const items = [
+    {
+      id: '1',
+      name: 'Superhero'
+    },
+    {
+      id: '2',
+      name: 'Hero'
+    }
+  ] as const
+
+  expect(filterFaSelectInputOptionsByQuery('hero', items)).toEqual([
+    {
+      id: '2',
+      name: 'Hero'
+    },
+    {
+      id: '1',
+      name: 'Superhero'
     }
   ])
 })
@@ -436,10 +544,58 @@ test('Test that splitFaSelectInputLabelForFilterHighlight marks whole matching w
       text: 'Towers'
     }
   ])
+  expect(splitFaSelectInputLabelForFilterHighlight('The Eldritch Dialogs', 'el d')).toEqual([
+    {
+      isMatch: false,
+      text: 'The'
+    },
+    {
+      isMatch: false,
+      text: ' '
+    },
+    {
+      isMatch: true,
+      text: 'Eldritch'
+    },
+    {
+      isMatch: false,
+      text: ' '
+    },
+    {
+      isMatch: true,
+      text: 'Dialogs'
+    }
+  ])
+  expect(splitFaSelectInputLabelForFilterHighlight('Eldritch Deities', 'el d')).toEqual([
+    {
+      isMatch: true,
+      text: 'Eldritch'
+    },
+    {
+      isMatch: false,
+      text: ' '
+    },
+    {
+      isMatch: true,
+      text: 'Deities'
+    }
+  ])
   expect(splitFaSelectInputLabelForFilterHighlight('plain', 'zzz')).toEqual([
     {
       isMatch: false,
       text: 'plain'
+    }
+  ])
+  expect(splitFaSelectInputLabelForFilterHighlight('Eldritch Dialogs', 'eldritch dialogs')).toEqual([
+    {
+      isMatch: true,
+      text: 'Eldritch Dialogs'
+    }
+  ])
+  expect(splitFaSelectInputLabelForFilterHighlight('  ', 'hero')).toEqual([
+    {
+      isMatch: false,
+      text: '  '
     }
   ])
 })
@@ -488,6 +644,53 @@ test('Test that resolveFaSelectInputOptionIcon hides absent icons outside docume
 })
 
 /**
+ * resolveFaSelectInputEnterActivateOption
+ * Prefer highlighted index; fall back to single model match in filtered options.
+ */
+test('Test that resolveFaSelectInputEnterActivateOption prefers index then model', () => {
+  expect(resolveFaSelectInputEnterActivateOption({
+    filteredOptions: ['Mars', 'Venus'],
+    getOptionIndex: () => 1,
+    modelValue: 'Mars'
+  })).toBe('Venus')
+
+  expect(resolveFaSelectInputEnterActivateOption({
+    filteredOptions: ['Mars', 'Venus'],
+    getOptionIndex: () => -1,
+    modelValue: 'Venus'
+  })).toBe('Venus')
+
+  expect(resolveFaSelectInputEnterActivateOption({
+    filteredOptions: ['Mars', 'Venus'],
+    getOptionIndex: () => -1,
+    modelValue: null
+  })).toBeUndefined()
+
+  const worldA = {
+    id: 'world-a',
+    name: 'Alpha'
+  }
+  const worldB = {
+    id: 'world-b',
+    name: 'Beta'
+  }
+  expect(resolveFaSelectInputEnterActivateOption({
+    filteredOptions: [worldA, worldB],
+    getOptionIndex: () => 99,
+    modelValue: {
+      id: 'world-b',
+      name: 'Beta renamed'
+    }
+  })).toEqual(worldB)
+
+  expect(resolveFaSelectInputEnterActivateOption({
+    filteredOptions: [worldA, worldB],
+    getOptionIndex: () => -1,
+    modelValue: [worldA]
+  })).toBeUndefined()
+})
+
+/**
  * stripFaSelectInputOptionItemActiveClass
  * Removes Quasar text-{color} activeClass; keeps other itemProps.
  */
@@ -529,6 +732,46 @@ test('Test that bindFaSelectInputOptionItemActivateProps wraps onClick and strip
 
 /**
  * bindFaSelectInputOptionItemActivateProps
+ * skipQuasarSelect runs only onActivate (stay-open menus keep filter).
+ */
+test('Test that bindFaSelectInputOptionItemActivateProps can skip Quasar select', () => {
+  const previousOnClick = vi.fn()
+  const onActivate = vi.fn()
+  const bound = bindFaSelectInputOptionItemActivateProps({
+    onClick: previousOnClick
+  }, onActivate, { skipQuasarSelect: true })
+
+  const evt = new Event('click')
+  bound.onClick(evt)
+  expect(previousOnClick).not.toHaveBeenCalled()
+  expect(onActivate).toHaveBeenCalledTimes(1)
+})
+
+/**
+ * bindFaSelectInputOptionItemActivateProps
+ * Middle/right mouse must not select the option (trailing actions use auxclick).
+ */
+test('Test that bindFaSelectInputOptionItemActivateProps ignores non-primary mouse buttons', () => {
+  const previousOnClick = vi.fn()
+  const onActivate = vi.fn()
+  const bound = bindFaSelectInputOptionItemActivateProps({
+    onClick: previousOnClick
+  }, onActivate)
+
+  bound.onClick({
+    button: 1,
+    type: 'auxclick'
+  } as unknown as Event)
+  bound.onClick({
+    button: 2,
+    type: 'click'
+  } as unknown as Event)
+  expect(previousOnClick).not.toHaveBeenCalled()
+  expect(onActivate).not.toHaveBeenCalled()
+})
+
+/**
+ * bindFaSelectInputOptionItemActivateProps
  * Still emits onActivate when Quasar itemProps omit onClick.
  */
 test('Test that bindFaSelectInputOptionItemActivateProps runs onActivate without prior onClick', () => {
@@ -539,4 +782,57 @@ test('Test that bindFaSelectInputOptionItemActivateProps runs onActivate without
 
   bound.onClick(new Event('click'))
   expect(onActivate).toHaveBeenCalledTimes(1)
+})
+
+/**
+ * bindFaSelectInputOptionItemActivateProps
+ * Enter on a portaled option row activates (menu Teleport never bubbles to q-select).
+ */
+test('Test that bindFaSelectInputOptionItemActivateProps Enter keydown activates option', () => {
+  const previousOnClick = vi.fn()
+  const previousOnKeydown = vi.fn()
+  const onActivate = vi.fn()
+  const bound = bindFaSelectInputOptionItemActivateProps({
+    onClick: previousOnClick,
+    onKeydown: previousOnKeydown
+  }, onActivate)
+
+  const enterEvent = {
+    key: 'Enter'
+  } as unknown as Event
+  bound.onKeydown(enterEvent)
+  expect(previousOnKeydown).not.toHaveBeenCalled()
+  expect(previousOnClick).toHaveBeenCalledWith(enterEvent)
+  expect(onActivate).toHaveBeenCalledTimes(1)
+
+  onActivate.mockClear()
+  previousOnClick.mockClear()
+  const arrowEvent = {
+    key: 'ArrowDown'
+  } as unknown as Event
+  bound.onKeydown(arrowEvent)
+  expect(previousOnKeydown).toHaveBeenCalledWith(arrowEvent)
+  expect(previousOnClick).not.toHaveBeenCalled()
+  expect(onActivate).not.toHaveBeenCalled()
+})
+
+/**
+ * bindFaSelectInputOptionItemActivateProps
+ * activateOnly Enter skips Quasar onClick and still activates.
+ */
+test('Test that bindFaSelectInputOptionItemActivateProps Enter can skip Quasar select', () => {
+  const previousOnClick = vi.fn()
+  const onActivate = vi.fn()
+  const bound = bindFaSelectInputOptionItemActivateProps({
+    onClick: previousOnClick
+  }, onActivate, { skipQuasarSelect: true })
+
+  const enterEvent = {
+    key: 'Enter',
+    preventDefault: vi.fn()
+  }
+  bound.onKeydown(enterEvent as unknown as Event)
+  expect(previousOnClick).not.toHaveBeenCalled()
+  expect(onActivate).toHaveBeenCalledTimes(1)
+  expect(enterEvent.preventDefault).toHaveBeenCalledTimes(1)
 })

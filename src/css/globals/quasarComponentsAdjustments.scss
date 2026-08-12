@@ -810,17 +810,16 @@ body.fa-appTheme--fantasy {
   }
 }
 
-/*
- * Fantasy parchment pins position:relative on toasts (higher specificity than Quasar
- * leave-*). Leave must be absolute or Quasar's inline left jumps the toast horizontally
- * and the bottom-right slide-down never runs cleanly.
- */
-.q-notification[class*='leave-active'] {
-  position: absolute !important;
-}
-
 body.fa-appTheme--fantasy .q-notification {
   @include notificationParchment.fa-notification-parchment-chrome;
+
+  /*
+   * Frame/progress CB without position:relative (relative + Quasar pre-leave left
+   * = horizontal jump). Rest only — must not beat leave/enter transform classes.
+   */
+  &:not([class*='leave-'], [class*='enter-']) {
+    transform: translateZ(0);
+  }
 
   /* Re-assert grain longhands after Quasar .bg-* `background` shorthand. */
   &.bg-info,

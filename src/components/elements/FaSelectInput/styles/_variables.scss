@@ -1,4 +1,5 @@
 @use '../../../../css/app.palette.scss' as *;
+@use '../../../../css/globals/paletteGlobals.variables.scss' as paletteGlobals;
 
 /* COMPONENT - FA SELECT INPUT */
 $faSelectInput-chip-content-minHeight: 24px;
@@ -13,6 +14,7 @@ $faSelectInput-menu-activeBar-verticalInset: 10px;
 $faSelectInput-menu-activeBar-width: 3px;
 $faSelectInput-menu-activeItem-backgroundColor: transparent;
 $faSelectInput-menu-backgroundColor: fa-v('dark', $dark);
+$faSelectInput-menu-icon-glyph-base: fa-v('text-workspace-row', $text-workspace-row);
 $faSelectInput-menu-item-color: fa-v('accent', $accent);
 $faSelectInput-menu-item-fontWeight: 400;
 $faSelectInput-menu-maxWidth: 600px;
@@ -21,6 +23,9 @@ $faSelectInput-menu-separatorAlt-color: fa-v('text-menu-separator', $text-menu-s
 $faSelectInput-menu-separatorAlt-height: 0.5px;
 $faSelectInput-menu-separatorAlt-opacity: 0.2;
 $faSelectInput-menu-width: 600px;
+/* Same app $iconSize box as Project Overview last-opened document glyphs. */
+$faSelectInput-optionIcon-avatar-paddingInline: 8px;
+$faSelectInput-optionIcon-boxSize: paletteGlobals.$iconSize;
 $faSelectInput-optionMatch-color: fa-v('primary-bright', $primary-bright);
 $faSelectInput-optionMatch-fontWeight: 500;
 $faSelectInput-width: 100%;

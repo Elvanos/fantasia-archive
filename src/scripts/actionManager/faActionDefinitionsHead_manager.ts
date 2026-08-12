@@ -12,6 +12,7 @@ import {
   handleOpenAppSettingsDialog,
   handleOpenProjectSettingsDialog,
   handleOpenQuickAddDocumentDialog,
+  handleOpenQuickSearchDocumentDialog,
   handleShowProjectDashboard,
   handleEditActiveDocument,
   handleCreateTemporaryOpenedDocument,
@@ -109,6 +110,12 @@ export const FA_ACTION_DEFINITIONS_HEAD: ReadonlyArray<I_faActionDefinition<T_fa
     dedup: true,
     handler: handleOpenQuickAddDocumentDialog as I_faActionDefinition<T_faActionId>['handler'],
     id: 'openQuickAddDocumentDialog',
+    kind: 'async'
+  },
+  {
+    dedup: true,
+    handler: handleOpenQuickSearchDocumentDialog as I_faActionDefinition<T_faActionId>['handler'],
+    id: 'openQuickSearchDocumentDialog',
     kind: 'async'
   },
   {

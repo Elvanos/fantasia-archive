@@ -15,7 +15,6 @@ export const FA_USER_SETTINGS_DEFAULTS: I_faUserSettings = {
   disableAppControlBarGuides: false,
   disableDocumentCounts: false,
   disableDocumentToolTips: false,
-  disableQuickSearchCategoryPrecheck: false,
   disableSpellCheck: false,
   disableStartUpdateCheckMessage: false,
   doubleDashDocCount: false,

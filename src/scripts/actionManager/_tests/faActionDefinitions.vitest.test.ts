@@ -596,6 +596,19 @@ test('Test that openQuickAddDocumentDialog no-ops without an active project', ()
   }
 })
 
+test('Test that openQuickSearchDocumentDialog handler opens QuickSearchDocument when a project is active', () => {
+  definitionFor('openQuickSearchDocumentDialog').handler(undefined)
+  expect(openDialogComponentMock).toHaveBeenCalledWith('QuickSearchDocument')
+})
+
+test('Test that openQuickSearchDocumentDialog skips dismiss when allowQuickPopupSameKeyClose is off', () => {
+  userSettingsFixture.allowQuickPopupSameKeyClose = false
+  tryDismissFaComponentDialogIfOpenMock.mockReturnValueOnce(true)
+  definitionFor('openQuickSearchDocumentDialog').handler(undefined)
+  expect(tryDismissFaComponentDialogIfOpenMock).not.toHaveBeenCalled()
+  expect(openDialogComponentMock).toHaveBeenCalledWith('QuickSearchDocument')
+})
+
 test('Test that createNewProject handler delegates to S_FaActiveProject when creation succeeds', async () => {
   await (definitionFor('createNewProject').handler({ projectName: 'Realm' }) as Promise<unknown>)
   expect(createProjectFromUserInputMock).toHaveBeenCalledWith('Realm')

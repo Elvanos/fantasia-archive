@@ -27,6 +27,7 @@ export default {
     openAppStyling: 'افتح التطبيق المخصص CSS',
     openProjectStyling: 'فتح مشروع مخصص CSS',
     quickNewDocument: 'Quick-Add New Document',
+    quickExistingDocument: 'Quick-search existing document',
     openProjectSettings: 'فتح إعدادات المشروع',
     showProjectDashboard: 'إظهار لوحة تحكم المشروع',
     toggleDeveloperTools: 'تبديل أدوات المطور',

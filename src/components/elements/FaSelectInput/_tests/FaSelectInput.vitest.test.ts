@@ -136,7 +136,7 @@ function mountFaSelectInput (props: Record<string, unknown> = {}) {
             }
           },
           inheritAttrs: false,
-          template: '<div class="q-item-stub" :class="$attrs.class" :data-test-locator="$attrs[\'data-test-locator\']" :data-test-locator-separator-alt="$attrs[\'data-test-locator-separator-alt\']" :data-active-class-probe="activeClass === undefined ? \'unset\' : activeClass === \'\' ? \'empty\' : activeClass" @click="typeof $attrs.onClick === \'function\' && $attrs.onClick($event)"><slot /></div>'
+          template: '<div class="q-item-stub" :class="$attrs.class" :data-test-locator="$attrs[\'data-test-locator\']" :data-test-locator-separator-alt="$attrs[\'data-test-locator-separator-alt\']" :data-active-class-probe="activeClass === undefined ? \'unset\' : activeClass === \'\' ? \'empty\' : activeClass" @auxclick="typeof $attrs.onAuxclick === \'function\' && $attrs.onAuxclick($event)" @click="typeof $attrs.onClick === \'function\' && $attrs.onClick($event)"><slot /></div>'
         },
         QItemSection: {
           template: '<div class="q-item-section-stub"><slot /></div>'
@@ -188,6 +188,22 @@ test('Test that FaSelectInput emits option-activate when option row is clicked',
 
 /**
  * FaSelectInput
+ * option-auxclick forwards option value + MouseEvent for middle-click open handlers.
+ */
+test('Test that FaSelectInput emits option-auxclick when option row receives auxclick', async () => {
+  const wrapper = mountFaSelectInput({
+    modelValue: 'Venus',
+    options: ['Venus', 'Earth']
+  })
+
+  await wrapper.get('.q-item-stub').trigger('auxclick', { button: 1 })
+  const payload = wrapper.emitted('option-auxclick')?.[0]
+  expect(payload?.[0]).toBe('Venus')
+  expect(payload?.[1]).toMatchObject({ button: 1 })
+})
+
+/**
+ * FaSelectInput
  * Enter on focused option uses emitOptionActivate (same-value reselect path).
  */
 test('Test that FaSelectInput emits option-activate on Enter keydown', async () => {
@@ -197,7 +213,7 @@ test('Test that FaSelectInput emits option-activate on Enter keydown', async () 
   })
 
   await wrapper.get('[data-test-locator="faSelectInput-stub-popup"]').trigger('click')
-  await wrapper.get('[data-test-locator="faSelectInput-stub-enter"]').trigger('click')
+  await wrapper.trigger('keydown', { key: 'Enter' })
   expect(wrapper.emitted('option-activate')?.[0]).toEqual(['Venus'])
 })
 
@@ -209,7 +225,7 @@ test('Test that FaSelectInput opens popup on Tab keyup', async () => {
   qSelectStubShowPopup.mockClear()
   const wrapper = mountFaSelectInput()
 
-  await wrapper.get('[data-test-locator="faSelectInput-stub-tab"]').trigger('click')
+  await wrapper.trigger('keyup', { key: 'Tab' })
   expect(qSelectStubShowPopup).toHaveBeenCalledTimes(1)
 })
 
@@ -283,6 +299,30 @@ test('Test that FaSelectInput applies color glyph class and style on tinted opti
       icon: 'mdi-earth',
       id: '1',
       name: 'Venus'
+    }]
+  })
+
+  const icon = wrapper.get('.q-icon-stub')
+  expect(icon.classes()).toContain('fa-color-glyph')
+  expect(icon.attributes('data-has-style')).toBe('true')
+})
+
+/**
+ * FaSelectInput
+ * Colorless object icons still get fa-color-glyph + default workspace-row glyph style.
+ */
+test('Test that FaSelectInput applies fa-color-glyph on colorless object option icon', () => {
+  const wrapper = mountFaSelectInput({
+    mode: 'document',
+    modelValue: {
+      icon: 'mdi-file-outline',
+      id: '1',
+      name: 'Plain'
+    },
+    options: [{
+      icon: 'mdi-file-outline',
+      id: '1',
+      name: 'Plain'
     }]
   })
 
@@ -600,4 +640,116 @@ test('Test that FaSelectInput expose clearIsNewFlags strips isNew on model', asy
       name: 'Doc'
     }
   ])
+})
+
+/**
+ * FaSelectInput / FaSelectInputOptionItem
+ * option-trailing and option-context-menu slots render through option rows.
+ */
+test('Test that FaSelectInput forwards option trailing and context menu slots', async () => {
+  const wrapper = mount(FaSelectInput, {
+    props: {
+      mode: 'document',
+      modelValue: null,
+      options: [{
+        id: '1',
+        name: 'Doc'
+      }],
+      testLocator: 'faSelectInput-slots'
+    },
+    slots: {
+      'option-trailing': '<button type="button" data-test-locator="faSelectInput-option-trailing">T</button>',
+      'option-context-menu': '<div data-test-locator="faSelectInput-option-context-menu">M</div>'
+    },
+    global: {
+      stubs: {
+        QSelect: qSelectStub,
+        QChip: true,
+        QIcon: true,
+        QItem: {
+          inheritAttrs: false,
+          template: '<div class="q-item-stub" v-bind="$attrs"><slot /></div>'
+        },
+        QItemSection: {
+          template: '<div class="q-item-section-stub"><slot /></div>'
+        },
+        QItemLabel: {
+          template: '<div class="q-item-label-stub"><slot /></div>'
+        }
+      }
+    }
+  })
+
+  expect(wrapper.find('[data-test-locator="faSelectInput-option-trailing"]').exists()).toBe(true)
+  expect(wrapper.find('[data-test-locator="faSelectInput-option-context-menu"]').exists()).toBe(true)
+  wrapper.unmount()
+})
+
+/**
+ * FaSelectInputOptionItem
+ * Portaled Enter keydown activates the option; non-null iconStyle binds CSS vars.
+ */
+test('Test that FaSelectInputOptionItem Enter keydown emits option-activate with icon style', async () => {
+  const { default: FaSelectInputOptionItem } = await import('../FaSelectInputOptionItem.vue')
+
+  const wrapper = mount(FaSelectInputOptionItem, {
+    props: {
+      activateOnly: true,
+      iconClass: 'fa-color-glyph',
+      iconName: 'mdi-earth',
+      iconStyle: {
+        '--fa-color-glyph-base': '#e91e63',
+        '--fa-color-glyph-highlight-base': '#c2185b'
+      },
+      index: 1,
+      itemProps: {
+        active: true,
+        onClick: () => undefined
+      },
+      labelSegments: [
+        {
+          isMatch: false,
+          text: 'Venus'
+        }
+      ],
+      opt: {
+        id: 'world-2',
+        name: 'Venus'
+      },
+      testLocator: 'faSelectInput-optionItem'
+    },
+    global: {
+      stubs: {
+        QIcon: {
+          props: ['name'],
+          inheritAttrs: false,
+          template: '<i class="q-icon-stub" :data-name="name" :data-has-style="$attrs.style ? \'true\' : \'false\'" />'
+        },
+        QItem: {
+          inheritAttrs: false,
+          template: '<div class="q-item-stub" v-bind="$attrs" @keydown="typeof $attrs.onKeydown === \'function\' && $attrs.onKeydown($event)"><slot /></div>'
+        },
+        QItemLabel: {
+          template: '<div class="q-item-label-stub"><slot /></div>'
+        },
+        QItemSection: {
+          template: '<div class="q-item-section-stub"><slot /></div>'
+        }
+      }
+    }
+  })
+
+  expect(wrapper.find('.q-icon-stub').attributes('data-has-style')).toBe('true')
+  expect(wrapper.find('[data-test-locator="faSelectInput-optionItem-option-1"]').exists()).toBe(true)
+  expect(
+    wrapper.find('[data-test-locator-separator-alt="faSelectInput-optionItem-separatorAlt-1"]').exists()
+  ).toBe(true)
+
+  await wrapper.get('.q-item-stub').trigger('keydown', { key: 'Enter' })
+  expect(wrapper.emitted('option-activate')?.[0]).toEqual([{
+    id: 'world-2',
+    name: 'Venus'
+  }])
+
+  wrapper.unmount()
 })

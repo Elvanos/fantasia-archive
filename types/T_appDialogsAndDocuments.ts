@@ -8,6 +8,7 @@ export type T_dialogName =
   | 'KeybindSettings'
   | 'NewProject'
   | 'QuickAddDocument'
+  | 'QuickSearchDocument'
   | 'AppSettings'
   | 'ProjectSettings'
   | 'WindowAppNoteboard'

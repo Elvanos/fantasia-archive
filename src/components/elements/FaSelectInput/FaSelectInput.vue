@@ -1,121 +1,124 @@
 <template>
-  <q-select
-    ref="selectRef"
+  <div
     class="faSelectInput"
     :class="{
       'faSelectInput--inline': selectionPresentation === 'inline'
     }"
-    :color="color"
-    :dark="dark"
-    :dense="dense"
-    :disable="disable"
-    :filled="filled"
-    :input-debounce="0"
-    :label="label"
-    :loading="loading"
-    :model-value="modelValue"
-    :multiple="multiple"
-    :options="filteredOptions"
-    :option-label="isObjectMode ? 'name' : undefined"
-    :option-value="isObjectMode ? 'id' : undefined"
-    :map-options="isObjectMode"
-    :options-selected-class="FA_SELECT_INPUT_OPTIONS_SELECTED_CLASS"
-    :use-chips="selectionPresentation === 'chips'"
-    use-input
-    menu-anchor="bottom middle"
-    menu-self="top middle"
-    :popup-content-class="popupContentClass"
-    :virtual-scroll-item-size="FA_SELECT_INPUT_VIRTUAL_SCROLL_ITEM_SIZE"
-    :virtual-scroll-slice-size="FA_SELECT_INPUT_VIRTUAL_SCROLL_SLICE_SIZE"
-    :data-test-locator="testLocator"
-    :data-test-locator-filter="`${testLocator}-filter`"
-    @filter="onFilter"
-    @focus="onFocus"
-    @keydown="onSelectKeydown"
-    @keyup="onSelectKeyup"
-    @new-value="onNewValue"
-    @popup-show="onPopupShow"
-    @update:model-value="onUpdateModelValue"
+    @keydown.capture="onSelectKeydown"
+    @keyup.capture="onSelectKeyup"
   >
-    <template #selected-item="scope">
-      <q-chip
-        v-if="selectionPresentation === 'chips' && shouldShowFaSelectInputSelectedChip(scope.opt)"
-        class="text-bold"
-        :color="chipColorForOption(scope.opt)"
-        dense
-        :removable="chipRemovable"
-        :ripple="false"
-        :tabindex="scope.tabindex"
-        :text-color="FA_SELECT_INPUT_CHIP_TEXT_COLOR"
-        :data-test-locator="`${testLocator}-chip`"
-        @remove="scope.removeAtIndex(scope.index)"
-      >
-        <q-icon
-          v-if="resolveOptionIcon(scope.opt) !== null"
-          class="q-mr-xs"
-          :class="optionIconClass(scope.opt)"
-          :name="resolveOptionIcon(scope.opt) ?? undefined"
-          :style="optionIconStyle(scope.opt) ?? undefined"
-          size="16px"
-        />
-        {{ objectOptionLabel(scope.opt) }}
-      </q-chip>
-      <div
-        v-else-if="selectionPresentation === 'inline' && shouldShowFaSelectInputInlineSelection(scope.opt)"
-        class="faSelectInput__selectedInline row items-center no-wrap"
-        :data-test-locator="`${testLocator}-selected`"
-      >
-        <q-icon
-          v-if="resolveOptionIcon(scope.opt) !== null"
-          class="q-mr-sm"
-          :class="optionIconClass(scope.opt)"
-          :name="resolveOptionIcon(scope.opt) ?? undefined"
-          :style="optionIconStyle(scope.opt) ?? undefined"
-        />
-        <span>{{ objectOptionLabel(scope.opt) }}</span>
-      </div>
-    </template>
-
-    <!-- One root per option; CSS separatorAlt. Extra nodes → virtual-scroll empty gap. -->
-    <template #option="scope">
-      <q-item
-        v-bind="optionItemProps(scope)"
-        :class="{
-          'faSelectInput__option--separatorAlt': scope.index > 0
-        }"
-        :data-test-locator="`${testLocator}-option-${scope.index}`"
-        :data-test-locator-separator-alt="scope.index > 0
-          ? `${testLocator}-separatorAlt-${scope.index}`
-          : undefined"
-      >
-        <q-item-section
-          v-if="resolveOptionIcon(scope.opt) !== null"
-          avatar
+    <q-select
+      ref="selectRef"
+      class="faSelectInput__field"
+      :color="color"
+      :dark="dark"
+      :dense="dense"
+      :disable="disable"
+      :filled="filled"
+      :input-debounce="0"
+      :label="label"
+      :loading="loading"
+      :model-value="modelValue"
+      :multiple="multiple"
+      :options="filteredOptions"
+      :option-label="isObjectMode ? 'name' : undefined"
+      :option-value="isObjectMode ? 'id' : undefined"
+      :map-options="isObjectMode"
+      :options-selected-class="FA_SELECT_INPUT_OPTIONS_SELECTED_CLASS"
+      :use-chips="selectionPresentation === 'chips'"
+      use-input
+      menu-anchor="bottom middle"
+      menu-self="top middle"
+      :popup-content-class="popupContentClass"
+      :virtual-scroll-item-size="FA_SELECT_INPUT_VIRTUAL_SCROLL_ITEM_SIZE"
+      :virtual-scroll-slice-size="FA_SELECT_INPUT_VIRTUAL_SCROLL_SLICE_SIZE"
+      :data-test-locator="testLocator"
+      :data-test-locator-filter="`${testLocator}-filter`"
+      @filter="onFilter"
+      @focus="onFocus"
+      @new-value="onNewValue"
+      @popup-show="onPopupShow"
+      @update:model-value="onUpdateModelValue"
+    >
+      <template #selected-item="scope">
+        <q-chip
+          v-if="selectionPresentation === 'chips' && shouldShowFaSelectInputSelectedChip(scope.opt)"
+          class="text-bold"
+          :color="chipColorForOption(scope.opt)"
+          dense
+          :removable="chipRemovable"
+          :ripple="false"
+          :tabindex="scope.tabindex"
+          :text-color="FA_SELECT_INPUT_CHIP_TEXT_COLOR"
+          :data-test-locator="`${testLocator}-chip`"
+          @remove="scope.removeAtIndex(scope.index)"
         >
           <q-icon
-            :class="optionIconClass(scope.opt)"
+            v-if="resolveOptionIcon(scope.opt) !== null"
+            class="q-mr-xs"
+            :class="resolveFaSelectInputOptionIconClass(scope.opt)"
             :name="resolveOptionIcon(scope.opt) ?? undefined"
-            :style="optionIconStyle(scope.opt) ?? undefined"
+            :style="resolveFaSelectInputOptionIconStyle(scope.opt, buildFaSelectInputOptionIconStyle) ?? undefined"
+            size="16px"
           />
-        </q-item-section>
-        <q-item-section>
-          <q-item-label>
-            <span
-              v-for="(segment, segmentIndex) in optionLabelHighlightSegments(scope.opt)"
-              :key="`${segmentIndex}-${segment.text}`"
-              :class="{
-                faSelectInput__optionMatch: segment.isMatch
-              }"
-            >{{ segment.text }}</span>
-          </q-item-label>
-        </q-item-section>
-      </q-item>
-    </template>
-  </q-select>
+          {{ resolveFaSelectInputObjectOptionLabel(scope.opt) }}
+        </q-chip>
+        <div
+          v-else-if="selectionPresentation === 'inline' && shouldShowFaSelectInputInlineSelection(scope.opt)"
+          class="faSelectInput__selectedInline row items-center no-wrap"
+          :data-test-locator="`${testLocator}-selected`"
+        >
+          <q-icon
+            v-if="resolveOptionIcon(scope.opt) !== null"
+            class="faSelectInput__optionIcon q-mr-sm"
+            :class="resolveFaSelectInputOptionIconClass(scope.opt)"
+            :name="resolveOptionIcon(scope.opt) ?? undefined"
+            :style="resolveFaSelectInputOptionIconStyle(scope.opt, buildFaSelectInputOptionIconStyle) ?? undefined"
+          />
+          <span>{{ resolveFaSelectInputObjectOptionLabel(scope.opt) }}</span>
+        </div>
+      </template>
+
+      <!-- One root per option; CSS separatorAlt. -->
+      <template #option="scope">
+        <FaSelectInputOptionItem
+          :activate-only="activateOnly === true"
+          :icon-class="resolveFaSelectInputOptionIconClass(scope.opt)"
+          :icon-name="resolveOptionIcon(scope.opt)"
+          :icon-style="resolveFaSelectInputOptionIconStyle(scope.opt, buildFaSelectInputOptionIconStyle)"
+          :index="scope.index"
+          :item-props="scope.itemProps"
+          :label-segments="optionLabelHighlightSegments(scope.opt)"
+          :opt="scope.opt"
+          :test-locator="testLocator"
+          @option-activate="emit('option-activate', $event)"
+          @option-auxclick="emit('option-auxclick', scope.opt, $event)"
+        >
+          <template
+            v-if="$slots['option-trailing']"
+            #option-trailing
+          >
+            <slot
+              name="option-trailing"
+              v-bind="scope"
+            />
+          </template>
+          <template
+            v-if="$slots['option-context-menu']"
+            #option-context-menu
+          >
+            <slot
+              name="option-context-menu"
+              v-bind="scope"
+            />
+          </template>
+        </FaSelectInputOptionItem>
+      </template>
+    </q-select>
+  </div>
 </template>
 
 <script setup lang="ts">
-import type { I_faColorGlyphCssCustomProperties } from 'app/types/I_faColorContrast'
 import {
   FA_SELECT_INPUT_CHIP_TEXT_COLOR,
   FA_SELECT_INPUT_OPTIONS_SELECTED_CLASS,
@@ -132,7 +135,6 @@ import {
 } from 'app/types/I_faSelectInput'
 
 import {
-  bindFaSelectInputOptionItemActivateProps,
   buildFaSelectInputOptionIconStyle,
   resolveFaSelectInputObjectOptionLabel,
   resolveFaSelectInputOptionIconClass,
@@ -141,17 +143,16 @@ import {
   shouldShowFaSelectInputSelectedChip,
   useFaSelectInput
 } from './scripts/faSelectInput_manager'
+import FaSelectInputOptionItem from './FaSelectInputOptionItem.vue'
 
 defineOptions({
   name: 'FaSelectInput'
 })
 
-const objectOptionLabel = resolveFaSelectInputObjectOptionLabel
-const optionIconClass = resolveFaSelectInputOptionIconClass
-
 const props = withDefaults(
   /* eslint-disable vue/require-default-prop -- exactOptionalPropertyTypes: omit undefined from withDefaults */
   defineProps<{
+    activateOnly?: boolean
     allowCreateNew?: boolean
     chipRemovable?: boolean
     clearInputOnSelect?: boolean
@@ -172,6 +173,7 @@ const props = withDefaults(
     testLocator: string
   }>(),
   {
+    activateOnly: false,
     allowCreateNew: false,
     chipRemovable: true,
     clearInputOnSelect: false,
@@ -192,6 +194,7 @@ const emit = defineEmits<{
   change: [payload: I_faSelectInputChangePayload]
   'new-value': [value: string | I_faSelectInputObjectItem]
   'option-activate': [value: T_faSelectInputOption]
+  'option-auxclick': [value: T_faSelectInputOption, event: MouseEvent]
   'request-options': []
   'update:modelValue': [value: T_faSelectInputModelValue]
 }>()
@@ -200,6 +203,8 @@ const {
   chipColorForOption,
   clearIsNewFlags,
   filteredOptions,
+  getFilterNeedle,
+  hidePopup,
   isObjectMode,
   onFilter,
   onFocus,
@@ -228,6 +233,7 @@ const {
   emitRequestOptions: () => {
     emit('request-options')
   },
+  getActivateOnly: () => props.activateOnly,
   getAllowCreateNew: () => props.allowCreateNew,
   getClearInputOnSelect: () => props.clearInputOnSelect,
   getFilterFn: () => props.filterFn,
@@ -237,26 +243,10 @@ const {
   getOptions: () => props.options
 })
 
-function optionItemProps (scope: {
-  itemProps: Record<string, unknown>
-  opt: T_faSelectInputOption
-}): Record<string, unknown> {
-  return bindFaSelectInputOptionItemActivateProps(
-    scope.itemProps,
-    () => {
-      emit('option-activate', scope.opt)
-    }
-  )
-}
-
-function optionIconStyle (
-  opt: T_faSelectInputOption
-): I_faColorGlyphCssCustomProperties | null {
-  return resolveFaSelectInputOptionIconStyle(opt, buildFaSelectInputOptionIconStyle)
-}
-
 defineExpose({
   clearIsNewFlags,
+  getFilterNeedle,
+  hidePopup,
   openPopup
 })
 </script>

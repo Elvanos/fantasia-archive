@@ -26,23 +26,23 @@ export function shouldShowFaSelectInputInlineSelection (
 }
 
 /**
- * fa-color-glyph class when option carries a color token.
+ * fa-color-glyph on object options so fantasy shading applies (custom color or SCSS default base).
  */
 export function resolveFaSelectInputOptionIconClass (
   opt: T_faSelectInputOption
 ): string | undefined {
-  if (typeof opt === 'string' || opt.color === undefined) {
+  if (typeof opt === 'string') {
     return undefined
   }
   return 'fa-color-glyph'
 }
 
 /**
- * Glyph CSS custom properties via injected builder.
+ * Glyph CSS custom properties via injected builder (custom color or workspace-row default).
  */
 export function resolveFaSelectInputOptionIconStyle (
   opt: T_faSelectInputOption,
-  buildStyle: (color: string | undefined) => I_faColorGlyphCssCustomProperties | null
+  buildStyle: (color: string | undefined) => I_faColorGlyphCssCustomProperties
 ): I_faColorGlyphCssCustomProperties | null {
   if (typeof opt === 'string') {
     return null

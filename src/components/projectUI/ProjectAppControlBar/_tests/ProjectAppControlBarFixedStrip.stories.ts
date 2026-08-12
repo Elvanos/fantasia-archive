@@ -37,6 +37,7 @@ export const Default: StoryObj<typeof meta> = {
     onToggleProjectNoteboardClick: () => {},
     quickAddKeybindLabel: 'Ctrl + N',
     quickAddTooltip: 'Quick add',
+    quickSearchKeybindLabel: 'Ctrl + Q',
     quickSearchTooltip: 'Quick search',
     saveDocumentButtonColor: 'primary-bright',
     saveDocumentKeepEditModeKeybindLabel: 'Ctrl+Shift+S',

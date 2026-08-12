@@ -6,8 +6,8 @@ import type {
 } from 'app/types/I_dialogQuickAddDocument'
 import type { T_faUserSettingsLanguageCode } from 'app/types/faUserSettingsLanguageRegistry'
 
-/** Delay before focusing and opening the template q-select after dialog show (FA 1.0 parity). */
-export const FA_DIALOG_QUICK_ADD_DOCUMENT_TEMPLATE_FOCUS_MS = 300
+/** Delay before focusing and opening the template q-select after dialog show (same 100ms as Quick Search). */
+export const FA_DIALOG_QUICK_ADD_DOCUMENT_TEMPLATE_FOCUS_MS = 100
 
 /** World row glyph — same as hierarchy tree / tab world indicator. */
 export const FA_DIALOG_QUICK_ADD_DOCUMENT_WORLD_ICON = 'mdi-earth'
@@ -30,9 +30,19 @@ export function sortDialogQuickAddDocumentWorldsBySortOrder (
  * Returns the id of the first world after sortOrder ascending, or null when empty.
  */
 export function pickFirstDialogQuickAddDocumentWorldId (
-  worlds: readonly I_dialogQuickAddDocumentWorldSource[]
+  worlds: readonly { id: string, sortOrder?: number }[]
 ): string | null {
-  const sorted = sortDialogQuickAddDocumentWorldsBySortOrder(worlds)
+  const withSort: I_dialogQuickAddDocumentWorldSource[] = worlds.map((world) => ({
+    color: '',
+    displayNameTranslations: {},
+    id: world.id,
+    sortOrder: typeof world.sortOrder === 'number' ? world.sortOrder : 0,
+    templateLayout: {
+      groups: [],
+      placements: []
+    }
+  }))
+  const sorted = sortDialogQuickAddDocumentWorldsBySortOrder(withSort)
   const first = sorted[0]
   if (first === undefined) {
     return null

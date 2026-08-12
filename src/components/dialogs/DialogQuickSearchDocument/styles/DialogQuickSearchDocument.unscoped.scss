@@ -1,0 +1,72 @@
+@use '../../../../css/globals/faColorGlyph.mixin.scss' as colorGlyph;
+
+.q-dialog.dialogComponent.dialogQuickSearchDocument > .q-dialog__inner {
+  align-self: flex-start;
+  margin-top: $dialogQuickSearchDocument-marginTop;
+}
+
+.q-dialog.dialogComponent.dialogQuickSearchDocument > .q-dialog__inner > .q-card.dialogComponent__wrapper {
+  width: $dialogQuickSearchDocument-wrapper-width;
+
+  .dialogComponent__content {
+    max-height: calc(100vh - #{$dialogQuickSearchDocument-content-maxHeightSubtract});
+    /* Keep visible so q-select menus are not clipped inside the card. */
+    overflow: visible;
+  }
+}
+
+/*
+ * Flat: solid world color from --fa-color-glyph-base (inline style).
+ * Fantasy: global body.fa-appTheme--fantasy .fa-color-glyph adds shading.
+ */
+.dialogQuickSearchDocument__worldSelect .fa-color-glyph,
+.dialogQuickSearchDocument__selectMenu .fa-color-glyph {
+  color: var(--fa-color-glyph-base);
+}
+
+/* Teleported FaSelectInput menu; stack above modal QDialog chrome. */
+.dialogQuickSearchDocument__selectMenu.q-menu {
+  z-index: $dialogQuickSearchDocument-selectMenu-zIndex !important;
+}
+
+.dialogQuickSearchDocument__optionActions {
+  align-items: center;
+  display: flex;
+  flex-grow: 0;
+  flex-shrink: 0;
+  height: fit-content;
+  margin-left: $projectHierarchyTree-documentButtonGroup-marginLeft;
+  padding-left: $projectHierarchyTree-documentButtonGroup-paddingLeft;
+  z-index: 1;
+}
+
+.dialogQuickSearchDocument__optionAction {
+  margin-left: $projectHierarchyTree-documentButton-marginLeft;
+
+  &.q-btn--round {
+    height: $projectHierarchyTree-documentButton-size;
+    min-height: $projectHierarchyTree-documentButton-size;
+    min-width: $projectHierarchyTree-documentButton-size;
+    width: $projectHierarchyTree-documentButton-size;
+  }
+}
+
+.dialogQuickSearchDocument__optionAction--edit .q-icon,
+.dialogQuickSearchDocument__optionAction--copy .q-icon {
+  --fa-color-glyph-base: #{$projectHierarchyTree-documentButton-openEditIcon-color};
+
+  color: var(--fa-color-glyph-base);
+  font-size: $projectHierarchyTree-documentButton-editIcon-fontSize;
+}
+
+.dialogQuickSearchDocument__optionAction--addUnder .q-icon {
+  --fa-color-glyph-base: #{$projectHierarchyTree-documentButton-addUnderIcon-color};
+
+  color: var(--fa-color-glyph-base);
+  font-size: $projectHierarchyTree-documentButton-addUnderIcon-fontSize;
+}
+
+/* QBtn icon prop cannot take fa-color-glyph class; shade via mixin under fantasy. */
+body.fa-appTheme--fantasy .dialogQuickSearchDocument__optionAction .q-icon {
+  @include colorGlyph.fa-color-glyph-shading;
+}

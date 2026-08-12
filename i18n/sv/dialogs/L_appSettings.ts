@@ -179,11 +179,6 @@ export default {
       description: 'Om du ogillar verktygstipsen för dokumentvisning kan du stänga av dem globalt här.',
       tags: 'hovra text, fälthjälp, popover, dokumentvisningstips',
     },
-    disableQuickSearchCategoryPrecheck: {
-      title: 'Förkontrollera inte kategorifiltret',
-      description: 'Normalt ingår kategorier i snabbsökningen. Om du aktiverar det här alternativet vänder du det beteendet.',
-      tags: 'kategorifilter, sökomfång, inkludera kategorier, standardfilter',
-    },
     disableSpellCheck: {
       title: 'Inaktivera stavningskontroll',
       description: 'Inaktiverar stavnings-, grammatik- och ordkontroll i dokumentredigeringsläge.',

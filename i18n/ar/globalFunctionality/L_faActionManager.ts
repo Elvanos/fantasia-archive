@@ -28,6 +28,7 @@ export default {
     openChangelogDialog: 'افتح سجل التغيير',
     openKeybindSettingsDialog: 'افتح إعدادات Keybind',
     openQuickAddDocumentDialog: 'Open Quick-Add New Document',
+    openQuickSearchDocumentDialog: 'Open Quick-Search Existing Document',
     openProjectSettingsDialog: 'فتح إعدادات المشروع',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'حفظ إعدادات المشروع',

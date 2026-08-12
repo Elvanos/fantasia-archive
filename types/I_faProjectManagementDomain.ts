@@ -20,6 +20,11 @@ import type {
   I_faProjectSettingsRoot
 } from 'app/types/I_faProjectSettingsDomain'
 import type {
+  I_faProjectDialogUiPrefGetInput,
+  I_faProjectDialogUiPrefGetResult,
+  I_faProjectDialogUiPrefSetInput
+} from 'app/types/I_faProjectDialogUiPrefDomain'
+import type {
   I_faRecentProjectEntry,
   I_faRecentProjectMruHeadResolve
 } from 'app/types/I_faRecentProjectsDomain'
@@ -85,6 +90,9 @@ export interface I_faProjectManagementAPI {
   getProjectNoteboard: () => Promise<I_faProjectNoteboardRoot>
   getProjectSettings: () => Promise<I_faProjectSettingsRoot>
   getProjectSidebar: () => Promise<I_faProjectSidebarRoot>
+  getProjectDialogUiPref: (
+    input: I_faProjectDialogUiPrefGetInput
+  ) => Promise<I_faProjectDialogUiPrefGetResult>
   getHierarchyTreeUiState: () => Promise<I_faProjectHierarchyTreeUiState>
   getOpenedDocumentsSnapshot: () => Promise<I_faOpenedDocumentsSnapshot>
   getProjectStyling: () => Promise<I_faProjectStylingRoot>
@@ -101,6 +109,7 @@ export interface I_faProjectManagementAPI {
   setProjectNoteboard: (patch: I_faProjectNoteboardPatch) => Promise<boolean>
   setProjectSettings: (patch: I_faProjectSettingsPatch) => Promise<boolean>
   setProjectSidebar: (patch: I_faProjectSidebarPatch) => Promise<boolean>
+  setProjectDialogUiPref: (input: I_faProjectDialogUiPrefSetInput) => Promise<boolean>
   setHierarchyTreeUiState: (patch: I_faProjectHierarchyTreeUiStatePatch) => Promise<boolean>
   saveOpenedDocumentsSnapshot: (snapshot: I_faOpenedDocumentsSnapshot) => Promise<boolean>
   setProjectStyling: (patch: I_faProjectStylingPatch) => Promise<boolean>

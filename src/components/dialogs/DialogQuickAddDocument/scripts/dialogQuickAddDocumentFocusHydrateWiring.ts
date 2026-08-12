@@ -6,7 +6,7 @@ import type { I_dialogQuickAddDocumentWorldSource } from 'app/types/I_dialogQuic
 import type { I_ref } from 'app/types/I_vueCompositionShims'
 
 /**
- * True when the value exposes FaSelectInput openPopup (template auto-open).
+ * True when the value exposes FaSelectInput openPopup and/or hidePopup.
  */
 export function isDialogQuickAddDocumentFaSelectInputLike (
   value: unknown
@@ -15,9 +15,11 @@ export function isDialogQuickAddDocumentFaSelectInputLike (
     return false
   }
   const candidate = value as {
+    hidePopup?: unknown
     openPopup?: unknown
   }
-  return typeof candidate.openPopup === 'function'
+  return typeof candidate.openPopup === 'function' ||
+    typeof candidate.hidePopup === 'function'
 }
 
 /**
@@ -30,8 +32,15 @@ export function cancelDialogQuickAddDocumentTemplateFocus (
 }
 
 /**
- * FA 1.0 NewDocument timing (nextTick + sleep) + opt-in FaSelectInput openPopup.
+ * FA 1.0-style timing (nextTick + sleep) + opt-in FaSelectInput openPopup.
  * First-option keyboard highlight is owned by FaSelectInput on popup-show.
+ */
+/**
+ * FA 1.0-style timing (nextTick + sleep) + opt-in FaSelectInput openPopup.
+ * First-option keyboard highlight is owned by FaSelectInput on popup-show.
+ * Retries openPopup once: Quasar showPopup with onFilter requires focused; after another
+ * select's hidePopup, Quasar focus-manager wait flags can defer focus so the first
+ * showPopup's filter() bails with menu still closed.
  */
 export async function focusDialogQuickAddDocumentTemplateSelectAfterShow (
   deps: Pick<I_createUseDialogQuickAddDocumentDeps, 'nextTick' | 'sleep' | 'templateFocusMs'>,
@@ -53,7 +62,16 @@ export async function focusDialogQuickAddDocumentTemplateSelectAfterShow (
   if (!isDialogQuickAddDocumentFaSelectInputLike(select)) {
     return
   }
-  select.openPopup()
+  select.openPopup?.()
+  await deps.nextTick()
+  await deps.sleep(deps.templateFocusMs)
+  if (session.focusGeneration.value !== focusGeneration) {
+    return
+  }
+  if (session.dialogModel.value !== true) {
+    return
+  }
+  select.openPopup?.()
 }
 
 /**
@@ -87,9 +105,10 @@ export function bindDialogQuickAddDocumentTemplateSelectRef (
 }
 
 /**
- * Loads worlds/templates and preselects the first world by sortOrder.
+ * Loads worlds/templates and preselects saved last world when still present, else first by sortOrder.
+ * Call before opening the dialog so the world select does not pop in after show.
  */
-export async function hydrateDialogQuickAddDocumentSources (
+export async function hydrateDialogQuickAddDocumentWorlds (
   deps: I_createUseDialogQuickAddDocumentDeps,
   session: {
     selectedTemplateId: I_ref<string | null>
@@ -106,5 +125,25 @@ export async function hydrateDialogQuickAddDocumentSources (
   }
   session.templatesById.value = nextMap
   session.selectedTemplateId.value = null
-  session.selectedWorldId.value = deps.pickFirstWorldId(sources.worlds)
+  const savedWorldId = await deps.readLastSelectedWorldId()
+  session.selectedWorldId.value = deps.pickWorldIdWithSavedPreference({
+    worlds: sources.worlds,
+    savedWorldId,
+    pickFirstWorldId: deps.pickFirstWorldId
+  })
+}
+
+/**
+ * Full sources hydrate (worlds + templates + last world). Alias for callers/tests.
+ */
+export async function hydrateDialogQuickAddDocumentSources (
+  deps: I_createUseDialogQuickAddDocumentDeps,
+  session: {
+    selectedTemplateId: I_ref<string | null>
+    selectedWorldId: I_ref<string | null>
+    templatesById: I_ref<Map<string, I_dialogQuickAddDocumentTemplateSource>>
+    worlds: I_ref<I_dialogQuickAddDocumentWorldSource[]>
+  }
+): Promise<void> {
+  await hydrateDialogQuickAddDocumentWorlds(deps, session)
 }

@@ -27,6 +27,7 @@ export default {
     openAppStyling: 'Abrir aplicación personalizada CSS',
     openProjectStyling: 'Abrir proyecto personalizado CSS',
     quickNewDocument: 'Quick-Add New Document',
+    quickExistingDocument: 'Quick-search existing document',
     openProjectSettings: 'Abrir configuración del proyecto',
     showProjectDashboard: 'Mostrar panel de proyecto',
     toggleDeveloperTools: 'Alternar herramientas de desarrollador',

@@ -26,6 +26,7 @@
             :on-toggle-project-noteboard-click="onToggleProjectNoteboardClick"
             :quick-add-keybind-label="quickAddKeybindLabel"
             :quick-add-tooltip="quickAddTooltip"
+            :quick-search-keybind-label="quickSearchKeybindLabel"
             :quick-search-tooltip="quickSearchTooltip"
             :show-app-noteboard-content-dot="showAppNoteboardContentDot"
             :show-content-buttons="showContentButtons"
@@ -108,6 +109,7 @@ defineProps<{
   onToggleProjectNoteboardClick: () => void
   quickAddKeybindLabel: string | null
   quickAddTooltip: string
+  quickSearchKeybindLabel: string | null
   quickSearchTooltip: string
   saveDocumentButtonColor: T_projectAppControlBarSaveButtonColor
   saveDocumentKeepEditModeKeybindLabel: string | null

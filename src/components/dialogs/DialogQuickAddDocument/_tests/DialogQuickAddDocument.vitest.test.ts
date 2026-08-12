@@ -56,7 +56,7 @@ const faSelectInputStub = defineComponent({
       required: true
     }
   },
-  emits: ['update:modelValue'],
+  emits: ['update:modelValue', 'option-activate'],
   template: `
     <div
       class="fa-select-input-stub"
@@ -66,6 +66,11 @@ const faSelectInputStub = defineComponent({
       :data-selection-presentation="selectionPresentation"
       @click="$emit('update:modelValue', options[0] ?? null)"
     >
+      <button
+        type="button"
+        :data-test-locator="testLocator + '-activate'"
+        @click.stop="$emit('option-activate', options[0] ?? null)"
+      />
       <div
         v-for="(opt, index) in options"
         :key="index"
@@ -389,6 +394,14 @@ test('Test that DialogQuickAddDocument world select shows with option hooks', as
   expect(w.find('[data-test-locator="dialogQuickAddDocument-select-template"]').exists()).toBe(true)
 
   await worldSelect.trigger('click')
+  await flushPromises()
+
+  await w.find('[data-test-locator="dialogQuickAddDocument-select-world-activate"]').trigger('click')
+  await flushPromises()
+
+  const worldSelectWrap = w.find('.dialogQuickAddDocument__worldSelect')
+  expect(worldSelectWrap.exists()).toBe(true)
+  await worldSelectWrap.trigger('keydown.enter')
   await flushPromises()
 
   w.unmount()

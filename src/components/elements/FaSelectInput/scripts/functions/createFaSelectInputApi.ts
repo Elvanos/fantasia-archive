@@ -6,10 +6,12 @@ import type {
   T_faSelectInputModelValue,
   T_faSelectInputOption
 } from 'app/types/I_faSelectInput'
-import type { I_computedRef, I_ref } from 'app/types/I_vueCompositionShims'
+import type { I_ref } from 'app/types/I_vueCompositionShims'
 
 type T_faSelectInputQSelectRef = {
+  focus?: () => void
   getOptionIndex?: () => number
+  hidePopup?: () => void
   moveOptionSelection?: (offset: number, skipInputValue?: boolean) => void
   setOptionIndex?: (index: number) => void
   showPopup?: () => void
@@ -27,34 +29,13 @@ type T_faSelectInputNewValueDone = (
   mode?: T_faSelectInputNewValueDoneMode
 ) => void
 
-type T_faSelectInputApi = {
-  chipColorForOption: (opt: T_faSelectInputOption) => string
-  clearIsNewFlags: (ids: readonly string[]) => void
-  filteredOptions: I_ref<T_faSelectInputOption[]>
-  isObjectMode: I_computedRef<boolean>
-  onFilter: (needle: string, update: T_faSelectInputFilterUpdate) => void
-  onFocus: () => void
-  onNewValue: (typedText: string, done?: T_faSelectInputNewValueDone) => void
-  onPopupShow: () => void
-  onSelectKeydown: (e: { key?: string, keyCode?: number }) => void
-  onSelectKeyup: (e: { key?: string, keyCode?: number }) => void
-  onUpdateModelValue: (value: T_faSelectInputModelValue) => void
-  openPopup: () => void
-  optionLabelHighlightSegments: (
-    opt: T_faSelectInputOption
-  ) => T_faSelectInputLabelHighlightSegment[]
-  resolveOptionIcon: (opt: T_faSelectInputOption) => string | null
-  selectRef: I_ref<T_faSelectInputQSelectRef | null>
-}
-
 function highlightFirstOption (
   select: T_faSelectInputQSelectRef | null | undefined,
   optionCount: number
 ): void {
-  if (select == null || optionCount <= 0) {
-    return
-  }
   if (
+    select == null ||
+    optionCount <= 0 ||
     typeof select.setOptionIndex !== 'function' ||
     typeof select.moveOptionSelection !== 'function'
   ) {
@@ -104,6 +85,7 @@ function createFaSelectInputFilterCore (
 
   return {
     filteredOptions,
+    getFilterNeedle: () => filterNeedle.value,
     onFilter,
     optionLabelHighlightSegments,
     refreshFilteredOptions
@@ -182,14 +164,24 @@ function createFaSelectInputModelHandlers (
 export function createFaSelectInputApi (
   deps: I_faSelectInputUseDeps,
   input: I_faSelectInputUseInput
-): T_faSelectInputApi {
+) {
   const selectRef = deps.ref<T_faSelectInputQSelectRef | null>(null)
   const isObjectMode = deps.computed(() => deps.isFaSelectInputObjectMode(input.getMode()))
   const filterCore = createFaSelectInputFilterCore(deps, input, selectRef)
   const modelHandlers = createFaSelectInputModelHandlers(deps, input, selectRef)
 
   function openPopup (): void {
-    selectRef.value?.showPopup?.()
+    const select = selectRef.value
+    // Quasar showPopup + onFilter requires the field focused; focus() may be deferred
+    // when focus-manager wait flags are set (e.g. after another QSelect hidePopup).
+    select?.focus?.()
+    void deps.nextTick(() => {
+      selectRef.value?.showPopup?.()
+    })
+  }
+
+  function hidePopup (): void {
+    selectRef.value?.hidePopup?.()
   }
 
   function onFocus (): void {
@@ -198,30 +190,36 @@ export function createFaSelectInputApi (
 
   function onPopupShow (): void {
     input.emitRequestOptions()
-    filterCore.refreshFilteredOptions('')
+    filterCore.refreshFilteredOptions(filterCore.getFilterNeedle())
     highlightFirstOption(selectRef.value, filterCore.filteredOptions.value.length)
   }
 
-  // Tab keyup lands on newly focused field — open without click race (QSelect inheritAttrs false).
   function onSelectKeyup (e: { key?: string, keyCode?: number }): void {
     if (e.key === 'Tab' || e.keyCode === 9) {
       openPopup()
     }
   }
 
-  // Enter uses toggleOption (not option onClick); same-value still needs option-activate.
-  function onSelectKeydown (e: { key?: string, keyCode?: number }): void {
+  function onSelectKeydown (e: {
+    key?: string
+    keyCode?: number
+    preventDefault?: () => void
+  }): void {
     if (e.key !== 'Enter' && e.keyCode !== 13) {
       return
     }
-    const index = selectRef.value?.getOptionIndex?.()
-    if (typeof index !== 'number' || index < 0) {
+    const opt = deps.resolveFaSelectInputEnterActivateOption({
+      filteredOptions: filterCore.filteredOptions.value,
+      getOptionIndex: selectRef.value?.getOptionIndex,
+      modelValue: input.getModelValue()
+    })
+    if (opt === undefined) {
       return
     }
-    const opt = filterCore.filteredOptions.value[index]
-    if (opt !== undefined) {
-      input.emitOptionActivate(opt)
+    if (input.getActivateOnly()) {
+      e.preventDefault?.()
     }
+    input.emitOptionActivate(opt)
   }
 
   function chipColorForOption (opt: T_faSelectInputOption): string {
@@ -243,6 +241,8 @@ export function createFaSelectInputApi (
     chipColorForOption,
     clearIsNewFlags: modelHandlers.clearIsNewFlags,
     filteredOptions: filterCore.filteredOptions,
+    getFilterNeedle: filterCore.getFilterNeedle,
+    hidePopup,
     isObjectMode,
     onFilter: filterCore.onFilter,
     onFocus,

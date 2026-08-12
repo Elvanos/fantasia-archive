@@ -1,9 +1,15 @@
+@use '../../../../css/globals/faQIconDisplay.mixin.scss' as faQIconDisplay;
+
 /* FA1-aligned chips + dropdown active chrome for FaSelectInput.
  * Filter needle match spans use .faSelectInput__optionMatch (primary-bright).
  */
 
 .faSelectInput {
   width: $faSelectInput-width;
+
+  &__field {
+    width: 100%;
+  }
 
   .q-chip {
     height: inherit;
@@ -26,7 +32,12 @@
   }
 }
 
-/* Beat fantasy menu edge-glow (body.fa-appTheme--fantasy .q-menu .q-item). */
+/*
+ * Dropdown shell + selected side bars.
+ * Fantasy hover/focus = same bottom-edge glow as other q-menus (faMenuItemGlow on ::after).
+ * Selected bars live on ::before only so they do not fight that glow.
+ * Label / icon color stay idle on hover (flat + fantasy) — no wash tint on text.
+ */
 body .faSelectInput__menu.q-menu {
   background-color: $faSelectInput-menu-backgroundColor;
   color: $faSelectInput-menu-item-color;
@@ -52,19 +63,21 @@ body .faSelectInput__menu.q-menu {
   }
 
   .q-item {
+    color: $faSelectInput-menu-item-color !important;
     font-weight: $faSelectInput-menu-item-fontWeight;
     overflow: visible;
     position: relative;
     transition: none !important;
 
-    &::after {
-      content: none;
+    .q-item__label,
+    .q-item__section--main {
+      color: inherit !important;
     }
   }
 
-  /* Selected: side bars + idle non-match text. Filter optionMatch gold still applies. */
+  /* Selected: dual side bars on ::before; idle non-match text. Filter optionMatch gold stays. */
   .q-item--active:not(.noHigh) {
-    background: $faSelectInput-menu-activeItem-backgroundColor !important;
+    background-color: $faSelectInput-menu-activeItem-backgroundColor !important;
     color: $faSelectInput-menu-item-color !important;
 
     .q-item__label,
@@ -78,32 +91,86 @@ body .faSelectInput__menu.q-menu {
       font-weight: $faSelectInput-optionMatch-fontWeight !important;
     }
 
-    &::before,
-    &::after {
-      background-color: $faSelectInput-menu-activeBar-color;
-      border-radius: $faSelectInput-menu-activeBar-radius;
-      bottom: $faSelectInput-menu-activeBar-verticalInset;
-      content: '';
-      position: absolute;
-      top: $faSelectInput-menu-activeBar-verticalInset;
-      width: $faSelectInput-menu-activeBar-width;
-    }
-
     &::before {
-      right: $faSelectInput-menu-activeBar-inset;
-    }
-
-    &::after {
-      left: $faSelectInput-menu-activeBar-inset;
+      background-image:
+        linear-gradient(
+          $faSelectInput-menu-activeBar-color,
+          $faSelectInput-menu-activeBar-color
+        ),
+        linear-gradient(
+          $faSelectInput-menu-activeBar-color,
+          $faSelectInput-menu-activeBar-color
+        );
+      background-position:
+        left $faSelectInput-menu-activeBar-inset center,
+        right $faSelectInput-menu-activeBar-inset center;
+      background-repeat: no-repeat;
+      background-size:
+        $faSelectInput-menu-activeBar-width
+        calc(100% - #{2 * $faSelectInput-menu-activeBar-verticalInset}),
+        $faSelectInput-menu-activeBar-width
+        calc(100% - #{2 * $faSelectInput-menu-activeBar-verticalInset});
+      border-radius: $faSelectInput-menu-activeBar-radius;
+      content: '';
+      inset: 0;
+      pointer-events: none;
+      position: absolute;
+      z-index: 1;
     }
   }
 }
 
 /*
- * Flat: solid option color from --fa-color-glyph-base (inline style).
- * Fantasy: global body.fa-appTheme--fantasy .fa-color-glyph adds shading.
+ * Option / inline selected icons: same $iconSize box as Project Overview last-opened document glyphs.
+ * Beats Quasar avatar / `.q-item__section--side > .q-icon { font-size: 24px }`.
+ */
+.faSelectInput__optionIcon.q-icon {
+  @include faQIconDisplay.fa-q-icon-display-constrain-glyph-in-box;
+
+  --fa-q-icon-display-glyph-font-size: #{$faSelectInput-optionIcon-boxSize};
+  --fa-q-icon-display-mdi-fit-scale: 1;
+  --fa-q-icon-display-mdi-font-size: #{$faSelectInput-optionIcon-boxSize};
+
+  align-items: center;
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: $faSelectInput-optionIcon-boxSize !important;
+  height: $faSelectInput-optionIcon-boxSize !important;
+  justify-content: center;
+  line-height: 1;
+  max-height: $faSelectInput-optionIcon-boxSize;
+  max-width: $faSelectInput-optionIcon-boxSize;
+  overflow: visible;
+  width: $faSelectInput-optionIcon-boxSize !important;
+
+  &:not(.fa-brands, .fa-regular, .fa-solid) {
+    margin-top: 0;
+    transform: none;
+  }
+
+  &::before {
+    display: block;
+    font-size: 1em;
+    height: 1em;
+    line-height: 1;
+    width: 1em;
+  }
+}
+
+body .faSelectInput__menu.q-menu .q-item__section--avatar {
+  min-width: $faSelectInput-optionIcon-boxSize !important;
+  padding-right: $faSelectInput-optionIcon-avatar-paddingInline;
+}
+
+/*
+ * Flat: solid icon color from --fa-color-glyph-base (inline style always sets it for object options).
+ * Fantasy: global body.fa-appTheme--fantasy .fa-color-glyph adds shading (same recipe as hierarchy tree).
+ * Custom option.color overrides base via buildFaColorGlyphCssCustomProperties; missing color = workspace-row.
  */
 .faSelectInput .fa-color-glyph,
 .faSelectInput__menu .fa-color-glyph {
-  color: var(--fa-color-glyph-base);
+  --fa-color-glyph-base: #{$faSelectInput-menu-icon-glyph-base};
+
+  color: var(--fa-color-glyph-base) !important;
 }

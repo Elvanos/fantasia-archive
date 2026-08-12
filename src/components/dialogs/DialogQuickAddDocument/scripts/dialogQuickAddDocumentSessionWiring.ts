@@ -26,6 +26,7 @@ function createDialogQuickAddDocumentSession (
   const selectedWorldId = deps.ref<string | null>(null)
   const selectedTemplateId = deps.ref<string | null>(null)
   const templateSelectRef = deps.ref<I_dialogQuickAddDocumentFaSelectInputLike | null>(null)
+  const worldSelectRef = deps.ref<I_dialogQuickAddDocumentFaSelectInputLike | null>(null)
   const focusGeneration = deps.ref(0)
   const skipNextWorldChangeReopen = deps.ref(false)
   deps.registerComponentDialogStackGuard(dialogModel)
@@ -62,6 +63,7 @@ function createDialogQuickAddDocumentSession (
     templateSelectRef,
     templatesById,
     worldOptions,
+    worldSelectRef,
     worlds
   }
 }
@@ -85,6 +87,10 @@ export function runDialogQuickAddDocumentSession (
     bindDialogQuickAddDocumentTemplateSelectRef(session.templateSelectRef, el)
   }
 
+  const bindWorldSelectRef = (el: unknown): void => {
+    bindDialogQuickAddDocumentTemplateSelectRef(session.worldSelectRef, el)
+  }
+
   const selectedWorldOption = deps.computed(() => {
     const worldId = session.selectedWorldId.value
     if (worldId === null) {
@@ -101,13 +107,32 @@ export function runDialogQuickAddDocumentSession (
     return session.templateOptions.value.find((row) => row.id === templateId) ?? null
   })
 
+  const onWorldFilterEnter = (event: Event): void => {
+    event.preventDefault()
+    event.stopPropagation()
+    session.worldSelectRef.value?.hidePopup?.()
+    const current = selectedWorldOption.value
+    if (current === null) {
+      return
+    }
+    void (async () => {
+      await deps.nextTick()
+      // Programmatic hidePopup refocuses the world field after QMenu transitionDuration (~300ms).
+      // Opening the template before that refocus lands makes Quasar filter()/focusout drop the menu.
+      await deps.sleep(Math.max(deps.templateFocusMs, 350))
+      selectHandlers.onWorldSelect(current)
+    })()
+  }
+
   return {
     bindTemplateSelectRef,
+    bindWorldSelectRef,
     dialogModel: session.dialogModel,
     documentName: session.documentName,
     onDialogHide: openClose.onDialogHide,
     onDialogShow: openClose.onDialogShow,
     onTemplateSelect: selectHandlers.onTemplateSelect,
+    onWorldFilterEnter,
     onWorldSelect: selectHandlers.onWorldSelect,
     selectedTemplateId: session.selectedTemplateId,
     selectedTemplateOption,

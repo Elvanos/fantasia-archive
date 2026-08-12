@@ -8,12 +8,13 @@ import type { T_dialogName } from 'app/types/T_appDialogsAndDocuments'
 import {
   cancelDialogQuickAddDocumentTemplateFocus,
   focusDialogQuickAddDocumentTemplateSelectAfterShow,
-  hydrateDialogQuickAddDocumentSources,
+  hydrateDialogQuickAddDocumentWorlds,
   scheduleDialogQuickAddDocumentTemplateFocus
 } from './dialogQuickAddDocumentFocusHydrateWiring'
 
 /**
- * Opens/closes dialog, hydrates sources on show, and wires store/directInput watchers.
+ * Opens/closes dialog, pre-hydrates worlds before open, template focus on show,
+ * and wires store/directInput watchers.
  */
 export function wireDialogQuickAddDocumentOpenClose (
   deps: I_createUseDialogQuickAddDocumentDeps,
@@ -26,10 +27,26 @@ export function wireDialogQuickAddDocumentOpenClose (
   } {
   const openDialog = (input: T_dialogName): void => {
     session.documentName.value = input
-    session.dialogModel.value = true
+    session.selectedTemplateId.value = null
+    session.skipNextWorldChangeReopen.value = true
+    const openGeneration = session.focusGeneration.value + 1
+    session.focusGeneration.value = openGeneration
+    void (async () => {
+      try {
+        await hydrateDialogQuickAddDocumentWorlds(deps, session)
+      } catch {
+        // Still open so the user is not stuck if worlds IPC fails.
+      }
+      if (session.focusGeneration.value !== openGeneration) {
+        session.skipNextWorldChangeReopen.value = false
+        return
+      }
+      session.dialogModel.value = true
+    })()
   }
 
   const closeDialog = (): void => {
+    cancelDialogQuickAddDocumentTemplateFocus(session)
     session.dialogModel.value = false
   }
 
@@ -39,7 +56,9 @@ export function wireDialogQuickAddDocumentOpenClose (
     session.focusGeneration.value = focusGeneration
     void (async () => {
       try {
-        await hydrateDialogQuickAddDocumentSources(deps, session)
+        if (session.worlds.value.length === 0) {
+          await hydrateDialogQuickAddDocumentWorlds(deps, session)
+        }
       } finally {
         session.skipNextWorldChangeReopen.value = false
       }
@@ -123,9 +142,14 @@ export function wireDialogQuickAddDocumentSelectHandlers (
   const onWorldSelect = (
     value: T_faSelectInputModelValue | null | undefined
   ): void => {
+    // Close world menu before template openPopup (Enter reselect leaves it open otherwise).
+    session.worldSelectRef.value?.hidePopup?.()
     const nextWorldId = resolveDialogQuickAddDocumentSelectId(value)
     session.selectedWorldId.value = nextWorldId
     session.selectedTemplateId.value = null
+    if (nextWorldId !== null) {
+      void deps.writeLastSelectedWorldId(nextWorldId)
+    }
     if (session.skipNextWorldChangeReopen.value) {
       return
     }

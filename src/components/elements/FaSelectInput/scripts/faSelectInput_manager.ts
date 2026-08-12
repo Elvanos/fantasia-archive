@@ -17,6 +17,7 @@ import {
   filterFaSelectInputOptionsByQuery,
   isFaSelectInputObjectMode,
   normalizeFaSelectInputOptions,
+  resolveFaSelectInputEnterActivateOption,
   resolveFaSelectInputOptionIcon,
   shouldShowFaSelectInputSelectedChip,
   splitFaSelectInputLabelForFilterHighlight,
@@ -61,6 +62,7 @@ export const useFaSelectInput = createUseFaSelectInput({
   nextTick,
   normalizeFaSelectInputOptions,
   ref,
+  resolveFaSelectInputEnterActivateOption,
   resolveFaSelectInputOptionIcon,
   splitFaSelectInputLabelForFilterHighlight
 }, createFaSelectInputApi)

@@ -61,10 +61,6 @@ I_appSettingsStaticOption
     category: 'documentViewEdit',
     subcategory: 'documentBody'
   },
-  disableQuickSearchCategoryPrecheck: {
-    category: 'popupsFloatingWindows',
-    subcategory: 'quickSearchDialog'
-  },
   disableSpellCheck: {
     category: 'visualAccessibility',
     subcategory: 'visualsAppwideFunctionality'

@@ -80,6 +80,8 @@ export const FA_PROJECT_MANAGEMENT_IPC = {
   getProjectNoteboardAsync: 'fa-project-management-get-project-noteboard-async',
   getProjectSettingsAsync: 'fa-project-management-get-project-settings-async',
   getProjectSidebarAsync: 'fa-project-management-get-project-sidebar-async',
+  getProjectDialogUiPrefAsync:
+    'fa-project-management-get-project-dialog-ui-pref-async',
   getProjectStylingAsync: 'fa-project-management-get-project-styling-async',
   openProjectAsync: 'fa-project-management-open-project-async',
   setProjectNoteboardPatchAsync:
@@ -88,6 +90,8 @@ export const FA_PROJECT_MANAGEMENT_IPC = {
     'fa-project-management-set-project-settings-patch-async',
   setProjectSidebarPatchAsync:
     'fa-project-management-set-project-sidebar-patch-async',
+  setProjectDialogUiPrefAsync:
+    'fa-project-management-set-project-dialog-ui-pref-async',
   getHierarchyTreeUiStateAsync:
     'fa-project-management-get-hierarchy-tree-ui-state-async',
   getOpenedDocumentsSnapshotAsync:

@@ -85,6 +85,11 @@ export {
 export { upsertFaProjectDataKv, readFaProjectDataKv } from './faProjectDataKvWiring'
 
 export {
+  readFaProjectDialogUiPref,
+  upsertFaProjectDialogUiPref
+} from './faProjectDialogUiPrefPersistWiring'
+
+export {
   faProjectSaveDialogDefaultDirectory,
   getFaProjectSaveDefaultPath
 } from './faProjectFileDialogDefaultPathsWiring'

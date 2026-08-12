@@ -92,6 +92,7 @@ test('buildDialogKeybindSettingsRows lists all command ids', () => {
     'openKeybindSettings',
     'openProjectSettings',
     'openProjectStyling',
+    'quickExistingDocument',
     'quickNewDocument',
     'saveDocument',
     'saveDocumentKeepEditMode',
@@ -1021,12 +1022,12 @@ test('capture handler bindings cover open, clear, and set paths', () => {
   captureErrorMessage.value = ''
   captureInfoMessage.value = ''
   pendingChord.value = {
-    code: 'KeyQ',
+    code: 'KeyJ',
     mods: ['ctrl']
   }
   bindOnCaptureSet(deps)()
   expect(captureOpen.value).toBe(false)
-  expect(workingOverrides.value.openAppSettings?.code).toBe('KeyQ')
+  expect(workingOverrides.value.openAppSettings?.code).toBe('KeyJ')
 })
 
 test('registerDialogKeybindCaptureOpenWatch removes listener when capture closes', async () => {

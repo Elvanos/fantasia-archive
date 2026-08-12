@@ -44,7 +44,6 @@ export interface I_faUserSettings {
   disableAppControlBarGuides: boolean
   disableDocumentCounts: boolean
   disableDocumentToolTips: boolean
-  disableQuickSearchCategoryPrecheck: boolean
   disableSpellCheck: boolean
   disableStartUpdateCheckMessage: boolean
   doubleDashDocCount: boolean

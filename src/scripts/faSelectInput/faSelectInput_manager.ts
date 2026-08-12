@@ -6,7 +6,8 @@ import { clearFaSelectInputIsNewFlags } from './functions/faSelectInputClearIsNe
 import { createFaSelectInputNewItem } from './functions/faSelectInputCreateNewItem'
 import {
   filterFaSelectInputOptionsByQuery,
-  isFaSelectInputObjectItem
+  isFaSelectInputObjectItem,
+  splitFaSelectInputLabelForFilterHighlight
 } from './functions/filterFaSelectInputOptionsByQuery'
 import {
   appendFaSelectInputCreatedValue,
@@ -19,8 +20,8 @@ import {
   isFaSelectInputObjectMode,
   normalizeFaSelectInputOptions
 } from './functions/faSelectInputModeNormalize'
-import { splitFaSelectInputLabelForFilterHighlight } from './functions/faSelectInputLabelFilterHighlight'
 import { resolveFaSelectInputOptionIcon } from './functions/resolveFaSelectInputOptionIcon'
+import { resolveFaSelectInputEnterActivateOption } from './functions/resolveFaSelectInputEnterActivateOption'
 import { shouldShowFaSelectInputSelectedChip } from './functions/faSelectInputSelectedChipVisibility'
 import {
   bindFaSelectInputOptionItemActivateProps,
@@ -41,6 +42,7 @@ export {
   isFaSelectInputObjectMode,
   normalizeFaSelectInputOptions,
   resolveFaSelectInputChangeAction,
+  resolveFaSelectInputEnterActivateOption,
   resolveFaSelectInputOptionIcon,
   resolveFaSelectInputOptionIconColor,
   shouldShowFaSelectInputSelectedChip,

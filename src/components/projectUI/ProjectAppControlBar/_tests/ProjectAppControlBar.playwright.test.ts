@@ -20,6 +20,7 @@ import type { I_faProjectDocument } from 'app/types/I_faProjectDocumentDomain'
 import type { I_faProjectDocumentTemplate } from 'app/types/I_faProjectDocumentTemplateDomain'
 import type { I_faProjectHierarchyTreeWorkspaceWorld } from 'app/types/I_faProjectHierarchyTreeDomain'
 import type { I_faProjectWorld } from 'app/types/I_faProjectWorldDomain'
+import quickSearchDocumentMessages from 'app/i18n/en-US/dialogs/L_dialogQuickSearchDocument'
 const extraEnvSettings = {
   COMPONENT_NAME: 'ProjectAppControlBar',
   COMPONENT_PROPS: JSON.stringify({}),
@@ -1574,6 +1575,39 @@ test.describe.serial('Project app control bar visibility', () => {
     await expect(
       appWindow.locator(`[data-test-locator="${selectorList.windowProjectNoteboardFrame}"]`)
     ).toHaveCount(0)
+  })
+
+  /**
+   * Quick-search strip button opens Search through existing documents (en-US title).
+   */
+  test('Check if quick search strip button opens Quick Search dialog', async () => {
+    await remountAppControlBarAfterStoreSeed(appWindow, {
+      ...controlBarSeedDefaults,
+      activeProject: sampleActiveProject,
+      openedDocuments: {
+        activeDocumentId: 'doc-hero',
+        tabs: [...sampleOpenedDocumentTabs]
+      }
+    })
+
+    await expect(
+      appWindow.locator(`[data-test-locator="${selectorList.projectAppControlBarQuickSearchButton}"]`)
+    ).toBeVisible()
+
+    await appWindow
+      .locator(`[data-test-locator="${selectorList.projectAppControlBarQuickSearchButton}"]`)
+      .click()
+
+    await expect(appWindow.locator('#dialogQuickSearchDocument-title')).toBeVisible({
+      timeout: 15_000
+    })
+    await expect(appWindow.locator('#dialogQuickSearchDocument-title')).toHaveText(
+      quickSearchDocumentMessages.title
+    )
+    await appWindow
+      .locator('[data-test-locator="dialogQuickSearchDocument-button-close"]')
+      .click()
+    await expect(appWindow.locator('#dialogQuickSearchDocument-title')).toHaveCount(0)
   })
 
   test('Check if discard dialog shows title Cancel and Discard actions', async () => {

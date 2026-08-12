@@ -28,6 +28,7 @@ export default {
     openChangelogDialog: 'Öppna Changelog',
     openKeybindSettingsDialog: 'Öppna Keybind Settings',
     openQuickAddDocumentDialog: 'Open Quick-Add New Document',
+    openQuickSearchDocumentDialog: 'Open Quick-Search Existing Document',
     openProjectSettingsDialog: 'Öppna projektinställningar',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'Spara projektinställningar',

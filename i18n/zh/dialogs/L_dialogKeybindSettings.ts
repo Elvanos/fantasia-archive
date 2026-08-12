@@ -27,6 +27,7 @@ export default {
     openAppStyling: '打开自定义应用程序 CSS',
     openProjectStyling: '打开自定义项目 CSS',
     quickNewDocument: 'Quick-Add New Document',
+    quickExistingDocument: 'Quick-search existing document',
     openProjectSettings: '打开项目设置',
     showProjectDashboard: '显示项目仪表板',
     toggleDeveloperTools: '切换开发者工具',

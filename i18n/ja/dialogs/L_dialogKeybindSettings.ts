@@ -27,6 +27,7 @@ export default {
     openAppStyling: 'カスタム アプリ CSS を開く',
     openProjectStyling: 'カスタム プロジェクト CSS を開く',
     quickNewDocument: 'Quick-Add New Document',
+    quickExistingDocument: 'Quick-search existing document',
     openProjectSettings: 'プロジェクト設定を開く',
     showProjectDashboard: 'プロジェクトダッシュボードを表示',
     toggleDeveloperTools: '開発者ツールの切り替え',
