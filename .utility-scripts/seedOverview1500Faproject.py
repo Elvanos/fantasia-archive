@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
-"""One-shot overview seed: 4 worlds x 20 classic templates x 1500 random docs.
+"""One-shot overview seed: 4 worlds x classic templates x 1500 docs.
 
 Uses stdlib sqlite3 so Electron-locked better-sqlite3 is not required.
+
+Distribution:
+  - At least 2 worlds receive every document type
+  - Other worlds may omit some types
+  - Each active world×type placement gets 10–50 documents
+  - Counts are random within that band and sum to the target total
 
 Usage (from repo root):
   python .utility-scripts/seedOverview1500Faproject.py
@@ -21,6 +27,9 @@ from pathlib import Path
 TOTAL_DOCUMENTS = 1500
 USER_VERSION = 8
 TREE_ORDER_EMPTY = -9007199254740991
+DOC_COUNT_MIN_PER_PLACEMENT = 10
+DOC_COUNT_MAX_PER_PLACEMENT = 50
+FULL_TEMPLATE_WORLD_MIN = 2
 
 WORLD_SPECS = (
     ("Earth", "#4A90D9"),
@@ -30,26 +39,27 @@ WORLD_SPECS = (
 )
 
 # (plural display title, singular title) — order matches overview chart axis
+# Spaces around '/' so long titles wrap in FaSelectInput / last-opened lists.
 TEMPLATE_SPECS = (
     ("Chapters", "Chapter"),
-    ("Lore notes/Other notes", "Lore note/Other note"),
-    ("Myths/Legends/Stories", "Myth/Legend/Story"),
+    ("Lore notes / Other notes", "Lore note / Other note"),
+    ("Myths / Legends / Stories", "Myth / Legend / Story"),
     ("Characters", "Character"),
-    ("Locations/Geography", "Location/Geography"),
+    ("Locations / Geography", "Location / Geography"),
     ("Events", "Event"),
-    ("Species/Races/Flora/Fauna", "Species/Race/Flora/Fauna"),
+    ("Species / Races / Flora / Fauna", "Species / Race / Flora / Fauna"),
     ("Languages", "Language"),
-    ("Cultures/Arts", "Culture/Art"),
-    ("Ideologies/Political groups", "Ideology/Political group"),
-    ("Teachings/Religious groups", "Teaching/Religious group"),
-    ("Organizations/Other groups", "Organization/Other group"),
-    ("Schools of Magic/Magical groups", "School of Magic/Magical group"),
-    ("Sciences/Technological groups", "Science/Technological group"),
-    ("Skills/Spells/Other", "Skill/Spell/Other"),
+    ("Cultures / Arts", "Culture / Art"),
+    ("Ideologies / Political groups", "Ideology / Political group"),
+    ("Teachings / Religious groups", "Teaching / Religious group"),
+    ("Organizations / Other groups", "Organization / Other group"),
+    ("Schools of Magic / Magical groups", "School of Magic / Magical group"),
+    ("Sciences / Technological groups", "Science / Technological group"),
+    ("Skills / Spells / Other", "Skill / Spell / Other"),
     ("Items", "Item"),
-    ("Occupations/Classes", "Occupation/Class"),
-    ("Afflictions/Boons/Conditions", "Affliction/Boon/Condition"),
-    ("Resources/Materials", "Resource/Material"),
+    ("Occupations / Classes", "Occupation / Class"),
+    ("Afflictions / Boons / Conditions", "Affliction / Boon / Condition"),
+    ("Resources / Materials", "Resource / Material"),
     ("Currencies", "Currency"),
 )
 
@@ -204,6 +214,113 @@ def en_us_json(value: str) -> str:
     return json.dumps({"en-US": value}, separators=(",", ":"))
 
 
+def pick_active_world_template_pairs (
+    world_count: int,
+    template_count: int,
+    *,
+    full_world_min: int,
+    total_documents: int,
+    count_lo: int,
+    count_hi: int,
+) -> list[tuple[int, int]]:
+    """Return (world_index, template_index) pairs that receive documents.
+
+    At least `full_world_min` worlds get every template. Other worlds get a random
+    non-empty subset. Pair count is forced into [ceil(total/hi), floor(total/lo)].
+    """
+    if world_count < full_world_min:
+        raise ValueError("world_count must be >= full_world_min")
+    min_pairs = (total_documents + count_hi - 1) // count_hi
+    max_pairs = total_documents // count_lo
+    hard_max = world_count * template_count
+    if min_pairs > hard_max or min_pairs > max_pairs:
+        raise ValueError(
+            f"Cannot place {total_documents} docs with [{count_lo},{count_hi}] "
+            f"per placement across {hard_max} max pairs"
+        )
+
+    full_world_count = random.randint(full_world_min, world_count)
+    full_worlds = set(random.sample(range(world_count), full_world_count))
+    pairs: set[tuple[int, int]] = set()
+    for world_index in full_worlds:
+        for template_index in range(template_count):
+            pairs.add((world_index, template_index))
+
+    other_worlds = [index for index in range(world_count) if index not in full_worlds]
+    # Fill remaining worlds with random subsets until pair count is in range.
+    target_pairs = random.randint(max(min_pairs, len(pairs)), min(max_pairs, hard_max))
+    for world_index in other_worlds:
+        if len(pairs) >= target_pairs:
+            break
+        # Keep at least one type so the world is not empty of docs.
+        keep = random.randint(1, template_count)
+        chosen = random.sample(range(template_count), keep)
+        for template_index in chosen:
+            if len(pairs) >= target_pairs:
+                break
+            pairs.add((world_index, template_index))
+
+    # If still short (unlikely), add random missing pairs.
+    while len(pairs) < min_pairs:
+        candidate = (random.randrange(world_count), random.randrange(template_count))
+        pairs.add(candidate)
+
+    # If over max_pairs, drop from non-full worlds first.
+    if len(pairs) > max_pairs:
+        droppable = [
+            pair for pair in pairs if pair[0] not in full_worlds
+        ]
+        random.shuffle(droppable)
+        for pair in droppable:
+            if len(pairs) <= max_pairs:
+                break
+            # Never empty a world entirely if it still has only one pair.
+            world_index = pair[0]
+            world_pair_count = sum(1 for item in pairs if item[0] == world_index)
+            if world_pair_count <= 1:
+                continue
+            pairs.discard(pair)
+        while len(pairs) > max_pairs:
+            # Last resort: trim from full worlds (still keep full_world_min intact
+            # by only trimming extras beyond the required full set — skip if all
+            # remaining are required full coverage).
+            extras = [pair for pair in pairs if pair[0] not in full_worlds]
+            if not extras:
+                break
+            pairs.discard(extras[0])
+
+    if not (min_pairs <= len(pairs) <= max_pairs):
+        raise RuntimeError(
+            f"Active pair count {len(pairs)} outside [{min_pairs}, {max_pairs}]"
+        )
+    return sorted(pairs)
+
+
+def allocate_placement_counts (
+    placement_count: int,
+    total_documents: int,
+    *,
+    count_lo: int,
+    count_hi: int,
+) -> list[int]:
+    """Random ints in [lo, hi] that sum to total_documents."""
+    if placement_count * count_lo > total_documents:
+        raise ValueError("total too small for placement minimums")
+    if placement_count * count_hi < total_documents:
+        raise ValueError("total too large for placement maximums")
+    counts = [count_lo] * placement_count
+    remaining = total_documents - placement_count * count_lo
+    while remaining > 0:
+        index = random.randrange(placement_count)
+        room = count_hi - counts[index]
+        if room <= 0:
+            continue
+        add = min(remaining, room, random.randint(1, room))
+        counts[index] += add
+        remaining -= add
+    return counts
+
+
 def main() -> None:
     default_out = Path(r"C:\Users\xfeni\Files\FA Perf Tests") / "overview-4worlds-1500.faproject"
 
@@ -296,54 +413,76 @@ def main() -> None:
         )
         templates.append({"id": template_id, "name": plural})
 
+    active_pairs = pick_active_world_template_pairs(
+        len(worlds),
+        len(templates),
+        full_world_min=FULL_TEMPLATE_WORLD_MIN,
+        total_documents=document_count,
+        count_lo=DOC_COUNT_MIN_PER_PLACEMENT,
+        count_hi=DOC_COUNT_MAX_PER_PLACEMENT,
+    )
+    placement_counts = allocate_placement_counts(
+        len(active_pairs),
+        document_count,
+        count_lo=DOC_COUNT_MIN_PER_PLACEMENT,
+        count_hi=DOC_COUNT_MAX_PER_PLACEMENT,
+    )
+
     placements: list[dict] = []
-    for world in worlds:
-        for root_sort, template in enumerate(templates):
-            placement_id = str(uuid.uuid4())
-            conn.execute(
-                """
-                INSERT INTO world_template_placements (
-                  id, world_id, document_template_id, group_id, root_sort_order, group_sort_order,
-                  nickname, nickname_translations_json, nickname_singular_translations_json,
-                  created_at_ms, updated_at_ms
-                ) VALUES (?, ?, ?, NULL, ?, NULL, '', '{}', '{}', ?, ?)
-                """,
-                (placement_id, world["id"], template["id"], root_sort, now_ms, now_ms),
-            )
-            placements.append(
-                {
-                    "placement_id": placement_id,
-                    "world_id": world["id"],
-                    "world_name": world["name"],
-                    "template_id": template["id"],
-                    "template_name": template["name"],
-                }
+    for pair_index, (world_index, template_index) in enumerate(active_pairs):
+        world = worlds[world_index]
+        template = templates[template_index]
+        placement_id = str(uuid.uuid4())
+        conn.execute(
+            """
+            INSERT INTO world_template_placements (
+              id, world_id, document_template_id, group_id, root_sort_order, group_sort_order,
+              nickname, nickname_translations_json, nickname_singular_translations_json,
+              created_at_ms, updated_at_ms
+            ) VALUES (?, ?, ?, NULL, ?, NULL, '', '{}', '{}', ?, ?)
+            """,
+            (
+                placement_id,
+                world["id"],
+                template["id"],
+                template_index,
+                now_ms,
+                now_ms,
+            ),
+        )
+        placements.append(
+            {
+                "count": placement_counts[pair_index],
+                "placement_id": placement_id,
+                "world_id": world["id"],
+                "world_name": world["name"],
+                "template_id": template["id"],
+                "template_name": template["name"],
+            }
+        )
+
+    # Per active placement: random count in [10, 50], names like "Template #n".
+    doc_rows: list[tuple] = []
+    for placement in placements:
+        for sort in range(placement["count"]):
+            doc_id = str(uuid.uuid4())
+            name = f"{placement['template_name']} #{sort + 1}"
+            doc_rows.append(
+                (
+                    doc_id,
+                    placement["world_id"],
+                    placement["template_id"],
+                    placement["placement_id"],
+                    None,
+                    sort,
+                    name,
+                    TREE_ORDER_EMPTY,
+                    now_ms,
+                    now_ms,
+                )
             )
 
-    # True random split: each doc picks a random world+template placement.
-    placement_counts = [0] * len(placements)
-    doc_rows: list[tuple] = []
-    for _ in range(document_count):
-        placement_index = random.randrange(len(placements))
-        placement = placements[placement_index]
-        sort = placement_counts[placement_index]
-        placement_counts[placement_index] = sort + 1
-        doc_id = str(uuid.uuid4())
-        name = f"{placement['template_name']} #{sort + 1}"
-        doc_rows.append(
-            (
-                doc_id,
-                placement["world_id"],
-                placement["template_id"],
-                placement["placement_id"],
-                None,
-                sort,
-                name,
-                TREE_ORDER_EMPTY,
-                now_ms,
-                now_ms,
-            )
-        )
+    random.shuffle(doc_rows)
 
     insert_sql = """
       INSERT INTO documents (
@@ -380,6 +519,26 @@ def main() -> None:
         ORDER BY t.sort_order
         """
     ).fetchall()
+    placement_stats = conn.execute(
+        """
+        SELECT w.display_name, t.display_name, COUNT(d.id) AS doc_count
+        FROM world_template_placements p
+        JOIN worlds w ON w.id = p.world_id
+        JOIN document_templates t ON t.id = p.document_template_id
+        LEFT JOIN documents d ON d.tree_placement_id = p.id
+        GROUP BY p.id
+        ORDER BY w.sort_order, t.sort_order
+        """
+    ).fetchall()
+    world_template_coverage = conn.execute(
+        """
+        SELECT w.display_name, COUNT(DISTINCT p.document_template_id) AS template_count
+        FROM worlds w
+        LEFT JOIN world_template_placements p ON p.world_id = w.id
+        GROUP BY w.id
+        ORDER BY w.sort_order
+        """
+    ).fetchall()
     conn.close()
 
     elapsed = time.time() - started
@@ -387,14 +546,27 @@ def main() -> None:
     print(f"  file: {out_path}")
     print(f"  documents: {counted} (target {document_count})")
     print(f"  worlds: {len(WORLD_SPECS)}, templates: {len(TEMPLATE_SPECS)}")
+    print(f"  active world×template placements: {len(placements)}")
+    print(
+        f"  docs per placement: [{DOC_COUNT_MIN_PER_PLACEMENT}, {DOC_COUNT_MAX_PER_PLACEMENT}]"
+    )
     print(f"  rng seed: {args.seed}")
     print(f"  elapsed: {elapsed:.1f}s")
+    print("  templates per world:")
+    for name, template_count in world_template_coverage:
+        print(f"    {name}: {template_count}/{len(TEMPLATE_SPECS)}")
     print("  per world:")
     for name, count in world_counts:
         print(f"    {name}: {count}")
     print("  per template:")
     for name, count in template_counts:
         print(f"    {name}: {count}")
+    counts_only = [row[2] for row in placement_stats]
+    if counts_only:
+        print(
+            f"  placement doc counts: min={min(counts_only)} max={max(counts_only)} "
+            f"n={len(counts_only)}"
+        )
 
 
 if __name__ == "__main__":
