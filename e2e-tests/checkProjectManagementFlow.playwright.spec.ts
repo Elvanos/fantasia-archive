@@ -454,6 +454,9 @@ test.describe.serial('Project management flow', () => {
       L_faProjectSession.notifyProjectLoaded,
       E2E_PROJECT_DISPLAY_MENU_NEW
     ))).toBeVisible()
+    // Wait for open routing to finish before leaving for splash (toast can land mid-navigate).
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
+    await expectFaPlaywrightE2eWorkspaceShell(appWindow)
 
     await navigateFaPlaywrightE2eToSplashRoute(appWindow)
     await openFaPlaywrightE2eSplashResumeDropdown(appWindow)
