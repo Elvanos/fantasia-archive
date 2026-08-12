@@ -369,7 +369,10 @@ export const S_FaOpenedDocuments = defineStore('S_FaOpenedDocuments', () => {
       await navigateToOpenedDocumentRoute(openResult.navigateDocumentId)
     }
     if (!resolveOpenedDocumentTabIsTemporary(newTab.persistenceState)) {
-      void recordFaOpenedDocumentLastOpenedBestEffort(documentId)
+      // Await MRU write before Last opened bump so overview list reload includes this doc.
+      // Chart rebuilds only when Last opened empty↔non-empty (see refreshLastOpenedAfterMru).
+      await recordFaOpenedDocumentLastOpenedBestEffort(documentId)
+      S_FaProjectHierarchyTree().bumpDocumentLastOpenedRefreshGeneration()
     }
   }
 
@@ -432,7 +435,8 @@ export const S_FaOpenedDocuments = defineStore('S_FaOpenedDocuments', () => {
   }
 
   async function createTemporaryDocumentUnderParentDocument (
-    sourceDocumentId: string
+    sourceDocumentId: string,
+    openMode?: T_faOpenedDocumentOpenMode | undefined
   ): Promise<string | null> {
     if (!hasFaProjectContentEntityReaders()) {
       throw new Error(i18n.global.t('globalFunctionality.faOpenedDocuments.createTemporaryError'))
@@ -467,6 +471,7 @@ export const S_FaOpenedDocuments = defineStore('S_FaOpenedDocuments', () => {
 
     const documentId = await createTemporaryDocument({
       displayName,
+      openMode,
       parentDocumentId: sourceDocumentId,
       templateId,
       temporaryParentResolveDocumentIds,
@@ -476,7 +481,8 @@ export const S_FaOpenedDocuments = defineStore('S_FaOpenedDocuments', () => {
   }
 
   async function createTemporaryDocumentCopyFromSource (
-    sourceDocumentId: string
+    sourceDocumentId: string,
+    openMode?: T_faOpenedDocumentOpenMode | undefined
   ): Promise<string | null> {
     if (!hasFaProjectContentEntityReaders()) {
       throw new Error(i18n.global.t('globalFunctionality.faOpenedDocuments.createTemporaryError'))
@@ -542,7 +548,7 @@ export const S_FaOpenedDocuments = defineStore('S_FaOpenedDocuments', () => {
     const openResult = resolveFaOpenedDocumentOpenFromTree({
       activeDocumentId,
       documentId,
-      mode: 'leftNavigate',
+      mode: openMode ?? 'leftNavigate',
       newTab,
       tabs
     })

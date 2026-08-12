@@ -5,20 +5,10 @@ import type {
 import type { I_ref } from 'app/types/I_vueCompositionShims'
 
 import type { I_faProjectOverviewChartSeries } from 'app/types/I_faProjectOverviewChart'
-import {
-  FA_PROJECT_OVERVIEW_CHART_SETTLE_MS,
-  buildProjectOverviewApexChartOptions
-} from '../functions/buildProjectOverviewApexChartOptions'
-import { buildProjectOverviewApexChartTooltipHtml } from '../functions/buildProjectOverviewApexChartTooltipHtml'
-import { buildProjectOverviewStackedChartModel } from '../functions/buildProjectOverviewStackedChartModel'
-import { createProjectOverviewApexTooltipCustom } from '../functions/createProjectOverviewApexTooltipCustom'
-import { parseProjectOverviewTranslationsJson } from '../functions/parseProjectOverviewTranslationsJson'
-import { resolveProjectOverviewApexColumnWidth } from '../functions/resolveProjectOverviewApexColumnWidth'
-import {
-  FA_PROJECT_OVERVIEW_GRAPH_CARD_WIDTH_FULLSIZE_PX,
-  resolveProjectOverviewGraphCardWidthPx
-} from '../functions/resolveProjectOverviewGraphCardWidth'
-import { attachProjectOverviewApexTooltipAboveBarEvents } from './projectOverviewApexTooltipAboveBarWiring'
+import { FA_PROJECT_OVERVIEW_CHART_SETTLE_MS } from '../functions/buildProjectOverviewApexChartOptions'
+import { FA_PROJECT_OVERVIEW_GRAPH_CARD_WIDTH_FULLSIZE_PX } from '../functions/resolveProjectOverviewGraphCardWidth'
+import { didProjectOverviewLastOpenedEmptyBoundaryCross } from '../functions/didProjectOverviewLastOpenedEmptyBoundaryCross'
+import { applyProjectOverviewChartModel } from './applyProjectOverviewChartModelWiring'
 
 /**
  * Chart + last-opened fetch lifecycle for Project Overview mount.
@@ -40,6 +30,7 @@ export function createProjectOverviewDataLoader (input: {
 }): {
     clearChartSettleTimer: () => void
     loadOverviewData: () => Promise<void>
+    refreshLastOpenedAfterMru: () => Promise<void>
   } {
   let chartSettleTimerId: ReturnType<typeof setTimeout> | null = null
 
@@ -50,39 +41,11 @@ export function createProjectOverviewDataLoader (input: {
     }
   }
 
-  function applyChartModel (
-    distribution: I_faProjectDocumentDistributionResult,
-    lastOpenedItemCount: number
-  ): void {
-    const chartModel = buildProjectOverviewStackedChartModel({
-      distribution,
-      preferredLanguageCode: input.preferredLanguageCode(),
-      parseTranslationsJson: parseProjectOverviewTranslationsJson
-    })
-    const fullsize = chartModel.totalDocumentCount === 0 || lastOpenedItemCount === 0
-    const graphCardWidthPx = resolveProjectOverviewGraphCardWidthPx({
-      categoryCount: chartModel.categories.length,
-      fullsize
-    })
-    input.graphCardWidthPx.value = graphCardWidthPx
-    input.chartSeries.value = chartModel.series
-    input.chartOptions.value = attachProjectOverviewApexTooltipAboveBarEvents(
-      buildProjectOverviewApexChartOptions({
-        chartHeightPx: input.resolveChartHeightPx(),
-        chartModel,
-        columnWidth: resolveProjectOverviewApexColumnWidth(
-          chartModel.categories.length,
-          graphCardWidthPx
-        ),
-        tooltipCustom: createProjectOverviewApexTooltipCustom({
-          buildTooltipHtml: buildProjectOverviewApexChartTooltipHtml,
-          documentCountSeparator: input.resolveDocumentCountSeparator(),
-          documentsLabelSuffix: input.resolveDocumentsLabelSuffix()
-        })
-      })
-    )
-    input.totalDocumentCount.value = chartModel.totalDocumentCount
-    input.hasDocumentTemplates.value = distribution.documentTemplateTotalCount > 0
+  function scheduleChartSettle (): void {
+    chartSettleTimerId = setTimeout(() => {
+      input.chartLoading.value = false
+      chartSettleTimerId = null
+    }, FA_PROJECT_OVERVIEW_CHART_SETTLE_MS)
   }
 
   async function loadOverviewData (): Promise<void> {
@@ -93,7 +56,19 @@ export function createProjectOverviewDataLoader (input: {
         input.listDocumentDistribution(),
         input.listDocumentLastOpened()
       ])
-      applyChartModel(distribution, lastOpened.items.length)
+      applyProjectOverviewChartModel({
+        chartOptions: input.chartOptions,
+        chartSeries: input.chartSeries,
+        distribution,
+        graphCardWidthPx: input.graphCardWidthPx,
+        hasDocumentTemplates: input.hasDocumentTemplates,
+        lastOpenedItemCount: lastOpened.items.length,
+        preferredLanguageCode: input.preferredLanguageCode,
+        resolveChartHeightPx: input.resolveChartHeightPx,
+        resolveDocumentCountSeparator: input.resolveDocumentCountSeparator,
+        resolveDocumentsLabelSuffix: input.resolveDocumentsLabelSuffix,
+        totalDocumentCount: input.totalDocumentCount
+      })
       input.lastOpenedItems.value = lastOpened.items
     } catch (error) {
       console.warn('[ProjectOverview] failed to load overview data', error)
@@ -104,14 +79,27 @@ export function createProjectOverviewDataLoader (input: {
       input.chartOptions.value = {}
       input.graphCardWidthPx.value = FA_PROJECT_OVERVIEW_GRAPH_CARD_WIDTH_FULLSIZE_PX
     }
-    chartSettleTimerId = setTimeout(() => {
-      input.chartLoading.value = false
-      chartSettleTimerId = null
-    }, FA_PROJECT_OVERVIEW_CHART_SETTLE_MS)
+    scheduleChartSettle()
+  }
+
+  async function refreshLastOpenedAfterMru (): Promise<void> {
+    const previousCount = input.lastOpenedItems.value.length
+    try {
+      const lastOpened = await input.listDocumentLastOpened()
+      const nextCount = lastOpened.items.length
+      if (didProjectOverviewLastOpenedEmptyBoundaryCross(previousCount, nextCount)) {
+        await loadOverviewData()
+        return
+      }
+      input.lastOpenedItems.value = lastOpened.items
+    } catch (error) {
+      console.warn('[ProjectOverview] failed to refresh last opened', error)
+    }
   }
 
   return {
     clearChartSettleTimer,
-    loadOverviewData
+    loadOverviewData,
+    refreshLastOpenedAfterMru
   }
 }

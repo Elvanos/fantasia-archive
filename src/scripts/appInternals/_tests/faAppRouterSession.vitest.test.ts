@@ -202,6 +202,50 @@ test('Test that navigateToWorkspaceRouteForActiveProject skips push on component
 
 /**
  * faAppRouterSession
+ * navigateToOpenedDocumentRoute skips push on component testing routes (hydrate would wipe tabs).
+ */
+test('Test that navigateToOpenedDocumentRoute skips push on component testing route', async () => {
+  faVitestRouterPath = '/componentTesting/DialogQuickSearchDocument'
+  routerPushMock.mockReset()
+  registerFaAppRouterSession({
+    getCurrentPath (): string {
+      return faVitestRouterPath
+    },
+    push (payload): void {
+      faVitestRouterPath = payload.path
+      routerPushMock(payload)
+    }
+  })
+
+  await navigateToOpenedDocumentRoute('doc-9')
+
+  expect(routerPushMock).not.toHaveBeenCalled()
+})
+
+/**
+ * faAppRouterSession
+ * navigateToWorkspaceHomeRoute skips push on component testing routes.
+ */
+test('Test that navigateToWorkspaceHomeRoute skips push on component testing route', async () => {
+  faVitestRouterPath = '/componentTesting/DialogQuickSearchDocument'
+  routerPushMock.mockReset()
+  registerFaAppRouterSession({
+    getCurrentPath (): string {
+      return faVitestRouterPath
+    },
+    push (payload): void {
+      faVitestRouterPath = payload.path
+      routerPushMock(payload)
+    }
+  })
+
+  await navigateToWorkspaceHomeRoute()
+
+  expect(routerPushMock).not.toHaveBeenCalled()
+})
+
+/**
+ * faAppRouterSession
  * navigateToWorkspaceWhenOnWelcomeRoute delegates to workspace navigation from welcome.
  */
 test('Test that navigateToWorkspaceWhenOnWelcomeRoute pushes home from welcome route', async () => {

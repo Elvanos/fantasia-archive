@@ -28,6 +28,12 @@ export function resolveFaOpenedDocumentOpenFromTree (deps: {
   if (existingIndex === -1) {
     deps.tabs.value = appendOpenedDocumentTabToRight(deps.tabs.value, deps.newTab)
   }
+  if (deps.mode === 'middleBackground') {
+    return {
+      shouldNavigate: false,
+      navigateDocumentId: null
+    }
+  }
   deps.activeDocumentId.value = deps.documentId
   return {
     shouldNavigate: true,

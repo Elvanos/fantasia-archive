@@ -1,22 +1,22 @@
+import type { I_createUseProjectOverviewDeps } from 'app/types/I_faProjectOverview'
 import type { I_ref } from 'app/types/I_vueCompositionShims'
 
 /**
  * Registers Project overview tip pick + data load on mount, clears chart timer on
- * unmount, and reloads when the active project or document census generation changes.
+ * unmount, reloads on project/census change, and refreshes Last opened on MRU bump.
  */
 export function attachProjectOverviewSessionLifecycle (input: {
   clearChartSettleTimer: () => void
   getActiveProjectId: () => string | null
   getDocumentCensusRefreshGeneration: () => number
+  getDocumentLastOpenedRefreshGeneration: () => number
   loadOverviewData: () => Promise<void>
   onMounted: (hook: () => void) => void
   onUnmounted: (hook: () => void) => void
   pickRandomTipCaption: () => string
   randomTipCaption: I_ref<string>
-  watch: (
-    source: () => readonly [string | null, number],
-    effect: () => void
-  ) => void
+  refreshLastOpenedAfterMru: () => Promise<void>
+  watch: I_createUseProjectOverviewDeps['watch']
 }): void {
   input.onMounted(() => {
     input.randomTipCaption.value = input.pickRandomTipCaption()
@@ -32,6 +32,12 @@ export function attachProjectOverviewSessionLifecycle (input: {
     ] as const,
     () => {
       void input.loadOverviewData()
+    }
+  )
+  input.watch(
+    () => input.getDocumentLastOpenedRefreshGeneration(),
+    () => {
+      void input.refreshLastOpenedAfterMru()
     }
   )
 }

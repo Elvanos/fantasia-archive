@@ -19,6 +19,9 @@ import {
   e2eSeedHierarchyPlacementWithDocuments
 } from 'app/helpers/playwrightHelpers_e2e/e2eWorkspaceHierarchyTreeHelpers'
 import {
+  e2eClickHierarchyDocumentLabel
+} from 'app/helpers/playwrightHelpers_e2e/e2eWorkspaceHierarchyTreeLabelHelpers'
+import {
   e2eSetNextProjectCreatePath,
   tryUnlinkE2eFaprojectFixture
 } from 'app/helpers/playwrightHelpers_e2e/playwrightE2eProjectPaths'
@@ -61,6 +64,9 @@ const OVERVIEW_CHART_E2E_FAPROJECT = 'e2e-project-overview-chart-last-opened.fap
 const OVERVIEW_CHART_E2E_PROJECT_NAME = 'E2E overview chart last opened'
 const OVERVIEW_CHART_E2E_DOC_LABEL = 'E2E Chart Hero'
 const OVERVIEW_CHART_E2E_SECOND_DOC_LABEL = 'E2E Chart Sidekick'
+const OVERVIEW_LIVE_REFRESH_E2E_FAPROJECT = 'e2e-project-overview-last-opened-live.faproject'
+const OVERVIEW_LIVE_REFRESH_E2E_PROJECT_NAME = 'E2E overview last opened live'
+const OVERVIEW_LIVE_REFRESH_E2E_DOC_LABEL = 'E2E Live Hero'
 const OVERVIEW_RELOAD_SETTLE_MS = 750
 
 async function prepareRendererForGlobalShortcuts (page: Page): Promise<void> {
@@ -266,6 +272,7 @@ test.describe.serial('Project Overview chart and last opened E2E', () => {
 
   /**
    * Middle-click opens another last-opened document without dropping the first tab.
+   * Staying on the dashboard also refreshes Last opened so the opened row remains listed.
    */
   test('Middle-click last-opened row opens a background tab', async () => {
     expect(primaryDocumentId.length).toBeGreaterThan(0)
@@ -287,6 +294,16 @@ test.describe.serial('Project Overview chart and last opened E2E', () => {
     await expect(
       appWindow.locator(`[data-test-locator="projectAppControlBar-tab-${primaryDocumentId}"]`)
     ).toBeVisible()
+
+    await expect(
+      appWindow.locator(`[data-test-locator="${selectorList.projectOverviewLastOpened}"]`)
+    ).toBeVisible({ timeout: 15_000 })
+    await expect(
+      appWindow.locator(`[data-test-locator="${lastOpenedItemLocator(secondaryDocumentId)}"]`)
+    ).toBeVisible({ timeout: 15_000 })
+    await expect(
+      appWindow.locator(`[data-test-locator="${lastOpenedItemLocator(secondaryDocumentId)}"]`)
+    ).toContainText(OVERVIEW_CHART_E2E_SECOND_DOC_LABEL)
   })
 
   /**
@@ -317,5 +334,111 @@ test.describe.serial('Project Overview chart and last opened E2E', () => {
     await expect(
       appWindow.locator(`[data-test-locator="${selectorList.contextDeleteDocument}"]`)
     ).toBeVisible()
+  })
+})
+
+test.describe.serial('Project Overview last opened live refresh 0 to N', () => {
+  let electronApp: ElectronApplication
+  let appWindow: Page
+  let suiteTestInfo: TestInfo
+
+  test.describe.configure({
+    timeout: 180_000
+  })
+
+  test.beforeAll(async ({}, testInfo) => {
+    suiteTestInfo = testInfo
+    const launched = await launchFaPlaywrightE2eAppWindow({
+      afterIsolationResetBeforeLaunch (): void {
+        tryUnlinkE2eFaprojectFixture(OVERVIEW_LIVE_REFRESH_E2E_FAPROJECT)
+      },
+      buildLaunchEnv (): Record<string, string> {
+        return {
+          TEST_ENV: extraEnvSettings.TEST_ENV
+        }
+      },
+      dismissStartupTips: true,
+      renderDelayMs: FA_FRONTEND_RENDER_TIMER,
+      testInfo
+    })
+    electronApp = launched.electronApp
+    appWindow = launched.appWindow
+  })
+
+  test.afterAll(async ({}, afterAllTestInfo) => {
+    await tearDownFaPlaywrightElectronSerialSuite({
+      afterAllTestInfo,
+      electronApp,
+      suiteTestInfo
+    })
+  })
+
+  /**
+   * Seeded docs with no MRU rows: hierarchy middle-click on dashboard creates Last opened live (0→N).
+   */
+  test('Middle-click hierarchy document from empty last opened shows the section', async () => {
+    await navigateFaPlaywrightE2eToSplashRoute(appWindow)
+    await e2eSetNextProjectCreatePath(electronApp, OVERVIEW_LIVE_REFRESH_E2E_FAPROJECT)
+    await appWindow.locator(`[data-test-locator="${selectorList.splashNew}"]`).click()
+    await expect(appWindow.locator(`[data-test-locator="${selectorList.nameInput}"]`)).toBeVisible()
+    await appWindow.locator(`[data-test-locator="${selectorList.nameInput}"]`).fill(
+      OVERVIEW_LIVE_REFRESH_E2E_PROJECT_NAME
+    )
+    await appWindow.locator(`[data-test-locator="${selectorList.createBtn}"]`).click()
+    await e2eExpectFaActiveProjectStoreName(appWindow, OVERVIEW_LIVE_REFRESH_E2E_PROJECT_NAME)
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
+
+    const seeded = await e2eSeedHierarchyPlacementWithDocuments(appWindow, {
+      documents: [
+        {
+          displayName: OVERVIEW_LIVE_REFRESH_E2E_DOC_LABEL,
+          sortOrder: 0
+        }
+      ],
+      templateDisplayName: 'E2E Live Characters',
+      templatePluralTitle: 'Characters',
+      templateSingularTitle: 'Character'
+    })
+    const liveDocument = seeded.documents[0]
+    if (liveDocument === undefined) {
+      throw new Error('Expected seeded live-refresh overview document')
+    }
+
+    await ensureHierarchyTreeDocumentNodesLoaded(appWindow)
+    await gotoFaPlaywrightE2eNonexistentRouteFor404(appWindow)
+    await triggerGlobalShortcut(appWindow, FA_PLAYWRIGHT_PRESS_DEFAULT_SHOW_PROJECT_DASHBOARD)
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
+    await appWindow.waitForTimeout(OVERVIEW_RELOAD_SETTLE_MS)
+
+    await expect(
+      appWindow.locator(`[data-test-locator="${selectorList.projectOverview}"]`)
+    ).toBeVisible({ timeout: 15_000 })
+    await expect(
+      appWindow.locator(`[data-test-locator="${selectorList.projectOverviewLastOpened}"]`)
+    ).toHaveCount(0)
+    await expect(
+      appWindow.locator(`[data-test-locator="${selectorList.projectOverviewGraphParent}"]`)
+    ).toBeVisible({ timeout: 15_000 })
+
+    await e2eExpandWorldAndPlacementNodes(appWindow)
+    await e2eClickHierarchyDocumentLabel(
+      appWindow,
+      OVERVIEW_LIVE_REFRESH_E2E_DOC_LABEL,
+      'middle'
+    )
+
+    await expect(
+      appWindow.locator(`[data-test-locator="${selectorList.projectOverviewLastOpened}"]`)
+    ).toBeVisible({ timeout: 15_000 })
+    await expect(
+      appWindow.locator(`[data-test-locator="${lastOpenedItemLocator(liveDocument.id)}"]`)
+    ).toBeVisible({ timeout: 15_000 })
+    await expect(
+      appWindow.locator(`[data-test-locator="${lastOpenedItemLocator(liveDocument.id)}"]`)
+    ).toContainText(OVERVIEW_LIVE_REFRESH_E2E_DOC_LABEL)
+    await expect(
+      appWindow.locator(`[data-test-locator="${selectorList.projectOverviewGraphParent}"]`)
+    ).toBeVisible()
+    await expectFaPlaywrightE2eHashRoute(appWindow, '/home')
   })
 })

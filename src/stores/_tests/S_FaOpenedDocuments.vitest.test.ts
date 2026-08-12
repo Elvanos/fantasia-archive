@@ -235,18 +235,28 @@ test('Test that S_FaOpenedDocuments openFromTree appends a new tab on left navig
   expect(navigateToOpenedDocumentRouteMock).toHaveBeenCalledWith('doc-2')
 })
 
-test('Test that S_FaOpenedDocuments openFromTree middle background focuses new tab', async () => {
+test('Test that S_FaOpenedDocuments openFromTree middle background appends without focusing', async () => {
   const { S_FaOpenedDocuments } = await import('../S_FaOpenedDocuments')
+  const { S_FaProjectHierarchyTree } = await import('../S_FaProjectHierarchyTree')
   const store = S_FaOpenedDocuments()
+  const hierarchyStore = S_FaProjectHierarchyTree()
   await store.hydrateFromProjectDatabase()
+  const previousActive = store.activeDocumentId
+  const lastOpenedGenBefore = hierarchyStore.documentLastOpenedRefreshGeneration
+  const censusBefore = hierarchyStore.documentCensusRefreshGeneration
+  navigateToOpenedDocumentRouteMock.mockClear()
+  recordDocumentLastOpenedMock.mockClear()
   getDocumentByIdMock.mockResolvedValueOnce({
     displayName: 'Villain',
     id: 'doc-2'
   })
   await store.openFromTree('doc-2', 'middleBackground', treeMeta)
   expect(store.tabs).toHaveLength(2)
-  expect(store.activeDocumentId).toBe('doc-2')
-  expect(navigateToOpenedDocumentRouteMock).toHaveBeenCalledWith('doc-2')
+  expect(store.activeDocumentId).toBe(previousActive)
+  expect(navigateToOpenedDocumentRouteMock).not.toHaveBeenCalled()
+  expect(recordDocumentLastOpenedMock).toHaveBeenCalledWith({ documentId: 'doc-2' })
+  expect(hierarchyStore.documentLastOpenedRefreshGeneration).toBe(lastOpenedGenBefore + 1)
+  expect(hierarchyStore.documentCensusRefreshGeneration).toBe(censusBefore)
 })
 
 test('Test that S_FaOpenedDocuments saveDocumentDisplayName persists and queues tree refresh', async () => {
@@ -1647,10 +1657,11 @@ test('Test that S_FaOpenedDocuments saveDocumentDisplayName resolves deleted par
   }))
 })
 
-test('Test that S_FaOpenedDocuments createTemporaryDocument middle background focuses tab', async () => {
+test('Test that S_FaOpenedDocuments createTemporaryDocument middle background appends without focusing', async () => {
   const { S_FaOpenedDocuments } = await import('../S_FaOpenedDocuments')
   const store = S_FaOpenedDocuments()
   await store.hydrateFromProjectDatabase()
+  const previousActive = store.activeDocumentId
   navigateToOpenedDocumentRouteMock.mockClear()
 
   const documentId = await store.createTemporaryDocument({
@@ -1660,8 +1671,9 @@ test('Test that S_FaOpenedDocuments createTemporaryDocument middle background fo
     worldId: 'world-1'
   })
 
-  expect(store.activeDocumentId).toBe(documentId)
-  expect(navigateToOpenedDocumentRouteMock).toHaveBeenCalledWith(documentId)
+  expect(store.findTabByDocumentId(documentId)).not.toBeNull()
+  expect(store.activeDocumentId).toBe(previousActive)
+  expect(navigateToOpenedDocumentRouteMock).not.toHaveBeenCalled()
 })
 
 test('Test that S_FaOpenedDocuments createTemporaryDocument throws when project content APIs are missing', async () => {
@@ -2158,17 +2170,18 @@ test('Test that S_FaOpenedDocuments openFromTree ignores missing project content
   expect(store.tabs).toHaveLength(1)
 })
 
-test('Test that S_FaOpenedDocuments openFromTree middle background focuses an existing tab', async () => {
+test('Test that S_FaOpenedDocuments openFromTree middle background leaves an existing tab unfocused', async () => {
   const { S_FaOpenedDocuments } = await import('../S_FaOpenedDocuments')
   const store = S_FaOpenedDocuments()
   await store.hydrateFromProjectDatabase()
+  const previousActive = store.activeDocumentId
   navigateToOpenedDocumentRouteMock.mockClear()
 
   await store.openFromTree('doc-1', 'middleBackground', treeMeta)
 
   expect(store.tabs).toHaveLength(1)
-  expect(store.activeDocumentId).toBe('doc-1')
-  expect(navigateToOpenedDocumentRouteMock).toHaveBeenCalledWith('doc-1')
+  expect(store.activeDocumentId).toBe(previousActive)
+  expect(navigateToOpenedDocumentRouteMock).not.toHaveBeenCalled()
 })
 
 test('Test that S_FaOpenedDocuments updateTemporaryDocumentParent no-ops for unknown tabs', async () => {

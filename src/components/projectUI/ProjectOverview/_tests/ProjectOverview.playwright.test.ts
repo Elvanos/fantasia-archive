@@ -20,9 +20,13 @@ import type {
   I_faProjectDocumentLastOpenedItem
 } from 'app/types/I_faProjectDocumentLastOpenedDomain'
 import type { I_faProjectDocumentTemplate } from 'app/types/I_faProjectDocumentTemplateDomain'
-import type { I_faProjectHierarchyTreeHeTreeNode } from 'app/types/I_faProjectHierarchyTreeDomain'
-import type { I_faProjectHierarchyTreeWorkspaceWorld } from 'app/types/I_faProjectHierarchyTreeDomain'
+import type {
+  I_faProjectHierarchyTreeHeTreeNode,
+  I_faProjectHierarchyTreeUiState,
+  I_faProjectHierarchyTreeWorkspaceWorld
+} from 'app/types/I_faProjectHierarchyTreeDomain'
 import type { I_faProjectWorld } from 'app/types/I_faProjectWorldDomain'
+import { FA_PROJECT_OVERVIEW_CHART_SETTLE_MS } from '../functions/buildProjectOverviewApexChartOptions'
 
 const playwrightTestDir = path.dirname(fileURLToPath(import.meta.url))
 
@@ -92,8 +96,19 @@ const selectorList = {
   projectOverviewTipCard: 'projectOverview-tipCard',
   projectOverviewTipHeading: 'projectOverview-tipHeading',
   projectOverviewTipMessage: 'projectOverview-tipMessage',
-  projectOverviewWorldLegendHelpIcon: 'projectOverview-worldLegendHelpIcon'
+  projectOverviewWorldLegendHelpIcon: 'projectOverview-worldLegendHelpIcon',
+  hierarchyNodeDocument: 'projectHierarchyTree-node-document',
+  hierarchyNodeLabelSuffix: '-label',
+  hierarchyNodeTemplatePlacement: 'projectHierarchyTree-node-templatePlacement',
+  hierarchyNodeWorld: 'projectHierarchyTree-node-world',
+  hierarchyTree: 'projectHierarchyTree'
 } as const
+
+const lastOpenedExpandedUiState: I_faProjectHierarchyTreeUiState = {
+  expandedNodeIds: [WORLD_ID, PLACEMENT_ID],
+  schemaVersion: 1,
+  scrollTopPx: 0
+}
 
 const defaultActiveProjectSeed: I_faComponentTestingStoreSeed = {
   activeProject: {
@@ -418,6 +433,22 @@ async function remountProjectOverviewAfterStoreSeed (
     timeout: 30_000
   })
   await page.waitForTimeout(faFrontendRenderTimer)
+
+  // MainLayout hydrate can rebuild hierarchy after the seed patch; re-apply tree rows for /home.
+  if (
+    (routePath === '/home' || routePath.startsWith('/home/')) &&
+    seed.hierarchyTree !== undefined
+  ) {
+    await patchFaPlaywrightComponentHarnessStores(page, {
+      hierarchyTree: seed.hierarchyTree,
+      openedDocuments: seed.openedDocuments ?? {
+        activeDocumentId: null,
+        tabs: []
+      },
+      projectContentOverrides: seed.projectContentOverrides
+    })
+    await page.waitForTimeout(faFrontendRenderTimer)
+  }
 }
 
 async function readDialogComponentState (page: Page): Promise<{
@@ -520,6 +551,94 @@ async function launchProjectOverviewHarness (testInfo: TestInfo): Promise<{
     appWindow: launched.appWindow,
     electronApp: launched.electronApp
   }
+}
+
+/**
+ * Updates the Project Overview list probe so MRU refresh reads new last-opened rows
+ * (recordDocumentLastOpened is a noop stub under component TEST_ENV).
+ */
+async function patchProjectOverviewLastOpenedProbe (
+  page: Page,
+  lastOpenedItems: I_faProjectDocumentLastOpenedItem[]
+): Promise<void> {
+  await page.evaluate((items) => {
+    const current = window.__faComponentTestingProjectOverviewLists ?? {}
+    const next: NonNullable<typeof window.__faComponentTestingProjectOverviewLists> = {
+      lastOpened: { items }
+    }
+    if (current.distribution !== undefined) {
+      next.distribution = current.distribution
+    }
+    window.__faComponentTestingProjectOverviewLists = next
+  }, lastOpenedItems)
+}
+
+async function middleClickHierarchyDocumentLabel (
+  page: Page,
+  displayName: string
+): Promise<void> {
+  const label = page.locator(
+    `[data-test-locator="${selectorList.hierarchyNodeDocument}${selectorList.hierarchyNodeLabelSuffix}"]`
+  ).filter({ hasText: displayName })
+  await expect(label).toBeVisible({ timeout: 15_000 })
+  await label.click({
+    button: 'middle'
+  })
+}
+
+async function expandOverviewHierarchyUntilDocumentVisible (
+  page: Page,
+  documentLabelText: string
+): Promise<void> {
+  const hierarchyHost = page.locator('[data-test-locator="projectHierarchyTree-host"]')
+  await expect(hierarchyHost).toBeVisible({ timeout: 15_000 })
+
+  const worldLabel = page.locator(
+    `[data-test-locator="${selectorList.hierarchyNodeWorld}${selectorList.hierarchyNodeLabelSuffix}"]`
+  ).filter({ hasText: 'Eldoria' })
+  await expect(worldLabel).toHaveText('Eldoria', { timeout: 15_000 })
+
+  const documentLabel = page.locator(
+    `[data-test-locator="${selectorList.hierarchyNodeDocument}${selectorList.hierarchyNodeLabelSuffix}"]`
+  ).filter({ hasText: documentLabelText })
+  const treeRoot = page.locator(`[data-test-locator="${selectorList.hierarchyTree}"]`)
+
+  await expect.poll(async () => {
+    if (await documentLabel.count() > 0) {
+      return true
+    }
+
+    const collapsedTreeItems = treeRoot.locator('[role="treeitem"][aria-expanded="false"]')
+    const collapsedCount = await collapsedTreeItems.count()
+    if (collapsedCount > 0) {
+      const openIconWrapper = collapsedTreeItems.first()
+        .locator('[data-test-locator="projectHierarchyTree-openIconWrapper"]')
+      if (await openIconWrapper.count() > 0) {
+        await openIconWrapper.dispatchEvent('pointerdown')
+        await openIconWrapper.click({ force: true })
+      } else {
+        await collapsedTreeItems.first().click({ force: true })
+      }
+      await page.waitForTimeout(300)
+      return false
+    }
+
+    const placementLabel = page.locator(
+      `[data-test-locator="${selectorList.hierarchyNodeTemplatePlacement}${selectorList.hierarchyNodeLabelSuffix}"]`
+    )
+    if (await placementLabel.count() > 0) {
+      await placementLabel.first().click({ force: true })
+      await page.waitForTimeout(300)
+    } else {
+      await worldLabel.click({ force: true })
+      await page.waitForTimeout(300)
+    }
+    return false
+  }, {
+    timeout: 30_000
+  }).toBe(true)
+
+  await expect(documentLabel.first()).toBeVisible({ timeout: 15_000 })
 }
 
 test.describe.serial('Project overview (active project, tips card)', () => {
@@ -1193,6 +1312,192 @@ test.describe.serial('Project overview (last opened)', () => {
     ).toBeVisible()
     await expect(
       appWindow.locator(`[data-test-locator="${selectorList.contextDeleteDocument}"]`)
+    ).toBeVisible()
+  })
+})
+
+test.describe.serial('Project overview (last opened live refresh)', () => {
+  let electronApp: ElectronApplication
+  let appWindow: Page
+  let suiteTestInfo: TestInfo
+
+  const liveRefreshSeed: I_faComponentTestingStoreSeed = {
+    ...defaultActiveProjectSeed,
+    hierarchyTree: {
+      treeData: lastOpenedTreeData,
+      uiState: lastOpenedExpandedUiState,
+      worlds: [worldWithPlacement]
+    },
+    hideTooltipsProject: true,
+    openedDocuments: {
+      activeDocumentId: null,
+      tabs: []
+    },
+    projectContentOverrides: {
+      documentsById: {
+        [LAST_OPENED_DEAD_CATEGORY_DOC_ID]: buildSampleDocument({
+          displayName: 'Dead Category Hero',
+          id: LAST_OPENED_DEAD_CATEGORY_DOC_ID,
+          isCategory: true,
+          isDead: true
+        }),
+        [LAST_OPENED_PLAIN_DOC_ID]: buildSampleDocument({
+          displayName: 'Plain Hero',
+          id: LAST_OPENED_PLAIN_DOC_ID
+        })
+      },
+      templatesById: {
+        [TEMPLATE_ID]: sampleTemplate
+      },
+      worldsById: {
+        [WORLD_ID]: sampleWorld
+      }
+    }
+  }
+
+  const plainHeroLastOpenedItem: I_faProjectDocumentLastOpenedItem = {
+    displayName: 'Plain Hero',
+    documentBackgroundColor: null,
+    documentId: LAST_OPENED_PLAIN_DOC_ID,
+    documentTextColor: null,
+    isCategory: false,
+    isDead: false,
+    openedAtMs: 10,
+    templateIcon: 'mdi-account',
+    templateId: TEMPLATE_ID,
+    worldId: WORLD_ID
+  }
+
+  const deadCategoryLastOpenedItem: I_faProjectDocumentLastOpenedItem = {
+    displayName: 'Dead Category Hero',
+    documentBackgroundColor: null,
+    documentId: LAST_OPENED_DEAD_CATEGORY_DOC_ID,
+    documentTextColor: null,
+    isCategory: true,
+    isDead: true,
+    openedAtMs: 9,
+    templateIcon: 'mdi-account',
+    templateId: TEMPLATE_ID,
+    worldId: WORLD_ID
+  }
+
+  test.describe.configure({
+    timeout: 180_000
+  })
+
+  test.beforeAll(async ({}, testInfo) => {
+    testInfo.setTimeout(180_000)
+    suiteTestInfo = testInfo
+    const launched = await launchProjectOverviewHarness(testInfo)
+    electronApp = launched.electronApp
+    appWindow = launched.appWindow
+  })
+
+  test.afterAll(async ({}, afterAllTestInfo) => {
+    await tearDownFaPlaywrightElectronSerialSuite({
+      afterAllTestInfo,
+      electronApp,
+      suiteTestInfo
+    })
+  })
+
+  /**
+   * Empty last-opened seed on /home: middle-click hierarchy doc crosses 0→N, section appears, graph stays.
+   */
+  test('Check that hierarchy middle-click from empty last opened shows the section live', async () => {
+    await remountProjectOverviewAfterStoreSeed(appWindow, liveRefreshSeed, {
+      distribution: chartDistributionFixture,
+      lastOpenedItems: [],
+      routePath: '/home'
+    })
+
+    await expect(
+      appWindow.locator(`[data-test-locator="${selectorList.projectOverviewLastOpened}"]`)
+    ).toHaveCount(0)
+    await expect(
+      appWindow.locator(`[data-test-locator="${selectorList.projectOverviewGraphParent}"]`)
+    ).toBeVisible()
+
+    await expandOverviewHierarchyUntilDocumentVisible(appWindow, 'Plain Hero')
+    await patchProjectOverviewLastOpenedProbe(appWindow, [plainHeroLastOpenedItem])
+    await middleClickHierarchyDocumentLabel(appWindow, 'Plain Hero')
+
+    await expect(
+      appWindow.locator(`[data-test-locator="${selectorList.projectOverviewLastOpened}"]`)
+    ).toBeVisible({ timeout: 15_000 })
+    await expect(
+      appWindow.locator(`[data-test-locator="${lastOpenedItemLocator(LAST_OPENED_PLAIN_DOC_ID)}"]`)
+    ).toBeVisible({ timeout: 15_000 })
+    await expect(
+      appWindow.locator(`[data-test-locator="${selectorList.projectOverviewGraphParent}"]`)
+    ).toBeVisible()
+
+    await appWindow.waitForTimeout(FA_PROJECT_OVERVIEW_CHART_SETTLE_MS + 200)
+    await expect(
+      appWindow.locator(`[data-test-locator="${selectorList.projectOverviewGraphParent}"]`)
+    ).toBeVisible()
+    await expect.poll(async () => {
+      return await appWindow.evaluate(() => {
+        return window.location.hash
+      })
+    }, { timeout: 15_000 }).toMatch(/^#\/home(?:\/document\/[^#]*)?$/)
+  })
+
+  /**
+   * Non-empty last opened: middle-click another hierarchy doc reorders list without remount; chart stays up.
+   */
+  test('Check that hierarchy middle-click updates last opened without chart loading overlay', async () => {
+    await remountProjectOverviewAfterStoreSeed(appWindow, liveRefreshSeed, {
+      distribution: chartDistributionFixture,
+      lastOpenedItems: [deadCategoryLastOpenedItem, plainHeroLastOpenedItem],
+      routePath: '/home'
+    })
+
+    const lastOpened = appWindow.locator(
+      `[data-test-locator="${selectorList.projectOverviewLastOpened}"]`
+    )
+    await expect(lastOpened).toBeVisible()
+    await expect(
+      lastOpened.locator('.projectOverview__lastOpenedRow').first()
+    ).toHaveAttribute(
+      'data-test-locator',
+      lastOpenedItemLocator(LAST_OPENED_DEAD_CATEGORY_DOC_ID)
+    )
+
+    const reorderedAfterPlainOpen: I_faProjectDocumentLastOpenedItem[] = [
+      {
+        ...plainHeroLastOpenedItem,
+        openedAtMs: 20
+      },
+      {
+        ...deadCategoryLastOpenedItem,
+        openedAtMs: 9
+      }
+    ]
+    await expandOverviewHierarchyUntilDocumentVisible(appWindow, 'Plain Hero')
+    await patchProjectOverviewLastOpenedProbe(appWindow, reorderedAfterPlainOpen)
+    await middleClickHierarchyDocumentLabel(appWindow, 'Plain Hero')
+
+    await expect.poll(async () => {
+      return await lastOpened.locator('.projectOverview__lastOpenedRow').first()
+        .getAttribute('data-test-locator')
+    }, { timeout: 15_000 }).toBe(lastOpenedItemLocator(LAST_OPENED_PLAIN_DOC_ID))
+
+    await expect(
+      appWindow.locator(`[data-test-locator="${selectorList.projectOverviewGraphParent}"]`)
+    ).toBeVisible()
+    await expect(
+      appWindow.locator(
+        `[data-test-locator="${selectorList.projectOverviewGraphParent}"] .q-inner-loading`
+      )
+    ).toBeHidden()
+    await expect(
+      appWindow.locator(`[data-test-locator="${lastOpenedItemLocator(LAST_OPENED_PLAIN_DOC_ID)}"]`)
+    ).toBeVisible()
+    await expect(
+      appWindow.locator(
+        `[data-test-locator="${lastOpenedItemLocator(LAST_OPENED_DEAD_CATEGORY_DOC_ID)}"]`
+      )
     ).toBeVisible()
   })
 })

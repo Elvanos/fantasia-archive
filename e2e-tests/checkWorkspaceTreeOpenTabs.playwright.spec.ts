@@ -150,7 +150,7 @@ test.describe.serial('Opened documents E2E — tree open tab order and middle-cl
     await appWindow.waitForTimeout(OPENED_DOCUMENTS_PERSIST_SETTLE_MS)
   })
 
-  test('Middle-click tree open keeps both tabs after focusing the new document', async () => {
+  test('Middle-click tree open keeps prior active route and both tabs', async () => {
     expect(e2eTreeOpenTabIdA.length).toBeGreaterThan(0)
     expect(e2eTreeOpenTabIdB.length).toBeGreaterThan(0)
 
@@ -162,7 +162,8 @@ test.describe.serial('Opened documents E2E — tree open tab order and middle-cl
     await e2eClickHierarchyDocumentLabel(appWindow, TREE_OPEN_TABS_E2E_LABEL_A)
     await expectFaPlaywrightE2eHashRoute(appWindow, `/home/document/${e2eTreeOpenTabIdA}`)
     await e2eClickHierarchyDocumentLabel(appWindow, TREE_OPEN_TABS_E2E_LABEL_B, 'middle')
-    await expectFaPlaywrightE2eHashRoute(appWindow, `/home/document/${e2eTreeOpenTabIdB}`)
+    // middleBackground: append Bravo tab, keep Alpha active + route
+    await expectFaPlaywrightE2eHashRoute(appWindow, `/home/document/${e2eTreeOpenTabIdA}`)
     await expect(
       appWindow.locator(`[data-test-locator="projectAppControlBar-tab-${e2eTreeOpenTabIdA}"]`)
     ).toBeVisible()

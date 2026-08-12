@@ -208,3 +208,140 @@ test('Test that createProjectOverviewDataLoader clears settle timer and handles 
   warnSpy.mockRestore()
   vi.useRealTimers()
 })
+
+const sampleLastOpenedItem: I_faProjectDocumentLastOpenedItem = {
+  displayName: 'Hero',
+  documentBackgroundColor: null,
+  documentId: 'doc-1',
+  documentTextColor: null,
+  isCategory: false,
+  isDead: false,
+  openedAtMs: 1,
+  templateIcon: 'mdi-account',
+  templateId: 't1',
+  worldId: 'w1'
+}
+
+function makeOneDocDistribution (): I_faProjectDocumentDistributionResult {
+  return {
+    counts: [{
+      documentCount: 1,
+      templateId: 't1',
+      worldId: 'w1'
+    }],
+    templates: [{
+      icon: 'mdi-file',
+      templateId: 't1',
+      titlePluralTranslationsJson: '{"en-US":"Characters"}',
+      sortOrder: 0
+    }],
+    documentTemplateTotalCount: 1,
+    totalDocumentCount: 1,
+    worlds: [{
+      color: '#ff0000',
+      displayNameTranslationsJson: '{"en-US":"World"}',
+      sortOrder: 0,
+      worldId: 'w1'
+    }]
+  }
+}
+
+/**
+ * createProjectOverviewDataLoader.refreshLastOpenedAfterMru
+ * Updates Last opened rows without chart reload when count stays non-empty.
+ */
+test('Test that refreshLastOpenedAfterMru updates list without chart reload when non-empty', async () => {
+  vi.useFakeTimers()
+  const chartLoading = ref(false)
+  const chartOptions = ref<Record<string, unknown>>({})
+  const chartSeries = ref<I_faProjectOverviewChartSeries[]>([])
+  const graphCardWidthPx = ref(1386)
+  const hasDocumentTemplates = ref(false)
+  const lastOpenedItems = ref<I_faProjectDocumentLastOpenedItem[]>([sampleLastOpenedItem])
+  const totalDocumentCount = ref(1)
+  const listDocumentDistribution = vi.fn(async () => makeOneDocDistribution())
+  const listDocumentLastOpened = vi.fn(async () => ({
+    items: [
+      sampleLastOpenedItem,
+      {
+        ...sampleLastOpenedItem,
+        documentId: 'doc-2',
+        displayName: 'Villain'
+      }
+    ]
+  }))
+
+  const { clearChartSettleTimer, loadOverviewData, refreshLastOpenedAfterMru } =
+    createProjectOverviewDataLoader({
+      chartLoading,
+      chartOptions,
+      chartSeries,
+      graphCardWidthPx,
+      hasDocumentTemplates,
+      lastOpenedItems,
+      listDocumentDistribution,
+      listDocumentLastOpened,
+      preferredLanguageCode: () => 'en-US',
+      resolveChartHeightPx: () => 666,
+      resolveDocumentCountSeparator: () => ' - ',
+      resolveDocumentsLabelSuffix: () => ' documents',
+      totalDocumentCount
+    })
+
+  await loadOverviewData()
+  await vi.advanceTimersByTimeAsync(FA_PROJECT_OVERVIEW_CHART_SETTLE_MS)
+  listDocumentDistribution.mockClear()
+  chartLoading.value = false
+
+  await refreshLastOpenedAfterMru()
+  expect(listDocumentDistribution).not.toHaveBeenCalled()
+  expect(chartLoading.value).toBe(false)
+  expect(lastOpenedItems.value).toHaveLength(2)
+
+  clearChartSettleTimer()
+  vi.useRealTimers()
+})
+
+/**
+ * createProjectOverviewDataLoader.refreshLastOpenedAfterMru
+ * Full overview reload when Last opened crosses empty↔non-empty.
+ */
+test('Test that refreshLastOpenedAfterMru reloads chart when empty boundary crosses', async () => {
+  vi.useFakeTimers()
+  const chartLoading = ref(false)
+  const chartOptions = ref<Record<string, unknown>>({})
+  const chartSeries = ref<I_faProjectOverviewChartSeries[]>([])
+  const graphCardWidthPx = ref(1386)
+  const hasDocumentTemplates = ref(false)
+  const lastOpenedItems = ref<I_faProjectDocumentLastOpenedItem[]>([])
+  const totalDocumentCount = ref(0)
+  const listDocumentDistribution = vi.fn(async () => makeOneDocDistribution())
+  const listDocumentLastOpened = vi.fn(async () => ({
+    items: [sampleLastOpenedItem]
+  }))
+
+  const { clearChartSettleTimer, refreshLastOpenedAfterMru } = createProjectOverviewDataLoader({
+    chartLoading,
+    chartOptions,
+    chartSeries,
+    graphCardWidthPx,
+    hasDocumentTemplates,
+    lastOpenedItems,
+    listDocumentDistribution,
+    listDocumentLastOpened,
+    preferredLanguageCode: () => 'en-US',
+    resolveChartHeightPx: () => 666,
+    resolveDocumentCountSeparator: () => ' - ',
+    resolveDocumentsLabelSuffix: () => ' documents',
+    totalDocumentCount
+  })
+
+  await refreshLastOpenedAfterMru()
+  expect(listDocumentDistribution).toHaveBeenCalledTimes(1)
+  expect(chartLoading.value).toBe(true)
+  expect(lastOpenedItems.value).toHaveLength(1)
+  expect(totalDocumentCount.value).toBe(1)
+
+  clearChartSettleTimer()
+  vi.useRealTimers()
+})

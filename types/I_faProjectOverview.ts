@@ -68,6 +68,10 @@ export interface I_createUseProjectOverviewDeps {
       effect: () => void
     ): void
     (
+      source: () => number,
+      effect: () => void
+    ): void
+    (
       source: () => boolean,
       effect: (active: boolean) => void,
       options?: { immediate?: boolean }
@@ -141,6 +145,7 @@ export interface I_wireProjectOverviewSessionBehaviorsResult {
   emptyCtaMode: I_useProjectOverviewApi['emptyCtaMode']
   graphCardHeightPx: I_useProjectOverviewApi['graphCardHeightPx']
   loadOverviewData: () => Promise<void>
+  refreshLastOpenedAfterMru: () => Promise<void>
   onEmptyCtaClick: () => void
   onLastOpenedContextAddUnder: (documentId: string) => void
   onLastOpenedContextCopyBackgroundColor: (documentId: string) => void

@@ -80,11 +80,11 @@ test('Test that resolveFaOpenedDocumentOpenFromTree focuses an existing tab on l
 
 /**
  * resolveFaOpenedDocumentOpenFromTree
- * Middle background on an existing tab focuses and navigates.
+ * Middle background keeps the current active tab and does not navigate.
  */
-test('Test that resolveFaOpenedDocumentOpenFromTree focuses an existing tab on middle background', () => {
+test('Test that resolveFaOpenedDocumentOpenFromTree leaves active unchanged on middle background', () => {
   const tabs = ref([baseTab])
-  const activeDocumentId = ref<string | null>(null)
+  const activeDocumentId = ref<string | null>('other-doc')
   const result = resolveFaOpenedDocumentOpenFromTree({
     activeDocumentId,
     documentId: 'doc-1',
@@ -92,15 +92,15 @@ test('Test that resolveFaOpenedDocumentOpenFromTree focuses an existing tab on m
     newTab: baseTab,
     tabs
   })
-  expect(result.shouldNavigate).toBe(true)
-  expect(result.navigateDocumentId).toBe('doc-1')
+  expect(result.shouldNavigate).toBe(false)
+  expect(result.navigateDocumentId).toBeNull()
   expect(tabs.value).toHaveLength(1)
-  expect(activeDocumentId.value).toBe('doc-1')
+  expect(activeDocumentId.value).toBe('other-doc')
 })
 
-test('Test that resolveFaOpenedDocumentOpenFromTree appends middle background tab with navigation', () => {
+test('Test that resolveFaOpenedDocumentOpenFromTree appends middle background tab without navigation', () => {
   const tabs = ref<I_faOpenedDocumentTab[]>([])
-  const activeDocumentId = ref<string | null>(null)
+  const activeDocumentId = ref<string | null>('keep-active')
   const newTab = createFaOpenedDocumentTabFromOpenMeta({
     displayName: 'Side quest',
     documentId: 'doc-2',
@@ -117,10 +117,10 @@ test('Test that resolveFaOpenedDocumentOpenFromTree appends middle background ta
     newTab,
     tabs
   })
-  expect(result.shouldNavigate).toBe(true)
-  expect(result.navigateDocumentId).toBe('doc-2')
+  expect(result.shouldNavigate).toBe(false)
+  expect(result.navigateDocumentId).toBeNull()
   expect(tabs.value).toHaveLength(1)
-  expect(activeDocumentId.value).toBe('doc-2')
+  expect(activeDocumentId.value).toBe('keep-active')
 })
 
 /**

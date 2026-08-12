@@ -56,6 +56,7 @@ export function createProjectOverviewSession (
   const {
     clearChartSettleTimer,
     loadOverviewData,
+    refreshLastOpenedAfterMru,
     ...publicBehaviors
   } = behaviors
 
@@ -71,11 +72,18 @@ export function createProjectOverviewSession (
       }
       return hierarchyStore.documentCensusRefreshGeneration ?? 0
     },
+    getDocumentLastOpenedRefreshGeneration: () => {
+      const hierarchyStore = deps.S_FaProjectHierarchyTree() as {
+        documentLastOpenedRefreshGeneration?: number
+      }
+      return hierarchyStore.documentLastOpenedRefreshGeneration ?? 0
+    },
     loadOverviewData,
     onMounted: deps.onMounted,
     onUnmounted: deps.onUnmounted,
     pickRandomTipCaption: deps.pickRandomTipCaption,
     randomTipCaption,
+    refreshLastOpenedAfterMru,
     watch: deps.watch
   })
 

@@ -67,6 +67,10 @@ export function createFaAppRouterSession (deps: {
     if (currentPath === FA_WORKSPACE_ROUTE_PATH) {
       return
     }
+    // Component harness stays on /componentTesting/*; leaving wipes Pinia tabs (MainLayout hydrate).
+    if (isFaComponentTestingRoutePath(currentPath)) {
+      return
+    }
     await router.push({ path: FA_WORKSPACE_ROUTE_PATH })
   }
 
@@ -81,6 +85,10 @@ export function createFaAppRouterSession (deps: {
     const targetPath = `${FA_WORKSPACE_DOCUMENT_ROUTE_PREFIX}${documentId}`
     const currentPath = resolveFaAppRouterCurrentPath()
     if (currentPath === targetPath) {
+      return
+    }
+    // Same as workspace navigate: do not leave component-testing routes (hydrate wipes tabs).
+    if (isFaComponentTestingRoutePath(currentPath)) {
       return
     }
     await router.push({ path: targetPath })

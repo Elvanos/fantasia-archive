@@ -39,13 +39,23 @@ export const S_FaProjectHierarchyTree = defineStore('S_FaProjectHierarchyTree', 
   let refreshLayoutNeedsFollowUp = false
   const layoutRefreshGeneration = ref(0)
   /**
-   * Bumped when overview chart inputs change so Project Overview can reload without remount:
-   * persisted document create/delete, and Project Settings template or worlds save.
+   * Bumped when overview chart census inputs change so Project Overview can reload without
+   * remount: persisted document create/delete, and Project Settings template or worlds save.
    */
   const documentCensusRefreshGeneration = ref(0)
 
   function bumpDocumentCensusRefreshGeneration (): void {
     documentCensusRefreshGeneration.value += 1
+  }
+
+  /**
+   * Bumped when document_last_opened MRU changes (open tab) so Project Overview can refresh
+   * Last opened without a full chart census reload.
+   */
+  const documentLastOpenedRefreshGeneration = ref(0)
+
+  function bumpDocumentLastOpenedRefreshGeneration (): void {
+    documentLastOpenedRefreshGeneration.value += 1
   }
 
   function applyUiState (next: I_faProjectHierarchyTreeUiState): void {
@@ -231,7 +241,9 @@ export const S_FaProjectHierarchyTree = defineStore('S_FaProjectHierarchyTree', 
   const clearPendingRevealPathOut = clearPendingRevealPath
   const clearSearchOut = clearSearch
   const bumpDocumentCensusRefreshGenerationOut = bumpDocumentCensusRefreshGeneration
+  const bumpDocumentLastOpenedRefreshGenerationOut = bumpDocumentLastOpenedRefreshGeneration
   const documentCensusRefreshGenerationOut = documentCensusRefreshGeneration
+  const documentLastOpenedRefreshGenerationOut = documentLastOpenedRefreshGeneration
   const flushUiStatePersistOut = flushUiStatePersist
   const layoutRefreshGenerationOut = layoutRefreshGeneration
   const patchWorldColorPaletteInLayoutOut = patchWorldColorPaletteInLayout
@@ -273,11 +285,13 @@ export const S_FaProjectHierarchyTree = defineStore('S_FaProjectHierarchyTree', 
 
   return {
     bumpDocumentCensusRefreshGeneration: bumpDocumentCensusRefreshGenerationOut,
+    bumpDocumentLastOpenedRefreshGeneration: bumpDocumentLastOpenedRefreshGenerationOut,
     clearPendingDocumentRefreshIds: clearPendingDocumentRefreshIdsOut,
     clearPendingHierarchyNodeRefreshIds: clearPendingHierarchyNodeRefreshIdsOut,
     clearPendingRevealPath: clearPendingRevealPathOut,
     clearSearch: clearSearchOut,
     documentCensusRefreshGeneration: readonly(documentCensusRefreshGenerationOut),
+    documentLastOpenedRefreshGeneration: readonly(documentLastOpenedRefreshGenerationOut),
     flushUiStatePersist: flushUiStatePersistOut,
     layoutRefreshGeneration: readonly(layoutRefreshGenerationOut),
     patchWorldColorPaletteInLayout: patchWorldColorPaletteInLayoutOut,

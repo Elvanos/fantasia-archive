@@ -54,25 +54,26 @@ export function wireProjectOverviewSessionBehaviors (
     runFaAction: input.deps.runFaAction
   })
 
-  const { clearChartSettleTimer, loadOverviewData } = createProjectOverviewDataLoader({
-    chartLoading: input.chartLoading,
-    chartOptions: input.chartOptions,
-    chartSeries: input.chartSeries,
-    graphCardWidthPx: input.graphCardWidthPx,
-    hasDocumentTemplates: input.hasDocumentTemplates,
-    lastOpenedItems: input.lastOpenedItems,
-    listDocumentDistribution: input.deps.listDocumentDistribution,
-    listDocumentLastOpened: input.deps.listDocumentLastOpened,
-    preferredLanguageCode: () => input.settings.value?.languageCode ?? 'en-US',
-    resolveChartHeightPx: () => display.chartHeightPx.value,
-    resolveDocumentCountSeparator: () => String(
-      input.deps.t('projectUI.projectOverview.documentDistributionWorldLegendSeparator')
-    ),
-    resolveDocumentsLabelSuffix: () => String(
-      input.deps.t('projectUI.projectOverview.documentDistributionWorldLegendDocumentsSuffix')
-    ),
-    totalDocumentCount: input.totalDocumentCount
-  })
+  const { clearChartSettleTimer, loadOverviewData, refreshLastOpenedAfterMru } =
+    createProjectOverviewDataLoader({
+      chartLoading: input.chartLoading,
+      chartOptions: input.chartOptions,
+      chartSeries: input.chartSeries,
+      graphCardWidthPx: input.graphCardWidthPx,
+      hasDocumentTemplates: input.hasDocumentTemplates,
+      lastOpenedItems: input.lastOpenedItems,
+      listDocumentDistribution: input.deps.listDocumentDistribution,
+      listDocumentLastOpened: input.deps.listDocumentLastOpened,
+      preferredLanguageCode: () => input.settings.value?.languageCode ?? 'en-US',
+      resolveChartHeightPx: () => display.chartHeightPx.value,
+      resolveDocumentCountSeparator: () => String(
+        input.deps.t('projectUI.projectOverview.documentDistributionWorldLegendSeparator')
+      ),
+      resolveDocumentsLabelSuffix: () => String(
+        input.deps.t('projectUI.projectOverview.documentDistributionWorldLegendDocumentsSuffix')
+      ),
+      totalDocumentCount: input.totalDocumentCount
+    })
 
   const { resolveLastOpenedItemChromeStyle } = createProjectOverviewLastOpenedChromeResolver({
     buildFaColorGlyphCssCustomProperties: input.deps.buildFaColorGlyphCssCustomProperties,
@@ -97,6 +98,7 @@ export function wireProjectOverviewSessionBehaviors (
     emptyCtaMode,
     graphCardHeightPx,
     loadOverviewData,
+    refreshLastOpenedAfterMru,
     onEmptyCtaClick,
     onLastOpenedContextAddUnder,
     onLastOpenedContextCopyBackgroundColor,
