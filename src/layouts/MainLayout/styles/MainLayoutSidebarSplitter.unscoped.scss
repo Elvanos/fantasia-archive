@@ -31,6 +31,10 @@
     min-height: 0;
   }
 
+  &.q-splitter--vertical > .q-splitter__separator > div {
+    left: 0;
+  }
+
   .q-splitter__separator {
     background-color: transparent;
     cursor: col-resize;

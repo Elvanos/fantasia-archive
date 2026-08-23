@@ -67,6 +67,9 @@ export const S_FaProjectSidebar = defineStore('S_FaProjectSidebar', () => {
    * @returns false when the bridge is missing or the write failed; true when unchanged or persisted.
    */
   async function persistSidebarWidth (nextWidthPx: number): Promise<boolean> {
+    if (!Number.isFinite(nextWidthPx)) {
+      return false
+    }
     const api = window.faContentBridgeAPIs?.projectManagement
     if (typeof api?.setProjectSidebar !== 'function') {
       console.warn('[S_FaProjectSidebar] setProjectSidebar unavailable — restart Electron dev to load preload')

@@ -142,6 +142,39 @@ test('Test that MainLayout forwards workspace splitter width updates to sidebar 
   vi.unstubAllEnvs()
 })
 
+/**
+ * MainLayout
+ * QSplitter emits undefined on a separator click without pan; persist and store width stay put.
+ */
+test('Test that MainLayout ignores undefined workspace splitter width emits', async () => {
+  setFantasiaStorybookCanvasFlag(false)
+  vi.stubEnv('MODE', 'spa')
+  vi.useFakeTimers()
+
+  S_FaActiveProject().setActiveProject({
+    filePath: 'C:\\Projects\\demo.faproject',
+    id: 'project-uuid-1',
+    name: 'Demo project'
+  })
+
+  const persistSpy = vi.spyOn(S_FaProjectSidebar(), 'persistSidebarWidth').mockResolvedValue(true)
+
+  const w = await mountMainLayoutForVitest('/home')
+  await flushPromises()
+
+  await w.get('[data-test-locator="mainLayout-sidebarSplitter-resize-undefined"]').trigger('click')
+  await vi.advanceTimersByTimeAsync(500)
+
+  expect(persistSpy).not.toHaveBeenCalled()
+  expect(S_FaProjectSidebar().widthPx).toBe(FA_PROJECT_SIDEBAR_MIN_WIDTH_PX)
+
+  persistSpy.mockRestore()
+  S_FaActiveProject().clearActiveProject()
+  w.unmount()
+  vi.useRealTimers()
+  vi.unstubAllEnvs()
+})
+
 test('Test that MainLayout workspace splitter enforces the 375px minimum width constant', async () => {
   setFantasiaStorybookCanvasFlag(false)
   vi.stubEnv('MODE', 'spa')

@@ -97,6 +97,11 @@ export async function mountMainLayoutForVitest (
                 type="button"
                 @click="$emit('update:modelValue', 420)"
               />
+              <button
+                data-test-locator="mainLayout-sidebarSplitter-resize-undefined"
+                type="button"
+                @click="$emit('update:modelValue', undefined)"
+              />
               <slot name="separator" />
               <slot name="after" />
             </div>

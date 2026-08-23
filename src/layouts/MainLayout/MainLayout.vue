@@ -172,7 +172,6 @@ function onSidebarSplitterModelUpdate (widthPx: number): void {
   if (hideHierarchyTree.value) {
     return
   }
-  sidebarWidthModel.value = widthPx
   onSidebarSplitterWidthUpdate(widthPx)
 }
 

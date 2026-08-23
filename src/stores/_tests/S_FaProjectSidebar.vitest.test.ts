@@ -123,6 +123,17 @@ test('Test that refreshProjectSidebar returns false when getProjectSidebar rejec
   expect(ok).toBe(false)
 })
 
+/**
+ * persistSidebarWidth
+ * Non-finite width must not mutate store state or invoke IPC (JSON.stringify turns NaN into null).
+ */
+test('Test that persistSidebarWidth skips IPC when widthPx is not finite', async () => {
+  const ok = await store.persistSidebarWidth(Number.NaN)
+  expect(ok).toBe(false)
+  expect(setProjectSidebarMock).not.toHaveBeenCalled()
+  expect(store.widthPx).toBe(375)
+})
+
 test('Test that persistSidebarWidth returns false when the bridge is missing', async () => {
   Object.assign(window.faContentBridgeAPIs, { projectManagement: undefined as never })
   const ok = await store.persistSidebarWidth(500)

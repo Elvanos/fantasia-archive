@@ -164,6 +164,40 @@ test('Test that splitter width updates persist ceiled width through the sidebar 
   vi.useRealTimers()
 })
 
+/**
+ * createMainLayoutWorkspaceSidebar
+ * QSplitter can emit undefined on a separator click without a pan delta; persist must not run.
+ */
+test('Test that splitter width updates skip persist when QSplitter emits a non-finite width', async () => {
+  const api = buildUseSidebar()
+
+  api.onSidebarSplitterWidthUpdate(Number.NaN)
+  api.onSidebarSplitterWidthUpdate(undefined as unknown as number)
+
+  await vi.advanceTimersByTimeAsync(150)
+
+  expect(persistSidebarWidthMock).not.toHaveBeenCalled()
+  expect(api.sidebarWidthModel.value).toBe(375)
+  vi.useRealTimers()
+})
+
+/**
+ * createMainLayoutWorkspaceSidebar
+ * Debounced persist reads the live model; a non-finite value must not reach the store.
+ */
+test('Test that scheduled persist skips IPC when the sidebar model is no longer finite', async () => {
+  const api = buildUseSidebar()
+
+  api.sidebarWidthModel.value = 500
+  api.onSidebarSplitterWidthUpdate(500)
+  api.sidebarWidthModel.value = Number.NaN
+
+  await vi.advanceTimersByTimeAsync(150)
+
+  expect(persistSidebarWidthMock).not.toHaveBeenCalled()
+  vi.useRealTimers()
+})
+
 test('Test that splitter width updates skip persist when no active project is loaded', async () => {
   activeProjectId = null
 

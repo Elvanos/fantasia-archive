@@ -101,6 +101,9 @@ export function createMainLayoutWorkspaceSidebar (
       if (!deps.S_FaActiveProject().hasActiveProject) {
         return
       }
+      if (!Number.isFinite(sidebarWidthModel.value)) {
+        return
+      }
       const ceiled = Math.max(sidebarMinWidthPx, Math.ceil(sidebarWidthModel.value))
       sidebarWidthModel.value = ceiled
       await deps.S_FaProjectSidebar().persistSidebarWidth(ceiled)
@@ -110,7 +113,14 @@ export function createMainLayoutWorkspaceSidebar (
       void persistSidebarWidthAfterDrag()
     }, deps.sidebarWidthPersistDebounceMs)
 
-    function onSidebarSplitterWidthUpdate (_widthPx: number): void {
+    /**
+     * Applies a QSplitter width emit. Ignores non-finite values from a separator click without pan.
+     */
+    function onSidebarSplitterWidthUpdate (widthPx: number): void {
+      if (!Number.isFinite(widthPx)) {
+        return
+      }
+      sidebarWidthModel.value = widthPx
       if (suppressSidebarWidthPersist) {
         return
       }
