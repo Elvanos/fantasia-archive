@@ -3,6 +3,10 @@ import { expect, test, vi } from 'vitest'
 
 import ProjectAppControlBarTabContextMenuCloseRows from '../ProjectAppControlBarTabContextMenuCloseRows.vue'
 
+/**
+ * ProjectAppControlBarTabContextMenuCloseRows
+ * Close rows stay default ink (not text-secondary); clicks still fire.
+ */
 test('Test that ProjectAppControlBarTabContextMenuCloseRows delegates close row clicks', async () => {
   const onCloseThisTabClick = vi.fn()
   const onCloseAllTabsWithoutChangesExceptThisOneClick = vi.fn()
@@ -45,9 +49,9 @@ test('Test that ProjectAppControlBarTabContextMenuCloseRows delegates close row 
     '[data-test-locator="projectAppControlBar-tabContextMenu-closeAllTabsWithoutChanges"]'
   )
   expect(closeThisTab.element.previousElementSibling?.classList.contains('projectAppControlBarTabContextMenu__separatorPrimaryBright')).toBe(true)
-  expect(closeThisTab.classes()).toContain('text-secondary')
-  expect(closeAllExcept.classes()).toContain('text-secondary')
-  expect(closeAll.classes()).toContain('text-secondary')
+  expect(closeThisTab.classes()).not.toContain('text-secondary')
+  expect(closeAllExcept.classes()).not.toContain('text-secondary')
+  expect(closeAll.classes()).not.toContain('text-secondary')
 
   expect(onCloseThisTabClick).toHaveBeenCalled()
   expect(onCloseAllTabsWithoutChangesExceptThisOneClick).toHaveBeenCalled()

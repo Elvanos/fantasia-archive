@@ -83,11 +83,50 @@
     min-width: unset;
   }
 
+  /*
+   * Same $iconSize box + FA/MDI constrain as last-opened / FaSelectInput.
+   * Beat Quasar .q-item__section--side > .q-icon { font-size: 24px }.
+   */
   .projectAppControlBarTabContextMenu__icon.q-icon {
-    --fa-color-glyph-base: #{appControlMenus.$appControlMenus-color};
+    @include faQIconDisplay.fa-q-icon-display-constrain-glyph-in-box;
 
+    --fa-color-glyph-base: #{appControlMenus.$appControlMenus-color};
+    --fa-q-icon-display-glyph-font-size: #{$projectAppControlBar-tabContextMenu-icon-boxSize};
+    --fa-q-icon-display-mdi-fit-scale: 1;
+    --fa-q-icon-display-mdi-font-size: #{$projectAppControlBar-tabContextMenu-icon-boxSize};
+
+    align-items: center;
+    box-sizing: border-box;
     color: var(--fa-color-glyph-base);
-    font-size: $iconSize;
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: $projectAppControlBar-tabContextMenu-icon-boxSize !important;
+    height: $projectAppControlBar-tabContextMenu-icon-boxSize !important;
+    justify-content: center;
+    line-height: 1;
+    max-height: $projectAppControlBar-tabContextMenu-icon-boxSize;
+    max-width: $projectAppControlBar-tabContextMenu-icon-boxSize;
+    overflow: visible;
+    width: $projectAppControlBar-tabContextMenu-icon-boxSize !important;
+
+    &:not(.fa-brands, .fa-regular, .fa-solid) {
+      margin-top: 0;
+      transform: none;
+    }
+
+    &.fa-brands::before,
+    &.fa-regular::before,
+    &.fa-solid::before {
+      margin-top: 0;
+    }
+
+    &::before {
+      display: block;
+      font-size: 1em;
+      height: 1em;
+      line-height: 1;
+      width: 1em;
+    }
   }
 
   .projectAppControlBarTabContextMenu__item.text-secondary {

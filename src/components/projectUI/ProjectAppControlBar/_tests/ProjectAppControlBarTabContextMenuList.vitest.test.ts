@@ -12,6 +12,12 @@ test('Test that ProjectAppControlBarTabContextMenuList renders browse tabs and k
   expect(wrapper.find('[data-test-locator="projectAppControlBar-tabContextMenu-browseOpenedTabs"]').exists()).toBe(true)
   expect(wrapper.find('[data-test-locator="projectAppControlBar-tabContextMenu-moveTabLeft-keybind"]').exists()).toBe(true)
   expect(wrapper.find('[data-test-locator="projectAppControlBar-tabContextMenu-moveTabRight-keybind"]').exists()).toBe(true)
+  expect(
+    wrapper.get('[data-test-locator="projectAppControlBar-tabContextMenu-moveTabLeft"] .q-icon-stub').attributes('name')
+  ).toBe('fa-solid fa-angles-left')
+  expect(
+    wrapper.get('[data-test-locator="projectAppControlBar-tabContextMenu-moveTabRight"] .q-icon-stub').attributes('name')
+  ).toBe('fa-solid fa-angles-right')
   expect(wrapper.findAll('[data-test-locator="projectAppControlBar-tabContextMenu-browseTab"]').length).toBe(2)
   expect(wrapper.find('[data-test-browse-tab-has-unsaved-changes="true"]').exists()).toBe(true)
 

@@ -84,7 +84,7 @@
       <q-item-section avatar>
         <q-icon
           class="projectAppControlBarTabContextMenu__icon fa-color-glyph"
-          name="mdi-chevron-left"
+          name="fa-solid fa-angles-left"
         />
       </q-item-section>
     </q-item>
@@ -117,7 +117,7 @@
       <q-item-section avatar>
         <q-icon
           class="projectAppControlBarTabContextMenu__icon fa-color-glyph"
-          name="mdi-chevron-right"
+          name="fa-solid fa-angles-right"
         />
       </q-item-section>
     </q-item>

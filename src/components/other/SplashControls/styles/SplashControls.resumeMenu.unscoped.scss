@@ -53,6 +53,7 @@ body.fa-appTheme--fantasy .splashControls__resumeMenu.q-menu {
 
   &::after {
     background: $splashControls-resumeMenu-rim-after-background;
+    opacity: $splashControls-resumeMenu-rim-inner-opacity;
   }
 
   &::before {
@@ -60,5 +61,6 @@ body.fa-appTheme--fantasy .splashControls__resumeMenu.q-menu {
     background-position: qDialog.$qDialog-card-rim-before-backgroundPosition;
     background-repeat: qDialog.$qDialog-card-rim-before-backgroundRepeat;
     background-size: qDialog.$qDialog-card-rim-before-backgroundSize;
+    opacity: $splashControls-resumeMenu-rim-inner-opacity;
   }
 }

@@ -57,6 +57,8 @@ $splashControls-resumeMenu-rim-before-backgroundImage:
     color-mix(in srgb, fa-v('primary', $primary) 1.5%, transparent) 7.5%,
     transparent 10%
   );
+/* Inner gold bloom (::before top + ::after side/bottom). 0.59 = two ~30% cuts then +10%. */
+$splashControls-resumeMenu-rim-inner-opacity: 0.59;
 $splashControls-resumeMenu-rim-boxShadow:
   0 0 0 1px color-mix(in srgb, fa-v('primary', $primary) 55%, transparent),
   #{$qCard-boxShadow};

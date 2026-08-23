@@ -1,3 +1,4 @@
+@use '../theme/quasar-components/qMenu.variables' as *;
 @use 'faTabEdgeGlow.mixin.scss' as tabEdgeGlow;
 
 /*
@@ -20,8 +21,14 @@ body.desktop.fa-appTheme--fantasy .q-menu .q-item.q-manual-focusable--focused > 
   }
 }
 
+body.fa-appTheme--fantasy .q-menu .q-list,
+body.fa-appTheme--fantasy .q-menu > .q-virtual-scroll {
+  padding-bottom: $qMenu-list-padding-bottom-fantasy;
+}
+
 body.fa-appTheme--fantasy .q-menu .q-item {
   overflow: visible;
+  padding-bottom: $qMenu-item-padding-block + $qMenu-item-padding-block-extra-fantasy;
   position: relative;
 
   &::after {

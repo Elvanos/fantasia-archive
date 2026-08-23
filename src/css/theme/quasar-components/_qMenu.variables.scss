@@ -1,5 +1,7 @@
 @use '../../app.palette.scss' as *;
+@use '../../globals/faTabEdgeGlow.variables.scss' as *;
 @use 'sass:color';
+@use 'sass:math';
 
 /* QUASAR COMPONENT - Q-MENU */
 /*
@@ -15,12 +17,24 @@ $qMenu-item-hover-colorTransition: color 0.3s ease;
 /* Opacity wash + background (browse/sortBy/splash override currentcolor → tint). */
 $qMenu-item-hover-focusHelperTransition: opacity 0.3s ease, background-color 0.3s ease, background 0.3s ease;
 $qMenu-item-minHeight: 46px;
-$qMenu-item-padding: 9.5px 16px;
+$qMenu-item-padding-block: 9.5px;
+/*
+ * Extra item padding-bottom (fantasy): bloom taller than min-height row + edgeOffset.
+ * Lives on the q-item so the bottom-edge line moves with the row, not into list dead space.
+ */
+$qMenu-item-padding-block-extra-fantasy: math.max(
+  $faTabEdgeGlow-hover-bloomSize + $faTabEdgeGlow-edgeOffset - $qMenu-item-minHeight,
+  0px
+);
+$qMenu-item-padding-inline: 16px;
+$qMenu-item-padding: $qMenu-item-padding-block $qMenu-item-padding-inline;
 /* Fantasy: same weight enabled/disabled; disabled uses color (not global .disabled opacity). */
 $qMenu-item-fontWeight-fantasy: 400;
 /* Approx. accent @ 0.35 opacity over dark-lighter menu panel (global disabled opacity). */
 $qMenu-item-disabled-color-fantasy: color.mix($accent, $dark-lighter, 35%);
 $qMenu-item-disabled-keybind-color-fantasy: color.mix($text-keybind-hint, $dark-lighter, 35%);
+/* 1px in-flow pad: abspos glow uses negative edgeOffset and would still peek past last row. */
+$qMenu-list-padding-bottom-fantasy: math.abs($faTabEdgeGlow-edgeOffset);
 $qMenu-negativeMenuItemLabel-fontWeight: 500;
 $qMenu-negativeMenuItemLabel-textShadow: 0 0 3px fa-v('black', $black);
 $qMenu-subMenu-backgroundColor-fantasy: fa-v('fantasy-dark-light', $fantasy-dark-light);

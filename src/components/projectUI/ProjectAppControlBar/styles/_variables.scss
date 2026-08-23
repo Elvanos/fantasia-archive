@@ -73,6 +73,8 @@ $projectAppControlBar-tabContextMenu-browseTabWorldIndicator-offsetLeft: 4px;
 $projectAppControlBar-tabContextMenu-browseTabWorldIndicator-offsetTop: 6px;
 $projectAppControlBar-tabContextMenu-listMinWidthPx: 220px;
 $projectAppControlBar-tabContextMenu-browseTabIcon-boxSize: calc(#{paletteGlobals.$iconSize} + 2px);
+/* Trailing row icons: same box as Copy/Add MDI; FA solids use fa-q-icon-display constrain. */
+$projectAppControlBar-tabContextMenu-icon-boxSize: paletteGlobals.$iconSize;
 $projectAppControlBar-tabContextMenu-browseTabLeadingIcon-width: $projectAppControlBar-tabContextMenu-browseTabIcon-boxSize;
 $projectAppControlBar-tabContextMenu-browseTabUnsavedAlert-paddingInlineEndPx: 28px;
 $projectAppControlBar-tabContextMenu-browseSubmenu-listMaxWidthExtraPx: 150px;
