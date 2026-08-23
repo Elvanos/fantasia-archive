@@ -10,8 +10,13 @@ import {
   hasFaProjectDocumentCreateWriter,
   hasFaProjectDocumentDeleteWriter,
   hasFaProjectDocumentUpdateWriter,
+  moveFaProjectDocumentInHierarchyForRenderer,
   updateFaProjectDocumentForRenderer
 } from '../faComponentTestingProjectContentDocumentWriteWiring'
+import {
+  listFaProjectPlacementDocumentChildrenForRenderer,
+  reindexFaProjectDocumentSiblingsForRenderer
+} from '../faComponentTestingProjectContentDocumentIndexWiring'
 import {
   getFaComponentTestingHierarchySearchProbe,
   getFaComponentTestingProjectContentOverrides,
@@ -22,8 +27,6 @@ import {
   hasFaProjectDocumentByIdReader,
   hasFaProjectHierarchySearch,
   hasFaProjectHierarchySortBridge,
-  listFaProjectPlacementDocumentChildrenForRenderer,
-  reindexFaProjectDocumentSiblingsForRenderer,
   searchFaProjectHierarchyForRenderer,
   setFaComponentTestingProjectContentOverrides
 } from '../faComponentTestingProjectContentOverridesWiring'
@@ -256,17 +259,40 @@ test('Test that list and reindex placement children use override maps', async ()
   expect(hasFaProjectHierarchySortBridge()).toBe(true)
 })
 
-test('Test that list and reindex placement children use bridge when overrides unset', async () => {
+test('Test that list and reindex placement children use the session document index when overrides unset', async () => {
   setFaComponentTestingProjectContentOverrides(null)
-  const listPlacementDocumentChildren = vi.fn(async () => ({
-    items: [{
+  const { createPinia, setActivePinia } = await import('pinia')
+  const { S_FaActiveProject } = await import('app/src/stores/S_FaActiveProject')
+  const { S_FaProjectHierarchyTree } = await import('app/src/stores/S_FaProjectHierarchyTree')
+  setActivePinia(createPinia())
+  S_FaActiveProject().setActiveProject({
+    filePath: 'C:\\a.faproject',
+    id: 'project-id',
+    name: 'N'
+  })
+  S_FaProjectHierarchyTree().replaceDocumentIndexFromDocuments([
+    {
+      createdAtMs: 1,
       displayName: 'Bridge Child',
-      hasChildren: false,
+      documentBackgroundColor: null,
+      documentTextColor: null,
+      extraClasses: '',
       id: 'bridge-doc',
+      isCategory: false,
+      isDead: false,
+      isFinished: false,
+      isMinor: false,
       parentDocumentId: null,
       placementId: 'placement-1',
-      sortOrder: 0
-    }]
+      sortOrder: 0,
+      templateId: 'tpl-1',
+      treeOrderNumber: 1,
+      updatedAtMs: 1,
+      worldId: 'world-1'
+    }
+  ])
+  const listPlacementDocumentChildren = vi.fn(async () => ({
+    items: []
   }))
   const reindexDocumentSiblingsInHierarchy = vi.fn(async () => true)
   vi.stubGlobal('window', {
@@ -284,6 +310,7 @@ test('Test that list and reindex placement children use bridge when overrides un
   })).resolves.toMatchObject({
     items: [expect.objectContaining({ id: 'bridge-doc' })]
   })
+  expect(listPlacementDocumentChildren).not.toHaveBeenCalled()
   expect(hasFaProjectHierarchySortBridge()).toBe(true)
   await expect(reindexFaProjectDocumentSiblingsForRenderer({
     movedDocumentId: 'bridge-doc',
@@ -302,7 +329,9 @@ test('Test that list and reindex placement children use bridge when overrides un
   await expect(listFaProjectPlacementDocumentChildrenForRenderer({
     parentDocumentId: null,
     placementId: 'placement-1'
-  })).resolves.toEqual({ items: [] })
+  })).resolves.toMatchObject({
+    items: [expect.objectContaining({ id: 'bridge-doc' })]
+  })
   await expect(reindexFaProjectDocumentSiblingsForRenderer({
     movedDocumentId: 'x',
     orderedDocumentIds: ['x'],
@@ -656,4 +685,58 @@ test('Test that create ForRenderer generates id when omitted', async () => {
   })
   expect(created.id.length).toBeGreaterThan(0)
   expect(created.displayName).toBe('Auto Id')
+})
+
+test('Test that list placement children returns empty when Pinia is unset', async () => {
+  setFaComponentTestingProjectContentOverrides(null)
+  const { setActivePinia } = await import('pinia')
+  setActivePinia(undefined)
+  await expect(listFaProjectPlacementDocumentChildrenForRenderer({
+    parentDocumentId: null,
+    placementId: 'placement-1'
+  })).resolves.toEqual({ items: [] })
+})
+
+test('Test that moveFaProjectDocumentInHierarchyForRenderer calls bridge then returns the child', async () => {
+  setFaComponentTestingProjectContentOverrides(null)
+  const moved = {
+    displayName: 'Moved',
+    hasChildren: false,
+    id: 'doc-1',
+    parentDocumentId: 'parent-2',
+    placementId: 'placement-1',
+    sortOrder: 0
+  }
+  const moveDocumentInHierarchy = vi.fn(async () => moved)
+  vi.stubGlobal('window', {
+    faContentBridgeAPIs: {
+      projectContent: {
+        moveDocumentInHierarchy
+      }
+    }
+  })
+  await expect(moveFaProjectDocumentInHierarchyForRenderer({
+    documentId: 'doc-1',
+    targetParentDocumentId: 'parent-2',
+    targetSortOrder: 0
+  })).resolves.toEqual(moved)
+  expect(moveDocumentInHierarchy).toHaveBeenCalledWith({
+    documentId: 'doc-1',
+    targetParentDocumentId: 'parent-2',
+    targetSortOrder: 0
+  })
+})
+
+test('Test that moveFaProjectDocumentInHierarchyForRenderer throws when API is missing', async () => {
+  setFaComponentTestingProjectContentOverrides(null)
+  vi.stubGlobal('window', {
+    faContentBridgeAPIs: {
+      projectContent: {}
+    }
+  })
+  await expect(moveFaProjectDocumentInHierarchyForRenderer({
+    documentId: 'doc-1',
+    targetParentDocumentId: null,
+    targetSortOrder: 0
+  })).rejects.toThrow('projectContent.moveDocumentInHierarchy unavailable')
 })

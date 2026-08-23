@@ -1,18 +1,9 @@
 import type { I_faComponentTestingProjectContentOverrides } from 'app/types/I_faComponentTestingStoreSeed'
 import type { I_faProjectDocument } from 'app/types/I_faProjectDocumentDomain'
 import type { I_faProjectDocumentTemplate } from 'app/types/I_faProjectDocumentTemplateDomain'
-import type {
-  I_faProjectHierarchyTreeDocumentChild,
-  I_faProjectHierarchyTreeListPlacementChildrenInput,
-  I_faProjectHierarchyTreeReindexDocumentSiblingsInput,
-  I_faProjectHierarchyTreeSearchResult
-} from 'app/types/I_faProjectHierarchyTreeDomain'
+import type { I_faProjectHierarchyTreeSearchResult } from 'app/types/I_faProjectHierarchyTreeDomain'
 import type { I_faProjectWorld } from 'app/types/I_faProjectWorldDomain'
 
-import {
-  buildFaComponentTestingPlacementDocumentChildrenKey,
-  reindexFaComponentTestingPlacementDocumentChildren
-} from './functions/faComponentTestingPlacementDocumentChildren'
 import {
   hasFaComponentTestingProjectContentOverrides,
   resolveFaComponentTestingProjectContentEntity
@@ -156,37 +147,6 @@ export async function getFaProjectWorldByIdForRenderer (
 }
 
 /**
- * Lists placement document children from overrides when present, else bridge.
- */
-export async function listFaProjectPlacementDocumentChildrenForRenderer (
-  input: I_faProjectHierarchyTreeListPlacementChildrenInput
-): Promise<{ items: I_faProjectHierarchyTreeDocumentChild[] }> {
-  const overridesMap = activeProjectContentOverrides?.placementDocumentChildrenByKey
-  if (overridesMap !== undefined) {
-    const key = buildFaComponentTestingPlacementDocumentChildrenKey(
-      input.placementId,
-      input.parentDocumentId ?? null
-    )
-    const items = overridesMap[key]
-    if (items !== undefined) {
-      return {
-        items: [...items]
-      }
-    }
-    return {
-      items: []
-    }
-  }
-  const api = window.faContentBridgeAPIs?.projectContent
-  if (typeof api?.listPlacementDocumentChildren !== 'function') {
-    return {
-      items: []
-    }
-  }
-  return await api.listPlacementDocumentChildren(input)
-}
-
-/**
  * True when override children maps or bridge list+reindex are available for hierarchy sort.
  */
 export function hasFaProjectHierarchySortBridge (): boolean {
@@ -196,32 +156,6 @@ export function hasFaProjectHierarchySortBridge (): boolean {
   const api = window.faContentBridgeAPIs?.projectContent
   return typeof api?.listPlacementDocumentChildren === 'function' &&
     typeof api?.reindexDocumentSiblingsInHierarchy === 'function'
-}
-
-/**
- * Reindexes sibling document order in overrides when present, else bridge.
- */
-export async function reindexFaProjectDocumentSiblingsForRenderer (
-  input: I_faProjectHierarchyTreeReindexDocumentSiblingsInput
-): Promise<unknown> {
-  const overridesMap = activeProjectContentOverrides?.placementDocumentChildrenByKey
-  if (overridesMap !== undefined) {
-    const key = buildFaComponentTestingPlacementDocumentChildrenKey(
-      input.placementId,
-      input.parentDocumentId ?? null
-    )
-    const current = overridesMap[key] ?? []
-    overridesMap[key] = reindexFaComponentTestingPlacementDocumentChildren(
-      current,
-      input.orderedDocumentIds
-    )
-    return true
-  }
-  const api = window.faContentBridgeAPIs?.projectContent
-  if (typeof api?.reindexDocumentSiblingsInHierarchy !== 'function') {
-    throw new Error('projectContent.reindexDocumentSiblingsInHierarchy unavailable')
-  }
-  return await api.reindexDocumentSiblingsInHierarchy(input)
 }
 
 /**

@@ -7,10 +7,12 @@ export {
   hasFaProjectContentEntityReaders,
   hasFaProjectDocumentByIdReader,
   hasFaProjectHierarchySortBridge,
-  listFaProjectPlacementDocumentChildrenForRenderer,
-  reindexFaProjectDocumentSiblingsForRenderer,
   setFaComponentTestingProjectContentOverrides
 } from './faComponentTestingProjectContentOverridesWiring'
+export {
+  listFaProjectPlacementDocumentChildrenForRenderer,
+  reindexFaProjectDocumentSiblingsForRenderer
+} from './faComponentTestingProjectContentDocumentIndexWiring'
 export {
   deleteFaProjectTagForRenderer,
   listFaProjectDocumentTagsForRenderer,
@@ -28,5 +30,6 @@ export {
   hasFaProjectDocumentCreateWriter,
   hasFaProjectDocumentDeleteWriter,
   hasFaProjectDocumentUpdateWriter,
+  moveFaProjectDocumentInHierarchyForRenderer,
   updateFaProjectDocumentForRenderer
 } from './faComponentTestingProjectContentDocumentWriteWiring'

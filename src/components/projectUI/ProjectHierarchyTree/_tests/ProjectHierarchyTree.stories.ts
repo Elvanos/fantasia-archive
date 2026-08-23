@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/vue3-vite'
 import { createPinia, setActivePinia } from 'pinia'
 
+import type { I_faProjectDocument } from 'app/types/I_faProjectDocumentDomain'
 import ProjectHierarchyTree from '../ProjectHierarchyTree.vue'
 import { S_FaActiveProject } from 'app/src/stores/S_FaActiveProject'
 import { S_FaProjectHierarchyTree } from 'app/src/stores/S_FaProjectHierarchyTree'
@@ -115,6 +116,52 @@ const storyHeroesDocumentChildren = [
 ]
 
 const storyWorldId = '550e8400-e29b-41d4-a716-446655440001'
+const storyTemplateId = '7c9e6679-7425-40de-944b-e07fc1f90ae8'
+const storyNestedHeroId = '7c9e6679-7425-40de-944b-e07fc1f90afd'
+
+function storyDocumentFromChild (
+  child: (typeof storyHeroesDocumentChildren)[number],
+  extras?: { parentDocumentId?: string | null, sortOrder?: number }
+): I_faProjectDocument {
+  return {
+    createdAtMs: child.sortOrder,
+    displayName: child.displayName,
+    documentBackgroundColor: child.documentBackgroundColor,
+    documentTextColor: child.documentTextColor,
+    extraClasses: '',
+    id: child.id,
+    isCategory: child.isCategory,
+    isDead: child.isDead,
+    isFinished: child.isFinished,
+    isMinor: child.isMinor,
+    parentDocumentId: extras?.parentDocumentId ?? child.parentDocumentId,
+    placementId: child.placementId,
+    sortOrder: extras?.sortOrder ?? child.sortOrder,
+    templateId: storyTemplateId,
+    treeOrderNumber: child.treeOrderNumber,
+    updatedAtMs: child.sortOrder,
+    worldId: storyWorldId
+  }
+}
+
+const storyDocumentsDump = [
+  ...storyHeroesDocumentChildren.map((child) => storyDocumentFromChild(child)),
+  storyDocumentFromChild({
+    displayName: 'Nested hero',
+    documentBackgroundColor: null,
+    documentTextColor: null,
+    hasChildren: false,
+    id: storyNestedHeroId,
+    isCategory: false,
+    isDead: false,
+    isFinished: false,
+    isMinor: false,
+    parentDocumentId: '7c9e6679-7425-40de-944b-e07fc1f90afc',
+    placementId: heroesPlacementId,
+    sortOrder: 0,
+    treeOrderNumber: 2
+  })
+]
 const storyTagAlphaId = 'a77b1e3c-8ef3-44de-b58f-fdf48741672e'
 const storyTagBetaId = 'b638ddb1-eee2-4d78-89db-331723040d9c'
 const storyTagWrapperId = `${storyWorldId}__tagWrapper`
@@ -197,6 +244,9 @@ async function seedHierarchyStoryStores (options?: {
     contentApi.listWorkspaceHierarchyLayout = async () => ({
       worlds: options?.worlds ?? storyWorlds
     })
+    contentApi.listDocuments = async () => ({
+      items: storyDocumentsDump
+    })
     contentApi.listPlacementDocumentChildren = options?.listPlacementDocumentChildren ?? (async () => ({
       items: storyHeroesDocumentChildren
     }))
@@ -205,6 +255,7 @@ async function seedHierarchyStoryStores (options?: {
     }))
   }
   await S_FaProjectHierarchyTree().refreshLayout()
+  await S_FaProjectHierarchyTree().ensureDocumentIndexLoaded()
   if (options?.expandedNodeIds !== undefined) {
     S_FaProjectHierarchyTree().$patch({
       uiState: {

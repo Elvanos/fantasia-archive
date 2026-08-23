@@ -191,7 +191,8 @@ vi.mock('app/src/stores/S_FaProjectHierarchyTree', () => ({
     get worlds () {
       return hierarchyTreeWorldsFixture.worlds
     },
-    refreshLayout: refreshHierarchyTreeLayoutMock
+    refreshLayout: refreshHierarchyTreeLayoutMock,
+    reloadDocumentIndexFromBridge: vi.fn(async () => undefined)
   })
 }))
 

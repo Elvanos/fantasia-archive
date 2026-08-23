@@ -14,6 +14,7 @@ type T_hierarchyStore = {
   clearPendingDocumentRefreshIds: () => void
   clearPendingHierarchyNodeRefreshIds: () => void
   clearPendingRevealPath: () => void
+  ensureDocumentIndexLoaded?: () => Promise<void>
   flushUiStatePersist: () => void
   queuePersistExpandedNodeIds: (expandedNodeIds: string[]) => void
   queuePersistScrollTopPx: (scrollTopPx: number) => void

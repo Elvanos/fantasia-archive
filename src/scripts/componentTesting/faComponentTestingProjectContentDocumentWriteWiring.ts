@@ -3,11 +3,12 @@ import type {
   I_faProjectDocumentCreateInput,
   I_faProjectDocumentPatch
 } from 'app/types/I_faProjectDocumentDomain'
-import type { I_faProjectHierarchyTreeDocumentChild } from 'app/types/I_faProjectHierarchyTreeDomain'
+import type { I_faProjectHierarchyTreeDocumentChild, I_faProjectHierarchyTreeMoveDocumentInput } from 'app/types/I_faProjectHierarchyTreeDomain'
 import { FA_DOCUMENT_TREE_ORDER_NUMBER_EMPTY } from 'app/types/I_faDocumentTreeOrderNumber'
 
-import { buildFaComponentTestingPlacementDocumentChildrenKey } from './functions/faComponentTestingPlacementDocumentChildren'
+import { tryGetFaProjectHierarchyTreeStoreForRenderer } from './faComponentTestingProjectContentDocumentIndexWiring'
 import { getFaComponentTestingProjectContentOverrides } from './faComponentTestingProjectContentOverridesWiring'
+import { buildFaComponentTestingPlacementDocumentChildrenKey } from './functions/faComponentTestingPlacementDocumentChildren'
 
 /**
  * True when documentsById overrides or bridge createDocument exists.
@@ -68,6 +69,7 @@ export async function deleteFaProjectDocumentForRenderer (
     throw new Error('projectContent.deleteDocument unavailable')
   }
   await api.deleteDocument(documentId)
+  await tryGetFaProjectHierarchyTreeStoreForRenderer()?.reloadDocumentIndexFromBridge()
 }
 
 /**
@@ -138,7 +140,9 @@ export async function createFaProjectDocumentForRenderer (
   if (typeof api?.createDocument !== 'function') {
     throw new Error('projectContent.createDocument unavailable')
   }
-  return await api.createDocument(input)
+  const createdDocument = await api.createDocument(input)
+  tryGetFaProjectHierarchyTreeStoreForRenderer()?.upsertIndexedDocument(createdDocument)
+  return createdDocument
 }
 
 /**
@@ -191,5 +195,22 @@ export async function updateFaProjectDocumentForRenderer (
   if (typeof api?.updateDocument !== 'function') {
     throw new Error('projectContent.updateDocument unavailable')
   }
-  return await api.updateDocument(documentId, patch)
+  const updatedDocument = await api.updateDocument(documentId, patch)
+  tryGetFaProjectHierarchyTreeStoreForRenderer()?.upsertIndexedDocument(updatedDocument)
+  return updatedDocument
+}
+
+/**
+ * Moves a document in the hierarchy via bridge, then patches the session document index.
+ */
+export async function moveFaProjectDocumentInHierarchyForRenderer (
+  input: I_faProjectHierarchyTreeMoveDocumentInput
+): Promise<I_faProjectHierarchyTreeDocumentChild> {
+  const api = window.faContentBridgeAPIs?.projectContent
+  if (typeof api?.moveDocumentInHierarchy !== 'function') {
+    throw new Error('projectContent.moveDocumentInHierarchy unavailable')
+  }
+  const moved = await api.moveDocumentInHierarchy(input)
+  tryGetFaProjectHierarchyTreeStoreForRenderer()?.applyIndexedMove(input)
+  return moved
 }

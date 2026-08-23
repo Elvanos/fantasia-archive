@@ -5,11 +5,10 @@ import type { I_faActionPayloadMap } from 'app/types/I_faActionManagerDomain'
 import type { I_faProjectHierarchyTreeDocumentSortBucket } from 'app/types/I_faProjectHierarchyTreeDomain'
 
 import {
-  getFaComponentTestingProjectContentOverrides,
-  hasFaProjectHierarchySortBridge,
   listFaProjectPlacementDocumentChildrenForRenderer,
   reindexFaProjectDocumentSiblingsForRenderer
-} from 'app/src/scripts/componentTesting/faComponentTestingProjectContentOverridesWiring'
+} from 'app/src/scripts/componentTesting/faComponentTestingProjectContentDocumentIndexWiring'
+import { getFaComponentTestingProjectContentOverrides, hasFaProjectHierarchySortBridge } from 'app/src/scripts/componentTesting/faComponentTestingProjectContentOverridesWiring'
 import {
   listFaProjectDocumentsUnderTagForRenderer,
   reorderFaProjectDocumentsUnderTagForRenderer

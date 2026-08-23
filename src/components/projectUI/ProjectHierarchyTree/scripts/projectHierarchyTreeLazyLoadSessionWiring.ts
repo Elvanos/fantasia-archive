@@ -1,6 +1,6 @@
 import type { Ref, watch as WatchFn } from 'vue'
 import type { I_faProjectHierarchyTreeHeTreeNode, I_faProjectHierarchyTreeHeTreeInstance, I_faProjectHierarchyTreeWorkspaceWorld } from 'app/types/I_faProjectHierarchyTreeDomain'
-import { listFaProjectPlacementDocumentChildrenForRenderer } from 'app/src/scripts/componentTesting/faComponentTestingProjectContentOverridesWiring'
+import { listFaProjectPlacementDocumentChildrenForRenderer } from 'app/src/scripts/componentTesting/faComponentTestingProjectContentDocumentIndexWiring'
 import { listFaProjectDocumentsUnderTagForRenderer } from 'app/src/scripts/componentTesting/faComponentTestingProjectContentTagsOverridesWiring'
 import { createProjectHierarchyTreeLazyLoadWiring, runProjectHierarchyTreeDeferredLazyLoadBatch } from './projectHierarchyTreeLazyLoadWiring'
 import { createProjectHierarchyTreeUiStateSessionExpandWiring, createProjectHierarchyTreeUiStateSessionRestoreWiring } from './projectHierarchyTreeUiStateSessionPartsWiring'

@@ -49,6 +49,7 @@ const createDocumentMock = vi.fn()
 const recordDocumentLastOpenedMock = vi.fn(async () => undefined)
 const moveDocumentInHierarchyMock = vi.fn()
 const listPlacementDocumentChildrenMock = vi.fn()
+const listDocumentsMock = vi.fn()
 
 const listDocumentTagsMock = vi.fn(async (): Promise<{
   items: Array<{ id: string, name: string }>
@@ -107,6 +108,28 @@ beforeEach(() => {
   recordDocumentLastOpenedMock.mockResolvedValue(undefined)
   moveDocumentInHierarchyMock.mockReset()
   listPlacementDocumentChildrenMock.mockReset()
+  listDocumentsMock.mockReset()
+  listDocumentsMock.mockResolvedValue({
+    items: [{
+      createdAtMs: 1,
+      displayName: 'Sibling',
+      documentBackgroundColor: null,
+      documentTextColor: null,
+      extraClasses: '',
+      id: 'sibling-1',
+      isCategory: false,
+      isDead: false,
+      isFinished: false,
+      isMinor: false,
+      parentDocumentId: 'parent-2',
+      placementId: 'placement-1',
+      sortOrder: 0,
+      templateId: 'tpl-1',
+      treeOrderNumber: 1,
+      updatedAtMs: 1,
+      worldId: 'world-1'
+    }]
+  })
   listDocumentTagsMock.mockReset()
   listDocumentTagsMock.mockResolvedValue({ items: [] })
   setDocumentTagsMock.mockReset()
@@ -167,6 +190,7 @@ beforeEach(() => {
       getDocumentById: getDocumentByIdMock,
       getDocumentTemplateById: getDocumentTemplateByIdMock,
       getWorldById: getWorldByIdMock,
+      listDocuments: listDocumentsMock,
       listPlacementDocumentChildren: listPlacementDocumentChildrenMock,
       moveDocumentInHierarchy: moveDocumentInHierarchyMock,
       recordDocumentLastOpened: recordDocumentLastOpenedMock,
@@ -414,7 +438,7 @@ test('Test that S_FaOpenedDocuments saveDocumentDisplayName parent move to root 
   expect(moveDocumentInHierarchyMock).toHaveBeenCalledWith({
     documentId: 'doc-1',
     targetParentDocumentId: null,
-    targetSortOrder: 1
+    targetSortOrder: 0
   })
   expect(refreshHierarchyTreeNodesMock).toHaveBeenCalledWith(['placement-1'])
 })

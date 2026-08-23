@@ -51,14 +51,39 @@ const getHierarchyTreeUiStateMock = vi.fn(async () => ({
 
 const setHierarchyTreeUiStateMock = vi.fn(async () => true)
 
+const listDocumentsMock = vi.fn(async () => ({
+  items: [] as Array<{
+    createdAtMs: number
+    displayName: string
+    documentBackgroundColor: null
+    documentTextColor: null
+    extraClasses: string
+    id: string
+    isCategory: boolean
+    isDead: boolean
+    isFinished: boolean
+    isMinor: boolean
+    parentDocumentId: string | null
+    placementId: string | null
+    sortOrder: number
+    templateId: string
+    treeOrderNumber: number
+    updatedAtMs: number
+    worldId: string
+  }>
+}))
+
 beforeEach(() => {
   vi.useFakeTimers()
   setActivePinia(createPinia())
   listWorkspaceHierarchyLayoutMock.mockClear()
   getHierarchyTreeUiStateMock.mockClear()
   setHierarchyTreeUiStateMock.mockClear()
+  listDocumentsMock.mockClear()
+  listDocumentsMock.mockResolvedValue({ items: [] })
   window.faContentBridgeAPIs = {
     projectContent: {
+      listDocuments: listDocumentsMock,
       listWorkspaceHierarchyLayout: listWorkspaceHierarchyLayoutMock
     },
     projectManagement: {
@@ -509,4 +534,289 @@ test('Test that S_FaProjectHierarchyTree patchWorldColorPaletteInLayout updates 
   expect(store.worlds[0]?.colorPalette).toBe('#aabbcc,#ddeeff')
   store.patchWorldColorPaletteInLayout('world-missing', '#000000')
   expect(store.worlds[0]?.colorPalette).toBe('#aabbcc,#ddeeff')
+})
+
+const sampleIndexDocument = {
+  createdAtMs: 1,
+  displayName: 'Hero',
+  documentBackgroundColor: null,
+  documentTextColor: null,
+  extraClasses: '',
+  id: 'doc-1',
+  isCategory: false,
+  isDead: false,
+  isFinished: false,
+  isMinor: false,
+  parentDocumentId: null as string | null,
+  placementId: 'placement-1' as string | null,
+  sortOrder: 0,
+  templateId: 'tpl-1',
+  treeOrderNumber: 1,
+  updatedAtMs: 1,
+  worldId: 'world-1'
+}
+
+/**
+ * S_FaProjectHierarchyTree ensureDocumentIndexLoaded
+ * Fetches listDocuments once per project and does not refetch on refreshLayout.
+ */
+test('Test that S_FaProjectHierarchyTree loads the document index once and skips listDocuments on refreshLayout', async () => {
+  const { S_FaProjectHierarchyTree } = await import('../S_FaProjectHierarchyTree')
+  listDocumentsMock.mockResolvedValue({
+    items: [sampleIndexDocument]
+  })
+  S_FaActiveProject().setActiveProject({
+    filePath: 'C:\\a.faproject',
+    id: 'project-id',
+    name: 'N'
+  })
+  const store = S_FaProjectHierarchyTree()
+  await store.ensureDocumentIndexLoaded()
+  await store.ensureDocumentIndexLoaded()
+  await store.refreshLayout()
+  expect(listDocumentsMock).toHaveBeenCalledTimes(1)
+  expect(store.listIndexedPlacementChildren({
+    parentDocumentId: null,
+    placementId: 'placement-1'
+  }).map((item) => item.id)).toEqual(['doc-1'])
+})
+
+/**
+ * S_FaProjectHierarchyTree resetOnProjectClose
+ * Drops the session document index.
+ */
+test('Test that S_FaProjectHierarchyTree resetOnProjectClose clears the document index', async () => {
+  const { S_FaProjectHierarchyTree } = await import('../S_FaProjectHierarchyTree')
+  S_FaActiveProject().setActiveProject({
+    filePath: 'C:\\a.faproject',
+    id: 'project-id',
+    name: 'N'
+  })
+  const store = S_FaProjectHierarchyTree()
+  store.replaceDocumentIndexFromDocuments([sampleIndexDocument])
+  store.resetOnProjectClose()
+  expect(store.listIndexedPlacementChildren({
+    parentDocumentId: null,
+    placementId: 'placement-1'
+  })).toEqual([])
+})
+
+/**
+ * S_FaProjectHierarchyTree ensureDocumentIndexLoaded
+ * Drops a dump that finishes after the active project id changes.
+ */
+test('Test that S_FaProjectHierarchyTree drops a superseded document dump', async () => {
+  const { S_FaProjectHierarchyTree } = await import('../S_FaProjectHierarchyTree')
+  let resolveDump: ((value: { items: typeof sampleIndexDocument[] }) => void) | undefined
+  listDocumentsMock.mockImplementationOnce(() => {
+    return new Promise((resolve) => {
+      resolveDump = resolve
+    })
+  })
+  S_FaActiveProject().setActiveProject({
+    filePath: 'C:\\a.faproject',
+    id: 'project-a',
+    name: 'A'
+  })
+  const store = S_FaProjectHierarchyTree()
+  const pending = store.ensureDocumentIndexLoaded()
+  S_FaActiveProject().setActiveProject({
+    filePath: 'C:\\b.faproject',
+    id: 'project-b',
+    name: 'B'
+  })
+  resolveDump?.({
+    items: [sampleIndexDocument]
+  })
+  await pending
+  expect(store.listIndexedPlacementChildren({
+    parentDocumentId: null,
+    placementId: 'placement-1'
+  })).toEqual([])
+})
+
+/**
+ * S_FaProjectHierarchyTree reloadDocumentIndexFromBridge
+ * Refetches listDocuments even when an index is already loaded.
+ */
+test('Test that S_FaProjectHierarchyTree reloadDocumentIndexFromBridge refetches the dump', async () => {
+  const { S_FaProjectHierarchyTree } = await import('../S_FaProjectHierarchyTree')
+  S_FaActiveProject().setActiveProject({
+    filePath: 'C:\\a.faproject',
+    id: 'project-id',
+    name: 'N'
+  })
+  const store = S_FaProjectHierarchyTree()
+  store.replaceDocumentIndexFromDocuments([sampleIndexDocument])
+  listDocumentsMock.mockResolvedValue({
+    items: [{
+      ...sampleIndexDocument,
+      displayName: 'Reloaded',
+      id: 'doc-2'
+    }]
+  })
+  await store.reloadDocumentIndexFromBridge()
+  expect(listDocumentsMock).toHaveBeenCalledTimes(1)
+  expect(store.listIndexedPlacementChildren({
+    parentDocumentId: null,
+    placementId: 'placement-1'
+  }).map((item) => item.id)).toEqual(['doc-2'])
+})
+
+/**
+ * S_FaProjectHierarchyTree ensureDocumentIndexLoaded
+ * Clears the index when no project is active.
+ */
+test('Test that S_FaProjectHierarchyTree ensureDocumentIndexLoaded clears without an active project', async () => {
+  const { S_FaProjectHierarchyTree } = await import('../S_FaProjectHierarchyTree')
+  const store = S_FaProjectHierarchyTree()
+  store.replaceDocumentIndexFromDocuments([sampleIndexDocument])
+  await store.ensureDocumentIndexLoaded()
+  expect(listDocumentsMock).not.toHaveBeenCalled()
+  expect(store.listIndexedPlacementChildren({
+    parentDocumentId: null,
+    placementId: 'placement-1'
+  })).toEqual([])
+})
+
+/**
+ * S_FaProjectHierarchyTree ensureDocumentIndexLoaded
+ * Shares one in-flight dump across callers.
+ */
+test('Test that S_FaProjectHierarchyTree shares in-flight document dump loads', async () => {
+  const { S_FaProjectHierarchyTree } = await import('../S_FaProjectHierarchyTree')
+  S_FaActiveProject().setActiveProject({
+    filePath: 'C:\\a.faproject',
+    id: 'project-id',
+    name: 'N'
+  })
+  const store = S_FaProjectHierarchyTree()
+  let resolveDump: ((value: { items: typeof sampleIndexDocument[] }) => void) | undefined
+  listDocumentsMock.mockImplementationOnce(() => {
+    return new Promise((resolve) => {
+      resolveDump = resolve
+    })
+  })
+  const first = store.ensureDocumentIndexLoaded()
+  const second = store.ensureDocumentIndexLoaded()
+  resolveDump?.({
+    items: [sampleIndexDocument]
+  })
+  await Promise.all([first, second])
+  expect(listDocumentsMock).toHaveBeenCalledTimes(1)
+  expect(store.listIndexedPlacementChildren({
+    parentDocumentId: null,
+    placementId: 'placement-1'
+  }).map((item) => item.id)).toEqual(['doc-1'])
+})
+
+/**
+ * S_FaProjectHierarchyTree reloadDocumentIndexFromBridge
+ * Keeps a prior index when listDocuments fails.
+ */
+test('Test that S_FaProjectHierarchyTree keeps the document index when dump reload fails', async () => {
+  const { S_FaProjectHierarchyTree } = await import('../S_FaProjectHierarchyTree')
+  S_FaActiveProject().setActiveProject({
+    filePath: 'C:\\a.faproject',
+    id: 'project-id',
+    name: 'N'
+  })
+  const store = S_FaProjectHierarchyTree()
+  store.replaceDocumentIndexFromDocuments([sampleIndexDocument])
+  listDocumentsMock.mockRejectedValueOnce(new Error('dump failed'))
+  const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+  await store.reloadDocumentIndexFromBridge()
+  expect(store.listIndexedPlacementChildren({
+    parentDocumentId: null,
+    placementId: 'placement-1'
+  }).map((item) => item.id)).toEqual(['doc-1'])
+  errorSpy.mockRestore()
+})
+
+/**
+ * S_FaProjectHierarchyTree ensureDocumentIndexLoaded
+ * Marks a failed first dump as loaded so hydrate does not retry-loop.
+ */
+test('Test that S_FaProjectHierarchyTree does not retry a failed document dump without forceReload', async () => {
+  const { S_FaProjectHierarchyTree } = await import('../S_FaProjectHierarchyTree')
+  S_FaActiveProject().setActiveProject({
+    filePath: 'C:\\a.faproject',
+    id: 'project-id',
+    name: 'N'
+  })
+  const store = S_FaProjectHierarchyTree()
+  listDocumentsMock.mockRejectedValueOnce(new Error('dump failed'))
+  const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+  await store.ensureDocumentIndexLoaded()
+  await store.ensureDocumentIndexLoaded()
+  expect(listDocumentsMock).toHaveBeenCalledTimes(1)
+  errorSpy.mockRestore()
+})
+
+/**
+ * S_FaProjectHierarchyTree document index patches
+ * upsert, reindex, and move update listed children.
+ */
+test('Test that S_FaProjectHierarchyTree document index patches update listed children', async () => {
+  const { S_FaProjectHierarchyTree } = await import('../S_FaProjectHierarchyTree')
+  S_FaActiveProject().setActiveProject({
+    filePath: 'C:\\a.faproject',
+    id: 'project-id',
+    name: 'N'
+  })
+  const store = S_FaProjectHierarchyTree()
+  store.replaceDocumentIndexFromDocuments([
+    sampleIndexDocument,
+    {
+      ...sampleIndexDocument,
+      displayName: 'Sidekick',
+      id: 'doc-2',
+      sortOrder: 1
+    }
+  ])
+  store.upsertIndexedDocument({
+    ...sampleIndexDocument,
+    displayName: 'Renamed Hero'
+  })
+  store.applyIndexedReindexBucket({
+    movedDocumentId: 'doc-2',
+    orderedDocumentIds: ['doc-2', 'doc-1'],
+    parentDocumentId: null,
+    placementId: 'placement-1'
+  })
+  expect(store.listIndexedPlacementChildren({
+    parentDocumentId: null,
+    placementId: 'placement-1'
+  }).map((item) => item.id)).toEqual(['doc-2', 'doc-1'])
+  store.applyIndexedMove({
+    documentId: 'doc-2',
+    targetParentDocumentId: 'doc-1',
+    targetSortOrder: 0
+  })
+  expect(store.listIndexedPlacementChildren({
+    parentDocumentId: 'doc-1',
+    placementId: 'placement-1'
+  }).map((item) => item.id)).toEqual(['doc-2'])
+})
+
+/**
+ * S_FaProjectHierarchyTree replaceSessionForComponentTesting
+ * Clears the document index so component tests start dump-empty.
+ */
+test('Test that S_FaProjectHierarchyTree replaceSessionForComponentTesting clears the document index', async () => {
+  const { S_FaProjectHierarchyTree } = await import('../S_FaProjectHierarchyTree')
+  S_FaActiveProject().setActiveProject({
+    filePath: 'C:\\a.faproject',
+    id: 'project-id',
+    name: 'N'
+  })
+  const store = S_FaProjectHierarchyTree()
+  store.replaceDocumentIndexFromDocuments([sampleIndexDocument])
+  store.replaceSessionForComponentTesting({
+    worlds: []
+  })
+  expect(store.listIndexedPlacementChildren({
+    parentDocumentId: null,
+    placementId: 'placement-1'
+  })).toEqual([])
 })

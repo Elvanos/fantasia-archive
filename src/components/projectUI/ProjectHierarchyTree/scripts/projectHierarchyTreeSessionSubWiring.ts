@@ -1,11 +1,12 @@
 import type { Ref, watch as WatchFn } from 'vue'
 import type { I_faProjectHierarchyTreeHeTreeInstance, I_faProjectHierarchyTreeHeTreeNode, I_faProjectHierarchyTreeUiState, I_faProjectHierarchyTreeWorkspaceWorld, I_faProjectHierarchyTreeDocumentChild } from 'app/types/I_faProjectHierarchyTreeDomain'
 import type { createProjectHierarchyTreeDocumentRowDragHoldWiring, createProjectHierarchyTreeDocumentRowExpandClickGestureWiring } from './projectHierarchyTreeDocumentRowDragHoldWiring'
+import { reindexFaProjectDocumentSiblingsForRenderer } from 'app/src/scripts/componentTesting/faComponentTestingProjectContentDocumentIndexWiring'
+import { S_FaOpenedDocuments } from 'app/src/stores/S_FaOpenedDocuments'
 import { createProjectHierarchyTreeBeforeDragOpenWiring, createProjectHierarchyTreeDnDWiring } from './projectHierarchyTreeDnDWiring'
 import { createProjectHierarchyTreeLazyLoadSessionWiring } from './projectHierarchyTreeLazyLoadSessionWiring'
 import { createProjectHierarchyTreeOpenIconExpandAnimationWiring } from './projectHierarchyTreeExpandDomWiring'
 import { createProjectHierarchyTreeSyncWiring } from './projectHierarchyTreeSyncMapperWiring'
-import { S_FaOpenedDocuments } from 'app/src/stores/S_FaOpenedDocuments'
 
 type T_hierarchyStore = {
   flushUiStatePersist: () => void
@@ -207,11 +208,7 @@ export function createProjectHierarchyTreeSessionDnDSubWiring (deps: T_sessionDn
     markNodeClosed: deps.markNodeClosed,
     markNodeOpen: deps.markNodeOpen,
     reindexDocumentSiblingsInHierarchy: async (input) => {
-      const api = window.faContentBridgeAPIs?.projectContent
-      if (typeof api?.reindexDocumentSiblingsInHierarchy !== 'function') {
-        throw new Error('reindexDocumentSiblingsInHierarchy unavailable')
-      }
-      const result = await api.reindexDocumentSiblingsInHierarchy(input) as I_faProjectHierarchyTreeDocumentChild
+      const result = await reindexFaProjectDocumentSiblingsForRenderer(input) as I_faProjectHierarchyTreeDocumentChild
       S_FaOpenedDocuments().syncOpenedDocumentParentFromHierarchy(
         input.movedDocumentId,
         input.parentDocumentId

@@ -78,6 +78,7 @@ export function createProjectHierarchyTreeUiStateSessionRestoreWiring (deps: {
       onExpandedNodeIdsChange: deps.queuePersistExpandedNodeIds,
       openNodeIds: deps.openNodeIds,
       requestAnimationFrame: deps.requestAnimationFrame,
+      restoreExpandedSnapshot,
       treeData: deps.treeData
     })
   }

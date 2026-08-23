@@ -271,3 +271,61 @@ test('Test that faProjectHierarchyTreeRefreshLayoutFromBridge handles read failu
   expect(errorSpy).toHaveBeenCalled()
   errorSpy.mockRestore()
 })
+
+/**
+ * faProjectHierarchyTreeRefreshDocumentsFromBridge returns items from listDocuments.
+ */
+test('Test that faProjectHierarchyTreeRefreshDocumentsFromBridge returns dump items', async () => {
+  const listDocuments = vi.fn(async () => ({
+    items: [{
+      createdAtMs: 1,
+      displayName: 'Hero',
+      documentBackgroundColor: null,
+      documentTextColor: null,
+      extraClasses: '',
+      id: 'doc-1',
+      isCategory: false,
+      isDead: false,
+      isFinished: false,
+      isMinor: false,
+      parentDocumentId: null,
+      placementId: 'placement-1',
+      sortOrder: 0,
+      templateId: 'tpl-1',
+      treeOrderNumber: 1,
+      updatedAtMs: 1,
+      worldId: 'world-1'
+    }]
+  }))
+  Object.assign(window.faContentBridgeAPIs.projectContent, {
+    listDocuments
+  })
+  const { faProjectHierarchyTreeRefreshDocumentsFromBridge } = await import('../sFaProjectHierarchyTreeBridge')
+  await expect(faProjectHierarchyTreeRefreshDocumentsFromBridge()).resolves.toHaveLength(1)
+})
+
+/**
+ * faProjectHierarchyTreeRefreshDocumentsFromBridge returns an empty list when the API is missing.
+ */
+test('Test that faProjectHierarchyTreeRefreshDocumentsFromBridge returns empty when API is missing', async () => {
+  Object.assign(window.faContentBridgeAPIs, { projectContent: {} })
+  const { faProjectHierarchyTreeRefreshDocumentsFromBridge } = await import('../sFaProjectHierarchyTreeBridge')
+  await expect(faProjectHierarchyTreeRefreshDocumentsFromBridge()).resolves.toEqual([])
+})
+
+/**
+ * faProjectHierarchyTreeRefreshDocumentsFromBridge logs and returns null on read failure.
+ */
+test('Test that faProjectHierarchyTreeRefreshDocumentsFromBridge handles read failures', async () => {
+  const listDocuments = vi.fn(async () => {
+    throw new Error('dump failed')
+  })
+  Object.assign(window.faContentBridgeAPIs.projectContent, {
+    listDocuments
+  })
+  const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined)
+  const { faProjectHierarchyTreeRefreshDocumentsFromBridge } = await import('../sFaProjectHierarchyTreeBridge')
+  await expect(faProjectHierarchyTreeRefreshDocumentsFromBridge()).resolves.toBeNull()
+  expect(errorSpy).toHaveBeenCalled()
+  errorSpy.mockRestore()
+})

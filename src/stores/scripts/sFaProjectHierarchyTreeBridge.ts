@@ -1,5 +1,6 @@
 import { ResultAsync } from 'neverthrow'
 
+import type { I_faProjectDocument } from 'app/types/I_faProjectDocumentDomain'
 import type {
   I_faProjectHierarchyTreeUiState,
   I_faProjectHierarchyTreeUiStatePatch,
@@ -114,4 +115,26 @@ export function createEmptyProjectHierarchyTreeUiState (): I_faProjectHierarchyT
     ...EMPTY_UI_STATE,
     expandedNodeIds: []
   }
+}
+
+/**
+ * Loads every project document via listDocuments with no world filter.
+ * Missing API returns an empty list. Bridge errors return null so callers keep a prior dump.
+ */
+export async function faProjectHierarchyTreeRefreshDocumentsFromBridge (): Promise<
+I_faProjectDocument[] | null
+> {
+  const api = window.faContentBridgeAPIs?.projectContent
+  if (typeof api?.listDocuments !== 'function') {
+    return []
+  }
+  const readResult = await ResultAsync.fromPromise(
+    api.listDocuments(),
+    (error): unknown => error
+  )
+  if (readResult.isErr()) {
+    console.error('[S_FaProjectHierarchyTree] listDocuments failed', readResult.error)
+    return null
+  }
+  return readResult.value.items
 }

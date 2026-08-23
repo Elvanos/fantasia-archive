@@ -1,7 +1,11 @@
 import { afterEach, expect, test, vi } from 'vitest'
+import { createPinia, setActivePinia } from 'pinia'
 
+import type { I_faProjectDocument } from 'app/types/I_faProjectDocumentDomain'
 import { createFaActionDefinitionHandlersHierarchyTreeSortActions } from '../faActionDefinitionHandlersHierarchyTreeSortActionsWiring'
 import { setFaComponentTestingProjectContentOverrides } from 'app/src/scripts/componentTesting/faComponentTestingProjectContentOverridesWiring'
+import { S_FaActiveProject } from 'app/src/stores/S_FaActiveProject'
+import { S_FaProjectHierarchyTree } from 'app/src/stores/S_FaProjectHierarchyTree'
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -21,32 +25,63 @@ function stubProjectContentApi (api: {
   })
 }
 
-test('handleSortHierarchyTreeDocuments reindexes document children then refreshes tree nodes', async () => {
-  const listPlacementDocumentChildren = vi.fn(async () => {
+function seedHierarchySortDocuments (
+  items: Array<{
+    displayName: string
+    id: string
+    parentDocumentId?: string | null
+    placementId?: string
+    sortOrder: number
+  }>
+): void {
+  setActivePinia(createPinia())
+  S_FaActiveProject().setActiveProject({
+    filePath: 'C:\\a.faproject',
+    id: 'project-id',
+    name: 'N'
+  })
+  const documents: I_faProjectDocument[] = items.map((item, index) => {
     return {
-      items: [
-        {
-          displayName: 'Beta',
-          hasChildren: false,
-          id: 'b',
-          parentDocumentId: 'doc-1',
-          placementId: 'placement-1',
-          sortOrder: 0
-        },
-        {
-          displayName: 'Alpha',
-          hasChildren: false,
-          id: 'a',
-          parentDocumentId: 'doc-1',
-          placementId: 'placement-1',
-          sortOrder: 1
-        }
-      ]
+      createdAtMs: index,
+      displayName: item.displayName,
+      documentBackgroundColor: null,
+      documentTextColor: null,
+      extraClasses: '',
+      id: item.id,
+      isCategory: false,
+      isDead: false,
+      isFinished: false,
+      isMinor: false,
+      parentDocumentId: item.parentDocumentId ?? null,
+      placementId: item.placementId ?? 'placement-1',
+      sortOrder: item.sortOrder,
+      templateId: 'tpl-1',
+      treeOrderNumber: 1,
+      updatedAtMs: index,
+      worldId: 'world-1'
     }
   })
+  S_FaProjectHierarchyTree().replaceDocumentIndexFromDocuments(documents)
+}
+
+test('handleSortHierarchyTreeDocuments reindexes document children then refreshes tree nodes', async () => {
+  seedHierarchySortDocuments([
+    {
+      displayName: 'Beta',
+      id: 'b',
+      parentDocumentId: 'doc-1',
+      sortOrder: 0
+    },
+    {
+      displayName: 'Alpha',
+      id: 'a',
+      parentDocumentId: 'doc-1',
+      sortOrder: 1
+    }
+  ])
   const reindexDocumentSiblingsInHierarchy = vi.fn(async () => undefined)
   stubProjectContentApi({
-    listPlacementDocumentChildren,
+    listPlacementDocumentChildren: vi.fn(async () => ({ items: [] })),
     reindexDocumentSiblingsInHierarchy
   })
   const refreshHierarchyTreeNodes = vi.fn()
@@ -74,31 +109,23 @@ test('handleSortHierarchyTreeDocuments reindexes document children then refreshe
 })
 
 test('handleSortHierarchyTreeDocuments sorts template placement root bucket', async () => {
-  const listPlacementDocumentChildren = vi.fn(async () => {
-    return {
-      items: [
-        {
-          displayName: 'Beta',
-          hasChildren: false,
-          id: 'b',
-          parentDocumentId: null,
-          placementId: 'placement-1',
-          sortOrder: 0
-        },
-        {
-          displayName: 'Alpha',
-          hasChildren: false,
-          id: 'a',
-          parentDocumentId: null,
-          placementId: 'placement-1',
-          sortOrder: 1
-        }
-      ]
+  seedHierarchySortDocuments([
+    {
+      displayName: 'Beta',
+      id: 'b',
+      parentDocumentId: null,
+      sortOrder: 0
+    },
+    {
+      displayName: 'Alpha',
+      id: 'a',
+      parentDocumentId: null,
+      sortOrder: 1
     }
-  })
+  ])
   const reindexDocumentSiblingsInHierarchy = vi.fn(async () => undefined)
   stubProjectContentApi({
-    listPlacementDocumentChildren,
+    listPlacementDocumentChildren: vi.fn(async () => ({ items: [] })),
     reindexDocumentSiblingsInHierarchy
   })
   const refreshHierarchyTreeNodes = vi.fn()
@@ -181,48 +208,29 @@ test('handleSortHierarchyTreeDocuments throws when project content bridge missin
 })
 
 test('handleSortHierarchyTreeDocuments refreshes every recursive sort bucket parent', async () => {
-  const listPlacementDocumentChildren = vi.fn(async (input: {
-    parentDocumentId: string | null
-    placementId: string
-  }) => {
-    if (input.parentDocumentId === null) {
-      return {
-        items: [
-          {
-            displayName: 'Parent',
-            hasChildren: true,
-            id: 'doc-parent',
-            parentDocumentId: null,
-            placementId: 'placement-1',
-            sortOrder: 0
-          }
-        ]
-      }
+  seedHierarchySortDocuments([
+    {
+      displayName: 'Parent',
+      id: 'doc-parent',
+      parentDocumentId: null,
+      sortOrder: 0
+    },
+    {
+      displayName: 'Beta',
+      id: 'b',
+      parentDocumentId: 'doc-parent',
+      sortOrder: 0
+    },
+    {
+      displayName: 'Alpha',
+      id: 'a',
+      parentDocumentId: 'doc-parent',
+      sortOrder: 1
     }
-    return {
-      items: [
-        {
-          displayName: 'Beta',
-          hasChildren: false,
-          id: 'b',
-          parentDocumentId: 'doc-parent',
-          placementId: 'placement-1',
-          sortOrder: 0
-        },
-        {
-          displayName: 'Alpha',
-          hasChildren: false,
-          id: 'a',
-          parentDocumentId: 'doc-parent',
-          placementId: 'placement-1',
-          sortOrder: 1
-        }
-      ]
-    }
-  })
+  ])
   const reindexDocumentSiblingsInHierarchy = vi.fn(async () => undefined)
   stubProjectContentApi({
-    listPlacementDocumentChildren,
+    listPlacementDocumentChildren: vi.fn(async () => ({ items: [] })),
     reindexDocumentSiblingsInHierarchy
   })
   const refreshHierarchyTreeNodes = vi.fn()
@@ -243,43 +251,27 @@ test('handleSortHierarchyTreeDocuments refreshes every recursive sort bucket par
 })
 
 test('handleSortHierarchyTreeDocuments refreshes completed buckets before rethrowing mid-run failure', async () => {
-  const listPlacementDocumentChildren = vi.fn(
-    async (input: { parentDocumentId: string | null }) => {
-      if (input.parentDocumentId === null) {
-        return {
-          items: [
-            {
-              displayName: 'Parent',
-              hasChildren: true,
-              id: 'doc-parent',
-              parentDocumentId: null,
-              placementId: 'placement-1',
-              sortOrder: 0
-            }
-          ]
-        }
-      }
-      return {
-        items: [
-          {
-            displayName: 'Child',
-            hasChildren: false,
-            id: 'doc-child',
-            parentDocumentId: 'doc-parent',
-            placementId: 'placement-1',
-            sortOrder: 0
-          }
-        ]
-      }
+  seedHierarchySortDocuments([
+    {
+      displayName: 'Parent',
+      id: 'doc-parent',
+      parentDocumentId: null,
+      sortOrder: 0
+    },
+    {
+      displayName: 'Child',
+      id: 'doc-child',
+      parentDocumentId: 'doc-parent',
+      sortOrder: 0
     }
-  )
+  ])
   const reindexDocumentSiblingsInHierarchy = vi.fn(async (input: { parentDocumentId: string | null }) => {
     if (input.parentDocumentId === 'doc-parent') {
       throw new Error('reindex failed')
     }
   })
   stubProjectContentApi({
-    listPlacementDocumentChildren,
+    listPlacementDocumentChildren: vi.fn(async () => ({ items: [] })),
     reindexDocumentSiblingsInHierarchy
   })
   const refreshHierarchyTreeNodes = vi.fn()

@@ -60,6 +60,7 @@ export function createProjectHierarchyTreeSessionBootstrapWiring (deps: {
 
 export function createProjectHierarchyTreeSessionHydrateWiring (deps: {
   hierarchyStore: {
+    ensureDocumentIndexLoaded?: () => Promise<void>
     flushUiStatePersist: () => void
     refreshLayout: () => Promise<void>
     refreshUiState: () => Promise<void>
@@ -88,7 +89,14 @@ export function createProjectHierarchyTreeSessionHydrateWiring (deps: {
     const thisGeneration = ++hydrateGeneration
     treeSessionHydrateInFlight = true
     try {
-      await deps.hierarchyStore.refreshLayout()
+      const ensureDocumentIndexLoaded = deps.hierarchyStore.ensureDocumentIndexLoaded
+      const documentIndexPromise = ensureDocumentIndexLoaded === undefined
+        ? Promise.resolve()
+        : ensureDocumentIndexLoaded()
+      await Promise.all([
+        deps.hierarchyStore.refreshLayout(),
+        documentIndexPromise
+      ])
       if (thisGeneration !== hydrateGeneration) {
         return
       }

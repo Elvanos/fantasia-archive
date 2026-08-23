@@ -4,8 +4,13 @@ import { readonly, ref } from 'vue'
 
 import type { Ref } from 'vue'
 
+import type { I_faProjectDocument } from 'app/types/I_faProjectDocumentDomain'
 import type {
+  I_faProjectHierarchyTreeDocumentChild,
   I_faProjectHierarchyTreeHeTreeNode,
+  I_faProjectHierarchyTreeListPlacementChildrenInput,
+  I_faProjectHierarchyTreeMoveDocumentInput,
+  I_faProjectHierarchyTreeReindexDocumentSiblingsInput,
   I_faProjectHierarchyTreeSearchHit,
   I_faProjectHierarchyTreeUiState,
   I_faProjectHierarchyTreeWorkspaceWorld
@@ -13,13 +18,29 @@ import type {
 import { buildProjectHierarchyTreeRevealPathFromSearchHit } from 'app/src/components/projectUI/ProjectHierarchyTree/functions/projectHierarchyTreeRevealPath'
 import { S_FaActiveProject } from 'app/src/stores/S_FaActiveProject'
 import {
+  createFaProjectHierarchyDocumentIndex,
+  listFaProjectHierarchyDocumentIndexPlacementChildren,
+  replaceFaProjectHierarchyDocumentIndexFromDocuments,
+  upsertFaProjectHierarchyDocumentIndexDocument
+} from 'app/src/stores/functions/faProjectHierarchyDocumentIndex'
+import {
+  applyFaProjectHierarchyDocumentIndexMove,
+  applyFaProjectHierarchyDocumentIndexReindex
+} from 'app/src/stores/functions/faProjectHierarchyDocumentIndexMutations'
+import {
   createEmptyProjectHierarchyTreeUiState,
   faProjectHierarchyTreePersistUiStatePatchFromBridge,
+  faProjectHierarchyTreeRefreshDocumentsFromBridge,
   faProjectHierarchyTreeRefreshLayoutFromBridge,
   faProjectHierarchyTreeRefreshUiStateFromBridge
 } from 'app/src/stores/scripts/sFaProjectHierarchyTreeBridge'
 
 const UI_STATE_PERSIST_DEBOUNCE_MS = 150
+
+const documentIndexMutationDeps = {
+  listPlacementChildren: listFaProjectHierarchyDocumentIndexPlacementChildren,
+  upsertDocument: upsertFaProjectHierarchyDocumentIndexDocument
+}
 
 /**
  * Workspace hierarchy sidebar tree session state (layout skeleton, UI persist, search reveal).
@@ -54,8 +75,109 @@ export const S_FaProjectHierarchyTree = defineStore('S_FaProjectHierarchyTree', 
    */
   const documentLastOpenedRefreshGeneration = ref(0)
 
+  let documentIndex = createFaProjectHierarchyDocumentIndex()
+  let documentIndexLoadedForProjectId: string | null = null
+  let documentIndexInFlight: Promise<void> | null = null
+  let documentIndexLoadGeneration = 0
+
   function bumpDocumentLastOpenedRefreshGeneration (): void {
     documentLastOpenedRefreshGeneration.value += 1
+  }
+
+  function clearDocumentIndex (): void {
+    documentIndexLoadGeneration += 1
+    documentIndex = createFaProjectHierarchyDocumentIndex()
+    documentIndexLoadedForProjectId = null
+    documentIndexInFlight = null
+  }
+
+  function replaceDocumentIndexFromDocuments (items: readonly I_faProjectDocument[]): void {
+    documentIndex = createFaProjectHierarchyDocumentIndex()
+    replaceFaProjectHierarchyDocumentIndexFromDocuments(documentIndex, items)
+    documentIndexLoadedForProjectId = S_FaActiveProject().activeProject?.id ?? null
+  }
+
+  function listIndexedPlacementChildren (
+    input: I_faProjectHierarchyTreeListPlacementChildrenInput
+  ): I_faProjectHierarchyTreeDocumentChild[] {
+    return listFaProjectHierarchyDocumentIndexPlacementChildren(documentIndex, input)
+  }
+
+  function upsertIndexedDocument (document: I_faProjectDocument): void {
+    upsertFaProjectHierarchyDocumentIndexDocument(documentIndex, document)
+  }
+
+  function applyIndexedReindexBucket (
+    input: I_faProjectHierarchyTreeReindexDocumentSiblingsInput
+  ): void {
+    applyFaProjectHierarchyDocumentIndexReindex(
+      documentIndex,
+      input,
+      documentIndexMutationDeps
+    )
+  }
+
+  function applyIndexedMove (input: I_faProjectHierarchyTreeMoveDocumentInput): void {
+    applyFaProjectHierarchyDocumentIndexMove(
+      documentIndex,
+      input,
+      documentIndexMutationDeps
+    )
+  }
+
+  async function loadDocumentIndexForProject (
+    projectId: string,
+    loadGeneration: number
+  ): Promise<void> {
+    const items = await faProjectHierarchyTreeRefreshDocumentsFromBridge()
+    if (loadGeneration !== documentIndexLoadGeneration) {
+      return
+    }
+    if (S_FaActiveProject().activeProject?.id !== projectId) {
+      return
+    }
+    if (items === null) {
+      if (
+        loadGeneration === documentIndexLoadGeneration &&
+        S_FaActiveProject().activeProject?.id === projectId
+      ) {
+        documentIndexLoadedForProjectId = projectId
+      }
+      return
+    }
+    replaceDocumentIndexFromDocuments(items)
+  }
+
+  async function ensureDocumentIndexLoaded (options?: { forceReload?: boolean }): Promise<void> {
+    const projectId = S_FaActiveProject().activeProject?.id ?? null
+    if (projectId === null) {
+      clearDocumentIndex()
+      return
+    }
+    const forceReload = options?.forceReload === true
+    if (!forceReload && documentIndexLoadedForProjectId === projectId) {
+      return
+    }
+    if (documentIndexInFlight !== null) {
+      await documentIndexInFlight
+      return await ensureDocumentIndexLoaded(options)
+    }
+    const loadGeneration = ++documentIndexLoadGeneration
+    const pending = loadDocumentIndexForProject(projectId, loadGeneration)
+    documentIndexInFlight = pending
+    try {
+      await pending
+    } finally {
+      if (documentIndexInFlight === pending) {
+        documentIndexInFlight = null
+      }
+    }
+  }
+
+  async function reloadDocumentIndexFromBridge (): Promise<void> {
+    await ensureDocumentIndexLoaded({
+      forceReload: true
+    })
   }
 
   function applyUiState (next: I_faProjectHierarchyTreeUiState): void {
@@ -76,6 +198,7 @@ export const S_FaProjectHierarchyTree = defineStore('S_FaProjectHierarchyTree', 
     pendingDocumentRefreshIds.value = []
     pendingHierarchyNodeRefreshIds.value = []
     applyUiState(createEmptyProjectHierarchyTreeUiState())
+    clearDocumentIndex()
   }
 
   async function applyLayoutFromBridge (): Promise<void> {
@@ -236,6 +359,8 @@ export const S_FaProjectHierarchyTree = defineStore('S_FaProjectHierarchyTree', 
     })
   }
 
+  const applyIndexedMoveOut = applyIndexedMove
+  const applyIndexedReindexBucketOut = applyIndexedReindexBucket
   const clearPendingDocumentRefreshIdsOut = clearPendingDocumentRefreshIds
   const clearPendingHierarchyNodeRefreshIdsOut = clearPendingHierarchyNodeRefreshIds
   const clearPendingRevealPathOut = clearPendingRevealPath
@@ -244,8 +369,10 @@ export const S_FaProjectHierarchyTree = defineStore('S_FaProjectHierarchyTree', 
   const bumpDocumentLastOpenedRefreshGenerationOut = bumpDocumentLastOpenedRefreshGeneration
   const documentCensusRefreshGenerationOut = documentCensusRefreshGeneration
   const documentLastOpenedRefreshGenerationOut = documentLastOpenedRefreshGeneration
+  const ensureDocumentIndexLoadedOut = ensureDocumentIndexLoaded
   const flushUiStatePersistOut = flushUiStatePersist
   const layoutRefreshGenerationOut = layoutRefreshGeneration
+  const listIndexedPlacementChildrenOut = listIndexedPlacementChildren
   const patchWorldColorPaletteInLayoutOut = patchWorldColorPaletteInLayout
   const pendingDocumentRefreshIdsOut = pendingDocumentRefreshIds
   const pendingHierarchyNodeRefreshIdsOut = pendingHierarchyNodeRefreshIds
@@ -256,6 +383,8 @@ export const S_FaProjectHierarchyTree = defineStore('S_FaProjectHierarchyTree', 
   const refreshHierarchyTreeNodesOut = refreshHierarchyTreeNodes
   const refreshLayoutOut = refreshLayout
   const refreshUiStateOut = refreshUiState
+  const reloadDocumentIndexFromBridgeOut = reloadDocumentIndexFromBridge
+  const replaceDocumentIndexFromDocumentsOut = replaceDocumentIndexFromDocuments
   const requestRevealSearchHitOut = requestRevealSearchHit
   const resetOnProjectCloseOut = resetOnProjectClose
   const searchHitsOut = searchHits
@@ -276,14 +405,18 @@ export const S_FaProjectHierarchyTree = defineStore('S_FaProjectHierarchyTree', 
       applyUiState(input.uiState)
     }
     layoutRefreshGeneration.value += 1
+    clearDocumentIndex()
   }
 
   const treeDataOut = treeData
   const uiStateOut = uiState
+  const upsertIndexedDocumentOut = upsertIndexedDocument
   const worldsOut = worlds
   const replaceSessionForComponentTestingOut = replaceSessionForComponentTesting
 
   return {
+    applyIndexedMove: applyIndexedMoveOut,
+    applyIndexedReindexBucket: applyIndexedReindexBucketOut,
     bumpDocumentCensusRefreshGeneration: bumpDocumentCensusRefreshGenerationOut,
     bumpDocumentLastOpenedRefreshGeneration: bumpDocumentLastOpenedRefreshGenerationOut,
     clearPendingDocumentRefreshIds: clearPendingDocumentRefreshIdsOut,
@@ -292,8 +425,10 @@ export const S_FaProjectHierarchyTree = defineStore('S_FaProjectHierarchyTree', 
     clearSearch: clearSearchOut,
     documentCensusRefreshGeneration: readonly(documentCensusRefreshGenerationOut),
     documentLastOpenedRefreshGeneration: readonly(documentLastOpenedRefreshGenerationOut),
+    ensureDocumentIndexLoaded: ensureDocumentIndexLoadedOut,
     flushUiStatePersist: flushUiStatePersistOut,
     layoutRefreshGeneration: readonly(layoutRefreshGenerationOut),
+    listIndexedPlacementChildren: listIndexedPlacementChildrenOut,
     patchWorldColorPaletteInLayout: patchWorldColorPaletteInLayoutOut,
     pendingDocumentRefreshIds: pendingDocumentRefreshIdsOut,
     pendingHierarchyNodeRefreshIds: pendingHierarchyNodeRefreshIdsOut,
@@ -304,6 +439,8 @@ export const S_FaProjectHierarchyTree = defineStore('S_FaProjectHierarchyTree', 
     refreshHierarchyTreeNodes: refreshHierarchyTreeNodesOut,
     refreshLayout: refreshLayoutOut,
     refreshUiState: refreshUiStateOut,
+    reloadDocumentIndexFromBridge: reloadDocumentIndexFromBridgeOut,
+    replaceDocumentIndexFromDocuments: replaceDocumentIndexFromDocumentsOut,
     replaceSessionForComponentTesting: replaceSessionForComponentTestingOut,
     requestRevealSearchHit: requestRevealSearchHitOut,
     resetOnProjectClose: resetOnProjectCloseOut,
@@ -311,6 +448,7 @@ export const S_FaProjectHierarchyTree = defineStore('S_FaProjectHierarchyTree', 
     setSearchHits: setSearchHitsOut,
     treeData: treeDataOut,
     uiState: readonly(uiStateOut),
+    upsertIndexedDocument: upsertIndexedDocumentOut,
     worlds: readonly(worldsOut)
   }
 })

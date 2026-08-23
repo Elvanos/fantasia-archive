@@ -15,6 +15,7 @@
 - **Controls**: Reusable **FaSelectInput** select fields support chips or an **inline** selected row (icon + label, no chips), filter highlighting of whole matching words, optional create-new, colored option icons, and document / template / simple / **tags** modes. Dropdown menus use a fixed **600px** width, center under the field when space allows, fill taller lists on first open, and use low-opacity separators between options. **Tab** into the field opens the menu; choosing the same option again still counts as an activation (so parents can reopen the next step).
 
 ### Bugfixes & Optimizations
+- **Workspace sidebar**: Restoring a large expanded hierarchy tree is much faster. Document children now load from one project-wide document list instead of a separate request for each expanded parent.
 - **Workspace sidebar**: Clicking the resize splitter without dragging no longer overwrites the saved sidebar width.
 - **Fantasy theme**: Menu hover gold glow stays on the row and does not peek past the last item. The welcome **Resume Latest Project** menu inner rim is a bit softer.
 - **Document workspace**: Tab context menu **Move tab left** / **Move tab right** use double-angle icons. **Close this tab** and the other close-tab rows use the same ink as copy/move actions, not secondary. Trailing menu icons match the Last opened glyph box.

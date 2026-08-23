@@ -11,6 +11,7 @@ import { runWithPreservedProjectHierarchyTreeScrollTop } from './projectHierarch
 
 type T_sessionHierarchyStore = {
   clearPendingRevealPath: () => void
+  ensureDocumentIndexLoaded?: () => Promise<void>
   flushUiStatePersist: () => void
   refreshLayout: () => Promise<void>
   refreshUiState: () => Promise<void>

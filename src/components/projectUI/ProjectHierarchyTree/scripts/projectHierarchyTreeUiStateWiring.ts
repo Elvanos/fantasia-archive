@@ -66,6 +66,7 @@ export async function restoreProjectHierarchyTreeUiState (deps: {
   onExpandedNodeIdsChange: (expandedNodeIds: string[]) => void
   openNodeIds: Ref<Set<string>>
   requestAnimationFrame: (callback: () => void) => number
+  restoreExpandedSnapshot?: (expandedNodeIds: string[]) => Promise<void>
   treeData: Ref<I_faProjectHierarchyTreeHeTreeNode[]>
 }): Promise<void> {
   const persistedExpandedNodeIds = deps.getExpandedNodeIds()
@@ -79,31 +80,35 @@ export async function restoreProjectHierarchyTreeUiState (deps: {
   )
     ? mergeProjectHierarchyTreePlacementExpandNodeIds(baseExpandedNodeIds, worlds)
     : baseExpandedNodeIds
-  const pruned = applyPersistedProjectHierarchyTreeOpenNodeIds(
-    deps.treeData.value,
-    expandedNodeIds
-  )
-  deps.openNodeIds.value = new Set(pruned)
-  const expandedNodeIdsForPersist = collectProjectHierarchyTreePersistedExpandedNodeIds(
-    deps.treeData.value,
-    deps.openNodeIds.value
-  )
-  if (shouldPersistProjectHierarchyTreeRestoredExpandedNodeIds({
-    intendedExpandedNodeIds: expandedNodeIds,
-    restoredExpandedNodeIds: expandedNodeIdsForPersist,
-    treeNodeCount: deps.treeData.value.length
-  })) {
-    deps.onExpandedNodeIdsChange(expandedNodeIdsForPersist)
+  if (deps.restoreExpandedSnapshot !== undefined) {
+    await deps.restoreExpandedSnapshot(expandedNodeIds)
+  } else {
+    const pruned = applyPersistedProjectHierarchyTreeOpenNodeIds(
+      deps.treeData.value,
+      expandedNodeIds
+    )
+    deps.openNodeIds.value = new Set(pruned)
+    const expandedNodeIdsForPersist = collectProjectHierarchyTreePersistedExpandedNodeIds(
+      deps.treeData.value,
+      deps.openNodeIds.value
+    )
+    if (shouldPersistProjectHierarchyTreeRestoredExpandedNodeIds({
+      intendedExpandedNodeIds: expandedNodeIds,
+      restoredExpandedNodeIds: expandedNodeIdsForPersist,
+      treeNodeCount: deps.treeData.value.length
+    })) {
+      deps.onExpandedNodeIdsChange(expandedNodeIdsForPersist)
+    }
+
+    await reapplyProjectHierarchyTreeLatentDescendantExpandState({
+      getTreeRef: deps.getTreeRef,
+      loadChildrenAlongRevealPath: deps.loadChildrenAlongRevealPath,
+      openNodeIds: deps.openNodeIds,
+      treeData: deps.treeData
+    })
   }
 
   const treeRef = deps.getTreeRef()
-  await reapplyProjectHierarchyTreeLatentDescendantExpandState({
-    getTreeRef: deps.getTreeRef,
-    loadChildrenAlongRevealPath: deps.loadChildrenAlongRevealPath,
-    openNodeIds: deps.openNodeIds,
-    treeData: deps.treeData
-  })
-
   if (treeRef === null) {
     return
   }

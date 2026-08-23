@@ -33,6 +33,7 @@ import {
   hasFaProjectDocumentUpdateWriter,
   listFaProjectDocumentTagsForRenderer,
   listFaProjectPlacementDocumentChildrenForRenderer,
+  moveFaProjectDocumentInHierarchyForRenderer,
   updateFaProjectDocumentForRenderer
 } from 'app/src/scripts/componentTesting/componentTesting_manager'
 import {
@@ -1149,8 +1150,7 @@ export const S_FaOpenedDocuments = defineStore('S_FaOpenedDocuments', () => {
           worldId: string
         } | null = null
         if (parentChanged) {
-          const api = window.faContentBridgeAPIs?.projectContent
-          if (typeof api?.moveDocumentInHierarchy !== 'function') {
+          if (typeof window.faContentBridgeAPIs?.projectContent?.moveDocumentInHierarchy !== 'function') {
             throw new Error(i18n.global.t('globalFunctionality.faOpenedDocuments.saveError'))
           }
           const existingDocument = await getFaProjectDocumentByIdForRenderer(documentId)
@@ -1169,7 +1169,7 @@ export const S_FaOpenedDocuments = defineStore('S_FaOpenedDocuments', () => {
             siblingsResult.items,
             documentId
           )
-          await api.moveDocumentInHierarchy({
+          await moveFaProjectDocumentInHierarchyForRenderer({
             documentId,
             targetParentDocumentId,
             targetSortOrder

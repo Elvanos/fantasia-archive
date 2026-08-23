@@ -3,6 +3,10 @@ import { afterEach, beforeEach, expect, test, vi } from 'vitest'
 import { computed, ref, watch, type Ref } from 'vue'
 
 import type { I_faProjectHierarchyTreeHeTreeInstance, I_faProjectHierarchyTreeHeTreeNode } from 'app/types/I_faProjectHierarchyTreeDomain'
+import type { I_faProjectDocument } from 'app/types/I_faProjectDocumentDomain'
+import { createPinia, setActivePinia } from 'pinia'
+import { S_FaActiveProject } from 'app/src/stores/S_FaActiveProject'
+import { S_FaProjectHierarchyTree } from 'app/src/stores/S_FaProjectHierarchyTree'
 
 import {
   mapWorkspaceLayoutToHierarchyTreeSkeleton,
@@ -320,6 +324,45 @@ beforeEach(() => {
 afterEach(() => {
   vi.useRealTimers()
 })
+
+function seedHierarchyTreeDocumentIndex (
+  items: Array<{
+    displayName: string
+    id: string
+    parentDocumentId?: string | null
+    placementId?: string | null
+    sortOrder?: number
+  }>
+): void {
+  setActivePinia(createPinia())
+  S_FaActiveProject().setActiveProject({
+    filePath: 'C:\\a.faproject',
+    id: 'project-id',
+    name: 'N'
+  })
+  const documents: I_faProjectDocument[] = items.map((item, index) => {
+    return {
+      createdAtMs: index,
+      displayName: item.displayName,
+      documentBackgroundColor: null,
+      documentTextColor: null,
+      extraClasses: '',
+      id: item.id,
+      isCategory: false,
+      isDead: false,
+      isFinished: false,
+      isMinor: false,
+      parentDocumentId: item.parentDocumentId ?? null,
+      placementId: item.placementId ?? 'placement-1',
+      sortOrder: item.sortOrder ?? index,
+      templateId: 'template-1',
+      treeOrderNumber: 1,
+      updatedAtMs: index,
+      worldId: 'world-1'
+    }
+  })
+  S_FaProjectHierarchyTree().replaceDocumentIndexFromDocuments(documents)
+}
 
 test('Test that mapWorkspaceLayoutToHierarchyTreeSkeleton handles root placements and label patch', () => {
   const tree = mapWorkspaceLayoutToHierarchyTreeSkeleton([sampleWorld])
@@ -1233,11 +1276,13 @@ test('Test that session handlers wiring emits document open requests', async () 
 })
 
 test('Test that hydrate wiring refreshes session and tears down', async () => {
+  const ensureDocumentIndexLoaded = vi.fn(async () => undefined)
   const hydrateWiring = createProjectHierarchyTreeSessionHydrateWiring({
     dndWiring: {
       onUnmountedCleanup: vi.fn()
     },
     hierarchyStore: {
+      ensureDocumentIndexLoaded,
       flushUiStatePersist: vi.fn(),
       refreshLayout: vi.fn(async () => undefined),
       refreshUiState: vi.fn(async () => undefined)
@@ -1256,6 +1301,7 @@ test('Test that hydrate wiring refreshes session and tears down', async () => {
   expect(hydrateWiring.isTreeSessionHydrateInFlight()).toBe(true)
   await hydratePromise
   expect(hydrateWiring.isTreeSessionHydrateInFlight()).toBe(false)
+  expect(ensureDocumentIndexLoaded).toHaveBeenCalledTimes(1)
   hydrateWiring.teardown()
 })
 
@@ -2364,33 +2410,29 @@ test('Test that createProjectHierarchyTreeUiStateSessionWiring delegates UI help
   wiring.onUnmountedCleanup()
 })
 
-test('Test that createProjectHierarchyTreeSessionSubWiring calls bridge APIs for lazy load and move', async () => {
+test('Test that createProjectHierarchyTreeSessionSubWiring loads children from the document index then reindexes', async () => {
   const sessionRefs = createProjectHierarchyTreeSessionRefs({ ref })
   const treeData = ref(mapWorkspaceLayoutToHierarchyTreeSkeleton([sampleWorld]))
-  const listPlacementDocumentChildren = vi.fn(async () => ({
-    items: [
-      {
-        displayName: 'Bridge doc',
-        hasChildren: false,
-        id: 'doc-bridge',
-        parentDocumentId: null,
-        placementId: 'placement-1',
-        sortOrder: 0
-      },
-      {
-        displayName: 'Bridge doc 2',
-        hasChildren: false,
-        id: 'doc-bridge-2',
-        parentDocumentId: null,
-        placementId: 'placement-1',
-        sortOrder: 1
-      }
-    ]
-  }))
+  seedHierarchyTreeDocumentIndex([
+    {
+      displayName: 'Bridge doc',
+      id: 'doc-bridge',
+      parentDocumentId: null,
+      placementId: 'placement-1',
+      sortOrder: 0
+    },
+    {
+      displayName: 'Bridge doc 2',
+      id: 'doc-bridge-2',
+      parentDocumentId: null,
+      placementId: 'placement-1',
+      sortOrder: 1
+    }
+  ])
   const reindexDocumentSiblingsInHierarchy = vi.fn(async () => undefined)
   window.faContentBridgeAPIs = {
     projectContent: {
-      listPlacementDocumentChildren,
+      listPlacementDocumentChildren: vi.fn(async () => ({ items: [] })),
       reindexDocumentSiblingsInHierarchy
     }
   } as never
@@ -2431,9 +2473,7 @@ test('Test that createProjectHierarchyTreeSessionSubWiring calls bridge APIs for
   })
   const placement = findProjectHierarchyTreeNodeById(treeData.value, 'placement-1')!
   await subWiring.lazyLoadWiring.loadChildrenForNode(placement)
-  expect(listPlacementDocumentChildren).toHaveBeenCalledWith({
-    placementId: 'placement-1'
-  })
+  expect(findProjectHierarchyTreeNodeById(treeData.value, 'doc-bridge')?.id).toBe('doc-bridge')
   subWiring.dndWiring.onBeforeDragStart({
     data: buildDocumentNode({
       documentId: 'doc-bridge',
@@ -3687,20 +3727,18 @@ test('Test that createProjectHierarchyTreeSessionSubWiring delegates UI state st
 test('Test that createProjectHierarchyTreeSessionSubWiring propagates move failures', async () => {
   const sessionRefs = createProjectHierarchyTreeSessionRefs({ ref })
   const treeData = ref(mapWorkspaceLayoutToHierarchyTreeSkeleton([sampleWorld]))
+  seedHierarchyTreeDocumentIndex([
+    {
+      displayName: 'Doc move',
+      id: 'doc-move',
+      parentDocumentId: null,
+      placementId: 'placement-1',
+      sortOrder: 0
+    }
+  ])
   window.faContentBridgeAPIs = {
     projectContent: {
-      listPlacementDocumentChildren: vi.fn(async () => ({
-        items: [
-          {
-            displayName: 'Doc move',
-            hasChildren: false,
-            id: 'doc-move',
-            parentDocumentId: null,
-            placementId: 'placement-1',
-            sortOrder: 0
-          }
-        ]
-      })),
+      listPlacementDocumentChildren: vi.fn(async () => ({ items: [] })),
       reindexDocumentSiblingsInHierarchy: vi.fn(async () => {
         throw new Error('move failed')
       })
@@ -4070,6 +4108,36 @@ test('Test that restoreProjectHierarchyTreeUiState restores scrollTop on tree ho
     treeData
   })
   expect(tree.scrollTop).toBe(42)
+})
+
+/**
+ * restoreProjectHierarchyTreeUiState
+ * Hydrate restore uses restoreExpandedSnapshot instead of per-node latent reapply.
+ */
+test('Test that restoreProjectHierarchyTreeUiState uses restoreExpandedSnapshot when provided', async () => {
+  const treeData = ref(mapWorkspaceLayoutToHierarchyTreeSkeleton([sampleWorld]))
+  const openNodeIds = ref(new Set<string>())
+  const restoreExpandedSnapshot = vi.fn(async () => undefined)
+  const loadChildrenAlongRevealPath = vi.fn(async () => undefined)
+  await restoreProjectHierarchyTreeUiState({
+    getExpandedNodeIds: () => ['world-1'],
+    getScrollTopPx: () => 0,
+    getTreeRef: () => null,
+    getTreeScrollHost: () => null,
+    getWorlds: () => [sampleWorld],
+    loadChildrenAlongRevealPath,
+    nextTick: async () => undefined,
+    onExpandedNodeIdsChange: vi.fn(),
+    openNodeIds,
+    requestAnimationFrame: (callback: () => void) => {
+      callback()
+      return 1
+    },
+    restoreExpandedSnapshot,
+    treeData
+  })
+  expect(restoreExpandedSnapshot).toHaveBeenCalled()
+  expect(loadChildrenAlongRevealPath).not.toHaveBeenCalled()
 })
 
 test('Test that createProjectHierarchyTreeSessionSubWiring restores UI state via store getters', async () => {
@@ -4751,19 +4819,18 @@ test('Test that createProjectHierarchyTreeSessionSubWiring restoreExpandedSnapsh
 test('Test that createProjectHierarchyTreeSessionSubWiring refreshNodeChildrenFromDatabase reloads node children', async () => {
   const sessionRefs = createProjectHierarchyTreeSessionRefs({ ref })
   const treeData = ref(mapWorkspaceLayoutToHierarchyTreeSkeleton([sampleWorld]))
-  const listPlacementDocumentChildren = vi.fn(async () => ({
-    items: [{
+  seedHierarchyTreeDocumentIndex([
+    {
       displayName: 'Reloaded doc',
-      hasChildren: false,
       id: 'doc-reload',
       parentDocumentId: null,
       placementId: 'placement-1',
       sortOrder: 0
-    }]
-  }))
+    }
+  ])
   window.faContentBridgeAPIs = {
     projectContent: {
-      listPlacementDocumentChildren
+      listPlacementDocumentChildren: vi.fn(async () => ({ items: [] }))
     }
   } as never
   const subWiring = createProjectHierarchyTreeSessionSubWiring({
@@ -4802,9 +4869,7 @@ test('Test that createProjectHierarchyTreeSessionSubWiring refreshNodeChildrenFr
     worlds: ref([sampleWorld])
   })
   await subWiring.lazyLoadWiring.refreshNodeChildrenFromDatabase('placement-1')
-  expect(listPlacementDocumentChildren).toHaveBeenCalledWith({
-    placementId: 'placement-1'
-  })
+  expect(findProjectHierarchyTreeNodeById(treeData.value, 'doc-reload')?.id).toBe('doc-reload')
 })
 
 test('Test that bindProjectHierarchyTreeHeTreeNodeTabIndexGuard syncs tabindex on host mutations', async () => {
@@ -5246,25 +5311,25 @@ test('Test that runProjectHierarchyTreePostDragExpandCloseGuard suppresses ances
 test('Test that createProjectHierarchyTreeSessionDnDSubWiring throws when reindex API missing', async () => {
   const sessionRefs = createProjectHierarchyTreeSessionRefs({ ref })
   const treeData = ref(mapWorkspaceLayoutToHierarchyTreeSkeleton([sampleWorld]))
+  seedHierarchyTreeDocumentIndex([
+    {
+      displayName: 'Doc api missing',
+      id: 'doc-api-missing',
+      parentDocumentId: null,
+      placementId: 'placement-1',
+      sortOrder: 0
+    },
+    {
+      displayName: 'Doc api missing 2',
+      id: 'doc-api-missing-2',
+      parentDocumentId: null,
+      placementId: 'placement-1',
+      sortOrder: 1
+    }
+  ])
   window.faContentBridgeAPIs = {
     projectContent: {
-      listPlacementDocumentChildren: vi.fn(async () => ({
-        items: [{
-          displayName: 'Doc api missing',
-          hasChildren: false,
-          id: 'doc-api-missing',
-          parentDocumentId: null,
-          placementId: 'placement-1',
-          sortOrder: 0
-        }, {
-          displayName: 'Doc api missing 2',
-          hasChildren: false,
-          id: 'doc-api-missing-2',
-          parentDocumentId: null,
-          placementId: 'placement-1',
-          sortOrder: 1
-        }]
-      }))
+      listPlacementDocumentChildren: vi.fn(async () => ({ items: [] }))
     }
   } as never
   const subWiring = createProjectHierarchyTreeSessionSubWiring({
