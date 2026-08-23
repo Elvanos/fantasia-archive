@@ -100,6 +100,7 @@ export default [...neostandard({
     '**/src-ssr/**',
     '**/test-results/**',
     '**/coverage/**',
+    '**/_temp/**',
     'eslint*.json',
     '.utility-scripts/.eslint-report.json',
     'quasar.config.*.temporary.compiled*'
