@@ -26,6 +26,9 @@ test('Test that createProjectAppControlBarI18nTooltips returns translated strip 
   expect(tooltips.toggleHierarchyTreeTooltip.value).toBe(
     'projectUI.projectAppControlBar.toggleHierarchyTreeTooltip'
   )
+  expect(tooltips.openProjectMediaTooltip.value).toBe(
+    'projectUI.projectAppControlBar.openProjectMediaTooltip'
+  )
   expect(tooltips.toggleAppNoteboardTooltip.value).toBe(
     'projectUI.projectAppControlBar.toggleAppNoteboardTooltip'
   )

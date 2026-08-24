@@ -29,6 +29,7 @@ export default {
     openKeybindSettingsDialog: 'Öppna Keybind Settings',
     openQuickAddDocumentDialog: 'Open Quick-Add New Document',
     openQuickSearchDocumentDialog: 'Open Quick-Search Existing Document',
+    openProjectMediaDialog: 'Open Project Media',
     openProjectSettingsDialog: 'Öppna projektinställningar',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'Spara projektinställningar',

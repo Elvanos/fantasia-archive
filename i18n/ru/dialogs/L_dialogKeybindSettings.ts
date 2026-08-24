@@ -29,6 +29,7 @@ export default {
     quickNewDocument: 'Quick-Add New Document',
     quickExistingDocument: 'Quick-search existing document',
     openProjectSettings: 'Открыть настройки проекта',
+    openProjectMedia: 'Open Project Media',
     showProjectDashboard: 'Показать панель управления проектом',
     toggleDeveloperTools: 'Переключить инструменты разработчика',
     toggleAppNoteboard: 'Переключить блокнот приложения',

@@ -120,6 +120,11 @@ test('faKeybindRunCommand routes openProjectSettings to the openProjectSettingsD
   expect(runFaActionMock).toHaveBeenCalledWith('openProjectSettingsDialog', undefined)
 })
 
+test('faKeybindRunCommand routes openProjectMedia to the openProjectMediaDialog action', () => {
+  faKeybindRunCommand('openProjectMedia')
+  expect(runFaActionMock).toHaveBeenCalledWith('openProjectMediaDialog', undefined)
+})
+
 test('faKeybindRunCommand routes editDocument to the editActiveDocument action', () => {
   faKeybindRunCommand('editDocument')
   expect(runFaActionMock).toHaveBeenCalledWith('editActiveDocument', undefined)

@@ -22,6 +22,7 @@ export const FA_ACTION_IDS = [
   'openProjectSettingsDialog',
   'openQuickAddDocumentDialog',
   'openQuickSearchDocumentDialog',
+  'openProjectMediaDialog',
   'showProjectDashboard',
   'saveProjectSettings',
   'saveAppStyling',
@@ -142,6 +143,7 @@ export interface I_faActionPayloadMap {
   openNewProjectDialog: void
   openQuickAddDocumentDialog: void
   openQuickSearchDocumentDialog: void
+  openProjectMediaDialog: void
   loadExistingProject: I_faLoadExistingProjectPayload
   createNewProject: { projectName: string }
   exportAppConfigPackage: {

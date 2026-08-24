@@ -11,6 +11,7 @@ export function buildProjectAppControlBarFixedStripLeftKeybindTooltipLabels (dep
 }): {
     advancedSearchGuideKeybindLabel: I_computedRef<string | null>
     keyboardShortcutsKeybindLabel: I_computedRef<string | null>
+    openProjectMediaKeybindLabel: I_computedRef<string | null>
     quickAddKeybindLabel: I_computedRef<string | null>
     quickSearchKeybindLabel: I_computedRef<string | null>
     toggleAppNoteboardKeybindLabel: I_computedRef<string | null>
@@ -34,6 +35,13 @@ export function buildProjectAppControlBarFixedStripLeftKeybindTooltipLabels (dep
   const toggleHierarchyTreeKeybindLabel = deps.computed(() => {
     return deps.formatFaKeybindCommandLabelFromSnapshot({
       commandId: 'toggleHierarchicalTree',
+      snapshot: deps.getKeybindsSnapshot()
+    })
+  })
+
+  const openProjectMediaKeybindLabel = deps.computed(() => {
+    return deps.formatFaKeybindCommandLabelFromSnapshot({
+      commandId: 'openProjectMedia',
       snapshot: deps.getKeybindsSnapshot()
     })
   })
@@ -69,6 +77,7 @@ export function buildProjectAppControlBarFixedStripLeftKeybindTooltipLabels (dep
   return {
     advancedSearchGuideKeybindLabel,
     keyboardShortcutsKeybindLabel,
+    openProjectMediaKeybindLabel,
     quickAddKeybindLabel,
     quickSearchKeybindLabel,
     toggleAppNoteboardKeybindLabel,

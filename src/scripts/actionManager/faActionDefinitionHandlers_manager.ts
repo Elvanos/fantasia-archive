@@ -57,6 +57,7 @@ import {
   handleOpenLicenseDialog as handleOpenLicenseDialogExport,
   handleOpenNewProjectDialog as handleOpenNewProjectDialogExport,
   handleOpenQuickAddDocumentDialog as handleOpenQuickAddDocumentDialogExport,
+  handleOpenProjectMediaDialog as handleOpenProjectMediaDialogExport,
   handleOpenQuickSearchDocumentDialog as handleOpenQuickSearchDocumentDialogExport,
   handleOpenProjectSettingsDialog as handleOpenProjectSettingsDialogExport,
   handleOpenProjectStylingWindow as handleOpenProjectStylingWindowExport,
@@ -209,6 +210,8 @@ export const handleOpenLicenseDialog = handleOpenLicenseDialogExport
 export const handleOpenNewProjectDialog = handleOpenNewProjectDialogExport
 
 export const handleOpenQuickAddDocumentDialog = handleOpenQuickAddDocumentDialogExport
+
+export const handleOpenProjectMediaDialog = handleOpenProjectMediaDialogExport
 
 export const handleOpenQuickSearchDocumentDialog = handleOpenQuickSearchDocumentDialogExport
 

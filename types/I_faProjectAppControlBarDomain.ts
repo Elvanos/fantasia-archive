@@ -60,6 +60,7 @@ export interface I_projectAppControlBarComposableApi {
   showTabBarScrollButtons: I_computedRef<boolean>
   advancedSearchGuideKeybindLabel: I_computedRef<string | null>
   keyboardShortcutsKeybindLabel: I_computedRef<string | null>
+  openProjectMediaKeybindLabel: I_computedRef<string | null>
   quickAddKeybindLabel: I_computedRef<string | null>
   quickSearchKeybindLabel: I_computedRef<string | null>
   toggleAppNoteboardKeybindLabel: I_computedRef<string | null>
@@ -67,6 +68,7 @@ export interface I_projectAppControlBarComposableApi {
   toggleProjectNoteboardKeybindLabel: I_computedRef<string | null>
   onAdvancedSearchGuideClick: () => void
   onKeyboardShortcutsClick: () => void
+  onOpenProjectMediaClick: () => void
   onQuickAddClick: () => void
   onQuickSearchClick: () => void
   onTipsTricksTriviaClick: () => void

@@ -19,6 +19,7 @@ test('Test that buildProjectAppControlBarFixedStripLeftKeybindTooltipLabels reso
   expect(labels.keyboardShortcutsKeybindLabel.value).toBe('openKeybindSettings')
   expect(labels.advancedSearchGuideKeybindLabel.value).toBe('openAdvancedSearchGuide')
   expect(labels.toggleHierarchyTreeKeybindLabel.value).toBe('toggleHierarchicalTree')
+  expect(labels.openProjectMediaKeybindLabel.value).toBe('openProjectMedia')
   expect(labels.toggleAppNoteboardKeybindLabel.value).toBe('toggleAppNoteboard')
   expect(labels.toggleProjectNoteboardKeybindLabel.value).toBe('toggleProjectNoteboard')
   expect(labels.quickAddKeybindLabel.value).toBe('quickNewDocument')

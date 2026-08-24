@@ -196,11 +196,12 @@ test('Test that buildProjectMenu treats omitted recentProjects as no recent entr
 test('Test that buildDocumentsMenu disables project-scoped rows when hasActiveProject is false', () => {
   const menu = buildDocumentsMenu({ hasActiveProject: false })
   const items = menu.data.filter((row) => row.mode === 'item')
-  expect(items.length).toBe(4)
+  expect(items.length).toBe(5)
   expect(items[0]!.conditions).toBe(false)
   expect(items[1]!.conditions).toBe(false)
   expect(items[2]!.conditions).toBe(false)
   expect(items[3]!.conditions).toBe(false)
+  expect(items[4]!.conditions).toBe(false)
 })
 
 /**
@@ -214,6 +215,19 @@ test('Test that buildDocumentsMenu enables quick add and fires openQuickAddDocum
   expect(items[0]!.keybindCommandId).toBe('quickNewDocument')
   items[0]!.trigger?.()
   expect(runFaActionMock).toHaveBeenCalledWith('openQuickAddDocumentDialog', undefined)
+})
+
+/**
+ * Documents menu
+ * Project Media enables with an active project and routes through openProjectMediaDialog.
+ */
+test('Test that buildDocumentsMenu enables project media and fires openProjectMediaDialog', () => {
+  const menu = buildDocumentsMenu({ hasActiveProject: true })
+  const items = menu.data.filter((row) => row.mode === 'item')
+  expect(items[2]!.conditions).toBe(true)
+  expect(items[2]!.keybindCommandId).toBe('openProjectMedia')
+  items[2]!.trigger?.()
+  expect(runFaActionMock).toHaveBeenCalledWith('openProjectMediaDialog', undefined)
 })
 
 /**

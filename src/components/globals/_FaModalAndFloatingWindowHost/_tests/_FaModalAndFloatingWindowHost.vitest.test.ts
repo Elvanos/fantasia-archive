@@ -22,6 +22,7 @@ const hostMount = {
       DialogNewProject: hostChildStub,
       DialogQuickAddDocument: hostChildStub,
       DialogQuickSearchDocument: hostChildStub,
+      DialogProjectMedia: hostChildStub,
       DialogProjectSettings: hostChildStub,
       WindowAppNoteboard: hostChildStub,
       WindowAppStyling: hostChildStub,
@@ -41,6 +42,6 @@ test('Test that _FaModalAndFloatingWindowHost mounts modal and floating window c
   await flushPromises()
 
   expect(w.find('._faModalAndFloatingWindowHost').exists()).toBe(true)
-  expect(w.findAll('.host-child-stub')).toHaveLength(14)
+  expect(w.findAll('.host-child-stub')).toHaveLength(15)
   w.unmount()
 })

@@ -46,12 +46,15 @@ const baseProps = {
   keyboardShortcutsTooltip: 'Keyboard shortcuts',
   onAdvancedSearchGuideClick: vi.fn(),
   onKeyboardShortcutsClick: vi.fn(),
+  onOpenProjectMediaClick: vi.fn(),
   onQuickAddClick: vi.fn(),
   onQuickSearchClick: vi.fn(),
   onTipsTricksTriviaClick: vi.fn(),
   onToggleAppNoteboardClick: vi.fn(),
   onToggleHierarchyTreeClick: vi.fn(),
   onToggleProjectNoteboardClick: vi.fn(),
+  openProjectMediaKeybindLabel: null as string | null,
+  openProjectMediaTooltip: 'Open project media',
   quickAddKeybindLabel: null as string | null,
   quickAddTooltip: 'Quick add',
   quickSearchKeybindLabel: null as string | null,
@@ -91,6 +94,7 @@ test('Test that ProjectAppControlBarFixedStripLeft renders visible button groups
 
   expect(wrapper.find('[data-test-locator="projectAppControlBar-keyboardShortcutsButton"]').exists()).toBe(true)
   expect(wrapper.find('[data-test-locator="projectAppControlBar-toggleHierarchyTreeButton"]').exists()).toBe(true)
+  expect(wrapper.find('[data-test-locator="projectAppControlBar-openProjectMediaButton"]').exists()).toBe(true)
   expect(wrapper.find('[data-test-locator="projectAppControlBar-quickSearchButton"]').exists()).toBe(true)
   expect(wrapper.find('[data-test-locator="projectAppControlBar-leftGuidesSeparator"]').exists()).toBe(true)
 
@@ -104,6 +108,7 @@ test('Test that ProjectAppControlBarFixedStripLeft renders visible button groups
 test('Test that ProjectAppControlBarFixedStripLeft wires left strip button clicks', async () => {
   vi.mocked(baseProps.onKeyboardShortcutsClick).mockReset()
   vi.mocked(baseProps.onToggleHierarchyTreeClick).mockReset()
+  vi.mocked(baseProps.onOpenProjectMediaClick).mockReset()
   vi.mocked(baseProps.onToggleAppNoteboardClick).mockReset()
 
   const wrapper = mount(ProjectAppControlBarFixedStripLeft, {
@@ -116,10 +121,12 @@ test('Test that ProjectAppControlBarFixedStripLeft wires left strip button click
 
   await wrapper.get('[data-test-locator="projectAppControlBar-keyboardShortcutsButton"]').trigger('click')
   await wrapper.get('[data-test-locator="projectAppControlBar-toggleHierarchyTreeButton"]').trigger('click')
+  await wrapper.get('[data-test-locator="projectAppControlBar-openProjectMediaButton"]').trigger('click')
   await wrapper.get('[data-test-locator="projectAppControlBar-toggleAppNoteboardButton"]').trigger('click')
 
   expect(baseProps.onKeyboardShortcutsClick).toHaveBeenCalledTimes(1)
   expect(baseProps.onToggleHierarchyTreeClick).toHaveBeenCalledTimes(1)
+  expect(baseProps.onOpenProjectMediaClick).toHaveBeenCalledTimes(1)
   expect(baseProps.onToggleAppNoteboardClick).toHaveBeenCalledTimes(1)
   expect(
     wrapper.find('[data-test-locator="projectAppControlBar-toggleAppNoteboardButton-contentDot"]').attributes('data-visible')
@@ -143,6 +150,27 @@ test('Test that ProjectAppControlBarFixedStripLeft hides guides when showGuideBu
 
   expect(wrapper.find('[data-test-locator="projectAppControlBar-keyboardShortcutsButton"]').exists()).toBe(false)
   expect(wrapper.find('[data-test-locator="projectAppControlBar-toggleHierarchyTreeButton"]').exists()).toBe(true)
+  expect(wrapper.find('[data-test-locator="projectAppControlBar-openProjectMediaButton"]').exists()).toBe(true)
+
+  wrapper.unmount()
+})
+
+/**
+ * ProjectAppControlBarFixedStripLeft
+ * Hides function buttons including Project Media when showFunctionButtons is false.
+ */
+test('Test that ProjectAppControlBarFixedStripLeft hides function buttons when showFunctionButtons is false', () => {
+  const wrapper = mount(ProjectAppControlBarFixedStripLeft, {
+    props: {
+      ...baseProps,
+      showFunctionButtons: false
+    },
+    global: mountGlobal
+  })
+
+  expect(wrapper.find('[data-test-locator="projectAppControlBar-toggleHierarchyTreeButton"]').exists()).toBe(false)
+  expect(wrapper.find('[data-test-locator="projectAppControlBar-openProjectMediaButton"]').exists()).toBe(false)
+  expect(wrapper.find('[data-test-locator="projectAppControlBar-quickSearchButton"]').exists()).toBe(true)
 
   wrapper.unmount()
 })

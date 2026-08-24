@@ -29,6 +29,7 @@ export default {
     openKeybindSettingsDialog: 'Abra as configurações de atalho de teclado',
     openQuickAddDocumentDialog: 'Open Quick-Add New Document',
     openQuickSearchDocumentDialog: 'Open Quick-Search Existing Document',
+    openProjectMediaDialog: 'Open Project Media',
     openProjectSettingsDialog: 'Abrir configurações do projeto',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'Salvar configurações do projeto',

@@ -610,6 +610,30 @@ test('Test that openQuickSearchDocumentDialog skips dismiss when allowQuickPopup
   expect(openDialogComponentMock).toHaveBeenCalledWith('QuickSearchDocument')
 })
 
+test('Test that openProjectMediaDialog handler opens ProjectMedia when a project is active', () => {
+  definitionFor('openProjectMediaDialog').handler(undefined)
+  expect(tryDismissFaComponentDialogIfOpenMock).toHaveBeenCalledWith('ProjectMedia')
+  expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectMedia')
+})
+
+test('Test that openProjectMediaDialog dismisses when already open', () => {
+  tryDismissFaComponentDialogIfOpenMock.mockReturnValueOnce(true)
+  definitionFor('openProjectMediaDialog').handler(undefined)
+  expect(tryDismissFaComponentDialogIfOpenMock).toHaveBeenCalledWith('ProjectMedia')
+  expect(openDialogComponentMock).not.toHaveBeenCalled()
+})
+
+test('Test that openProjectMediaDialog no-ops without an active project', () => {
+  const prior = faActiveProjectFixture.activeProject
+  faActiveProjectFixture.activeProject = null as never
+  try {
+    definitionFor('openProjectMediaDialog').handler(undefined)
+    expect(openDialogComponentMock).not.toHaveBeenCalled()
+  } finally {
+    faActiveProjectFixture.activeProject = prior
+  }
+})
+
 test('Test that createNewProject handler delegates to S_FaActiveProject when creation succeeds', async () => {
   await (definitionFor('createNewProject').handler({ projectName: 'Realm' }) as Promise<unknown>)
   expect(createProjectFromUserInputMock).toHaveBeenCalledWith('Realm')

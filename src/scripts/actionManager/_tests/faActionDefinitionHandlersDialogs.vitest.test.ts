@@ -67,6 +67,7 @@ import {
   handleOpenAppSettingsDialog,
   handleOpenAppStylingWindow,
   handleOpenKeybindSettingsDialog,
+  handleOpenProjectMediaDialog,
   handleOpenProjectSettingsDialog,
   handleOpenProjectStylingWindow
 } from '../faActionDefinitionHandlersDialogs_manager'
@@ -201,6 +202,36 @@ test('Test that handleOpenProjectSettingsDialog dismisses when already open', as
 test('Test that handleOpenProjectSettingsDialog skips without an active project', async () => {
   mockActiveProjectGate.hasActiveProject = false
   await handleOpenProjectSettingsDialog()
+  expect(openDialogComponentMock).not.toHaveBeenCalled()
+})
+
+/**
+ * handleOpenProjectMediaDialog
+ * Opens Project Media when a project is active and the dialog is closed.
+ */
+test('Test that handleOpenProjectMediaDialog opens ProjectMedia when a project is active', async () => {
+  await handleOpenProjectMediaDialog()
+  expect(tryDismissFaComponentDialogIfOpenMock).toHaveBeenCalledWith('ProjectMedia')
+  expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectMedia')
+})
+
+/**
+ * handleOpenProjectMediaDialog
+ * Skips open when tryDismiss reports the dialog already open.
+ */
+test('Test that handleOpenProjectMediaDialog dismisses when already open', async () => {
+  tryDismissFaComponentDialogIfOpenMock.mockReturnValue(true)
+  await handleOpenProjectMediaDialog()
+  expect(openDialogComponentMock).not.toHaveBeenCalled()
+})
+
+/**
+ * handleOpenProjectMediaDialog
+ * Skips opening when no active project is loaded.
+ */
+test('Test that handleOpenProjectMediaDialog skips without an active project', async () => {
+  mockActiveProjectGate.hasActiveProject = false
+  await handleOpenProjectMediaDialog()
   expect(openDialogComponentMock).not.toHaveBeenCalled()
 })
 

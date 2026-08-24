@@ -29,6 +29,7 @@ export default {
     quickNewDocument: 'Quick-Add New Document',
     quickExistingDocument: 'Quick-search existing document',
     openProjectSettings: '打开项目设置',
+    openProjectMedia: 'Open Project Media',
     showProjectDashboard: '显示项目仪表板',
     toggleDeveloperTools: '切换开发者工具',
     toggleAppNoteboard: '切换应用程序记事板',

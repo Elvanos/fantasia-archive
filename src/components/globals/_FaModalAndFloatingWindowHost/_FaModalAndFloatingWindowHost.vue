@@ -5,6 +5,7 @@
     <DialogActionMonitor />
     <DialogKeybindSettings />
     <DialogAppSettings />
+    <DialogProjectMedia />
     <DialogProjectSettings />
     <WindowAppStyling />
     <WindowProjectStyling />
@@ -26,6 +27,7 @@ import DialogAboutFantasiaArchive from 'app/src/components/dialogs/DialogAboutFa
 import DialogActionMonitor from 'app/src/components/dialogs/DialogActionMonitor/DialogActionMonitor.vue'
 import DialogKeybindSettings from 'app/src/components/dialogs/DialogKeybindSettings/DialogKeybindSettings.vue'
 import DialogAppSettings from 'app/src/components/dialogs/DialogAppSettings/DialogAppSettings.vue'
+import DialogProjectMedia from 'app/src/components/dialogs/DialogProjectMedia/DialogProjectMedia.vue'
 import DialogProjectSettings from 'app/src/components/dialogs/DialogProjectSettings/DialogProjectSettings.vue'
 import DialogImportExportAppConfig from 'app/src/components/dialogs/DialogImportExportAppConfig/DialogImportExportAppConfig.vue'
 import WindowAppNoteboard from 'app/src/components/floatingWindows/WindowAppNoteboard/WindowAppNoteboard.vue'

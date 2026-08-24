@@ -3,6 +3,7 @@ export default {
   items: {
     quickAddNewDocument: 'Ajout rapide d\'un nouveau document',
     quickSearchDocument: 'Recherche rapide d\'un document existant',
+    projectMedia: 'Project Media',
     massDeleteDocument: 'Suppression massive de documents',
     exportProjectDocuments: 'Exporter un projet/documents',
   }

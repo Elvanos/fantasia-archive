@@ -85,6 +85,20 @@ export const FA_KEYBIND_COMMAND_DEFINITIONS_APP: I_faKeybindCommandDefinition[] 
   },
   {
     defaultChord: {
+      code: 'KeyM',
+      mods: [
+        'alt',
+        'primary',
+        'shift'
+      ]
+    },
+    editable: true,
+    firesInEditableFields: true,
+    id: 'openProjectMedia',
+    messageKey: 'dialogs.keybindSettings.commands.openProjectMedia'
+  },
+  {
+    defaultChord: {
       code: 'KeyN',
       mods: ['primary']
     },

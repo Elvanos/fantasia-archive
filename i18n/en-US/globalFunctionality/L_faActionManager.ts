@@ -25,6 +25,7 @@ export default {
     openAboutFantasiaArchiveDialog: 'Open About Fantasia Archive',
     openQuickAddDocumentDialog: 'Open Quick-Add New Document',
     openQuickSearchDocumentDialog: 'Open Quick-Search Existing Document',
+    openProjectMediaDialog: 'Open Project Media',
     openActionMonitorDialog: 'Open Action Monitor',
     openAdvancedSearchGuideDialog: 'Open Advanced Search Guide',
     openChangelogDialog: 'Open Changelog',

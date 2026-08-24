@@ -16,6 +16,8 @@ $projectAppControlBar-minHeightPx: mainLayout.$mainLayout-sidebarSearchRowHeight
 $projectAppControlBar-noteboardContentDot-offsetRight: 4px;
 $projectAppControlBar-noteboardContentDot-offsetTop: 4px;
 $projectAppControlBar-stripButtonSpacingPx: 10px;
+/* Quasar q-btn icon em (~24px); MDI fill-scale 1 so outline glyphs stay put. */
+$projectAppControlBar-stripIcon-boxSize: 24px;
 $projectAppControlBar-stripPaddingBlockPx: 6px;
 $projectAppControlBar-stripPaddingInlinePx: 15px;
 $projectAppControlBar-tabAlertIcon-fontSize: 16px;

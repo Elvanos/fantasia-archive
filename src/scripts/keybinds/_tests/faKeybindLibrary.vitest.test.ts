@@ -500,6 +500,7 @@ test('FA_KEYBIND_COMMAND_DEFINITIONS lists expected commands', () => {
     'openAppSettings',
     'openAppStyling',
     'openKeybindSettings',
+    'openProjectMedia',
     'openProjectSettings',
     'openProjectStyling',
     'quickExistingDocument',
@@ -519,7 +520,7 @@ test('FA_KEYBIND_COMMAND_DEFINITIONS lists expected commands', () => {
  * so allowQuickPopupSameKeyClose can dismiss via the same open action.
  */
 test('quick popup commands fire in editable fields', () => {
-  for (const id of ['quickNewDocument', 'quickExistingDocument'] as const) {
+  for (const id of ['quickNewDocument', 'quickExistingDocument', 'openProjectMedia'] as const) {
     const def = FA_KEYBIND_COMMAND_DEFINITIONS.find((row) => row.id === id)
     expect(def?.firesInEditableFields).toBe(true)
   }

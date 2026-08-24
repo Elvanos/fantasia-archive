@@ -29,6 +29,7 @@ export default {
     quickNewDocument: 'Quick-Add New Document',
     quickExistingDocument: 'Quick-search existing document',
     openProjectSettings: 'प्रोजेक्ट सेटिंग्स खोलें',
+    openProjectMedia: 'Open Project Media',
     showProjectDashboard: 'प्रोजेक्ट डैशबोर्ड दिखाएँ',
     toggleDeveloperTools: 'डेवलपर टूल टॉगल करें',
     toggleAppNoteboard: 'ऐप नोटबोर्ड टॉगल करें',

@@ -47,6 +47,7 @@
       :on-delete-current-document-click="onDeleteCurrentDocumentClick"
       :on-enter-edit-mode-click="onEnterEditModeClick"
       :on-keyboard-shortcuts-click="onKeyboardShortcutsClick"
+      :on-open-project-media-click="onOpenProjectMediaClick"
       :on-quick-add-click="onQuickAddClick"
       :on-quick-search-click="onQuickSearchClick"
       :on-save-document-click="onSaveDocumentClick"
@@ -54,6 +55,8 @@
       :on-toggle-app-noteboard-click="onToggleAppNoteboardClick"
       :on-toggle-hierarchy-tree-click="onToggleHierarchyTreeClick"
       :on-toggle-project-noteboard-click="onToggleProjectNoteboardClick"
+      :open-project-media-keybind-label="openProjectMediaKeybindLabel"
+      :open-project-media-tooltip="openProjectMediaTooltip"
       :quick-add-keybind-label="quickAddKeybindLabel"
       :quick-add-tooltip="quickAddTooltip"
       :quick-search-keybind-label="quickSearchKeybindLabel"
@@ -109,6 +112,7 @@ const {
   deleteCurrentDocumentTooltip,
   editDocumentTooltip,
   keyboardShortcutsTooltip,
+  openProjectMediaTooltip,
   quickAddTooltip,
   quickSearchTooltip,
   saveDocumentKeepEditModeTooltip,
@@ -128,12 +132,14 @@ const {
   moveDocumentTabLeftKeybindLabel,
   moveDocumentTabRightKeybindLabel,
   hideTabCloseButton,
+  openProjectMediaKeybindLabel,
   onAddNewDocumentUnderCurrentClick,
   onAdvancedSearchGuideClick,
   onCopyCurrentDocumentClick,
   onEnterEditModeClick,
   onDeleteCurrentDocumentClick,
   onKeyboardShortcutsClick,
+  onOpenProjectMediaClick,
   onQuickAddClick,
   onQuickSearchClick,
   onSaveDocumentClick,

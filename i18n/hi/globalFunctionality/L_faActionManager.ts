@@ -29,6 +29,7 @@ export default {
     openKeybindSettingsDialog: 'कीबाइंड सेटिंग्स खोलें',
     openQuickAddDocumentDialog: 'Open Quick-Add New Document',
     openQuickSearchDocumentDialog: 'Open Quick-Search Existing Document',
+    openProjectMediaDialog: 'Open Project Media',
     openProjectSettingsDialog: 'परियोजना सेटिंग्स खोलें',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'परियोजना सेटिंग्स सहेजें',

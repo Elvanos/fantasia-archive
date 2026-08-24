@@ -38,6 +38,7 @@ const selectorList = {
   projectAppControlBarKeyboardShortcutsButton: 'projectAppControlBar-keyboardShortcutsButton',
   projectAppControlBarTipsTricksTriviaButton: 'projectAppControlBar-tipsTricksTriviaButton',
   projectAppControlBarToggleHierarchyTreeButton: 'projectAppControlBar-toggleHierarchyTreeButton',
+  projectAppControlBarOpenProjectMediaButton: 'projectAppControlBar-openProjectMediaButton',
   projectAppControlBarDeleteActionSeparator: 'projectAppControlBar-deleteActionSeparator',
   projectAppControlBarDeleteDocumentButton: 'projectAppControlBar-deleteDocumentButton',
   projectAppControlBarEditDocumentButton: 'projectAppControlBar-editDocumentButton',
@@ -1454,6 +1455,9 @@ test.describe.serial('Project app control bar visibility', () => {
       appWindow.locator(`[data-test-locator="${selectorList.projectAppControlBarToggleHierarchyTreeButton}"]`)
     ).toHaveCount(0)
     await expect(
+      appWindow.locator(`[data-test-locator="${selectorList.projectAppControlBarOpenProjectMediaButton}"]`)
+    ).toHaveCount(0)
+    await expect(
       appWindow.locator(`[data-test-locator="${selectorList.projectAppControlBarToggleAppNoteboardButton}"]`)
     ).toHaveCount(0)
     await expect(
@@ -1485,6 +1489,9 @@ test.describe.serial('Project app control bar visibility', () => {
     ).toHaveCount(0)
     await expect(
       appWindow.locator(`[data-test-locator="${selectorList.projectAppControlBarToggleHierarchyTreeButton}"]`)
+    ).toHaveCount(1)
+    await expect(
+      appWindow.locator(`[data-test-locator="${selectorList.projectAppControlBarOpenProjectMediaButton}"]`)
     ).toHaveCount(1)
   })
 

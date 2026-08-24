@@ -29,6 +29,7 @@ export default {
     openKeybindSettingsDialog: 'Avaa Näppäimistön asetukset',
     openQuickAddDocumentDialog: 'Open Quick-Add New Document',
     openQuickSearchDocumentDialog: 'Open Quick-Search Existing Document',
+    openProjectMediaDialog: 'Open Project Media',
     openProjectSettingsDialog: 'Avaa projektiasetukset',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'Tallenna projektiasetukset',

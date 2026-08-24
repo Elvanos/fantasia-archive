@@ -29,6 +29,7 @@ export default {
     quickNewDocument: 'Quick-Add New Document',
     quickExistingDocument: 'Quick-search existing document',
     openProjectSettings: 'Åpne prosjektinnstillinger',
+    openProjectMedia: 'Open Project Media',
     showProjectDashboard: 'Vis prosjektdashbord',
     toggleDeveloperTools: 'Slå av/på utviklerverktøy',
     toggleAppNoteboard: 'Slå på app-noteboard',

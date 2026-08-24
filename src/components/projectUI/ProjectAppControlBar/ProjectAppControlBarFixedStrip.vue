@@ -18,12 +18,15 @@
             :keyboard-shortcuts-tooltip="keyboardShortcutsTooltip"
             :on-advanced-search-guide-click="onAdvancedSearchGuideClick"
             :on-keyboard-shortcuts-click="onKeyboardShortcutsClick"
+            :on-open-project-media-click="onOpenProjectMediaClick"
             :on-quick-add-click="onQuickAddClick"
             :on-quick-search-click="onQuickSearchClick"
             :on-tips-tricks-trivia-click="onTipsTricksTriviaClick"
             :on-toggle-app-noteboard-click="onToggleAppNoteboardClick"
             :on-toggle-hierarchy-tree-click="onToggleHierarchyTreeClick"
             :on-toggle-project-noteboard-click="onToggleProjectNoteboardClick"
+            :open-project-media-keybind-label="openProjectMediaKeybindLabel"
+            :open-project-media-tooltip="openProjectMediaTooltip"
             :quick-add-keybind-label="quickAddKeybindLabel"
             :quick-add-tooltip="quickAddTooltip"
             :quick-search-keybind-label="quickSearchKeybindLabel"
@@ -100,6 +103,7 @@ defineProps<{
   onDeleteCurrentDocumentClick: () => void
   onEnterEditModeClick: () => void
   onKeyboardShortcutsClick: () => void
+  onOpenProjectMediaClick: () => void
   onQuickAddClick: () => void
   onQuickSearchClick: () => void
   onSaveDocumentClick: (keepEditMode: boolean) => void
@@ -107,6 +111,8 @@ defineProps<{
   onToggleAppNoteboardClick: () => void
   onToggleHierarchyTreeClick: () => void
   onToggleProjectNoteboardClick: () => void
+  openProjectMediaKeybindLabel: string | null
+  openProjectMediaTooltip: string
   quickAddKeybindLabel: string | null
   quickAddTooltip: string
   quickSearchKeybindLabel: string | null

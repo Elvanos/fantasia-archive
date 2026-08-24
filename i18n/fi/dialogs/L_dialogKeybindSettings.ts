@@ -29,6 +29,7 @@ export default {
     quickNewDocument: 'Quick-Add New Document',
     quickExistingDocument: 'Quick-search existing document',
     openProjectSettings: 'Avaa projektiasetukset',
+    openProjectMedia: 'Open Project Media',
     showProjectDashboard: 'Näytä projektin hallintapaneeli',
     toggleDeveloperTools: 'Vaihda Kehittäjätyökalut',
     toggleAppNoteboard: 'Vaihda sovellusmuistio',

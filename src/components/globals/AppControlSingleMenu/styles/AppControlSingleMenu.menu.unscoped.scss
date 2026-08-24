@@ -1,5 +1,6 @@
 @use './variables' as *;
 @use '../../AppControlMenus/styles/variables' as appControlMenus;
+@use '../../../../css/globals/faQIconDisplay.mixin.scss' as faQIconDisplay;
 @use '../../../../css/theme/quasar-components/qMenu.variables' as *;
 
 /* Teleported App Control menus.
@@ -39,9 +40,41 @@ body.fa-appTheme--fantasy .appControlSingleMenu__subMenu.q-menu {
 .appControlSingleMenu__menu.q-menu,
 .appControlSingleMenu__subMenu.q-menu {
   .appControlSingleMenu__icon.q-icon {
-    --fa-color-glyph-base: #{appControlMenus.$appControlMenus-color};
+    @include faQIconDisplay.fa-q-icon-display-constrain-glyph-in-box;
 
+    --fa-color-glyph-base: #{appControlMenus.$appControlMenus-color};
+    --fa-q-icon-display-glyph-font-size: #{$appControlSingleMenu-icon-boxSize};
+    --fa-q-icon-display-mdi-fit-scale: 1;
+    --fa-q-icon-display-mdi-font-size: #{$appControlSingleMenu-icon-boxSize};
+
+    align-items: center;
+    box-sizing: border-box;
     color: var(--fa-color-glyph-base);
+    display: inline-flex;
+    flex: 0 0 auto;
+    font-size: $appControlSingleMenu-icon-boxSize !important;
+    height: $appControlSingleMenu-icon-boxSize !important;
+    justify-content: center;
+    line-height: 1;
+    max-height: $appControlSingleMenu-icon-boxSize;
+    max-width: $appControlSingleMenu-icon-boxSize;
+    width: $appControlSingleMenu-icon-boxSize !important;
+
+    &:not(.fa-brands, .fa-regular, .fa-solid) {
+      margin-top: 0;
+      transform: none;
+    }
+
+    &.fa-brands::before,
+    &.fa-regular::before {
+      margin-top: 0;
+    }
+
+    &.fa-solid::before {
+      --fa-q-icon-display-glyph-fit-scale: #{$faQIconDisplay-faSolidGlyph-fitScale};
+
+      margin-top: 0;
+    }
   }
 
   .appControlSingleMenu__item:not(.text-secondary) {

@@ -36,10 +36,14 @@
     --fa-q-icon-display-glyph-fit-scale: #{$faQIconDisplay-faBrandsGlyph-fitScale};
   }
 
-  // Extra-wide solid glyphs still overshoot the em box after the default solid fit-scale.
+  // Extra-wide solids still overshoot after default fit-scale.
   &.fa-solid.fa-book-open,
   &.fa-solid.fa-dragon,
   &.fa-solid.fa-sword {
     --fa-q-icon-display-glyph-fit-scale: #{$faQIconDisplay-faWideSolidGlyph-fitScale};
+  }
+
+  &.fa-solid.fa-photo-film {
+    --fa-q-icon-display-glyph-fit-scale: #{$faQIconDisplay-faBoxFillGlyph-fitScale};
   }
 }

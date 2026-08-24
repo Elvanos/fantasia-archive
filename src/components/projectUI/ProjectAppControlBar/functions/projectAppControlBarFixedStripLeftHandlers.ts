@@ -6,6 +6,7 @@ export function buildProjectAppControlBarFixedStripLeftHandlers (input: {
     onAdvancedSearchGuideClick: () => void
     onKeyboardShortcutsClick: () => void
     onQuickAddClick: () => void
+    onOpenProjectMediaClick: () => void
     onQuickSearchClick: () => void
     onTipsTricksTriviaClick: () => void
     onToggleAppNoteboardClick: () => void
@@ -36,6 +37,10 @@ export function buildProjectAppControlBarFixedStripLeftHandlers (input: {
     input.runFaAction('toggleProjectNoteboardWindow', undefined)
   }
 
+  function onOpenProjectMediaClick (): void {
+    input.runFaAction('openProjectMediaDialog', undefined)
+  }
+
   function onQuickSearchClick (): void {
     input.runFaAction('openQuickSearchDocumentDialog', undefined)
   }
@@ -47,6 +52,7 @@ export function buildProjectAppControlBarFixedStripLeftHandlers (input: {
   return {
     onAdvancedSearchGuideClick,
     onKeyboardShortcutsClick,
+    onOpenProjectMediaClick,
     onQuickAddClick,
     onQuickSearchClick,
     onTipsTricksTriviaClick,

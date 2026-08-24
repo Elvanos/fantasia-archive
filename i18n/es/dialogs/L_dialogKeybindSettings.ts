@@ -29,6 +29,7 @@ export default {
     quickNewDocument: 'Quick-Add New Document',
     quickExistingDocument: 'Quick-search existing document',
     openProjectSettings: 'Abrir configuración del proyecto',
+    openProjectMedia: 'Open Project Media',
     showProjectDashboard: 'Mostrar panel de proyecto',
     toggleDeveloperTools: 'Alternar herramientas de desarrollador',
     toggleAppNoteboard: 'Alternar Bloc de notas de la aplicación',

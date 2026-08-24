@@ -27,6 +27,7 @@ export default {
     openAppStyling: 'Open Custom App CSS',
     openProjectStyling: 'Open Custom Project CSS',
     openProjectSettings: 'Open Project Settings',
+    openProjectMedia: 'Open Project Media',
     showProjectDashboard: 'Show Project Dashboard',
     quickNewDocument: 'Quick-Add New Document',
     quickExistingDocument: 'Quick-search existing document',

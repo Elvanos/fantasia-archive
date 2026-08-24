@@ -29,6 +29,7 @@ export default {
     quickNewDocument: 'Quick-Add New Document',
     quickExistingDocument: 'Quick-search existing document',
     openProjectSettings: 'Άνοιγμα ρυθμίσεων έργου',
+    openProjectMedia: 'Open Project Media',
     showProjectDashboard: 'Εμφάνιση πίνακα ελέγχου έργου',
     toggleDeveloperTools: 'Εναλλαγή Εργαλείων προγραμματιστή',
     toggleAppNoteboard: 'Εναλλαγή σημειωματάριου εφαρμογής',

@@ -29,6 +29,7 @@ export default {
     openKeybindSettingsDialog: 'キーバインド設定を開く',
     openQuickAddDocumentDialog: 'Open Quick-Add New Document',
     openQuickSearchDocumentDialog: 'Open Quick-Search Existing Document',
+    openProjectMediaDialog: 'Open Project Media',
     openProjectSettingsDialog: 'プロジェクト設定を開く',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'プロジェクト設定を保存',

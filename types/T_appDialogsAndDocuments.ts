@@ -10,6 +10,7 @@ export type T_dialogName =
   | 'QuickAddDocument'
   | 'QuickSearchDocument'
   | 'AppSettings'
+  | 'ProjectMedia'
   | 'ProjectSettings'
   | 'WindowAppNoteboard'
   | 'WindowProjectNoteboard'

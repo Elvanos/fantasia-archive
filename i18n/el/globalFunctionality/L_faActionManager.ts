@@ -29,6 +29,7 @@ export default {
     openKeybindSettingsDialog: 'Ανοίξτε τις Ρυθμίσεις Keybind',
     openQuickAddDocumentDialog: 'Open Quick-Add New Document',
     openQuickSearchDocumentDialog: 'Open Quick-Search Existing Document',
+    openProjectMediaDialog: 'Open Project Media',
     openProjectSettingsDialog: 'Άνοιγμα ρυθμίσεων έργου',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'Αποθήκευση ρυθμίσεων έργου',

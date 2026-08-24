@@ -121,6 +121,18 @@ async function handleOpenQuickAddDocumentDialog (
   deps.openDialogComponent('QuickAddDocument')
 }
 
+async function handleOpenProjectMediaDialog (
+  deps: I_createFaActionDefinitionHandlersDialogsDeps
+): Promise<void> {
+  if (deps.tryDismissFaComponentDialogIfOpen('ProjectMedia')) {
+    return
+  }
+  if (!deps.S_FaActiveProject().hasActiveProject) {
+    return
+  }
+  deps.openDialogComponent('ProjectMedia')
+}
+
 async function handleOpenQuickSearchDocumentDialog (
   deps: I_createFaActionDefinitionHandlersDialogsDeps
 ): Promise<void> {
@@ -153,6 +165,7 @@ export function buildFaActionDefinitionHandlersDialogsOpens (
     handleOpenImportExportAppConfigDialog: () => Promise<void>
     handleOpenNewProjectDialog: () => Promise<void>
     handleOpenQuickAddDocumentDialog: () => Promise<void>
+    handleOpenProjectMediaDialog: () => Promise<void>
     handleOpenQuickSearchDocumentDialog: () => Promise<void>
   } {
   return {
@@ -172,6 +185,7 @@ export function buildFaActionDefinitionHandlersDialogsOpens (
     handleOpenImportExportAppConfigDialog: () => handleOpenImportExportAppConfigDialog(deps),
     handleOpenNewProjectDialog: () => handleOpenNewProjectDialog(deps),
     handleOpenQuickAddDocumentDialog: () => handleOpenQuickAddDocumentDialog(deps),
+    handleOpenProjectMediaDialog: () => handleOpenProjectMediaDialog(deps),
     handleOpenQuickSearchDocumentDialog: () => handleOpenQuickSearchDocumentDialog(deps)
   }
 }

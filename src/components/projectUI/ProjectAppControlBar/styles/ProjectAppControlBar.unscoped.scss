@@ -119,9 +119,35 @@
 .projectAppControlBar__right .q-btn--outline,
 .projectAppControlBarDeleteDocumentAction .q-btn--outline {
   .q-icon {
+    @include faQIconDisplay.fa-q-icon-display-constrain-glyph-in-box;
+
     --fa-color-glyph-base: #{outlineBtnGlow.$faOutlineButtonGlow-color-primaryBright};
+    --fa-q-icon-display-glyph-font-size: #{$projectAppControlBar-stripIcon-boxSize};
+    --fa-q-icon-display-mdi-fit-scale: 1;
+    --fa-q-icon-display-mdi-font-size: #{$projectAppControlBar-stripIcon-boxSize};
 
     color: var(--fa-color-glyph-base);
+    flex: 0 0 auto;
+    font-size: $projectAppControlBar-stripIcon-boxSize;
+    height: $projectAppControlBar-stripIcon-boxSize;
+    max-height: $projectAppControlBar-stripIcon-boxSize;
+    max-width: $projectAppControlBar-stripIcon-boxSize;
+    width: $projectAppControlBar-stripIcon-boxSize;
+
+    &.fa-brands::before,
+    &.fa-regular::before {
+      margin-top: 0;
+    }
+
+    &.fa-solid::before {
+      --fa-q-icon-display-glyph-fit-scale: #{$faQIconDisplay-faSolidGlyph-fitScale};
+
+      margin-top: 0;
+    }
+
+    &:not(.fa-brands, .fa-regular, .fa-solid) {
+      margin-top: 0;
+    }
   }
 
   &.text-primary-bright .q-icon {

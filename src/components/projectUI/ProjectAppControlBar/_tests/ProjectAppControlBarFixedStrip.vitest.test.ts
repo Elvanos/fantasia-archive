@@ -67,6 +67,7 @@ const baseProps = {
   onDeleteCurrentDocumentClick,
   onEnterEditModeClick,
   onKeyboardShortcutsClick: vi.fn(),
+  onOpenProjectMediaClick: vi.fn(),
   onQuickAddClick: vi.fn(),
   onQuickSearchClick: vi.fn(),
   onSaveDocumentClick,
@@ -74,6 +75,8 @@ const baseProps = {
   onToggleAppNoteboardClick: vi.fn(),
   onToggleHierarchyTreeClick: vi.fn(),
   onToggleProjectNoteboardClick: vi.fn(),
+  openProjectMediaKeybindLabel: null as string | null,
+  openProjectMediaTooltip: 'Open project media',
   quickAddKeybindLabel: null as string | null,
   quickAddTooltip: 'Quick add',
   quickSearchKeybindLabel: null as string | null,
@@ -299,6 +302,7 @@ test('Test that ProjectAppControlBarFixedStrip hides function and content button
 
   expect(document.querySelector('[data-test-locator="projectAppControlBar-keyboardShortcutsButton"]')).not.toBeNull()
   expect(document.querySelector('[data-test-locator="projectAppControlBar-toggleHierarchyTreeButton"]')).toBeNull()
+  expect(document.querySelector('[data-test-locator="projectAppControlBar-openProjectMediaButton"]')).toBeNull()
   expect(document.querySelector('[data-test-locator="projectAppControlBar-quickSearchButton"]')).toBeNull()
   expect(document.querySelector('[data-test-locator="projectAppControlBar-leftGuidesSeparator"]')).toBeNull()
 

@@ -75,91 +75,44 @@
       />
     </template>
     <template v-if="showFunctionButtons">
-      <q-btn
-        color="primary-bright"
-        data-test-locator="projectAppControlBar-toggleHierarchyTreeButton"
+      <ProjectAppControlBarStripIconButton
         icon="mdi-page-layout-sidebar-left"
-        outline
-        @click="onToggleHierarchyTreeClick"
-      >
-        <q-tooltip
-          anchor="bottom middle"
-          class="projectAppControlBar__buttonTooltip"
-          self="top middle"
-        >
-          <div class="fa-tooltip-keybind-stack">
-            <span class="fa-tooltip-keybind-stack__label">
-              {{ toggleHierarchyTreeTooltip }}
-            </span><div
-              v-if="toggleHierarchyTreeKeybindLabel !== null"
-              class="fa-tooltip-keybind-hint fa-text-keybind-hint"
-              data-test-locator="projectAppControlBar-toggleHierarchyTreeButton-keybind"
-            >
-              ({{ toggleHierarchyTreeKeybindLabel }})
-            </div>
-          </div>
-        </q-tooltip>
-      </q-btn>
-      <q-btn
-        class="projectAppControlBarFixedStripLeft__noteboardButton"
-        color="primary-bright"
-        data-test-locator="projectAppControlBar-toggleAppNoteboardButton"
+        keybind-test-locator="projectAppControlBar-toggleHierarchyTreeButton-keybind"
+        :keybind-label="toggleHierarchyTreeKeybindLabel"
+        locator="projectAppControlBar-toggleHierarchyTreeButton"
+        :on-click="onToggleHierarchyTreeClick"
+        :tooltip="toggleHierarchyTreeTooltip"
+      />
+      <ProjectAppControlBarStripIconButton
+        icon="fa-solid fa-photo-film"
+        keybind-test-locator="projectAppControlBar-openProjectMediaButton-keybind"
+        :keybind-label="openProjectMediaKeybindLabel"
+        locator="projectAppControlBar-openProjectMediaButton"
+        :on-click="onOpenProjectMediaClick"
+        :tooltip="openProjectMediaTooltip"
+      />
+      <ProjectAppControlBarStripIconButton
+        button-class="projectAppControlBarFixedStripLeft__noteboardButton"
+        content-dot-locator="projectAppControlBar-toggleAppNoteboardButton-contentDot"
+        :content-dot-visible="showAppNoteboardContentDot"
         icon="mdi-clipboard-edit-outline"
-        outline
-        @click="onToggleAppNoteboardClick"
-      >
-        <FaCornerContentDot
-          locator="projectAppControlBar-toggleAppNoteboardButton-contentDot"
-          :visible="showAppNoteboardContentDot"
-        />
-        <q-tooltip
-          anchor="bottom middle"
-          class="projectAppControlBar__buttonTooltip"
-          self="top middle"
-        >
-          <div class="fa-tooltip-keybind-stack">
-            <span class="fa-tooltip-keybind-stack__label">
-              {{ toggleAppNoteboardTooltip }}
-            </span><div
-              v-if="toggleAppNoteboardKeybindLabel !== null"
-              class="fa-tooltip-keybind-hint fa-text-keybind-hint"
-              data-test-locator="projectAppControlBar-toggleAppNoteboardButton-keybind"
-            >
-              ({{ toggleAppNoteboardKeybindLabel }})
-            </div>
-          </div>
-        </q-tooltip>
-      </q-btn>
-      <q-btn
-        class="projectAppControlBarFixedStripLeft__noteboardButton"
-        color="primary-bright"
-        data-test-locator="projectAppControlBar-toggleProjectNoteboardButton"
+        keybind-test-locator="projectAppControlBar-toggleAppNoteboardButton-keybind"
+        :keybind-label="toggleAppNoteboardKeybindLabel"
+        locator="projectAppControlBar-toggleAppNoteboardButton"
+        :on-click="onToggleAppNoteboardClick"
+        :tooltip="toggleAppNoteboardTooltip"
+      />
+      <ProjectAppControlBarStripIconButton
+        button-class="projectAppControlBarFixedStripLeft__noteboardButton"
+        content-dot-locator="projectAppControlBar-toggleProjectNoteboardButton-contentDot"
+        :content-dot-visible="showProjectNoteboardContentDot"
         icon="mdi-notebook-edit-outline"
-        outline
-        @click="onToggleProjectNoteboardClick"
-      >
-        <FaCornerContentDot
-          locator="projectAppControlBar-toggleProjectNoteboardButton-contentDot"
-          :visible="showProjectNoteboardContentDot"
-        />
-        <q-tooltip
-          anchor="bottom middle"
-          class="projectAppControlBar__buttonTooltip"
-          self="top middle"
-        >
-          <div class="fa-tooltip-keybind-stack">
-            <span class="fa-tooltip-keybind-stack__label">
-              {{ toggleProjectNoteboardTooltip }}
-            </span><div
-              v-if="toggleProjectNoteboardKeybindLabel !== null"
-              class="fa-tooltip-keybind-hint fa-text-keybind-hint"
-              data-test-locator="projectAppControlBar-toggleProjectNoteboardButton-keybind"
-            >
-              ({{ toggleProjectNoteboardKeybindLabel }})
-            </div>
-          </div>
-        </q-tooltip>
-      </q-btn>
+        keybind-test-locator="projectAppControlBar-toggleProjectNoteboardButton-keybind"
+        :keybind-label="toggleProjectNoteboardKeybindLabel"
+        locator="projectAppControlBar-toggleProjectNoteboardButton"
+        :on-click="onToggleProjectNoteboardClick"
+        :tooltip="toggleProjectNoteboardTooltip"
+      />
       <q-separator
         v-if="showContentButtons"
         vertical
@@ -212,8 +165,8 @@
 </template>
 
 <script setup lang="ts">
-import FaCornerContentDot from 'app/src/components/elements/FaCornerContentDot/FaCornerContentDot.vue'
 import ProjectAppControlBarButtonKeybindTooltip from './ProjectAppControlBarButtonKeybindTooltip.vue'
+import ProjectAppControlBarStripIconButton from './ProjectAppControlBarStripIconButton.vue'
 
 defineOptions({
   name: 'ProjectAppControlBarFixedStripLeft'
@@ -226,12 +179,15 @@ defineProps<{
   keyboardShortcutsTooltip: string
   onAdvancedSearchGuideClick: () => void
   onKeyboardShortcutsClick: () => void
+  onOpenProjectMediaClick: () => void
   onQuickAddClick: () => void
   onQuickSearchClick: () => void
   onTipsTricksTriviaClick: () => void
   onToggleAppNoteboardClick: () => void
   onToggleHierarchyTreeClick: () => void
   onToggleProjectNoteboardClick: () => void
+  openProjectMediaKeybindLabel: string | null
+  openProjectMediaTooltip: string
   quickAddKeybindLabel: string | null
   quickAddTooltip: string
   quickSearchKeybindLabel: string | null

@@ -29,6 +29,7 @@ export default {
     quickNewDocument: 'Quick-Add New Document',
     quickExistingDocument: 'Quick-search existing document',
     openProjectSettings: 'プロジェクト設定を開く',
+    openProjectMedia: 'Open Project Media',
     showProjectDashboard: 'プロジェクトダッシュボードを表示',
     toggleDeveloperTools: '開発者ツールの切り替え',
     toggleAppNoteboard: 'アプリノートボードの切り替え',

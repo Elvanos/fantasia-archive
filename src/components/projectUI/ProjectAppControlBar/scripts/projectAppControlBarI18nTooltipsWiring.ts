@@ -7,6 +7,7 @@ type T_projectAppControlBarI18nTooltips = {
   deleteCurrentDocumentTooltip: I_computedRef<string>
   editDocumentTooltip: I_computedRef<string>
   keyboardShortcutsTooltip: I_computedRef<string>
+  openProjectMediaTooltip: I_computedRef<string>
   quickAddTooltip: I_computedRef<string>
   quickSearchTooltip: I_computedRef<string>
   saveDocumentKeepEditModeTooltip: I_computedRef<string>
@@ -66,6 +67,10 @@ export function createProjectAppControlBarI18nTooltips (deps: {
       return t('projectUI.projectAppControlBar.toggleHierarchyTreeTooltip')
     })
 
+    const openProjectMediaTooltip = deps.computed(() => {
+      return t('projectUI.projectAppControlBar.openProjectMediaTooltip')
+    })
+
     const toggleAppNoteboardTooltip = deps.computed(() => {
       return t('projectUI.projectAppControlBar.toggleAppNoteboardTooltip')
     })
@@ -89,6 +94,7 @@ export function createProjectAppControlBarI18nTooltips (deps: {
       deleteCurrentDocumentTooltip,
       editDocumentTooltip,
       keyboardShortcutsTooltip,
+      openProjectMediaTooltip,
       quickAddTooltip,
       quickSearchTooltip,
       saveDocumentKeepEditModeTooltip,

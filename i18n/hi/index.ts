@@ -25,6 +25,7 @@ import L_markdownDocument from './dialogs/L_markdownDocument'
 import L_newProject from './dialogs/L_newProject'
 import L_dialogQuickAddDocument from '../en-US/dialogs/L_dialogQuickAddDocument'
 import L_dialogQuickSearchDocument from '../en-US/dialogs/L_dialogQuickSearchDocument'
+import L_projectMedia from '../en-US/dialogs/L_projectMedia'
 import L_dialogKeybindSettings from './dialogs/L_dialogKeybindSettings'
 import L_importExportAppConfig from './dialogs/L_importExportAppConfig'
 import L_appSettings from './dialogs/L_appSettings'
@@ -91,6 +92,7 @@ export default {
     newProject: L_newProject,
     quickAddDocument: L_dialogQuickAddDocument,
     quickSearchDocument: L_dialogQuickSearchDocument,
+    projectMedia: L_projectMedia,
     appSettings: L_appSettings,
     projectSettings: L_projectSettings,
     discardOpenedDocumentTab: L_discardOpenedDocumentTab,

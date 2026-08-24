@@ -12,6 +12,7 @@ test('Test that fixed strip left handlers dispatch existing faActionManager acti
   handlers.onToggleHierarchyTreeClick()
   handlers.onToggleAppNoteboardClick()
   handlers.onToggleProjectNoteboardClick()
+  handlers.onOpenProjectMediaClick()
   handlers.onQuickAddClick()
   handlers.onQuickSearchClick()
 
@@ -21,6 +22,7 @@ test('Test that fixed strip left handlers dispatch existing faActionManager acti
   expect(runFaAction).toHaveBeenCalledWith('toggleHierarchicalTree', undefined)
   expect(runFaAction).toHaveBeenCalledWith('toggleAppNoteboardWindow', undefined)
   expect(runFaAction).toHaveBeenCalledWith('toggleProjectNoteboardWindow', undefined)
+  expect(runFaAction).toHaveBeenCalledWith('openProjectMediaDialog', undefined)
   expect(runFaAction).toHaveBeenCalledWith('openQuickAddDocumentDialog', undefined)
   expect(runFaAction).toHaveBeenCalledWith('openQuickSearchDocumentDialog', undefined)
 })

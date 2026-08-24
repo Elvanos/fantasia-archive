@@ -19,6 +19,7 @@ import L_markdownDocument from 'app/i18n/en-US/dialogs/L_markdownDocument'
 import L_newProject from 'app/i18n/en-US/dialogs/L_newProject'
 import L_dialogQuickAddDocument from 'app/i18n/en-US/dialogs/L_dialogQuickAddDocument'
 import L_dialogQuickSearchDocument from 'app/i18n/en-US/dialogs/L_dialogQuickSearchDocument'
+import L_projectMedia from 'app/i18n/en-US/dialogs/L_projectMedia'
 import L_appSettings from 'app/i18n/en-US/dialogs/L_appSettings'
 import L_projectSettings from 'app/i18n/en-US/dialogs/L_projectSettings'
 import L_appStylingFloating from 'app/i18n/en-US/floatingWindows/L_appStyling'
@@ -87,6 +88,7 @@ const defaultMessages: Record<string, unknown> = {
     newProject: L_newProject,
     quickAddDocument: L_dialogQuickAddDocument,
     quickSearchDocument: L_dialogQuickSearchDocument,
+    projectMedia: L_projectMedia,
     appSettings: L_appSettings,
     projectSettings: L_projectSettings
   },

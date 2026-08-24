@@ -23,6 +23,11 @@ export function buildDocumentsMenu (session: I_appMenuBuildSession): I_appMenuLi
         keybindCommandId: 'quickExistingDocument',
         trigger: () => runFaAction('openQuickSearchDocumentDialog', undefined)
       }),
+      faMenuItem('appControlMenus.documents.items.projectMedia', 'fa-solid fa-photo-film', {
+        conditions: gate,
+        keybindCommandId: 'openProjectMedia',
+        trigger: () => runFaAction('openProjectMediaDialog', undefined)
+      }),
       faMenuSeparator('documents-sep-after-search'),
       faMenuItem('appControlMenus.documents.items.massDeleteDocument', 'mdi-text-box-remove-outline', {
         conditions: false,
