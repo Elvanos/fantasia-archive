@@ -46,6 +46,7 @@ async function e2eInvokeHierarchyRefreshLayout (page: Page): Promise<void> {
             $pinia?: {
               _s?: Map<string, {
                 refreshLayout?: () => Promise<void>
+                reloadDocumentIndexFromBridge?: () => Promise<void>
               }>
             }
           }
@@ -53,6 +54,10 @@ async function e2eInvokeHierarchyRefreshLayout (page: Page): Promise<void> {
       }
     }
     const hierarchyStore = root?.__vue_app__?.config.globalProperties.$pinia?._s?.get('S_FaProjectHierarchyTree')
+    // Seed/mutate via projectContent IPC. Session index loads once; refreshLayout skips listDocuments.
+    if (typeof hierarchyStore?.reloadDocumentIndexFromBridge === 'function') {
+      await hierarchyStore.reloadDocumentIndexFromBridge()
+    }
     if (typeof hierarchyStore?.refreshLayout === 'function') {
       await hierarchyStore.refreshLayout()
     }

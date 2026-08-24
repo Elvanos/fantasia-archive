@@ -6,7 +6,8 @@ import {
 } from 'app/helpers/playwrightHelpers_e2e/e2eExpectFaActiveProjectStore'
 import {
   e2eExpandWorldAndPlacementNodes,
-  e2eRefreshHierarchyTreeLayout
+  e2eRefreshHierarchyTreeLayout,
+  e2eSeedHierarchyPlacementWithDocuments
 } from 'app/helpers/playwrightHelpers_e2e/e2eWorkspaceHierarchyTreeHelpers'
 import { launchFaPlaywrightE2eAppWindow } from 'app/helpers/playwrightHelpers_e2e/faPlaywrightE2eAppLifecycle'
 import {
@@ -102,74 +103,14 @@ async function patchUserSettingsSilentlyViaPinia (
 async function seedTreeDocumentAndRefreshHierarchy (
   page: Page
 ): Promise<string> {
-  return page.evaluate(async (input) => {
-    const content = window.faContentBridgeAPIs?.projectContent
-    if (content === undefined) {
-      throw new Error('Project content bridge unavailable')
-    }
-    const worlds = await content.listWorlds()
-    const world = worlds.items[0]
-    if (world === undefined) {
-      throw new Error('No default world in E2E project')
-    }
-    const template = await content.createDocumentTemplate({
-      displayName: 'E2E Tree Chrome Template'
-    })
-    const placementId = crypto.randomUUID()
-    await content.saveDocumentTemplatesSnapshot([{
-      id: template.id,
-      titlePluralTranslations: { 'en-US': 'Characters' },
-      titleSingularTranslations: { 'en-US': 'Character' },
-      icon: 'mdi-file-document'
-    }])
-    await content.saveWorldsSnapshot([{
-      id: world.id,
-      displayNameTranslations: { 'en-US': world.displayName },
-      color: world.color,
-      colorPalette: world.colorPalette,
-      templateLayout: {
-        groups: [],
-        placements: [{
-          id: placementId,
-          documentTemplateId: template.id,
-          groupId: null,
-          rootSortOrder: 0,
-          groupSortOrder: null,
-          nickname: 'Characters',
-          nicknamePluralTranslations: { 'en-US': 'Characters' },
-          nicknameSingularTranslations: { 'en-US': 'Character' }
-        }]
-      }
-    }])
-    const createdDocument = await content.createDocument({
-      displayName: input.displayName,
-      worldId: world.id,
-      templateId: template.id,
-      placementId,
-      treeOrderNumber: input.treeOrderNumber
-    })
-    const root = globalThis.document.querySelector('#q-app') as HTMLElement & {
-      __vue_app__?: {
-        config: {
-          globalProperties: {
-            $pinia?: {
-              _s?: Map<string, {
-                refreshLayout?: () => Promise<void>
-              }>
-            }
-          }
-        }
-      }
-    }
-    const hierarchyStore = root?.__vue_app__?.config.globalProperties.$pinia?._s?.get('S_FaProjectHierarchyTree')
-    if (typeof hierarchyStore?.refreshLayout === 'function') {
-      await hierarchyStore.refreshLayout()
-    }
-    return createdDocument.id
-  }, {
-    displayName: TREE_CHROME_E2E_DOC_LABEL,
-    treeOrderNumber: TREE_CHROME_E2E_ORDER_NUMBER
+  const seeded = await e2eSeedHierarchyPlacementWithDocuments(page, {
+    documents: [{
+      displayName: TREE_CHROME_E2E_DOC_LABEL,
+      treeOrderNumber: TREE_CHROME_E2E_ORDER_NUMBER
+    }],
+    templateDisplayName: 'E2E Tree Chrome Template'
   })
+  return seeded.documents[0]?.id ?? ''
 }
 
 async function refreshHierarchyTreeLayout (page: Page): Promise<void> {
