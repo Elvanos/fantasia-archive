@@ -1290,9 +1290,14 @@ test.describe.serial('Project hierarchy tree document open edit expand', () => {
     )
 
     await expect.poll(async () => {
-      return await appWindow.locator(
+      const node = appWindow.locator(
         `[data-test-hierarchy-node-id="${BACKGROUND_DOCUMENT_ID}"]`
-      ).locator('xpath=ancestor::*[@role="treeitem"][1]').getAttribute('aria-level')
+      )
+      const count = await node.count()
+      if (count !== 1) {
+        return String(count)
+      }
+      return await node.locator('xpath=ancestor::*[@role="treeitem"][1]').getAttribute('aria-level')
     }, {
       timeout: 15_000
     }).toBe('4')

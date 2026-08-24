@@ -199,6 +199,21 @@ test('Test that hasFaProjectDocumentByIdReader and entity readers cover bridge a
 
 test('Test that list and reindex placement children use override maps', async () => {
   setFaComponentTestingProjectContentOverrides({
+    documentsById: {
+      a: {
+        ...sampleDocument,
+        displayName: 'Alpha',
+        id: 'a',
+        placementId: 'placement-1'
+      },
+      b: {
+        ...sampleDocument,
+        displayName: 'Beta',
+        id: 'b',
+        placementId: 'placement-1',
+        sortOrder: 0
+      }
+    },
     placementDocumentChildrenByKey: {
       'placement-1::__root__': [
         {
@@ -241,6 +256,22 @@ test('Test that list and reindex placement children use override maps', async ()
   })
 
   await reindexFaProjectDocumentSiblingsForRenderer({
+    movedDocumentId: 'b',
+    orderedDocumentIds: ['b'],
+    parentDocumentId: 'a',
+    placementId: 'placement-1'
+  })
+  expect(
+    getFaComponentTestingProjectContentOverrides()?.placementDocumentChildrenByKey?.['placement-1::__root__']
+      ?.map((item) => item.id)
+  ).toEqual(['a'])
+  expect(
+    getFaComponentTestingProjectContentOverrides()?.placementDocumentChildrenByKey?.['placement-1::a']
+      ?.map((item) => item.id)
+  ).toEqual(['b'])
+  expect(getFaComponentTestingProjectContentOverrides()?.documentsById?.b?.parentDocumentId).toBe('a')
+
+  await reindexFaProjectDocumentSiblingsForRenderer({
     movedDocumentId: 'ghost',
     orderedDocumentIds: [],
     parentDocumentId: 'no-bucket',
@@ -254,9 +285,29 @@ test('Test that list and reindex placement children use override maps', async ()
     parentDocumentId: null,
     placementId: 'placement-1'
   })
-  expect(reordered.items.map((item) => item.id)).toEqual(['a', 'b'])
-  expect(reordered.items.map((item) => item.sortOrder)).toEqual([0, 1])
+  expect(reordered.items.map((item) => item.id)).toEqual(['a'])
+  expect(reordered.items.map((item) => item.sortOrder)).toEqual([0])
+  const nested = await listFaProjectPlacementDocumentChildrenForRenderer({
+    parentDocumentId: 'a',
+    placementId: 'placement-1'
+  })
+  expect(nested.items.map((item) => item.id)).toEqual(['b'])
   expect(hasFaProjectHierarchySortBridge()).toBe(true)
+
+  setFaComponentTestingProjectContentOverrides({
+    placementDocumentChildrenByKey: {
+      'placement-2::__root__': []
+    }
+  })
+  await reindexFaProjectDocumentSiblingsForRenderer({
+    movedDocumentId: 'x',
+    orderedDocumentIds: [],
+    parentDocumentId: null,
+    placementId: 'placement-2'
+  })
+  expect(
+    getFaComponentTestingProjectContentOverrides()?.placementDocumentChildrenByKey?.['placement-2::__root__']
+  ).toEqual([])
 })
 
 test('Test that list and reindex placement children use the session document index when overrides unset', async () => {

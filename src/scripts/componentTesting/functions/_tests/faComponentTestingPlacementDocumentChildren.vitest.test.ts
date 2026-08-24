@@ -1,9 +1,12 @@
 import { describe, expect, test } from 'vitest'
 
 import {
+  applyFaComponentTestingDocumentsByIdParentFromReindex,
+  applyFaComponentTestingPlacementDocumentChildrenReindex,
   buildFaComponentTestingPlacementDocumentChildrenKey,
   reindexFaComponentTestingPlacementDocumentChildren
 } from '../faComponentTestingPlacementDocumentChildren'
+import type { I_faProjectDocument } from 'app/types/I_faProjectDocumentDomain'
 import type { I_faProjectHierarchyTreeDocumentChild } from 'app/types/I_faProjectHierarchyTreeDomain'
 
 const sampleItems: I_faProjectHierarchyTreeDocumentChild[] = [
@@ -44,5 +47,98 @@ describe('faComponentTestingPlacementDocumentChildren', () => {
     )
     expect(reindexed.map((item) => item.id)).toEqual(['a', 'z'])
     expect(reindexed.map((item) => item.sortOrder)).toEqual([0, 1])
+  })
+
+  test('Test that applyFaComponentTestingPlacementDocumentChildrenReindex reorders a same-parent bucket', () => {
+    const childrenByKey: Record<string, I_faProjectHierarchyTreeDocumentChild[]> = {
+      'p1::__root__': [...sampleItems]
+    }
+    applyFaComponentTestingPlacementDocumentChildrenReindex(childrenByKey, {
+      movedDocumentId: 'a',
+      orderedDocumentIds: ['a', 'z'],
+      parentDocumentId: null,
+      placementId: 'p1'
+    })
+    expect(childrenByKey['p1::__root__']?.map((item) => item.id)).toEqual(['a', 'z'])
+    expect(childrenByKey['p1::__root__']?.map((item) => item.sortOrder)).toEqual([0, 1])
+  })
+
+  test('Test that applyFaComponentTestingPlacementDocumentChildrenReindex empty order writes an empty target key', () => {
+    const childrenByKey: Record<string, I_faProjectHierarchyTreeDocumentChild[]> = {
+      'p1::__root__': [...sampleItems]
+    }
+    applyFaComponentTestingPlacementDocumentChildrenReindex(childrenByKey, {
+      movedDocumentId: 'ghost',
+      orderedDocumentIds: [],
+      parentDocumentId: 'no-bucket',
+      placementId: 'p1'
+    })
+    expect(childrenByKey['p1::no-bucket']).toEqual([])
+    expect(childrenByKey['p1::__root__']?.map((item) => item.id)).toEqual(['z', 'a'])
+  })
+
+  test('Test that applyFaComponentTestingPlacementDocumentChildrenReindex nests a child and strips the old bucket', () => {
+    const parent: I_faProjectHierarchyTreeDocumentChild = {
+      displayName: 'Parent',
+      hasChildren: false,
+      id: 'parent',
+      parentDocumentId: null,
+      placementId: 'p1',
+      sortOrder: 0
+    }
+    const leaf: I_faProjectHierarchyTreeDocumentChild = {
+      displayName: 'Leaf',
+      hasChildren: false,
+      id: 'leaf',
+      parentDocumentId: null,
+      placementId: 'p1',
+      sortOrder: 1
+    }
+    const childrenByKey: Record<string, I_faProjectHierarchyTreeDocumentChild[]> = {
+      'p1::__root__': [parent, leaf],
+      'p1::parent': []
+    }
+    applyFaComponentTestingPlacementDocumentChildrenReindex(childrenByKey, {
+      movedDocumentId: 'leaf',
+      orderedDocumentIds: ['leaf'],
+      parentDocumentId: 'parent',
+      placementId: 'p1'
+    })
+    expect(childrenByKey['p1::__root__']?.map((item) => item.id)).toEqual(['parent'])
+    expect(childrenByKey['p1::__root__']?.[0]?.hasChildren).toBe(true)
+    expect(childrenByKey['p1::parent']?.map((item) => item.id)).toEqual(['leaf'])
+    expect(childrenByKey['p1::parent']?.[0]?.parentDocumentId).toBe('parent')
+  })
+
+  test('Test that applyFaComponentTestingDocumentsByIdParentFromReindex updates parent and sortOrder', () => {
+    const documentsById: Record<string, I_faProjectDocument> = {
+      leaf: {
+        createdAtMs: 1,
+        displayName: 'Leaf',
+        documentBackgroundColor: null,
+        documentTextColor: null,
+        extraClasses: '',
+        id: 'leaf',
+        isCategory: false,
+        isDead: false,
+        isFinished: false,
+        isMinor: false,
+        parentDocumentId: null,
+        placementId: 'p1',
+        sortOrder: 1,
+        templateId: 'tpl',
+        treeOrderNumber: 1,
+        updatedAtMs: 1,
+        worldId: 'w1'
+      }
+    }
+    applyFaComponentTestingDocumentsByIdParentFromReindex(documentsById, {
+      movedDocumentId: 'leaf',
+      orderedDocumentIds: ['leaf', 'leaf', 'missing'],
+      parentDocumentId: 'parent',
+      placementId: 'p1'
+    })
+    expect(documentsById.leaf?.parentDocumentId).toBe('parent')
+    expect(documentsById.leaf?.sortOrder).toBe(0)
   })
 })

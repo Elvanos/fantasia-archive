@@ -8,8 +8,9 @@ import { getActivePinia } from 'pinia'
 import { S_FaProjectHierarchyTree } from 'app/src/stores/S_FaProjectHierarchyTree'
 import { getFaComponentTestingProjectContentOverrides } from './faComponentTestingProjectContentOverridesWiring'
 import {
-  buildFaComponentTestingPlacementDocumentChildrenKey,
-  reindexFaComponentTestingPlacementDocumentChildren
+  applyFaComponentTestingDocumentsByIdParentFromReindex,
+  applyFaComponentTestingPlacementDocumentChildrenReindex,
+  buildFaComponentTestingPlacementDocumentChildrenKey
 } from './functions/faComponentTestingPlacementDocumentChildren'
 
 /**
@@ -63,17 +64,15 @@ export async function listFaProjectPlacementDocumentChildrenForRenderer (
 export async function reindexFaProjectDocumentSiblingsForRenderer (
   input: I_faProjectHierarchyTreeReindexDocumentSiblingsInput
 ): Promise<unknown> {
-  const overridesMap = getFaComponentTestingProjectContentOverrides()?.placementDocumentChildrenByKey
+  const overrides = getFaComponentTestingProjectContentOverrides()
+  const overridesMap = overrides?.placementDocumentChildrenByKey
   if (overridesMap !== undefined) {
-    const key = buildFaComponentTestingPlacementDocumentChildrenKey(
-      input.placementId,
-      input.parentDocumentId ?? null
-    )
-    const current = overridesMap[key] ?? []
-    overridesMap[key] = reindexFaComponentTestingPlacementDocumentChildren(
-      current,
-      input.orderedDocumentIds
-    )
+    applyFaComponentTestingPlacementDocumentChildrenReindex(overridesMap, input)
+    const documentsById = overrides?.documentsById
+    if (documentsById !== undefined) {
+      applyFaComponentTestingDocumentsByIdParentFromReindex(documentsById, input)
+    }
+    tryGetFaProjectHierarchyTreeStoreForRenderer()?.applyIndexedReindexBucket(input)
     return true
   }
   const api = window.faContentBridgeAPIs?.projectContent

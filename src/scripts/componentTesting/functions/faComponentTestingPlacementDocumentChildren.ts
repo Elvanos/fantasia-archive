@@ -1,4 +1,8 @@
-import type { I_faProjectHierarchyTreeDocumentChild } from 'app/types/I_faProjectHierarchyTreeDomain'
+import type { I_faProjectDocument } from 'app/types/I_faProjectDocumentDomain'
+import type {
+  I_faProjectHierarchyTreeDocumentChild,
+  I_faProjectHierarchyTreeReindexDocumentSiblingsInput
+} from 'app/types/I_faProjectHierarchyTreeDomain'
 
 /**
  * Map key for placement document children overrides (root parent uses '__root__').
@@ -8,6 +12,54 @@ export function buildFaComponentTestingPlacementDocumentChildrenKey (
   parentDocumentId: string | null
 ): string {
   return `${placementId}::${parentDocumentId ?? '__root__'}`
+}
+
+function uniqueFaComponentTestingOrderedDocumentIds (
+  orderedDocumentIds: readonly string[]
+): string[] {
+  return orderedDocumentIds.filter((documentId, index, ids) => {
+    return ids.indexOf(documentId) === index
+  })
+}
+
+function collectFaComponentTestingPlacementDocumentChildrenById (
+  childrenByKey: Record<string, I_faProjectHierarchyTreeDocumentChild[]>
+): Map<string, I_faProjectHierarchyTreeDocumentChild> {
+  const byId = new Map<string, I_faProjectHierarchyTreeDocumentChild>()
+  for (const items of Object.values(childrenByKey)) {
+    for (const item of items) {
+      byId.set(item.id, item)
+    }
+  }
+  return byId
+}
+
+function compactFaComponentTestingPlacementDocumentChildrenSortOrder (
+  items: readonly I_faProjectHierarchyTreeDocumentChild[]
+): I_faProjectHierarchyTreeDocumentChild[] {
+  return items.map((item, sortOrder) => {
+    return {
+      ...item,
+      sortOrder
+    }
+  })
+}
+
+function markFaComponentTestingPlacementParentHasChildren (
+  childrenByKey: Record<string, I_faProjectHierarchyTreeDocumentChild[]>,
+  parentDocumentId: string
+): void {
+  for (const [key, items] of Object.entries(childrenByKey)) {
+    childrenByKey[key] = items.map((item) => {
+      if (item.id !== parentDocumentId) {
+        return item
+      }
+      return {
+        ...item,
+        hasChildren: true
+      }
+    })
+  }
 }
 
 /**
@@ -33,4 +85,65 @@ export function reindexFaComponentTestingPlacementDocumentChildren (
     })
   }
   return next
+}
+
+/**
+ * Mirrors SQLite reindexDocumentSiblingsInHierarchy for component-testing maps:
+ * pull ordered ids from any bucket, write the target parent list, strip those ids
+ * from other buckets so a nest drop does not leave a duplicate sibling row.
+ */
+export function applyFaComponentTestingPlacementDocumentChildrenReindex (
+  childrenByKey: Record<string, I_faProjectHierarchyTreeDocumentChild[]>,
+  input: I_faProjectHierarchyTreeReindexDocumentSiblingsInput
+): void {
+  const targetKey = buildFaComponentTestingPlacementDocumentChildrenKey(
+    input.placementId,
+    input.parentDocumentId
+  )
+  const byId = collectFaComponentTestingPlacementDocumentChildrenById(childrenByKey)
+  const orderedUniqueIds = uniqueFaComponentTestingOrderedDocumentIds(input.orderedDocumentIds)
+  const nextTarget = reindexFaComponentTestingPlacementDocumentChildren(
+    [...byId.values()],
+    orderedUniqueIds
+  ).map((item) => {
+    return {
+      ...item,
+      parentDocumentId: input.parentDocumentId
+    }
+  })
+  childrenByKey[targetKey] = nextTarget
+  const movedIds = new Set(nextTarget.map((item) => item.id))
+  for (const key of Object.keys(childrenByKey)) {
+    if (key === targetKey) {
+      continue
+    }
+    const remaining = (childrenByKey[key] ?? []).filter((item) => {
+      return !movedIds.has(item.id)
+    })
+    childrenByKey[key] = compactFaComponentTestingPlacementDocumentChildrenSortOrder(remaining)
+  }
+  if (input.parentDocumentId !== null && nextTarget.length > 0) {
+    markFaComponentTestingPlacementParentHasChildren(childrenByKey, input.parentDocumentId)
+  }
+}
+
+/**
+ * Updates documentsById parent and sortOrder to match a sibling reindex, including nest moves.
+ */
+export function applyFaComponentTestingDocumentsByIdParentFromReindex (
+  documentsById: Record<string, I_faProjectDocument>,
+  input: I_faProjectHierarchyTreeReindexDocumentSiblingsInput
+): void {
+  const orderedUniqueIds = uniqueFaComponentTestingOrderedDocumentIds(input.orderedDocumentIds)
+  orderedUniqueIds.forEach((documentId, sortOrder) => {
+    const document = documentsById[documentId]
+    if (document === undefined) {
+      return
+    }
+    documentsById[documentId] = {
+      ...document,
+      parentDocumentId: input.parentDocumentId,
+      sortOrder
+    }
+  })
 }
