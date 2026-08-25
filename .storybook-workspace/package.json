@@ -30,6 +30,7 @@
     "vue-router": "^5.0.4"
   },
   "resolutions": {
-    "linkify-it": "5.0.1"
+    "linkify-it": "5.0.1",
+    "nanoid": "3.3.18"
   }
 }

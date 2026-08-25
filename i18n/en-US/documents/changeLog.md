@@ -37,6 +37,7 @@
 - **Workspace sidebar**: Individual tag icons in the hierarchy tree are slightly smaller so solid glyphs match outline neighbors; the main **Tags** wrapper icon stays full size.
 - **Help**: Diamond help icons use a slightly thinner border.
 - **Fantasy theme**: Bare primary-bright icons in field append and prepend slots keep the gold glyph (for example merge-warning icons in rename dialogs).
+- **Dependencies**: Updated the bundled **DOMPurify** sanitizer (used by the code editor) to **3.4.13**, closing an in-place sanitizer bypass advisory.
 
 ## 2.4.15
 
