@@ -37,7 +37,7 @@ export const Default: StoryObj<typeof meta> = {
     onToggleHierarchyTreeClick: () => {},
     onToggleProjectNoteboardClick: () => {},
     openProjectMediaKeybindLabel: 'Ctrl + Alt + Shift + M',
-    openProjectMediaTooltip: 'Open project media',
+    openProjectMediaTooltip: 'Project media',
     quickAddKeybindLabel: 'Ctrl + N',
     quickAddTooltip: 'Quick add',
     quickSearchKeybindLabel: 'Ctrl + Q',

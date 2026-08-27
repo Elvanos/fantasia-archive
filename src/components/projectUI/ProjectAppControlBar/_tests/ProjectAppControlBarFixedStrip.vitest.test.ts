@@ -76,7 +76,7 @@ const baseProps = {
   onToggleHierarchyTreeClick: vi.fn(),
   onToggleProjectNoteboardClick: vi.fn(),
   openProjectMediaKeybindLabel: null as string | null,
-  openProjectMediaTooltip: 'Open project media',
+  openProjectMediaTooltip: 'Project media',
   quickAddKeybindLabel: null as string | null,
   quickAddTooltip: 'Quick add',
   quickSearchKeybindLabel: null as string | null,

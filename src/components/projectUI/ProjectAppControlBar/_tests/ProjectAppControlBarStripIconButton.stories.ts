@@ -17,7 +17,7 @@ export const Default: StoryObj<typeof meta> = {
     keybindTestLocator: 'projectAppControlBar-openProjectMediaButton-keybind',
     locator: 'projectAppControlBar-openProjectMediaButton',
     onClick: () => {},
-    tooltip: 'Open project media'
+    tooltip: 'Project media'
   }
 }
 

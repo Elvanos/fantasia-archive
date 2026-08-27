@@ -253,7 +253,7 @@ vi.mock('../scripts/projectAppControlBar_manager', () => {
         deleteCurrentDocumentTooltip: tooltipRef('Delete'),
         editDocumentTooltip: tooltipRef('Edit'),
         keyboardShortcutsTooltip: tooltipRef('Keyboard shortcuts'),
-        openProjectMediaTooltip: tooltipRef('Open project media'),
+        openProjectMediaTooltip: tooltipRef('Project media'),
         quickAddTooltip: tooltipRef('Quick add'),
         quickSearchTooltip: tooltipRef('Quick search'),
         saveDocumentKeepEditModeTooltip: tooltipRef('Save keep edit'),

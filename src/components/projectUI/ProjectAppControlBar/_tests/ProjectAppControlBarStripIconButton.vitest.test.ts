@@ -56,12 +56,12 @@ test('Test that ProjectAppControlBarStripIconButton wires click tooltip and keyb
       keybindTestLocator: 'projectAppControlBar-openProjectMediaButton-keybind',
       locator: 'projectAppControlBar-openProjectMediaButton',
       onClick,
-      tooltip: 'Open project media'
+      tooltip: 'Project media'
     }
   })
 
   expect(wrapper.find('[data-test-locator="projectAppControlBar-openProjectMediaButton"]').exists()).toBe(true)
-  expect(wrapper.text()).toContain('Open project media')
+  expect(wrapper.text()).toContain('Project media')
   expect(
     wrapper.find('[data-test-locator="projectAppControlBar-openProjectMediaButton-keybind"]').text()
   ).toBe('(Ctrl + M)')

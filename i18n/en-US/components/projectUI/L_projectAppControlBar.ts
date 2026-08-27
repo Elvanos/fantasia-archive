@@ -29,7 +29,7 @@ export default {
   toggleHierarchyTreeTooltip: 'Toggle hierarchical tree',
   toggleAppNoteboardTooltip: 'Toggle app noteboard',
   toggleProjectNoteboardTooltip: 'Toggle project noteboard',
-  openProjectMediaTooltip: 'Open project media',
+  openProjectMediaTooltip: 'Project media',
   quickSearchTooltip: 'Quick-search an existing document',
   quickAddTooltip: 'Quick-add a new document'
 }
