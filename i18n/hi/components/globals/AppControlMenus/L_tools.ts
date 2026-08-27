@@ -2,6 +2,7 @@ export default {
   title: 'ऐप नियंत्रण',
   items: {
     appNoteBoard: 'ऐप नोटबोर्ड टॉगल करें',
+    toggleHierarchicalTree: 'Toggle Hierarchical Tree',
     keybindSettings: 'कीबाइंड सेटिंग्स',
     appSettings: 'ऐप सेटिंग्स',
     appStyling: 'कस्टम ऐप CSS',

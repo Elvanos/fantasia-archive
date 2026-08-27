@@ -17,6 +17,11 @@ function buildToolsMenuData (session: I_appMenuBuildSession): I_appMenuItem[] {
       showContentDot: session.appNoteboardHasContent === true,
       trigger: () => runFaAction('toggleAppNoteboardWindow', undefined)
     }),
+    faMenuItem('appControlMenus.tools.items.toggleHierarchicalTree', 'mdi-page-layout-sidebar-left', {
+      conditions: session.hasActiveProject,
+      keybindCommandId: 'toggleHierarchicalTree',
+      trigger: () => runFaAction('toggleHierarchicalTree', undefined)
+    }),
     faMenuItem('appControlMenus.tools.items.appStyling', 'mdi-language-css3', {
       keybindCommandId: 'openAppStyling',
       trigger: () => runFaAction('openAppStylingWindow', undefined)

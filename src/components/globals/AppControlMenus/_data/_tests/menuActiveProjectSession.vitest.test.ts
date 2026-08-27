@@ -232,26 +232,44 @@ test('Test that buildDocumentsMenu enables project media and fires openProjectMe
 
 /**
  * Tools menu
+ * Toggle hierarchical tree is project-gated and fires the same action as the app control bar.
+ */
+test('Test that buildToolsMenu toggle hierarchical tree row dispatches toggleHierarchicalTree', () => {
+  const menu = buildToolsMenu({ hasActiveProject: true })
+  const items = menu.data.filter((row) => row.mode === 'item')
+  expect(items[1]!.conditions).toBe(true)
+  expect(items[1]!.keybindCommandId).toBe('toggleHierarchicalTree')
+  items[1]!.trigger?.()
+  expect(runFaActionMock).toHaveBeenCalledWith('toggleHierarchicalTree', undefined)
+})
+
+/**
+ * Tools menu
  * Import / Export App Configuration fires the centralized action regardless of loaded project session.
  */
 test('Test that buildToolsMenu import export row opens the app configuration dialog action', () => {
   const menu = buildToolsMenu({ hasActiveProject: false })
   const items = menu.data.filter((row) => row.mode === 'item')
-  items[4]!.trigger?.()
+  items[5]!.trigger?.()
   expect(runFaActionMock).toHaveBeenCalledTimes(1)
   expect(runFaActionMock).toHaveBeenCalledWith('openImportExportAppConfigDialog', undefined)
 })
 
 /**
  * Tools menu
- * No project-only gates: five rows stay available when **hasActiveProject** is false.
+ * Hierarchical tree toggle disables without an open project; other rows stay available.
  */
-test('Test that buildToolsMenu keeps all tool rows available when hasActiveProject is false', () => {
+test('Test that buildToolsMenu disables hierarchical tree toggle when hasActiveProject is false', () => {
   const menu = buildToolsMenu({ hasActiveProject: false })
   const items = menu.data.filter((row) => row.mode === 'item')
 
-  expect(items.length).toBe(5)
-  expect(items.every((row) => row.conditions !== false)).toBe(true)
+  expect(items.length).toBe(6)
+  expect(items[0]!.conditions).not.toBe(false)
+  expect(items[1]!.conditions).toBe(false)
+  expect(items[2]!.conditions).not.toBe(false)
+  expect(items[3]!.conditions).not.toBe(false)
+  expect(items[4]!.conditions).not.toBe(false)
+  expect(items[5]!.conditions).not.toBe(false)
 })
 
 /**
