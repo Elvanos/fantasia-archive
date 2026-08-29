@@ -7,6 +7,7 @@ import {
 } from 'app/src-electron/shared/faProjectContentSchemaShared'
 import { dropUndefinedRecordValues } from 'app/src-electron/shared/faExactOptionalRecordCompat'
 import type {
+  I_faProjectMedia,
   I_faProjectMediaCreateInput,
   I_faProjectMediaPatch
 } from 'app/types/I_faProjectMediaDomain'
@@ -51,4 +52,22 @@ export function parseFaProjectMediaUpdatePayload (
     id: parsed.id,
     patch: dropUndefinedRecordValues(parsed.patch) as I_faProjectMediaPatch
   }
+}
+
+export const faProjectMediaPersistedRowSchema = z.object({
+  id: faProjectContentIdSchema,
+  displayName: z.string().min(1),
+  type: z.enum(['external', 'internal']),
+  internalType: z.enum(['', 'embedded', 'linked']),
+  externalType: z.enum(['', 'linked']),
+  externalLink: z.string(),
+  internalLink: z.string(),
+  internalEmbed: z.instanceof(Uint8Array).nullable(),
+  internalIsProjectIncluded: z.boolean(),
+  createdAtMs: z.number(),
+  updatedAtMs: z.number()
+}).strict()
+
+export function parseFaProjectMediaPersistedRow (payload: unknown): I_faProjectMedia {
+  return faProjectMediaPersistedRowSchema.parse(payload)
 }

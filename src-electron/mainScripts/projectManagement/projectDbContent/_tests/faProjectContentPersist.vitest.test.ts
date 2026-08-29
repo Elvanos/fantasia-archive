@@ -169,6 +169,13 @@ function makeProjectContentTestDb (): {
             const row: T_row = {
               id: args[0] as string,
               display_name: args[1] as string,
+              type: 'external',
+              internal_type: '',
+              external_type: '',
+              external_link: '',
+              internal_link: '',
+              internal_embed: null,
+              internal_is_project_included: 0,
               created_at_ms: args[2] as number,
               updated_at_ms: args[3] as number
             }
@@ -881,7 +888,27 @@ test('Test that deleteFaProjectDocument removes an existing document row', () =>
 test('Test that getFaProjectMediaById returns a created media row', () => {
   const { db } = makeProjectContentTestDb()
   const media = createFaProjectMedia(db as never, { displayName: 'Pic' })
+  expect(media.displayName).toBe('Pic')
+  expect(media.type).toBe('external')
+  expect(media.internalType).toBe('')
+  expect(media.externalType).toBe('')
+  expect(media.externalLink).toBe('')
+  expect(media.internalLink).toBe('')
+  expect(media.internalEmbed).toBeNull()
+  expect(media.internalIsProjectIncluded).toBe(false)
   expect(getFaProjectMediaById(db as never, media.id).displayName).toBe('Pic')
+  expect(getFaProjectMediaById(db as never, media.id).type).toBe('external')
+})
+
+/**
+ * getFaProjectMediaById
+ * Missing media ids throw FaProjectContentNotFoundError.
+ */
+test('Test that getFaProjectMediaById throws when the media id is unknown', () => {
+  const { db } = makeProjectContentTestDb()
+  expect(() => {
+    getFaProjectMediaById(db as never, '550e8400-e29b-41d4-a716-446655440000')
+  }).toThrow(FaProjectContentNotFoundError)
 })
 
 /**
@@ -1116,7 +1143,11 @@ test('Test that listFaProjectMedia and listFaProjectDocumentTemplates return ite
   const { db } = makeProjectContentTestDb()
   createFaProjectMedia(db as never, { displayName: 'One' })
   createFaProjectDocumentTemplate(db as never, { displayName: 'Tpl' })
-  expect(listFaProjectMedia(db as never).items).toHaveLength(1)
+  const listedMedia = listFaProjectMedia(db as never).items
+  expect(listedMedia).toHaveLength(1)
+  expect(listedMedia[0]?.type).toBe('external')
+  expect(listedMedia[0]?.internalEmbed).toBeNull()
+  expect(listedMedia[0]?.internalIsProjectIncluded).toBe(false)
   expect(listFaProjectDocumentTemplates(db as never).items).toHaveLength(1)
 })
 

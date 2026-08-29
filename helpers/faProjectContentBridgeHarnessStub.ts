@@ -10,6 +10,22 @@ function stubNamedEntity () {
   }
 }
 
+function stubMedia () {
+  return {
+    id: '550e8400-e29b-41d4-a716-446655440000',
+    displayName: 'Stub',
+    type: 'external' as const,
+    internalType: '' as const,
+    externalType: '' as const,
+    externalLink: '',
+    internalLink: '',
+    internalEmbed: null,
+    internalIsProjectIncluded: false,
+    createdAtMs: 0,
+    updatedAtMs: 0
+  }
+}
+
 function stubWorld () {
   return {
     ...stubNamedEntity(),
@@ -69,7 +85,7 @@ export function createFaProjectContentBridgeHarnessStub (): I_faProjectContentAP
   return {
     createDocument: async () => stubDocument(),
     createDocumentTemplate: async () => stubDocumentTemplate(),
-    createMedia: async () => stubNamedEntity(),
+    createMedia: async () => stubMedia(),
     createWorld: async () => stubWorld(),
     deleteDocument: noop,
     deleteDocumentTemplate: noop,
@@ -77,7 +93,7 @@ export function createFaProjectContentBridgeHarnessStub (): I_faProjectContentAP
     deleteWorld: noop,
     getDocumentById: async () => stubDocument(),
     getDocumentTemplateById: async () => stubDocumentTemplate(),
-    getMediaById: async () => stubNamedEntity(),
+    getMediaById: async () => stubMedia(),
     getWorldById: async () => stubWorld(),
     linkDocumentMedia: noop,
     listDocumentDistribution: async () => ({
@@ -147,7 +163,7 @@ export function createFaProjectContentBridgeHarnessStub (): I_faProjectContentAP
     unlinkDocumentMedia: noop,
     updateDocument: async () => stubDocument(),
     updateDocumentTemplate: async () => stubDocumentTemplate(),
-    updateMedia: async () => stubNamedEntity(),
+    updateMedia: async () => stubMedia(),
     updateWorld: async () => stubWorld()
   }
 }

@@ -1,7 +1,7 @@
 import Database from 'better-sqlite3'
 import { afterEach, expect, test } from 'vitest'
 
-import { applyFaProjectContentSchemaV1 } from '../../functions/faProjectDbSchemaDdl'
+import { applyFaProjectContentSchemaV1 } from '../../faProjectDbContentSchemaV1Wiring'
 import { createFaProjectDocument } from '../faProjectDocumentsPersistWiring'
 import { createFaProjectDocumentTemplate } from '../faProjectDocumentTemplatesPersistWiring'
 import { reindexFaProjectHierarchyDocumentSiblings } from '../faProjectHierarchyTreeDocumentSiblingReindexWiring'

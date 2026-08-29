@@ -1,7 +1,7 @@
 import { expect, test, vi } from 'vitest'
 
+import { applyFaProjectContentSchemaV1 } from '../../faProjectDbContentSchemaV1Wiring'
 import {
-  applyFaProjectContentSchemaV1,
   applyFaProjectProjectDataSchemaV1,
   FA_PROJECT_TABLE_DOCUMENTS,
   FA_PROJECT_TABLE_DOCUMENT_LAST_OPENED,
@@ -53,6 +53,9 @@ test('Test that applyFaProjectContentSchemaV1 runs exec with worlds and related 
   expect(sql).toContain('sort_order')
   expect(sql).toContain(FA_PROJECT_TABLE_DOCUMENT_TEMPLATES)
   expect(sql).toContain('document_media')
+  expect(sql).toContain('internal_embed')
+  expect(sql).toContain('internal_is_project_included')
+  expect(sql).toContain("IN ('external', 'internal')")
   expect(sql).toContain('tags')
   expect(sql).toContain('document_tags')
   expect(sql).toContain('idx_tags_world_id_name_nocase')

@@ -6,7 +6,7 @@ Canonical ref: **where data lives** + **how accessed** in Electron desktop app. 
 
 | File | Scope |
 |------|--------|
-| [projectDB.md](projectDB.md) | Active **`.faproject`** SQLite: `PRAGMA user_version` (max **8**), `project_data` KV, content tables (incl. **`tags`** / **`document_tags`**, **`document_last_opened`**), migration entry, main-process modules, **`FA_PROJECT_CONTENT_IPC`**, **Project Settings** worlds snapshot save (per-world template layout) |
+| [projectDB.md](projectDB.md) | Active **`.faproject`** SQLite: `PRAGMA user_version` (max **9**), `project_data` KV, content tables (incl. **`tags`** / **`document_tags`**, **`document_last_opened`**, **`media`** type/link/embed/include), migration entry, main-process modules, **`FA_PROJECT_CONTENT_IPC`**, **Project Settings** worlds snapshot save (per-world template layout) |
 | [templateCustomFields.md](templateCustomFields.md) | **Approved design** (not SQLite yet): document template field defs, document values, orphan policy, implementation route |
 | [appUserDataKv.md](appUserDataKv.md) | **Not** project SQLite: **`electron-store`** JSON under app **`userData`** (user settings, keybinds, MRU, app-wide styling/noteboard) |
 

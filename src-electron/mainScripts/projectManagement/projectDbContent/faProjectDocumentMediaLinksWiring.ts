@@ -1,17 +1,18 @@
 import type Database from 'better-sqlite3'
 
 import {
+  FA_PROJECT_MEDIA_SELECT_SQL_ALIASED_M,
   FA_PROJECT_TABLE_DOCUMENT_MEDIA,
   FA_PROJECT_TABLE_DOCUMENTS,
   FA_PROJECT_TABLE_MEDIA
 } from '../functions/faProjectDbSchemaDdl'
-import { mapFaProjectNamedEntityRow } from '../functions/faProjectContentRowMap'
+import { mapFaProjectMediaRow } from '../functions/faProjectContentRowMap'
 import { FaProjectContentNotFoundError } from './faProjectContentNotFoundError'
 import {
   assertFaProjectNamedEntityExists
 } from './faProjectContentNamedEntitySqlWiring'
 import type { I_faProjectDocumentMediaListResult } from 'app/types/I_faProjectContentLinksDomain'
-import type { I_faSqlNamedEntityRow } from 'app/types/I_faProjectContentRowMap'
+import type { I_faSqlMediaRow } from 'app/types/I_faProjectContentRowMap'
 
 const MEDIA_SPEC = {
   entityLabel: 'Media',
@@ -66,12 +67,12 @@ export function listFaProjectMediaForDocument (
   }
   const rows = db
     .prepare(
-      'SELECT m.id, m.display_name, m.created_at_ms, m.updated_at_ms ' +
+      'SELECT ' + FA_PROJECT_MEDIA_SELECT_SQL_ALIASED_M + ' ' +
         'FROM ' + FA_PROJECT_TABLE_MEDIA + ' m ' +
         'INNER JOIN ' + FA_PROJECT_TABLE_DOCUMENT_MEDIA + ' dm ON dm.media_id = m.id ' +
         'WHERE dm.document_id = ? ' +
         'ORDER BY m.display_name COLLATE NOCASE ASC, m.created_at_ms ASC'
     )
-    .all(documentId) as I_faSqlNamedEntityRow[]
-  return { items: rows.map(mapFaProjectNamedEntityRow) }
+    .all(documentId) as I_faSqlMediaRow[]
+  return { items: rows.map(mapFaProjectMediaRow) }
 }

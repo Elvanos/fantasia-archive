@@ -1,8 +1,8 @@
 import { expect, test, vi } from 'vitest'
 
+import { applyFaProjectContentSchemaV1 } from '../../faProjectDbContentSchemaV1Wiring'
 import { applyFaProjectWorldColorEmptyAllowedSchemaPatch } from '../../projectDbContent/faProjectWorldColorEmptyAllowedSchemaPatchWiring'
 import {
-  applyFaProjectContentSchemaV1,
   FA_PROJECT_TABLE_WORLDS,
   FA_PROJECT_WORLD_COLOR_CHECK_SQL
 } from '../faProjectDbSchemaDdl'

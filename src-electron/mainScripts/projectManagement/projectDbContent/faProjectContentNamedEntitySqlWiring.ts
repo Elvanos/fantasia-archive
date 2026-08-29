@@ -87,32 +87,6 @@ export function deleteFaProjectNamedEntity (
   }
 }
 
-export function getFaProjectNamedEntityById (
-  db: Database,
-  spec: I_faProjectNamedEntityTableSpec,
-  id: string
-): I_faProjectContentNamedEntity {
-  const row = db
-    .prepare(
-      `SELECT id, display_name, created_at_ms, updated_at_ms FROM ${spec.tableName} WHERE id = ?`
-    )
-    .get(id) as I_faSqlNamedEntityRow | undefined
-  return mapFaProjectNamedEntityRow(assertRowExists(row, spec, id))
-}
-
-export function listFaProjectNamedEntities (
-  db: Database,
-  spec: I_faProjectNamedEntityTableSpec
-): I_faProjectContentNamedEntity[] {
-  const rows = db
-    .prepare(
-      `SELECT id, display_name, created_at_ms, updated_at_ms FROM ${spec.tableName} ` +
-        'ORDER BY display_name COLLATE NOCASE ASC, created_at_ms ASC'
-    )
-    .all() as I_faSqlNamedEntityRow[]
-  return rows.map(mapFaProjectNamedEntityRow)
-}
-
 export function assertFaProjectNamedEntityExists (
   db: Database,
   spec: I_faProjectNamedEntityTableSpec,

@@ -2,7 +2,6 @@ import type Database from 'better-sqlite3'
 import { v4 as uuidv4 } from 'uuid'
 
 import {
-  applyFaProjectContentSchemaV1,
   applyFaProjectOpenedDocumentsSchemaV1,
   applyFaProjectProjectDataSchemaV1,
   FA_PROJECT_DATA_TABLE_NAME,
@@ -18,6 +17,7 @@ import {
   FA_PROJECT_TABLE_WORLDS,
   FA_PROJECT_TABLE_WORLD_TEMPLATE_PLACEMENTS
 } from './functions/faProjectDbSchemaDdl'
+import { applyFaProjectContentSchemaV1 } from './faProjectDbContentSchemaV1Wiring'
 import { createApplyFaProjectDocumentsHierarchySchemaPatch } from './functions/faProjectDocumentsHierarchySchemaPatch'
 import { applyFaProjectDocumentAppearanceEmptyColorSchemaPatch } from './projectDbContent/faProjectDocumentAppearanceEmptyColorSchemaPatchWiring'
 import { applyFaProjectDocumentAppearanceSchemaPatch } from './projectDbContent/faProjectDocumentAppearanceSchemaPatchWiring'
@@ -29,12 +29,13 @@ import { seedFaProjectDefaultWorldIfEmpty } from './projectDbContent/faProjectWo
 import { applyFaProjectWorldColorEmptyAllowedSchemaPatch } from './projectDbContent/faProjectWorldColorEmptyAllowedSchemaPatchWiring'
 import { applyFaProjectTagsSchemaPatch } from './projectDbContent/faProjectTagsSchemaPatchWiring'
 import { applyFaProjectDocumentLastOpenedSchemaPatch } from './projectDbContent/faProjectDocumentLastOpenedSchemaPatchWiring'
+import { applyFaProjectMediaTypeColumnsSchemaPatch } from './projectDbContent/faProjectMediaTypeColumnsSchemaPatchWiring'
 
 const OPTION_PROJECT_NAME = 'project_name'
 const OPTION_PROJECT_UUID = 'project_uuid'
 
-/** Current schema revision: flattened bootstrap + v2–v7 + v8 document_last_opened. */
-export const FA_PROJECT_USER_VERSION_SUPPORTED_MAX = 8
+/** Current schema revision: flattened bootstrap + v2–v8 + v9 media type/link/embed/include. */
+export const FA_PROJECT_USER_VERSION_SUPPORTED_MAX = 9
 
 const applyFaProjectDocumentsHierarchySchemaPatch = createApplyFaProjectDocumentsHierarchySchemaPatch({
   documentsTableName: FA_PROJECT_TABLE_DOCUMENTS,
@@ -107,6 +108,7 @@ function applyFaProjectSchemaPatchesAtCurrentVersion (db: Database): void {
   applyFaProjectDocumentAppearanceEmptyColorSchemaPatch(db)
   applyFaProjectTagsSchemaPatch(db)
   applyFaProjectDocumentLastOpenedSchemaPatch(db)
+  applyFaProjectMediaTypeColumnsSchemaPatch(db)
   applyFaProjectOpenedDocumentsSchemaV1(db)
 }
 
@@ -184,6 +186,33 @@ function migrateFaProjectSchemaV7ToV8 (db: Database): void {
   runMigration()
 }
 
+function migrateFaProjectSchemaV8ToV9 (db: Database): void {
+  const runMigration = db.transaction(() => {
+    applyFaProjectMediaTypeColumnsSchemaPatch(db)
+    db.pragma('user_version = 9')
+  })
+  runMigration()
+}
+
+const FA_PROJECT_SCHEMA_CLIMB_STEPS = [
+  migrateFaProjectSchemaV1ToV2,
+  migrateFaProjectSchemaV2ToV3,
+  migrateFaProjectSchemaV3ToV4,
+  migrateFaProjectSchemaV4ToV5,
+  migrateFaProjectSchemaV5ToV6,
+  migrateFaProjectSchemaV6ToV7,
+  migrateFaProjectSchemaV7ToV8,
+  migrateFaProjectSchemaV8ToV9
+]
+
+function climbFaProjectSchemaFromVersion (db: Database, startVer: number): void {
+  const firstStepIndex = startVer - 1
+  for (const migrateStep of FA_PROJECT_SCHEMA_CLIMB_STEPS.slice(firstStepIndex)) {
+    migrateStep(db)
+  }
+  applyFaProjectSchemaPatchesAtCurrentVersion(db)
+}
+
 /**
  * Applies schema migrations. Fresh files bootstrap to the current revision and seed the default world.
  * Files already at the supported version run idempotent patches only.
@@ -200,60 +229,12 @@ export function applyFaProjectMigrations (
     applyFaProjectSchemaPatchesAtCurrentVersion(db)
     return
   }
-  if (startVer === 1) {
-    migrateFaProjectSchemaV1ToV2(db)
-    migrateFaProjectSchemaV2ToV3(db)
-    migrateFaProjectSchemaV3ToV4(db)
-    migrateFaProjectSchemaV4ToV5(db)
-    migrateFaProjectSchemaV5ToV6(db)
-    migrateFaProjectSchemaV6ToV7(db)
-    migrateFaProjectSchemaV7ToV8(db)
-    applyFaProjectSchemaPatchesAtCurrentVersion(db)
-    return
-  }
-  if (startVer === 2) {
-    migrateFaProjectSchemaV2ToV3(db)
-    migrateFaProjectSchemaV3ToV4(db)
-    migrateFaProjectSchemaV4ToV5(db)
-    migrateFaProjectSchemaV5ToV6(db)
-    migrateFaProjectSchemaV6ToV7(db)
-    migrateFaProjectSchemaV7ToV8(db)
-    applyFaProjectSchemaPatchesAtCurrentVersion(db)
-    return
-  }
-  if (startVer === 3) {
-    migrateFaProjectSchemaV3ToV4(db)
-    migrateFaProjectSchemaV4ToV5(db)
-    migrateFaProjectSchemaV5ToV6(db)
-    migrateFaProjectSchemaV6ToV7(db)
-    migrateFaProjectSchemaV7ToV8(db)
-    applyFaProjectSchemaPatchesAtCurrentVersion(db)
-    return
-  }
-  if (startVer === 4) {
-    migrateFaProjectSchemaV4ToV5(db)
-    migrateFaProjectSchemaV5ToV6(db)
-    migrateFaProjectSchemaV6ToV7(db)
-    migrateFaProjectSchemaV7ToV8(db)
-    applyFaProjectSchemaPatchesAtCurrentVersion(db)
-    return
-  }
-  if (startVer === 5) {
-    migrateFaProjectSchemaV5ToV6(db)
-    migrateFaProjectSchemaV6ToV7(db)
-    migrateFaProjectSchemaV7ToV8(db)
-    applyFaProjectSchemaPatchesAtCurrentVersion(db)
-    return
-  }
-  if (startVer === 6) {
-    migrateFaProjectSchemaV6ToV7(db)
-    migrateFaProjectSchemaV7ToV8(db)
-    applyFaProjectSchemaPatchesAtCurrentVersion(db)
-    return
-  }
-  if (startVer === 7) {
-    migrateFaProjectSchemaV7ToV8(db)
-    applyFaProjectSchemaPatchesAtCurrentVersion(db)
+  const canClimb =
+    Number.isInteger(startVer) &&
+    startVer >= 1 &&
+    startVer < FA_PROJECT_USER_VERSION_SUPPORTED_MAX
+  if (canClimb) {
+    climbFaProjectSchemaFromVersion(db, startVer)
     return
   }
   if (startVer === 0) {

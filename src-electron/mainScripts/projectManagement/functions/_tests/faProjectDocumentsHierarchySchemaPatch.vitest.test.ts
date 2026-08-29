@@ -1,9 +1,9 @@
 import Database from 'better-sqlite3'
 import { afterEach, expect, test } from 'vitest'
 
+import { applyFaProjectContentSchemaV1 } from '../../faProjectDbContentSchemaV1Wiring'
 import { createApplyFaProjectDocumentsHierarchySchemaPatch } from '../faProjectDocumentsHierarchySchemaPatch'
 import {
-  applyFaProjectContentSchemaV1,
   FA_PROJECT_DOCUMENT_TREE_CUSTOM_SORT_ORDER_COLUMN,
   FA_PROJECT_DOCUMENT_TREE_LEGACY_PARENT_DOCUMENT_ID_COLUMN,
   FA_PROJECT_DOCUMENT_TREE_LEGACY_PLACEMENT_ID_COLUMN,

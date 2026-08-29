@@ -1,7 +1,8 @@
 import Database from 'better-sqlite3'
 import { afterEach, expect, test } from 'vitest'
 
-import { applyFaProjectContentSchemaV1, applyFaProjectProjectDataSchemaV1 } from '../functions/faProjectDbSchemaDdl'
+import { applyFaProjectContentSchemaV1 } from '../faProjectDbContentSchemaV1Wiring'
+import { applyFaProjectProjectDataSchemaV1 } from '../functions/faProjectDbSchemaDdl'
 import {
   readFaProjectHierarchyTreeUiState,
   upsertFaProjectHierarchyTreeUiStateKv

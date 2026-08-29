@@ -27,6 +27,7 @@ import {
   parseFaProjectMediaCreateInput,
   parseFaProjectMediaIdPayload,
   parseFaProjectMediaPatch,
+  parseFaProjectMediaPersistedRow,
   parseFaProjectMediaUpdatePayload
 } from '../faProjectMediaContentSchema'
 import {
@@ -75,6 +76,32 @@ test('Test that project content schema parsers accept valid payloads', () => {
     patch: { displayName: 'Pic 2' }
   }).patch.displayName).toBe('Pic 2')
   expect(parseFaProjectMediaIdPayload({ id: SAMPLE_UUID })).toBe(SAMPLE_UUID)
+  expect(parseFaProjectMediaPersistedRow({
+    id: SAMPLE_UUID,
+    displayName: 'Pic',
+    type: 'external',
+    internalType: '',
+    externalType: '',
+    externalLink: '',
+    internalLink: '',
+    internalEmbed: null,
+    internalIsProjectIncluded: false,
+    createdAtMs: 1,
+    updatedAtMs: 2
+  }).internalEmbed).toBeNull()
+  expect(parseFaProjectMediaPersistedRow({
+    id: SAMPLE_UUID,
+    displayName: 'Pic',
+    type: 'internal',
+    internalType: 'embedded',
+    externalType: 'linked',
+    externalLink: 'https://example.test/a',
+    internalLink: '',
+    internalEmbed: new Uint8Array([9]),
+    internalIsProjectIncluded: true,
+    createdAtMs: 1,
+    updatedAtMs: 2
+  }).type).toBe('internal')
 
   expect(parseFaProjectDocumentTemplateCreateInput({ displayName: 'Tpl' }).displayName).toBe('Tpl')
   expect(parseFaProjectDocumentTemplateUpdatePayload({

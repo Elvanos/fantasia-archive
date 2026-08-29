@@ -1,9 +1,9 @@
 import Database from 'better-sqlite3'
 import { afterEach, expect, test } from 'vitest'
 
+import { applyFaProjectContentSchemaV1 } from '../../faProjectDbContentSchemaV1Wiring'
 import {
-  FA_PROJECT_DOCUMENT_LAST_OPENED_MAX,
-  applyFaProjectContentSchemaV1
+  FA_PROJECT_DOCUMENT_LAST_OPENED_MAX
 } from '../../functions/faProjectDbSchemaDdl'
 import { createFaProjectDocument } from '../faProjectDocumentsPersistWiring'
 import { createFaProjectDocumentTemplate } from '../faProjectDocumentTemplatesPersistWiring'

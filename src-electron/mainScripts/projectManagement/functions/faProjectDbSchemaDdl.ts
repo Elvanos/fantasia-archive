@@ -5,6 +5,43 @@ export const FA_PROJECT_TABLE_WORLDS = 'worlds'
 export const FA_PROJECT_TABLE_DOCUMENTS = 'documents'
 export const FA_PROJECT_TABLE_DOCUMENT_TEMPLATES = 'document_templates'
 export const FA_PROJECT_TABLE_MEDIA = 'media'
+
+/** media.type: external vs project-internal storage */
+export const FA_PROJECT_MEDIA_TYPE_COLUMN = 'type'
+
+/** media.internal_type: embedded, linked, or empty */
+export const FA_PROJECT_MEDIA_INTERNAL_TYPE_COLUMN = 'internal_type'
+
+/** media.external_type: linked or empty */
+export const FA_PROJECT_MEDIA_EXTERNAL_TYPE_COLUMN = 'external_type'
+
+/** media.external_link: path or URL, or empty */
+export const FA_PROJECT_MEDIA_EXTERNAL_LINK_COLUMN = 'external_link'
+
+/** media.internal_link: path or URL, or empty */
+export const FA_PROJECT_MEDIA_INTERNAL_LINK_COLUMN = 'internal_link'
+
+/** media.internal_embed: BLOB bytes or NULL */
+export const FA_PROJECT_MEDIA_INTERNAL_EMBED_COLUMN = 'internal_embed'
+
+/** media.internal_is_project_included: 1 = included in project, 0 = not */
+export const FA_PROJECT_MEDIA_INTERNAL_IS_PROJECT_INCLUDED_COLUMN =
+  'internal_is_project_included'
+
+/** Default media.type for new rows and v9 backfill */
+export const FA_PROJECT_MEDIA_DEFAULT_TYPE = 'external'
+
+/** SELECT list for full media rows (unaliased). */
+export const FA_PROJECT_MEDIA_SELECT_SQL =
+  'id, display_name, type, internal_type, external_type, external_link, ' +
+  'internal_link, internal_embed, internal_is_project_included, created_at_ms, ' +
+  'updated_at_ms'
+
+/** SELECT list for full media rows aliased as m (document_media joins). */
+export const FA_PROJECT_MEDIA_SELECT_SQL_ALIASED_M =
+  'm.id, m.display_name, m.type, m.internal_type, m.external_type, m.external_link, ' +
+  'm.internal_link, m.internal_embed, m.internal_is_project_included, ' +
+  'm.created_at_ms, m.updated_at_ms'
 export const FA_PROJECT_TABLE_DOCUMENT_MEDIA = 'document_media'
 export const FA_PROJECT_TABLE_TAGS = 'tags'
 export const FA_PROJECT_TABLE_DOCUMENT_TAGS = 'document_tags'
@@ -174,7 +211,7 @@ CREATE TABLE IF NOT EXISTS ${FA_PROJECT_DATA_TABLE_NAME} (
 /**
  * Creates worldbuilding content tables through media (schema version 1).
  */
-function applyFaProjectContentSchemaV1CoreTables (db: I_faProjectDbExec): void {
+export function applyFaProjectContentSchemaV1CoreTables (db: I_faProjectDbExec): void {
   db.exec(`
 CREATE TABLE IF NOT EXISTS ${FA_PROJECT_TABLE_WORLDS} (
   id TEXT NOT NULL PRIMARY KEY,
@@ -211,6 +248,17 @@ CREATE TABLE IF NOT EXISTS ${FA_PROJECT_TABLE_DOCUMENT_TEMPLATES} (
 CREATE TABLE IF NOT EXISTS ${FA_PROJECT_TABLE_MEDIA} (
   id TEXT NOT NULL PRIMARY KEY,
   display_name TEXT NOT NULL CHECK (length(display_name) > 0),
+  ${FA_PROJECT_MEDIA_TYPE_COLUMN} TEXT NOT NULL DEFAULT '${FA_PROJECT_MEDIA_DEFAULT_TYPE}'
+  CHECK (${FA_PROJECT_MEDIA_TYPE_COLUMN} IN ('external', 'internal')),
+  ${FA_PROJECT_MEDIA_INTERNAL_TYPE_COLUMN} TEXT NOT NULL DEFAULT ''
+  CHECK (${FA_PROJECT_MEDIA_INTERNAL_TYPE_COLUMN} IN ('', 'embedded', 'linked')),
+  ${FA_PROJECT_MEDIA_EXTERNAL_TYPE_COLUMN} TEXT NOT NULL DEFAULT ''
+  CHECK (${FA_PROJECT_MEDIA_EXTERNAL_TYPE_COLUMN} IN ('', 'linked')),
+  ${FA_PROJECT_MEDIA_EXTERNAL_LINK_COLUMN} TEXT NOT NULL DEFAULT '',
+  ${FA_PROJECT_MEDIA_INTERNAL_LINK_COLUMN} TEXT NOT NULL DEFAULT '',
+  ${FA_PROJECT_MEDIA_INTERNAL_EMBED_COLUMN} BLOB,
+  ${FA_PROJECT_MEDIA_INTERNAL_IS_PROJECT_INCLUDED_COLUMN} INTEGER NOT NULL DEFAULT 0
+  CHECK (${FA_PROJECT_MEDIA_INTERNAL_IS_PROJECT_INCLUDED_COLUMN} IN (0, 1)),
   created_at_ms INTEGER NOT NULL,
   updated_at_ms INTEGER NOT NULL
 );
@@ -220,7 +268,7 @@ CREATE TABLE IF NOT EXISTS ${FA_PROJECT_TABLE_MEDIA} (
 /**
  * Creates documents, layout, and content indexes for schema version 1.
  */
-function applyFaProjectContentSchemaV1DocumentsAndIndexes (db: I_faProjectDbExec): void {
+export function applyFaProjectContentSchemaV1DocumentsAndIndexes (db: I_faProjectDbExec): void {
   db.exec(`
 CREATE TABLE IF NOT EXISTS ${FA_PROJECT_TABLE_DOCUMENTS} (
   id TEXT NOT NULL PRIMARY KEY,
@@ -306,35 +354,6 @@ CREATE INDEX IF NOT EXISTS idx_worlds_sort_order ON ${FA_PROJECT_TABLE_WORLDS}(s
 CREATE INDEX IF NOT EXISTS idx_document_templates_sort_order
   ON ${FA_PROJECT_TABLE_DOCUMENT_TEMPLATES}(sort_order);
 `)
-  applyFaProjectContentSchemaV1TagsAndIndexes(db)
-}
-
-/**
- * Creates tags tables and indexes for schema version 1.
- */
-function applyFaProjectContentSchemaV1TagsAndIndexes (db: I_faProjectDbExec): void {
-  db.exec(`
-CREATE TABLE IF NOT EXISTS ${FA_PROJECT_TABLE_TAGS} (
-  id TEXT NOT NULL PRIMARY KEY,
-  world_id TEXT NOT NULL REFERENCES ${FA_PROJECT_TABLE_WORLDS}(id) ON DELETE CASCADE,
-  name TEXT NOT NULL CHECK (length(name) > 0),
-  created_at_ms INTEGER NOT NULL,
-  updated_at_ms INTEGER NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS ${FA_PROJECT_TABLE_DOCUMENT_TAGS} (
-  document_id TEXT NOT NULL REFERENCES ${FA_PROJECT_TABLE_DOCUMENTS}(id) ON DELETE CASCADE,
-  tag_id TEXT NOT NULL REFERENCES ${FA_PROJECT_TABLE_TAGS}(id) ON DELETE CASCADE,
-  sort_order INTEGER NOT NULL DEFAULT 0,
-  PRIMARY KEY (document_id, tag_id)
-);
-
-CREATE UNIQUE INDEX IF NOT EXISTS idx_tags_world_id_name_nocase
-  ON ${FA_PROJECT_TABLE_TAGS}(world_id, name COLLATE NOCASE);
-CREATE INDEX IF NOT EXISTS idx_tags_world_id ON ${FA_PROJECT_TABLE_TAGS}(world_id);
-CREATE INDEX IF NOT EXISTS idx_document_tags_tag_id_sort
-  ON ${FA_PROJECT_TABLE_DOCUMENT_TAGS}(tag_id, sort_order);
-`)
 }
 
 /**
@@ -364,15 +383,4 @@ CREATE TABLE IF NOT EXISTS ${FA_PROJECT_TABLE_DOCUMENT_LAST_OPENED} (
 CREATE INDEX IF NOT EXISTS idx_document_last_opened_opened_at_ms
   ON ${FA_PROJECT_TABLE_DOCUMENT_LAST_OPENED}(opened_at_ms DESC);
 `)
-}
-
-/**
- * Creates worldbuilding content tables and indexes for schema version 1.
- * Idempotent when tables already exist.
- */
-export function applyFaProjectContentSchemaV1 (db: I_faProjectDbExec): void {
-  applyFaProjectContentSchemaV1CoreTables(db)
-  applyFaProjectContentSchemaV1DocumentsAndIndexes(db)
-  applyFaProjectOpenedDocumentsSchemaV1(db)
-  applyFaProjectDocumentLastOpenedSchemaV1(db)
 }

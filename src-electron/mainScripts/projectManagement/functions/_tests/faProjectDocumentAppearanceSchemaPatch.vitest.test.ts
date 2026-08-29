@@ -1,8 +1,8 @@
 import { expect, test, vi } from 'vitest'
 
+import { applyFaProjectContentSchemaV1 } from '../../faProjectDbContentSchemaV1Wiring'
 import { applyFaProjectDocumentAppearanceSchemaPatch } from '../../projectDbContent/faProjectDocumentAppearanceSchemaPatchWiring'
 import {
-  applyFaProjectContentSchemaV1,
   FA_PROJECT_DOCUMENT_BACKGROUND_COLOR_COLUMN,
   FA_PROJECT_DOCUMENT_TEXT_COLOR_COLUMN,
   FA_PROJECT_TABLE_DOCUMENTS

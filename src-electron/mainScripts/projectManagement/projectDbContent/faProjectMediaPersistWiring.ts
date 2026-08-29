@@ -1,13 +1,17 @@
 import type Database from 'better-sqlite3'
 
-import { FA_PROJECT_TABLE_MEDIA } from '../functions/faProjectDbSchemaDdl'
+import {
+  FA_PROJECT_MEDIA_SELECT_SQL,
+  FA_PROJECT_TABLE_MEDIA
+} from '../functions/faProjectDbSchemaDdl'
+import { mapFaProjectMediaRow } from '../functions/faProjectContentRowMap'
 import {
   createFaProjectNamedEntity,
   deleteFaProjectNamedEntity,
-  getFaProjectNamedEntityById,
-  listFaProjectNamedEntities,
   updateFaProjectNamedEntity
 } from './faProjectContentNamedEntitySqlWiring'
+import { FaProjectContentNotFoundError } from './faProjectContentNotFoundError'
+import type { I_faSqlMediaRow } from 'app/types/I_faProjectContentRowMap'
 import type {
   I_faProjectMedia,
   I_faProjectMediaCreateInput,
@@ -20,11 +24,34 @@ const MEDIA_SPEC = {
   tableName: FA_PROJECT_TABLE_MEDIA
 }
 
+const MEDIA_SELECT_BY_ID_SQL =
+  `SELECT ${FA_PROJECT_MEDIA_SELECT_SQL} FROM ${FA_PROJECT_TABLE_MEDIA} WHERE id = ?`
+
+const MEDIA_LIST_SQL =
+  `SELECT ${FA_PROJECT_MEDIA_SELECT_SQL} FROM ${FA_PROJECT_TABLE_MEDIA} ` +
+  'ORDER BY display_name COLLATE NOCASE ASC, created_at_ms ASC'
+
+function assertMediaRowExists (
+  row: I_faSqlMediaRow | undefined,
+  id: string
+): I_faSqlMediaRow {
+  if (row === undefined) {
+    throw new FaProjectContentNotFoundError(MEDIA_SPEC.entityLabel, id)
+  }
+  return row
+}
+
+function getFaProjectMediaSqlRowById (db: Database, id: string): I_faSqlMediaRow {
+  const row = db.prepare(MEDIA_SELECT_BY_ID_SQL).get(id) as I_faSqlMediaRow | undefined
+  return assertMediaRowExists(row, id)
+}
+
 export function createFaProjectMedia (
   db: Database,
   input: I_faProjectMediaCreateInput
 ): I_faProjectMedia {
-  return createFaProjectNamedEntity(db, MEDIA_SPEC, input.displayName)
+  const created = createFaProjectNamedEntity(db, MEDIA_SPEC, input.displayName)
+  return mapFaProjectMediaRow(getFaProjectMediaSqlRowById(db, created.id))
 }
 
 export function updateFaProjectMedia (
@@ -32,7 +59,8 @@ export function updateFaProjectMedia (
   id: string,
   patch: I_faProjectMediaPatch
 ): I_faProjectMedia {
-  return updateFaProjectNamedEntity(db, MEDIA_SPEC, id, patch.displayName)
+  updateFaProjectNamedEntity(db, MEDIA_SPEC, id, patch.displayName)
+  return mapFaProjectMediaRow(getFaProjectMediaSqlRowById(db, id))
 }
 
 export function deleteFaProjectMedia (db: Database, id: string): void {
@@ -40,9 +68,11 @@ export function deleteFaProjectMedia (db: Database, id: string): void {
 }
 
 export function getFaProjectMediaById (db: Database, id: string): I_faProjectMedia {
-  return getFaProjectNamedEntityById(db, MEDIA_SPEC, id)
+  return mapFaProjectMediaRow(getFaProjectMediaSqlRowById(db, id))
 }
 
 export function listFaProjectMedia (db: Database): I_faProjectMediaListResult {
-  return { items: listFaProjectNamedEntities(db, MEDIA_SPEC) }
+  const rows = db.prepare(MEDIA_LIST_SQL).all() as I_faSqlMediaRow[]
+  const items = rows.map(mapFaProjectMediaRow)
+  return { items }
 }

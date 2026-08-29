@@ -3,6 +3,12 @@ import type { I_faProjectDocument } from 'app/types/I_faProjectDocumentDomain'
 import type { I_faProjectDocumentTemplate } from 'app/types/I_faProjectDocumentTemplateDomain'
 import type { I_faProjectDocumentTemplateTitleTranslations } from 'app/types/I_faProjectDocumentTemplateTitleTranslations'
 import type { I_faProjectDocumentTemplateWorldAppendixTranslations } from 'app/types/I_faProjectDocumentTemplateWorldAppendixTranslations'
+import type {
+  I_faProjectMedia,
+  T_faProjectMediaExternalType,
+  T_faProjectMediaInternalType,
+  T_faProjectMediaType
+} from 'app/types/I_faProjectMediaDomain'
 import type { I_faProjectWorldDisplayNameTranslations } from 'app/types/I_faProjectWorldDisplayNameTranslations'
 import type { I_faProjectWorldTemplateGroupDisplayNameTranslations } from 'app/types/I_faProjectWorldTemplateGroupDisplayNameTranslations'
 import type { I_faProjectDocumentTemplateTitleSingularTranslations } from 'app/types/I_faProjectDocumentTemplateTitleSingularTranslations'
@@ -14,6 +20,7 @@ import type {
   I_faProjectWorldTemplatePlacementForProjectSettings
 } from 'app/types/I_faProjectWorldTemplateLayoutDomain'
 import type { I_faSqlDocumentTemplateRow } from 'app/types/I_faProjectContentRowMap'
+import type { I_faSqlMediaRow } from 'app/types/I_faProjectContentRowMap'
 import type { I_faSqlNamedEntityRow } from 'app/types/I_faProjectContentRowMap'
 import type { I_faSqlProjectDocumentRow } from 'app/types/I_faProjectContentRowMap'
 import type { I_faSqlWorldRow } from 'app/types/I_faProjectContentRowMap'
@@ -76,6 +83,58 @@ export function mapFaProjectNamedEntityRow (
   return {
     id: row.id,
     displayName: row.display_name,
+    createdAtMs: row.created_at_ms,
+    updatedAtMs: row.updated_at_ms
+  }
+}
+
+function mapFaProjectMediaType (raw: string): T_faProjectMediaType {
+  if (raw === 'internal') {
+    return 'internal'
+  }
+  return 'external'
+}
+
+function mapFaProjectMediaInternalType (raw: string): T_faProjectMediaInternalType {
+  if (raw === 'embedded' || raw === 'linked') {
+    return raw
+  }
+  return ''
+}
+
+function mapFaProjectMediaExternalType (raw: string): T_faProjectMediaExternalType {
+  if (raw === 'linked') {
+    return 'linked'
+  }
+  return ''
+}
+
+function mapFaProjectMediaInternalEmbed (raw: Uint8Array | null): Uint8Array | null {
+  if (raw === null) {
+    return null
+  }
+  if (raw instanceof Uint8Array && raw.byteLength > 0) {
+    return raw
+  }
+  return null
+}
+
+export function mapFaProjectMediaRow (row: I_faSqlMediaRow): I_faProjectMedia {
+  const type = mapFaProjectMediaType(row.type)
+  const internalType = mapFaProjectMediaInternalType(row.internal_type)
+  const externalType = mapFaProjectMediaExternalType(row.external_type)
+  const internalEmbed = mapFaProjectMediaInternalEmbed(row.internal_embed)
+  const internalIsProjectIncluded = row.internal_is_project_included === 1
+  return {
+    id: row.id,
+    displayName: row.display_name,
+    type,
+    internalType,
+    externalType,
+    externalLink: row.external_link,
+    internalLink: row.internal_link,
+    internalEmbed,
+    internalIsProjectIncluded,
     createdAtMs: row.created_at_ms,
     updatedAtMs: row.updated_at_ms
   }

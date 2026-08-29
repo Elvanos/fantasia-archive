@@ -1,8 +1,8 @@
 import Database from 'better-sqlite3'
 import { afterEach, expect, test, vi } from 'vitest'
 
+import { applyFaProjectContentSchemaV1 } from '../../faProjectDbContentSchemaV1Wiring'
 import {
-  applyFaProjectContentSchemaV1,
   FA_PROJECT_TABLE_DOCUMENTS
 } from '../../functions/faProjectDbSchemaDdl'
 import {

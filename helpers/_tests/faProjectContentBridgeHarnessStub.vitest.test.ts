@@ -12,6 +12,20 @@ const stubNamedEntityShape = {
   updatedAtMs: 0
 }
 
+const stubMediaShape = {
+  id: STUB_UUID,
+  displayName: 'Stub',
+  type: 'external',
+  internalType: '',
+  externalType: '',
+  externalLink: '',
+  internalLink: '',
+  internalEmbed: null,
+  internalIsProjectIncluded: false,
+  createdAtMs: 0,
+  updatedAtMs: 0
+}
+
 const stubWorldShape = {
   ...stubNamedEntityShape,
   color: '#808080',
@@ -67,12 +81,12 @@ test('Test that createFaProjectContentBridgeHarnessStub create and get methods r
     worldId: STUB_UUID
   })).resolves.toEqual(stubDocumentShape)
   await expect(api.createDocumentTemplate({ displayName: 'Template' })).resolves.toEqual(stubDocumentTemplateShape)
-  await expect(api.createMedia({ displayName: 'Media' })).resolves.toEqual(stubNamedEntityShape)
+  await expect(api.createMedia({ displayName: 'Media' })).resolves.toEqual(stubMediaShape)
   await expect(api.createWorld({ displayName: 'World' })).resolves.toEqual(stubWorldShape)
 
   await expect(api.getDocumentById(STUB_UUID)).resolves.toEqual(stubDocumentShape)
   await expect(api.getDocumentTemplateById(STUB_UUID)).resolves.toEqual(stubDocumentTemplateShape)
-  await expect(api.getMediaById(STUB_UUID)).resolves.toEqual(stubNamedEntityShape)
+  await expect(api.getMediaById(STUB_UUID)).resolves.toEqual(stubMediaShape)
   await expect(api.getWorldById(STUB_UUID)).resolves.toEqual(stubWorldShape)
 })
 
@@ -85,7 +99,7 @@ test('Test that createFaProjectContentBridgeHarnessStub update and set methods r
 
   await expect(api.updateDocument(STUB_UUID, { displayName: 'Updated' })).resolves.toEqual(stubDocumentShape)
   await expect(api.updateDocumentTemplate(STUB_UUID, { displayName: 'Updated' })).resolves.toEqual(stubDocumentTemplateShape)
-  await expect(api.updateMedia(STUB_UUID, { displayName: 'Updated' })).resolves.toEqual(stubNamedEntityShape)
+  await expect(api.updateMedia(STUB_UUID, { displayName: 'Updated' })).resolves.toEqual(stubMediaShape)
   await expect(api.updateWorld(STUB_UUID, { displayName: 'Updated' })).resolves.toEqual(stubWorldShape)
 
   await expect(api.setDocumentTemplate({
