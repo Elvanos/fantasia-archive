@@ -186,6 +186,11 @@ test('Test that WindowProjectStyling surfaces title and action button locators',
   expect(w.find('[data-test-locator="windowProjectStyling-title"]').text()).toContain(projectStyling.title)
   expect(w.find('[data-test-locator="windowProjectStyling-button-close"]').exists()).toBe(true)
   expect(w.find('[data-test-locator="windowProjectStyling-button-save"]').exists()).toBe(true)
+  expect(
+    w.get('[data-test-locator="windowProjectStyling-helpIcon"]').element.parentElement?.classList.contains(
+      'windowProjectStyling__helpIcon'
+    )
+  ).toBe(true)
 
   const helpBody = w.find('[data-test-locator="windowProjectStyling-helpTooltipBody"]')
   expect(helpBody.exists()).toBe(true)

@@ -734,8 +734,9 @@ body.fa-appTheme--fantasy .q-markdown hr {
   }
 }
 
-/* Fantasy: same cyan rim as dialog cards / floating windows (beats .q-menu--dark !important). */
-body.fa-appTheme--fantasy .q-menu {
+/* Fantasy: same cyan rim as dialog cards / floating windows (beats .q-menu--dark !important).
+ * Custom CSS help QMenus use parchment ::before/::after — skip cyan rim on those. */
+body.fa-appTheme--fantasy .q-menu:not(.windowAppStyling__helpTooltip, .windowProjectStyling__helpTooltip) {
   @include dialogCyanRim.fa-dialog-cyan-rim-chrome;
 
   /* Lock label weight; global .disabled { opacity: 0.35 } makes strokes look wrong-weight. */
@@ -771,7 +772,12 @@ body.fa-appTheme--fantasy .q-menu {
 /* Fantasy: darkened flat root menus; submenus = $fantasy-dark-light
  * (not splash slate / language parchment).
  * Root: $dark-lighter → $fantasy-medium; submenu: $fantasy-dark-light. */
-body.fa-appTheme--fantasy .q-menu:not(.splashControls__resumeMenu, .globalLanguageSelector__menu) {
+body.fa-appTheme--fantasy .q-menu:not(
+  .splashControls__resumeMenu,
+  .globalLanguageSelector__menu,
+  .windowAppStyling__helpTooltip,
+  .windowProjectStyling__helpTooltip
+) {
   background-color: $qMenu-backgroundColor-fantasy !important;
 }
 

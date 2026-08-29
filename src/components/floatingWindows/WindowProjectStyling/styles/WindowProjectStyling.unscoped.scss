@@ -36,6 +36,7 @@
     min-width: 0;
   }
 
+  /* Wrapper only: FaHelpTooltipIcon root is position:relative and would override absolute. */
   &__helpIcon {
     cursor: default;
     position: absolute;
@@ -45,7 +46,8 @@
   }
 
   &__helpTooltip {
-    /* QMenu (replaces QTooltip): match global parchment tooltip surface + z-index. */
+    /* QMenu (replaces QTooltip): pin ink so body.body--dark white does not inherit. */
+    color: $qTooltip-flat-color;
     max-width: $windowAppStyling-helpTooltip-width;
     width: $windowAppStyling-helpTooltip-width;
     z-index: $qTooltip-zIndex;
@@ -176,6 +178,12 @@
   &__cardActions {
     flex: 0 0 auto;
   }
+}
+
+body.fa-appTheme--flat .windowProjectStyling__helpTooltip {
+  background: $qTooltip-flat-backgroundColor;
+  box-shadow: $qTooltip-flat-boxShadow;
+  color: $qTooltip-flat-color;
 }
 
 body.fa-appTheme--fantasy .windowProjectStyling__helpTooltip {

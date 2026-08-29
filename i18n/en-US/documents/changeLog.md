@@ -38,6 +38,7 @@
 - **Workspace sidebar**: Hierarchy search label is **Search the tree...**. The search glyph turns primary-bright whenever the field has text, whether or not the field is focused.
 - **Workspace sidebar**: Individual tag icons in the hierarchy tree are slightly smaller so solid glyphs match outline neighbors; the main **Tags** wrapper icon stays full size.
 - **Help**: Diamond help icons use a slightly thinner border.
+- **Custom App CSS** / **Custom Project CSS**: The **?** help menu no longer inherits dark-theme white body text or the fantasy cyan menu rim; parchment tooltip colors stay.
 - **Fantasy theme**: Bare primary-bright icons in field append and prepend slots keep the gold glyph (for example merge-warning icons in rename dialogs).
 - **Dependencies**: Updated the bundled **DOMPurify** sanitizer (used by the code editor) to **3.4.13**, closing an in-place sanitizer bypass advisory.
 

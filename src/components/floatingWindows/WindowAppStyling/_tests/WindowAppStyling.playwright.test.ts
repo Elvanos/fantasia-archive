@@ -200,6 +200,11 @@ test.describe.serial('App styling floating window chrome and persistent close be
     await expect(helpBody).toContainText('F1')
     await expect(helpBody).toContainText(appStylingMessages.helpTooltip.items.commandPalette)
     await expect(helpBody).toContainText(appStylingMessages.helpTooltip.variableListTitle)
+    const firstVarName = appWindow.locator('.windowAppStyling__helpTooltipFaVarName').first()
+    await expect(firstVarName).toBeVisible()
+    const nameColor = await firstVarName.evaluate((el) => window.getComputedStyle(el).color)
+    const bodyColor = await appWindow.evaluate(() => window.getComputedStyle(document.body).color)
+    expect(nameColor).not.toBe(bodyColor)
 
     const varList = appWindow.locator(`[data-test-locator="${selectorList.faThemeVarList}"]`)
     await expect(varList).toBeVisible()

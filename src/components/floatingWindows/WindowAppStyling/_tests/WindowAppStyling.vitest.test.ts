@@ -194,6 +194,11 @@ test('Test that WindowAppStyling surfaces title and action button locators', () 
   expect(w.find('[data-test-locator="windowAppStyling-button-close"]').exists()).toBe(true)
   expect(w.find('[data-test-locator="windowAppStyling-button-save"]').exists()).toBe(true)
   expect(w.find('[data-test-locator="faFloatingWindowFrameResizeHandles"]').exists()).toBe(true)
+  expect(
+    w.get('[data-test-locator="windowAppStyling-helpIcon"]').element.parentElement?.classList.contains(
+      'windowAppStyling__helpIcon'
+    )
+  ).toBe(true)
 
   const helpBody = w.find('[data-test-locator="windowAppStyling-helpTooltipBody"]')
   expect(helpBody.exists()).toBe(true)

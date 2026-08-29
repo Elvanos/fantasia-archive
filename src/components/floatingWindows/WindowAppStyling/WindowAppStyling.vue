@@ -39,82 +39,83 @@
           </div>
 
           <q-card-section class="q-pa-none windowAppStyling__body">
-            <FaHelpTooltipIcon
-              class="windowAppStyling__helpIcon"
-              :aria-label="$t('floatingWindows.appStyling.helpTooltip.aria')"
-              data-test-locator="windowAppStyling-helpIcon"
-              @mouseenter="onHelpIconMouseEnter"
-              @mouseleave="onHelpIconMouseLeave"
-            >
-              <q-menu
-                v-model="helpKeybindMenuOpen"
-                anchor="bottom right"
-                class="windowAppStyling__helpTooltip"
-                data-test-locator="windowAppStyling-helpMenu"
-                :dark="false"
-                :offset="[0, 10]"
-                self="top right"
-                no-focus
-                :transition-duration="300"
+            <div class="windowAppStyling__helpIcon">
+              <FaHelpTooltipIcon
+                :aria-label="$t('floatingWindows.appStyling.helpTooltip.aria')"
+                data-test-locator="windowAppStyling-helpIcon"
+                @mouseenter="onHelpIconMouseEnter"
+                @mouseleave="onHelpIconMouseLeave"
               >
-                <div
-                  class="windowAppStyling__helpTooltipBody"
-                  data-test-locator="windowAppStyling-helpTooltipBody"
+                <q-menu
+                  v-model="helpKeybindMenuOpen"
+                  anchor="bottom right"
+                  class="windowAppStyling__helpTooltip"
+                  data-test-locator="windowAppStyling-helpMenu"
+                  :dark="false"
+                  :offset="[0, 10]"
+                  self="top right"
+                  no-focus
+                  :transition-duration="300"
                 >
-                  <div class="windowAppStyling__helpTooltipKeybinds">
-                    <strong class="windowAppStyling__helpTooltipTitle">
-                      {{ $t('floatingWindows.appStyling.helpTooltip.title') }}
-                    </strong>
-                    <ul class="windowAppStyling__helpTooltipList">
-                      <li
-                        v-for="item in monacoKeybindHelpItems"
-                        :key="item.labelKey"
-                        class="windowAppStyling__helpTooltipItem"
+                  <div
+                    class="windowAppStyling__helpTooltipBody"
+                    data-test-locator="windowAppStyling-helpTooltipBody"
+                  >
+                    <div class="windowAppStyling__helpTooltipKeybinds">
+                      <strong class="windowAppStyling__helpTooltipTitle">
+                        {{ $t('floatingWindows.appStyling.helpTooltip.title') }}
+                      </strong>
+                      <ul class="windowAppStyling__helpTooltipList">
+                        <li
+                          v-for="item in monacoKeybindHelpItems"
+                          :key="item.labelKey"
+                          class="windowAppStyling__helpTooltipItem"
+                        >
+                          <span class="windowAppStyling__helpTooltipChord">{{ item.chord }}</span>
+                          <span class="windowAppStyling__helpTooltipLabel">
+                            {{ $t(`floatingWindows.appStyling.helpTooltip.items.${item.labelKey}`) }}
+                          </span>
+                        </li>
+                      </ul>
+                      <p class="windowAppStyling__helpTooltipFooter">
+                        {{ $t('floatingWindows.appStyling.helpTooltip.footer') }}
+                      </p>
+                    </div>
+                    <q-separator
+                      class="fa-separator-grey-lighter"
+                      inset
+                      vertical
+                    />
+                    <div class="windowAppStyling__helpTooltipVariableList">
+                      <strong class="windowAppStyling__helpTooltipTitle">
+                        {{ $t('floatingWindows.appStyling.helpTooltip.variableListTitle') }}
+                      </strong>
+                      <ul
+                        class="windowAppStyling__helpTooltipFaVarList hasScrollbar"
+                        data-test-locator="windowAppStyling-faThemeVarList"
                       >
-                        <span class="windowAppStyling__helpTooltipChord">{{ item.chord }}</span>
-                        <span class="windowAppStyling__helpTooltipLabel">
-                          {{ $t(`floatingWindows.appStyling.helpTooltip.items.${item.labelKey}`) }}
-                        </span>
-                      </li>
-                    </ul>
-                    <p class="windowAppStyling__helpTooltipFooter">
-                      {{ $t('floatingWindows.appStyling.helpTooltip.footer') }}
-                    </p>
+                        <li
+                          v-for="name in faThemeCustomPropertyNames"
+                          :key="name"
+                          class="windowAppStyling__helpTooltipFaVarItem"
+                          :data-test-fa-theme-var="name"
+                        >
+                          <span
+                            class="windowAppStyling__helpTooltipFaVarSwatch"
+                            :style="buildFaColorVarSwatchStyle(name)"
+                            aria-hidden="true"
+                            :data-test-fa-theme-var-swatch="name"
+                          />
+                          <span
+                            class="windowAppStyling__helpTooltipFaVarName"
+                          >{{ name }}</span>
+                        </li>
+                      </ul>
+                    </div>
                   </div>
-                  <q-separator
-                    class="fa-separator-grey-lighter"
-                    inset
-                    vertical
-                  />
-                  <div class="windowAppStyling__helpTooltipVariableList">
-                    <strong class="windowAppStyling__helpTooltipTitle">
-                      {{ $t('floatingWindows.appStyling.helpTooltip.variableListTitle') }}
-                    </strong>
-                    <ul
-                      class="windowAppStyling__helpTooltipFaVarList hasScrollbar"
-                      data-test-locator="windowAppStyling-faThemeVarList"
-                    >
-                      <li
-                        v-for="name in faThemeCustomPropertyNames"
-                        :key="name"
-                        class="windowAppStyling__helpTooltipFaVarItem"
-                        :data-test-fa-theme-var="name"
-                      >
-                        <span
-                          class="windowAppStyling__helpTooltipFaVarSwatch"
-                          :style="buildFaColorVarSwatchStyle(name)"
-                          aria-hidden="true"
-                          :data-test-fa-theme-var-swatch="name"
-                        />
-                        <span
-                          class="windowAppStyling__helpTooltipFaVarName"
-                        >{{ name }}</span>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </q-menu>
-            </FaHelpTooltipIcon>
+                </q-menu>
+              </FaHelpTooltipIcon>
+            </div>
             <div
               ref="editorHostRef"
               class="windowAppStyling__editorHost"
