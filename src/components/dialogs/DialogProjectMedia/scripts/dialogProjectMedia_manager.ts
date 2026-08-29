@@ -3,6 +3,7 @@ import { S_DialogComponent } from 'src/stores/S_Dialog'
 import { onMounted, ref, watch } from 'vue'
 import { Result } from 'neverthrow'
 
+import { normalizeFaProjectMediaPanel } from 'app/src/scripts/faProjectMedia/faProjectMedia_manager'
 import {
   isDialogProjectMediaDirectInput,
   isDialogProjectMediaStoreTarget
@@ -16,8 +17,13 @@ const resolveDialogComponentStoreBinding = createResolveDialogComponentStore({
 })
 
 const dialogProjectMediaApi = createDialogProjectMedia({
+  getRequestedPanel: () => {
+    const store = resolveDialogComponentStoreBinding.resolveDialogComponentStore()
+    return normalizeFaProjectMediaPanel(store?.projectMediaRequestedPanel)
+  },
   isDialogProjectMediaDirectInput,
   isDialogProjectMediaStoreTarget,
+  normalizeFaProjectMediaPanel,
   onMounted,
   ref,
   registerComponentDialogStackGuard,

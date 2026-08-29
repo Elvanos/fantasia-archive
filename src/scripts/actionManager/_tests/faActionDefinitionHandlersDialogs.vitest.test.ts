@@ -8,7 +8,9 @@ const {
   tryDismissFaMarkdownDocumentIfOpenMock,
   mockActiveProjectGate,
   canOpenFloatingWindowWhileNoModalMock,
-  setProjectSettingsInitialTabMock
+  setProjectSettingsInitialTabMock,
+  setProjectMediaRequestedPanelMock,
+  listMediaMock
 } = vi.hoisted(() => {
   return {
     openDialogComponentMock: vi.fn(),
@@ -19,7 +21,9 @@ const {
       hasActiveProject: true
     },
     canOpenFloatingWindowWhileNoModalMock: vi.fn((): boolean => true),
-    setProjectSettingsInitialTabMock: vi.fn()
+    setProjectSettingsInitialTabMock: vi.fn(),
+    setProjectMediaRequestedPanelMock: vi.fn(),
+    listMediaMock: vi.fn(async () => ({ items: [{ id: 'm1' }] }))
   }
 })
 
@@ -33,6 +37,7 @@ vi.mock('app/src/stores/S_FaActiveProject', () => ({
 
 vi.mock('app/src/stores/S_Dialog', () => {
   let projectSettingsInitialTab: string | null = null
+  let projectMediaRequestedPanel = 'mediaList'
   return {
     S_DialogComponent: () => ({
       get projectSettingsInitialTab () {
@@ -41,6 +46,13 @@ vi.mock('app/src/stores/S_Dialog', () => {
       set projectSettingsInitialTab (value: string | null) {
         projectSettingsInitialTab = value
         setProjectSettingsInitialTabMock(value)
+      },
+      get projectMediaRequestedPanel () {
+        return projectMediaRequestedPanel
+      },
+      set projectMediaRequestedPanel (value: string) {
+        projectMediaRequestedPanel = value
+        setProjectMediaRequestedPanelMock(value)
       }
     })
   }
@@ -83,6 +95,17 @@ beforeEach(() => {
   canOpenFloatingWindowWhileNoModalMock.mockReset()
   canOpenFloatingWindowWhileNoModalMock.mockReturnValue(true)
   setProjectSettingsInitialTabMock.mockReset()
+  setProjectMediaRequestedPanelMock.mockReset()
+  listMediaMock.mockReset()
+  listMediaMock.mockImplementation(async () => ({ items: [{ id: 'm1' }] }))
+  Object.assign(window, {
+    faContentBridgeAPIs: {
+      ...window.faContentBridgeAPIs,
+      projectContent: {
+        listMedia: listMediaMock
+      }
+    }
+  })
 })
 
 /**
@@ -207,22 +230,66 @@ test('Test that handleOpenProjectSettingsDialog skips without an active project'
 
 /**
  * handleOpenProjectMediaDialog
- * Opens Project Media when a project is active and the dialog is closed.
+ * Opens Project Media when a project is active. Does not toggle-dismiss.
  */
 test('Test that handleOpenProjectMediaDialog opens ProjectMedia when a project is active', async () => {
   await handleOpenProjectMediaDialog()
-  expect(tryDismissFaComponentDialogIfOpenMock).toHaveBeenCalledWith('ProjectMedia')
+  expect(tryDismissFaComponentDialogIfOpenMock).not.toHaveBeenCalled()
+  expect(setProjectMediaRequestedPanelMock).toHaveBeenCalledWith('mediaList')
   expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectMedia')
 })
 
 /**
  * handleOpenProjectMediaDialog
- * Skips open when tryDismiss reports the dialog already open.
+ * Forwards an optional initial panel into S_DialogComponent before open.
  */
-test('Test that handleOpenProjectMediaDialog dismisses when already open', async () => {
+test('Test that handleOpenProjectMediaDialog sets requested panel when provided', async () => {
+  await handleOpenProjectMediaDialog({ initialPanel: 'mediaAdd' })
+  expect(setProjectMediaRequestedPanelMock).toHaveBeenCalledWith('mediaAdd')
+  expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectMedia')
+})
+
+/**
+ * handleOpenProjectMediaDialog
+ * Invalid initialPanel values use the empty-or-list default (nonempty → list).
+ */
+test('Test that handleOpenProjectMediaDialog maps invalid initialPanel to list', async () => {
+  await handleOpenProjectMediaDialog({ initialPanel: 'nope' as never })
+  expect(setProjectMediaRequestedPanelMock).toHaveBeenCalledWith('mediaList')
+  expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectMedia')
+})
+
+/**
+ * handleOpenProjectMediaDialog
+ * Empty library defaults to the add panel when no known initialPanel is given.
+ */
+test('Test that handleOpenProjectMediaDialog defaults to add when the library is empty', async () => {
+  listMediaMock.mockImplementation(async () => ({ items: [] }))
+  await handleOpenProjectMediaDialog()
+  expect(setProjectMediaRequestedPanelMock).toHaveBeenCalledWith('mediaAdd')
+  expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectMedia')
+})
+
+/**
+ * handleOpenProjectMediaDialog
+ * Explicit list panel stays list even when the library is empty.
+ */
+test('Test that handleOpenProjectMediaDialog keeps explicit list when the library is empty', async () => {
+  listMediaMock.mockImplementation(async () => ({ items: [] }))
+  await handleOpenProjectMediaDialog({ initialPanel: 'mediaList' })
+  expect(setProjectMediaRequestedPanelMock).toHaveBeenCalledWith('mediaList')
+  expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectMedia')
+})
+
+/**
+ * handleOpenProjectMediaDialog
+ * Already-open dialogs still receive a panel update and open call (open is a no-op).
+ */
+test('Test that handleOpenProjectMediaDialog still opens when tryDismiss would dismiss', async () => {
   tryDismissFaComponentDialogIfOpenMock.mockReturnValue(true)
   await handleOpenProjectMediaDialog()
-  expect(openDialogComponentMock).not.toHaveBeenCalled()
+  expect(tryDismissFaComponentDialogIfOpenMock).not.toHaveBeenCalled()
+  expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectMedia')
 })
 
 /**
@@ -232,7 +299,9 @@ test('Test that handleOpenProjectMediaDialog dismisses when already open', async
 test('Test that handleOpenProjectMediaDialog skips without an active project', async () => {
   mockActiveProjectGate.hasActiveProject = false
   await handleOpenProjectMediaDialog()
+  expect(setProjectMediaRequestedPanelMock).not.toHaveBeenCalled()
   expect(openDialogComponentMock).not.toHaveBeenCalled()
+  expect(listMediaMock).not.toHaveBeenCalled()
 })
 
 /**

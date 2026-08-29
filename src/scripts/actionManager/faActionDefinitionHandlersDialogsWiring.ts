@@ -18,6 +18,7 @@ import {
   tryDismissFaMarkdownDocumentIfOpen
 } from 'app/src/scripts/appGlobalManagementUI/appGlobalManagementUI_manager'
 import { canOpenFloatingWindowWhileNoModal } from 'app/src/scripts/appNoteboard/appNoteboard_manager'
+import { hasAnyFaProjectMediaFromBridge } from 'app/src/scripts/faProjectMedia/faProjectMediaHasAnyWiring'
 import { maybeAutoOpenFilledNoteboard } from 'app/src/scripts/floatingWindows/functions/shouldAutoOpenFilledNoteboard'
 import { i18n } from 'app/i18n/externalFileLoader'
 import type { I_createFaActionDefinitionHandlersDialogsDeps } from 'app/types/I_createFaActionDefinitionHandlersDialogsDeps'
@@ -50,6 +51,10 @@ export const faActionDefinitionHandlersDialogsDeps = {
   },
   openDialogComponent,
   openDialogMarkdownDocument,
+  hasAnyProjectMedia: hasAnyFaProjectMediaFromBridge,
+  setProjectMediaRequestedPanel: (panel) => {
+    S_DialogComponent().projectMediaRequestedPanel = panel
+  },
   setProjectSettingsInitialTab: (tab: string | null) => {
     S_DialogComponent().projectSettingsInitialTab = tab
   },

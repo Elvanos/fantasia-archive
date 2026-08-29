@@ -1,3 +1,4 @@
+import type { T_faProjectMediaPanel } from 'app/types/I_faProjectMediaDomain'
 import type { I_faKeybindsRoot } from 'app/types/I_faKeybindsDomain'
 import type {
   I_faAppConfigApplyInput
@@ -143,7 +144,7 @@ export interface I_faActionPayloadMap {
   openNewProjectDialog: void
   openQuickAddDocumentDialog: void
   openQuickSearchDocumentDialog: void
-  openProjectMediaDialog: void
+  openProjectMediaDialog: { initialPanel?: T_faProjectMediaPanel } | void
   loadExistingProject: I_faLoadExistingProjectPayload
   createNewProject: { projectName: string }
   exportAppConfigPackage: {

@@ -1,0 +1,139 @@
+.dialogProjectMedia__tabPanelsHost {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  position: relative;
+}
+
+.dialogProjectMedia__tabPanelsRoot {
+  background: transparent;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+
+  /* stylelint-disable selector-pseudo-class-no-unknown -- scoped :deep into Quasar QTabPanels */
+  :deep(.q-panel) {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+  }
+  /* stylelint-enable selector-pseudo-class-no-unknown */
+}
+
+.dialogProjectMedia__tabPanel {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  max-height: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+.dialogProjectMedia__panelScroll {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+}
+
+.dialogProjectMedia__panelTitle {
+  flex: 0 0 auto;
+}
+
+.dialogProjectMedia__listPanel {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+}
+
+.dialogProjectMedia__listHeader {
+  flex: 0 0 auto;
+  position: relative;
+
+  .dialogProjectMedia__panelTitle {
+    padding-inline-end: $dialogProjectMedia-title-paddingInlineEnd;
+  }
+}
+
+.dialogProjectMedia__searchInput {
+  width: 100%;
+}
+
+.dialogProjectMedia__searchWrapper {
+  pointer-events: auto;
+  position: absolute;
+  right: $dialogProjectMedia-searchWrapper-right;
+  top: $dialogProjectMedia-searchWrapper-top;
+  width: $dialogProjectMedia-searchWrapper-width !important;
+  z-index: $dialogProjectMedia-searchWrapper-zIndex;
+}
+
+.dialogProjectMedia__addDropZone {
+  align-items: center;
+  border: $dialogProjectMedia-addDropZone-borderWidth dashed $dialogProjectMedia-addDropZone-borderColor;
+  border-radius: $dialogProjectMedia-addDropZone-borderRadius;
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  min-height: 0;
+  min-width: 0;
+}
+
+.dialogProjectMedia__addDropZoneHint {
+  flex: 0 0 auto;
+  margin-bottom: 0;
+  margin-top: 0;
+
+  &--or {
+    font-size: $dialogProjectMedia-addDropZone-hintOr-fontSize;
+    padding-bottom: $dialogProjectMedia-addDropZone-hintOr-paddingBottom;
+    padding-top: $dialogProjectMedia-addDropZone-hintOr-paddingTop;
+  }
+
+  &--drag {
+    font-size: $dialogProjectMedia-addDropZone-hintDrag-fontSize;
+  }
+}
+
+.dialogProjectMedia__addChoiceRow {
+  align-items: stretch;
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  height: $dialogProjectMedia-addChoiceRow-height;
+}
+
+.dialogProjectMedia__addChoiceCol {
+  align-items: center;
+  display: flex;
+  flex: 0 0 $dialogProjectMedia-addChoiceBtn-width;
+  margin-left: $dialogProjectMedia-addChoiceCol-marginX;
+  margin-right: $dialogProjectMedia-addChoiceCol-marginX;
+  width: $dialogProjectMedia-addChoiceBtn-width;
+}
+
+.dialogProjectMedia__addChoiceBtn {
+  font-weight: $dialogProjectMedia-addChoiceBtn-fontWeight;
+  letter-spacing: $dialogProjectMedia-addChoiceBtn-letterSpacing;
+  min-height: $dialogProjectMedia-addChoiceBtn-minHeight;
+  text-transform: uppercase;
+  width: 100%;
+}

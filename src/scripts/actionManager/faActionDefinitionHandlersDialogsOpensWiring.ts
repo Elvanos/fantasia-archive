@@ -1,4 +1,7 @@
 import type { I_createFaActionDefinitionHandlersDialogsDeps } from 'app/types/I_createFaActionDefinitionHandlersDialogsDeps'
+import type { T_faProjectMediaPanel } from 'app/types/I_faProjectMediaDomain'
+
+import { resolveFaProjectMediaOpenPanel } from 'app/src/scripts/faProjectMedia/faProjectMedia_manager'
 
 async function handleOpenKeybindSettingsDialog (
   deps: I_createFaActionDefinitionHandlersDialogsDeps
@@ -122,14 +125,22 @@ async function handleOpenQuickAddDocumentDialog (
 }
 
 async function handleOpenProjectMediaDialog (
-  deps: I_createFaActionDefinitionHandlersDialogsDeps
+  deps: I_createFaActionDefinitionHandlersDialogsDeps,
+  payload?: { initialPanel?: T_faProjectMediaPanel } | void
 ): Promise<void> {
-  if (deps.tryDismissFaComponentDialogIfOpen('ProjectMedia')) {
-    return
-  }
   if (!deps.S_FaActiveProject().hasActiveProject) {
     return
   }
+  const initialPanelRaw =
+    payload !== undefined && payload !== null && typeof payload === 'object'
+      ? payload.initialPanel
+      : undefined
+  const hasAnyMedia = await deps.hasAnyProjectMedia()
+  const panel = resolveFaProjectMediaOpenPanel({
+    hasAnyMedia,
+    initialPanelRaw
+  })
+  deps.setProjectMediaRequestedPanel(panel)
   deps.openDialogComponent('ProjectMedia')
 }
 
@@ -165,7 +176,9 @@ export function buildFaActionDefinitionHandlersDialogsOpens (
     handleOpenImportExportAppConfigDialog: () => Promise<void>
     handleOpenNewProjectDialog: () => Promise<void>
     handleOpenQuickAddDocumentDialog: () => Promise<void>
-    handleOpenProjectMediaDialog: () => Promise<void>
+    handleOpenProjectMediaDialog: (
+      payload?: { initialPanel?: T_faProjectMediaPanel } | void
+    ) => Promise<void>
     handleOpenQuickSearchDocumentDialog: () => Promise<void>
   } {
   return {
@@ -185,7 +198,9 @@ export function buildFaActionDefinitionHandlersDialogsOpens (
     handleOpenImportExportAppConfigDialog: () => handleOpenImportExportAppConfigDialog(deps),
     handleOpenNewProjectDialog: () => handleOpenNewProjectDialog(deps),
     handleOpenQuickAddDocumentDialog: () => handleOpenQuickAddDocumentDialog(deps),
-    handleOpenProjectMediaDialog: () => handleOpenProjectMediaDialog(deps),
+    handleOpenProjectMediaDialog: (payload?) => {
+      return handleOpenProjectMediaDialog(deps, payload)
+    },
     handleOpenQuickSearchDocumentDialog: () => handleOpenQuickSearchDocumentDialog(deps)
   }
 }

@@ -13,6 +13,11 @@ const userSettingsFixture = vi.hoisted(() => ({
   preventFilledProjectNoteBoardPopup: false
 }))
 
+const dialogStoreFixture = vi.hoisted(() => ({
+  projectMediaRequestedPanel: 'mediaList',
+  projectSettingsInitialTab: null as string | null
+}))
+
 const faActiveProjectFixture = vi.hoisted(() => ({
   activeProject: {
     filePath: 'C:\\fixture.faproject',
@@ -214,6 +219,23 @@ vi.mock('app/src/stores/S_FaUserSettings', () => ({
   })
 }))
 
+vi.mock('app/src/stores/S_Dialog', () => ({
+  S_DialogComponent: () => ({
+    get projectMediaRequestedPanel () {
+      return dialogStoreFixture.projectMediaRequestedPanel
+    },
+    set projectMediaRequestedPanel (value: string) {
+      dialogStoreFixture.projectMediaRequestedPanel = value
+    },
+    get projectSettingsInitialTab () {
+      return dialogStoreFixture.projectSettingsInitialTab
+    },
+    set projectSettingsInitialTab (value: string | null) {
+      dialogStoreFixture.projectSettingsInitialTab = value
+    }
+  })
+}))
+
 vi.mock('app/src/scripts/appGlobalManagementUI/appGlobalManagementUI_manager', () => ({
   openDialogComponent: openDialogComponentMock,
   openDialogMarkdownDocument: openDialogMarkdownDocumentMock,
@@ -238,6 +260,7 @@ vi.mock('app/src/scripts/appInternals/faAppRouterSession_manager', async (import
   }
 })
 
+import { S_DialogComponent } from 'app/src/stores/S_Dialog'
 import { FA_ACTION_DEFINITIONS, findFaActionDefinition } from '../faActionDefinitions_manager'
 import { buildFaActionPayloadPreview } from '../faActionManagerErrorReporting_manager'
 import { FaActionUserCanceledError } from '../functions/faActionUserCanceledError'
@@ -274,6 +297,8 @@ beforeEach(() => {
   userSettingsFixture.hideHierarchyTree = false
   userSettingsFixture.preventFilledAppNoteBoardPopup = false
   userSettingsFixture.preventFilledProjectNoteBoardPopup = false
+  dialogStoreFixture.projectMediaRequestedPanel = 'mediaList'
+  dialogStoreFixture.projectSettingsInitialTab = null
   projectNoteboardTextFixture.text = ''
   refreshKeybindsMock.mockReset()
   refreshKeybindsMock.mockImplementation(async () => undefined)
@@ -317,6 +342,9 @@ beforeEach(() => {
         minimizeWindow: minimizeWindowMock,
         refreshWebContents: refreshWebContentsMock,
         resizeWindow: resizeWindowMock
+      },
+      projectContent: {
+        listMedia: async () => ({ items: [{ id: 'stub-media' }] })
       }
     }
   })
@@ -610,17 +638,43 @@ test('Test that openQuickSearchDocumentDialog skips dismiss when allowQuickPopup
   expect(openDialogComponentMock).toHaveBeenCalledWith('QuickSearchDocument')
 })
 
-test('Test that openProjectMediaDialog handler opens ProjectMedia when a project is active', () => {
-  definitionFor('openProjectMediaDialog').handler(undefined)
-  expect(tryDismissFaComponentDialogIfOpenMock).toHaveBeenCalledWith('ProjectMedia')
+test('Test that openProjectMediaDialog handler opens ProjectMedia when a project is active', async () => {
+  await definitionFor('openProjectMediaDialog').handler(undefined)
+  expect(tryDismissFaComponentDialogIfOpenMock).not.toHaveBeenCalled()
+  expect(S_DialogComponent().projectMediaRequestedPanel).toBe('mediaList')
   expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectMedia')
 })
 
-test('Test that openProjectMediaDialog dismisses when already open', () => {
+test('Test that openProjectMediaDialog still opens when tryDismiss would dismiss', async () => {
   tryDismissFaComponentDialogIfOpenMock.mockReturnValueOnce(true)
-  definitionFor('openProjectMediaDialog').handler(undefined)
-  expect(tryDismissFaComponentDialogIfOpenMock).toHaveBeenCalledWith('ProjectMedia')
-  expect(openDialogComponentMock).not.toHaveBeenCalled()
+  await definitionFor('openProjectMediaDialog').handler(undefined)
+  expect(tryDismissFaComponentDialogIfOpenMock).not.toHaveBeenCalled()
+  expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectMedia')
+})
+
+test('Test that openProjectMediaDialog sets requested panel from payload', async () => {
+  await definitionFor('openProjectMediaDialog').handler({ initialPanel: 'mediaAdd' })
+  expect(S_DialogComponent().projectMediaRequestedPanel).toBe('mediaAdd')
+  expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectMedia')
+})
+
+test('Test that openProjectMediaDialog defaults to add when listMedia is empty', async () => {
+  const prev = window.faContentBridgeAPIs
+  Object.assign(window, {
+    faContentBridgeAPIs: {
+      ...window.faContentBridgeAPIs,
+      projectContent: {
+        listMedia: async () => ({ items: [] })
+      }
+    }
+  })
+  try {
+    await definitionFor('openProjectMediaDialog').handler(undefined)
+    expect(S_DialogComponent().projectMediaRequestedPanel).toBe('mediaAdd')
+    expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectMedia')
+  } finally {
+    window.faContentBridgeAPIs = prev
+  }
 })
 
 test('Test that openProjectMediaDialog no-ops without an active project', () => {

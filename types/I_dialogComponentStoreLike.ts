@@ -4,4 +4,5 @@
 export interface I_dialogComponentStoreLike {
   dialogToOpen?: unknown
   dialogUUID?: unknown
+  projectMediaRequestedPanel?: unknown
 }

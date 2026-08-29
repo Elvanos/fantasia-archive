@@ -50,6 +50,7 @@ test('Test that S_DialogComponent has defaults and updates UUID', () => {
   expect(S_DialogComponent.dialogToOpen).toBe('AboutFantasiaArchive')
   expect(S_DialogComponent.dialogUUID).toBe('')
   expect(S_DialogComponent.projectSettingsInitialTab).toBe(null)
+  expect(S_DialogComponent.projectMediaRequestedPanel).toBe('mediaList')
   S_DialogComponent.generateDialogUUID()
   expect(S_DialogComponent.dialogUUID).toBe('uuid-1')
 })
@@ -124,4 +125,15 @@ test('Test that S_DialogComponent consumeProjectSettingsInitialTab clears the ta
   expect(S_DialogComponent.consumeProjectSettingsInitialTab()).toBe('documentTemplatesSettings')
   expect(S_DialogComponent.projectSettingsInitialTab).toBeNull()
   expect(S_DialogComponent.consumeProjectSettingsInitialTab()).toBeNull()
+})
+
+/**
+ * S_DialogComponent
+ * projectMediaRequestedPanel stays set so a later open can switch the live panel.
+ */
+test('Test that S_DialogComponent projectMediaRequestedPanel assignment sticks', () => {
+  S_DialogComponent.projectMediaRequestedPanel = 'mediaAdd'
+  expect(S_DialogComponent.projectMediaRequestedPanel).toBe('mediaAdd')
+  S_DialogComponent.projectMediaRequestedPanel = 'mediaList'
+  expect(S_DialogComponent.projectMediaRequestedPanel).toBe('mediaList')
 })

@@ -8,7 +8,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Project Media dialog shell: title, non-filtering search field, and Close. Opens via directInput in Storybook.'
+          'Project Media dialog: sticky shell, Close, and four slide panels. Search media... lives on Media List only. Media Addition is a dashed drop zone with Add offline media / Add online media. Opens via directInput in Storybook; initialPanel selects the slide.'
       },
       story: {
         iframeHeight: '760px',
@@ -25,5 +25,26 @@ export default meta
 export const Default: StoryObj<typeof meta> = {
   args: {
     directInput: 'ProjectMedia'
+  }
+}
+
+export const MediaAddition: StoryObj<typeof meta> = {
+  args: {
+    directInput: 'ProjectMedia',
+    initialPanel: 'mediaAdd'
+  }
+}
+
+export const SingleMediumEdit: StoryObj<typeof meta> = {
+  args: {
+    directInput: 'ProjectMedia',
+    initialPanel: 'mediaSingleEdit'
+  }
+}
+
+export const MassMediumEdit: StoryObj<typeof meta> = {
+  args: {
+    directInput: 'ProjectMedia',
+    initialPanel: 'mediaMassEdit'
   }
 }

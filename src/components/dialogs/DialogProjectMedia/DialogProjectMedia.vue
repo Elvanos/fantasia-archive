@@ -1,6 +1,7 @@
 <template>
   <q-dialog
     v-model="dialogModel"
+    persistent
     :class="['dialogComponent', `${documentName}`]"
     aria-labelledby="dialogProjectMedia-title"
   >
@@ -15,24 +16,14 @@
         {{ $t('dialogs.projectMedia.title') }}
       </h5>
 
-      <div class="dialogProjectMedia__searchWrapper">
-        <q-input
-          v-model="searchQuery"
-          dense
-          dark
-          class="dialogProjectMedia__searchInput"
-          data-test-locator="dialogProjectMedia-search"
-          :placeholder="$t('dialogs.projectMedia.searchPlaceholder')"
-        >
-          <template #prepend>
-            <q-icon name="search" />
-          </template>
-        </q-input>
-      </div>
-
       <q-card-section
         :class="['dialogComponent__content', 'dialogProjectMedia__body', `${documentName}`, 'q-mb-lg', 'q-mr-lg', 'q-ml-xl', 'q-pt-none']"
-      />
+      >
+        <DialogProjectMediaPanelsColumn
+          v-model:search-query="searchQuery"
+          :selected-panel="selectedPanel"
+        />
+      </q-card-section>
 
       <q-card-actions
         align="around"
@@ -52,7 +43,9 @@
 
 <script setup lang="ts">
 import type { T_dialogName } from 'app/types/T_appDialogsAndDocuments'
+import type { T_faProjectMediaPanel } from 'app/types/I_faProjectMediaDomain'
 
+import DialogProjectMediaPanelsColumn from './DialogProjectMediaPanelsColumn.vue'
 import { useDialogProjectMedia } from './scripts/dialogProjectMedia_manager'
 
 defineOptions({
@@ -64,12 +57,17 @@ const props = defineProps<{
    * Custom input directly fed to the component in case it doesn't get triggered from the global store
    */
   directInput?: T_dialogName | undefined
+  /**
+   * Optional slide panel when opened via directInput (Storybook / harness).
+   */
+  initialPanel?: T_faProjectMediaPanel | undefined
 }>()
 
 const {
   dialogModel,
   documentName,
-  searchQuery
+  searchQuery,
+  selectedPanel
 } = useDialogProjectMedia(props)
 </script>
 
@@ -85,26 +83,10 @@ const {
     width: $dialogProjectMedia-card-width;
   }
 
-  .dialogProjectMedia__title {
-    padding-inline-end: $dialogProjectMedia-title-paddingInlineEnd;
-    z-index: $dialogProjectMedia-title-zIndex;
-  }
-
-  .dialogProjectMedia__searchInput {
-    width: 100%;
-  }
-
-  .dialogProjectMedia__searchWrapper {
-    pointer-events: auto;
-    position: absolute;
-    right: $dialogProjectMedia-searchWrapper-right;
-    top: $dialogProjectMedia-searchWrapper-top;
-    width: $dialogProjectMedia-searchWrapper-width !important;
-    z-index: $dialogProjectMedia-searchWrapper-zIndex;
-  }
-
   .dialogProjectMedia__body {
+    display: flex;
     flex: 1 1 auto;
+    flex-direction: column;
     min-height: 0;
     overflow: hidden;
   }

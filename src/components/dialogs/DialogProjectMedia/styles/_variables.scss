@@ -1,9 +1,23 @@
+@use '../../../../css/app.palette.scss' as *;
+
 /* COMPONENT - DIALOG PROJECT MEDIA */
+$dialogProjectMedia-addChoiceBtn-fontWeight: 700;
+$dialogProjectMedia-addChoiceBtn-letterSpacing: 0.06em;
+$dialogProjectMedia-addChoiceBtn-minHeight: 70px;
+$dialogProjectMedia-addChoiceBtn-width: 250px;
+$dialogProjectMedia-addChoiceCol-marginX: 24px;
+$dialogProjectMedia-addChoiceRow-height: 100px;
+$dialogProjectMedia-addDropZone-borderColor: fa-v('primary', $primary);
+$dialogProjectMedia-addDropZone-borderRadius: 16px;
+$dialogProjectMedia-addDropZone-borderWidth: 4px;
+$dialogProjectMedia-addDropZone-hintDrag-fontSize: 20px;
+$dialogProjectMedia-addDropZone-hintOr-fontSize: 17px;
+$dialogProjectMedia-addDropZone-hintOr-paddingBottom: 12px;
+$dialogProjectMedia-addDropZone-hintOr-paddingTop: 20px;
 $dialogProjectMedia-card-maxWidthViewportSubtract: 100px;
 $dialogProjectMedia-card-width: 1400px;
-$dialogProjectMedia-searchWrapper-right: 45px;
-$dialogProjectMedia-searchWrapper-top: 4px;
+$dialogProjectMedia-searchWrapper-right: 0;
+$dialogProjectMedia-searchWrapper-top: 0;
 $dialogProjectMedia-searchWrapper-width: 250px;
 $dialogProjectMedia-searchWrapper-zIndex: 11;
 $dialogProjectMedia-title-paddingInlineEnd: 240px;
-$dialogProjectMedia-title-zIndex: 11;

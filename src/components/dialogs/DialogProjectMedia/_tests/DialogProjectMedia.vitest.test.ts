@@ -9,6 +9,7 @@ import * as dialogStores from 'app/src/stores/S_Dialog'
 import { S_DialogComponent } from 'app/src/stores/S_Dialog'
 
 import DialogProjectMedia from '../DialogProjectMedia.vue'
+import DialogProjectMediaPanelsColumn from '../DialogProjectMediaPanelsColumn.vue'
 
 const projectMediaQDialogStub = defineComponent({
   name: 'QDialog',
@@ -17,11 +18,18 @@ const projectMediaQDialogStub = defineComponent({
     modelValue: {
       default: false,
       type: Boolean
+    },
+    persistent: {
+      default: false,
+      type: Boolean
     }
   },
   emits: ['update:modelValue', 'hide'],
   template: `
-    <div class="project-media-qdialog-stub" v-bind="$attrs">
+    <div
+      class="project-media-qdialog-stub"
+      :data-persistent="String(persistent)"
+    >
       <div v-if="modelValue" class="project-media-qdialog-inner">
         <slot />
       </div>
@@ -71,7 +79,10 @@ const projectMediaDialogGlobal = {
     QCardSection: { template: '<div><slot /></div>' },
     QDialog: projectMediaQDialogStub,
     QIcon: { template: '<i><slot /></i>' },
-    QInput: projectMediaQInputStub
+    QInput: projectMediaQInputStub,
+    QSeparator: { template: '<div class="q-separator-stub" v-bind="$attrs"></div>' },
+    QTabPanel: { template: '<div class="q-tab-panel-stub"><slot /></div>' },
+    QTabPanels: { template: '<div class="q-tab-panels-stub"><slot /></div>' }
   }
 } as const
 
@@ -96,6 +107,9 @@ test('Test that DialogProjectMedia renders shell for ProjectMedia input', async 
   expect(w.text()).toContain('dialogs.projectMedia.title')
   expect(w.text()).toContain('dialogs.projectMedia.closeButton')
   expect(w.find('[data-test-locator="dialogProjectMedia-search"]').exists()).toBe(true)
+  expect(w.find('.project-media-qdialog-stub').attributes('data-persistent')).toBe('true')
+  expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe('mediaList')
+  expect(w.find('[data-test-locator="dialogProjectMedia-panelTitle-mediaList"]').exists()).toBe(true)
   const searchInput = w.get('[data-test-locator="dialogProjectMedia-search"] input')
   await searchInput.setValue('needle')
   await flushPromises()
@@ -254,5 +268,62 @@ test('Test that DialogProjectMedia directInput watch handles undefined', async (
   await w.setProps({ directInput: undefined })
   await flushPromises()
 
+  w.unmount()
+})
+
+/**
+ * DialogProjectMedia
+ * initialPanel prop wins over the store requested panel on open.
+ */
+test('Test that DialogProjectMedia initialPanel prop selects the add panel', async () => {
+  const pinia = createPinia()
+  setActivePinia(pinia)
+  S_DialogComponent().projectMediaRequestedPanel = 'mediaMassEdit'
+
+  const w = mount(DialogProjectMedia, {
+    global: {
+      ...projectMediaDialogGlobal,
+      plugins: [pinia]
+    },
+    props: {
+      directInput: 'ProjectMedia',
+      initialPanel: 'mediaAdd'
+    }
+  })
+
+  await flushPromises()
+
+  expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe('mediaAdd')
+  expect(w.find('[data-test-locator="dialogProjectMedia-addDropZone"]').exists()).toBe(true)
+  expect(w.find('[data-test-locator="dialogProjectMedia-addOfflineMediaButton"]').exists()).toBe(true)
+  expect(w.find('[data-test-locator="dialogProjectMedia-addOnlineMediaButton"]').exists()).toBe(true)
+  w.unmount()
+})
+
+/**
+ * DialogProjectMedia
+ * Live store panel changes switch the slide while the dialog stays open.
+ */
+test('Test that DialogProjectMedia switches panel from projectMediaRequestedPanel while open', async () => {
+  const pinia = createPinia()
+  setActivePinia(pinia)
+  const st = S_DialogComponent()
+
+  const w = mount(DialogProjectMedia, {
+    global: {
+      ...projectMediaDialogGlobal,
+      plugins: [pinia]
+    },
+    props: { directInput: 'ProjectMedia' }
+  })
+
+  await flushPromises()
+
+  expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe('mediaList')
+  st.projectMediaRequestedPanel = 'mediaSingleEdit'
+  await flushPromises()
+  expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe(
+    'mediaSingleEdit'
+  )
   w.unmount()
 })

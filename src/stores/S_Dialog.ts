@@ -1,6 +1,7 @@
 import type { Ref } from 'vue'
 import type { T_documentName } from 'app/types/T_appDialogsAndDocuments'
 import type { T_dialogName } from 'app/types/T_appDialogsAndDocuments'
+import type { T_faProjectMediaPanel } from 'app/types/I_faProjectMediaDomain'
 
 import { v4 as uuidv4 } from 'uuid'
 
@@ -57,6 +58,11 @@ export const S_DialogComponent = defineStore('S_DialogComponent', () => {
    */
   const projectSettingsInitialTab: Ref<string | null> = ref(null)
 
+  /**
+   * Project Media slide panel requested by openProjectMediaDialog. Live while open.
+   */
+  const projectMediaRequestedPanel: Ref<T_faProjectMediaPanel> = ref('mediaList')
+
   const componentDialogOpenCount = ref(0)
 
   function generateDialogUUID () {
@@ -85,6 +91,7 @@ export const S_DialogComponent = defineStore('S_DialogComponent', () => {
     generateDialogUUID,
     onComponentDialogBecameHidden,
     onComponentDialogBecameVisible,
+    projectMediaRequestedPanel,
     projectSettingsInitialTab
   }
 })

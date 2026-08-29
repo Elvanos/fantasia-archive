@@ -26,7 +26,14 @@ const faFrontendRenderTimer = FA_FRONTEND_RENDER_TIMER
  * Object of string data selectors for the component
  */
 const selectorList = {
+  addChoiceDivider: 'dialogProjectMedia-addChoiceDivider',
+  addDropZone: 'dialogProjectMedia-addDropZone',
+  addDropZoneHintDrag: 'dialogProjectMedia-addDropZoneHintDrag',
+  addDropZoneHintOr: 'dialogProjectMedia-addDropZoneHintOr',
+  addOfflineMediaButton: 'dialogProjectMedia-addOfflineMediaButton',
+  addOnlineMediaButton: 'dialogProjectMedia-addOnlineMediaButton',
   closeButton: 'dialogProjectMedia-button-close',
+  panelTitleList: 'dialogProjectMedia-panelTitle-mediaList',
   search: 'dialogProjectMedia-search',
   title: 'dialogProjectMedia-title'
 } as const
@@ -65,18 +72,31 @@ test.describe.serial('Project Media dialog', () => {
   })
 
   /**
-   * Feed ProjectMedia input and check title, search, and close chrome.
+   * Feed ProjectMedia input and check title, list panel, search, and close chrome.
    */
-  test('Open test "ProjectMedia" dialog with title, search, and close', async () => {
+  test('Open test "ProjectMedia" dialog with title, list panel, search, and close', async () => {
     const title = appWindow.locator(`[data-test-locator="${selectorList.title}"]`)
+    const listTitle = appWindow.locator(`[data-test-locator="${selectorList.panelTitleList}"]`)
     const search = appWindow.locator(`[data-test-locator="${selectorList.search}"]`)
     const closeButton = appWindow.locator(`[data-test-locator="${selectorList.closeButton}"]`)
 
     await expect(title).toHaveCount(1)
     await expect(title).toHaveText(projectMediaMessages.title)
-    await expect(search).toHaveCount(1)
+    await expect(listTitle).toBeVisible()
+    await expect(listTitle).toHaveText(projectMediaMessages.panelMediaList)
+    await expect(search).toBeVisible()
     await expect(closeButton).toHaveCount(1)
     await expect(closeButton).toHaveText(projectMediaMessages.closeButton)
+  })
+
+  /**
+   * Sticky dialog: Escape must not close Project Media.
+   */
+  test('Open test "ProjectMedia" dialog and Escape does not close', async () => {
+    const title = appWindow.locator(`[data-test-locator="${selectorList.title}"]`)
+    await expect(title).toBeVisible()
+    await appWindow.keyboard.press('Escape')
+    await expect(title).toBeVisible()
   })
 
   /**
@@ -93,5 +113,64 @@ test.describe.serial('Project Media dialog', () => {
     await appWindow.waitForTimeout(1500)
 
     expect(await title.isHidden()).toBe(true)
+  })
+})
+
+test.describe.serial('Project Media dialog add panel', () => {
+  let electronApp: ElectronApplication
+  let appWindow: Page
+  let suiteTestInfo: TestInfo
+
+  test.beforeAll(async ({}, testInfo) => {
+    suiteTestInfo = testInfo
+    extraEnvSettings.COMPONENT_PROPS = JSON.stringify({
+      directInput: projectMediaDirectInput,
+      initialPanel: 'mediaAdd'
+    })
+    const launched = await launchFaPlaywrightComponentHarnessWindow({
+      buildLaunchEnv (): Record<string, string> {
+        return {
+          COMPONENT_NAME: extraEnvSettings.COMPONENT_NAME,
+          COMPONENT_PROPS: extraEnvSettings.COMPONENT_PROPS,
+          TEST_ENV: extraEnvSettings.TEST_ENV
+        }
+      },
+      renderDelayMs: faFrontendRenderTimer,
+      testInfo
+    })
+    electronApp = launched.electronApp
+    appWindow = launched.appWindow
+  })
+
+  test.afterAll(async ({}, afterAllTestInfo) => {
+    await tearDownFaPlaywrightElectronSerialSuite({
+      afterAllTestInfo,
+      electronApp,
+      suiteTestInfo
+    })
+  })
+
+  test('Open test "ProjectMedia" dialog on Media Addition panel', async () => {
+    const dropZone = appWindow.locator(`[data-test-locator="${selectorList.addDropZone}"]`)
+    const addOffline = appWindow.locator(
+      `[data-test-locator="${selectorList.addOfflineMediaButton}"]`
+    )
+    const addOnline = appWindow.locator(`[data-test-locator="${selectorList.addOnlineMediaButton}"]`)
+    const divider = appWindow.locator(`[data-test-locator="${selectorList.addChoiceDivider}"]`)
+    const hintOr = appWindow.locator(`[data-test-locator="${selectorList.addDropZoneHintOr}"]`)
+    const hintDrag = appWindow.locator(`[data-test-locator="${selectorList.addDropZoneHintDrag}"]`)
+    const search = appWindow.locator(`[data-test-locator="${selectorList.search}"]`)
+
+    await expect(dropZone).toBeVisible()
+    await expect(addOffline).toBeVisible()
+    await expect(addOffline).toHaveText(projectMediaMessages.addOfflineMediaButton)
+    await expect(addOnline).toBeVisible()
+    await expect(addOnline).toHaveText(projectMediaMessages.addOnlineMediaButton)
+    await expect(divider).toBeVisible()
+    await expect(hintOr).toBeVisible()
+    await expect(hintOr).toHaveText(projectMediaMessages.addMediaDropZoneOr)
+    await expect(hintDrag).toBeVisible()
+    await expect(hintDrag).toHaveText(projectMediaMessages.addMediaDropZoneDrag)
+    await expect(search).toBeHidden()
   })
 })
