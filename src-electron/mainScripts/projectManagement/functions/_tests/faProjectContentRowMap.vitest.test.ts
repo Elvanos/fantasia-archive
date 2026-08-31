@@ -90,7 +90,6 @@ function buildFaSqlMediaRowFixture (overrides: Partial<I_faSqlMediaRow> = {}): I
     external_link: '',
     internal_link: '',
     internal_embed: null,
-    internal_is_project_included: 0,
     created_at_ms: 7,
     updated_at_ms: 8,
     ...overrides
@@ -109,7 +108,6 @@ test('Test that mapFaProjectMediaRow maps type columns and empty embed', () => {
   expect(mapped.externalLink).toBe('')
   expect(mapped.internalLink).toBe('')
   expect(mapped.internalEmbed).toBeNull()
-  expect(mapped.internalIsProjectIncluded).toBe(false)
 })
 
 test('Test that mapFaProjectMediaRow maps internal embedded rows and non-empty embed', () => {
@@ -122,29 +120,35 @@ test('Test that mapFaProjectMediaRow maps internal embedded rows and non-empty e
   expect(mapped.type).toBe('internal')
   expect(mapped.internalType).toBe('embedded')
   expect(mapped.internalEmbed).toBe(bytes)
-  expect(mapped.internalIsProjectIncluded).toBe(false)
 })
 
 test('Test that mapFaProjectMediaRow maps linked types and empty Uint8Array embed to null', () => {
   const mapped = mapFaProjectMediaRow(buildFaSqlMediaRowFixture({
     type: 'unknown',
-    internal_type: 'linked',
+    internal_type: 'linked_outside',
     external_type: 'linked',
     external_link: 'https://example.test/a',
     internal_link: 'C:\\media\\a.png',
     internal_embed: new Uint8Array()
   }))
   expect(mapped.type).toBe('external')
-  expect(mapped.internalType).toBe('linked')
+  expect(mapped.internalType).toBe('linked_outside')
   expect(mapped.externalType).toBe('linked')
   expect(mapped.externalLink).toBe('https://example.test/a')
   expect(mapped.internalLink).toBe('C:\\media\\a.png')
   expect(mapped.internalEmbed).toBeNull()
 })
 
-test('Test that mapFaProjectMediaRow maps internal_is_project_included 1 to true', () => {
+test('Test that mapFaProjectMediaRow maps linked_in_project internal_type', () => {
   const mapped = mapFaProjectMediaRow(buildFaSqlMediaRowFixture({
-    internal_is_project_included: 1
+    internal_type: 'linked_in_project'
   }))
-  expect(mapped.internalIsProjectIncluded).toBe(true)
+  expect(mapped.internalType).toBe('linked_in_project')
+})
+
+test('Test that mapFaProjectMediaRow maps unknown internal_type including legacy linked to empty', () => {
+  const mapped = mapFaProjectMediaRow(buildFaSqlMediaRowFixture({
+    internal_type: 'linked'
+  }))
+  expect(mapped.internalType).toBe('')
 })

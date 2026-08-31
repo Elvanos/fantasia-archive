@@ -8,8 +8,7 @@ const FA_PROJECT_MEDIA_TYPE_COLUMN_NAMES = [
   'external_type',
   'external_link',
   'internal_link',
-  'internal_embed',
-  'internal_is_project_included'
+  'internal_embed'
 ] as const
 
 test('Test that applyFaProjectMediaTypeColumnsSchemaPatch adds media type columns idempotently', () => {
@@ -27,7 +26,7 @@ test('Test that applyFaProjectMediaTypeColumnsSchemaPatch adds media type column
   expect(execCalls).toHaveLength(FA_PROJECT_MEDIA_TYPE_COLUMN_NAMES.length)
   expect(execCalls[0]).toContain('type')
   expect(execCalls[5]).toContain('internal_embed')
-  expect(execCalls[6]).toContain('internal_is_project_included')
+  expect(execCalls.some((sql) => sql.includes('internal_is_project_included'))).toBe(false)
 
   const secondDb = {
     exec: (sql: string) => {

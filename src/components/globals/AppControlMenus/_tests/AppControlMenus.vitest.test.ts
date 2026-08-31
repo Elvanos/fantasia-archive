@@ -1,5 +1,6 @@
 import { flushPromises, mount } from '@vue/test-utils'
 import { afterEach, beforeEach, expect, test, vi } from 'vitest'
+import { createI18n } from 'vue-i18n'
 
 import type { I_extraEnvVariablesAPI } from 'app/types/I_faElectronRendererBridgeAPIs'
 
@@ -9,6 +10,14 @@ import { buildDocumentsMenu } from '../_data/documents'
 import { buildHelpInfoMenu } from '../_data/helpInfo'
 import { buildToolsMenu } from '../_data/tools'
 import AppControlMenus from '../AppControlMenus.vue'
+
+const appControlMenusI18n = createI18n({
+  legacy: false,
+  locale: 'en-US',
+  messages: {
+    'en-US': {}
+  }
+})
 
 /**
  * WindowAppStyling uses _FaFloatingWindowBodyTeleport (body Teleport); Vitest jsdom has no Quasar root until we add it.
@@ -46,7 +55,10 @@ test('Test that helpInfo, documents, and tools menu item triggers run without th
  */
 test('Test that AppControlMenus renders host layout class', () => {
   const w = mount(AppControlMenus, {
-    global: { mocks: { $t: (k: string) => k } }
+    global: {
+      mocks: { $t: (k: string) => k },
+      plugins: [appControlMenusI18n]
+    }
   })
 
   expect(w.find('.appControlMenus').exists()).toBe(true)

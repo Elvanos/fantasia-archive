@@ -10,7 +10,7 @@ description: >-
 
 ## Canonical schema documentation
 
-- **[docs/database/projectDB.md](../../../docs/database/projectDB.md)** — **`.faproject`** `user_version` (supported max **9**), tables, IPC, Project Settings
+- **[docs/database/projectDB.md](../../../docs/database/projectDB.md)** — **`.faproject`** `user_version` (supported max **10**), tables, IPC, Project Settings
 - **[docs/database/templateCustomFields.md](../../../docs/database/templateCustomFields.md)** — planned custom fields (not shipped)
 - **[docs/database/appUserDataKv.md](../../../docs/database/appUserDataKv.md)** — **`electron-store`** in **`userData`**
 - **[docs/database/README.md](../../../docs/database/README.md)** — index
@@ -22,8 +22,8 @@ Schema/IPC changes → update docs same commit ([docs-database.mdc](../../rules/
 - **`better-sqlite3`** — main process only
 - **`.faproject`** SQLite under **`src-electron/mainScripts/projectManagement/`**; renderer via **`window.faContentBridgeAPIs.projectManagement`**
 - **E2E paths**: **`e2eSetNextProjectCreatePath`** / **`e2eSetNextProjectOpenPath`** in **`playwrightE2eProjectPaths.ts`**
-- **`user_version` max 9** today (**`FA_PROJECT_USER_VERSION_SUPPORTED_MAX`**) — worlds, documents, templates, media (v9 type/link/embed/include columns), junctions, per-world template layout, per-locale translations, document category/status/tree-order/extra-classes patches; **v6** **`worlds.color_pallete`**→**`color_palette`**; **v7** **`tags`** + **`document_tags`**; **v8** **`document_last_opened`** MRU (Project overview); **v9** **`media.type`** / **`internal_type`** / **`external_type`** / **`external_link`** / **`internal_link`** / **`internal_embed`** / **`internal_is_project_included`**; Project Settings snapshots via **`saveWorldsSnapshot`**, **`saveDocumentTemplatesSnapshot`**
-- **Pre-release flatten**: may squash ladder **to** version **1** for dev resets — [fantasia-flatten-database-schemas](../fantasia-flatten-database-schemas/SKILL.md) (distinct from live supported max **9**)
+- **`user_version` max 10** today (**`FA_PROJECT_USER_VERSION_SUPPORTED_MAX`**) — worlds, documents, templates, media (v10 **`internal_type`**: embedded / linked_outside / linked_in_project; no include flag), junctions, per-world template layout, per-locale translations, document category/status/tree-order/extra-classes patches; **v6** **`worlds.color_pallete`**→**`color_palette`**; **v7** **`tags`** + **`document_tags`**; **v8** **`document_last_opened`** MRU (Project overview); **v9** media type/link/embed columns; **v10** drop **`internal_is_project_included`** + new internal_type CHECK; Project Settings snapshots via **`saveWorldsSnapshot`**, **`saveDocumentTemplatesSnapshot`**
+- **Pre-release flatten**: may squash ladder **to** version **1** for dev resets — [fantasia-flatten-database-schemas](../fantasia-flatten-database-schemas/SKILL.md) (distinct from live supported max **10**)
 
 ## Principles
 

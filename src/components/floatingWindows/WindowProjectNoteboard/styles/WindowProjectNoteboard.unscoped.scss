@@ -47,18 +47,16 @@
     background-color: transparent;
     border: medium none;
     box-sizing: border-box;
-    color: inherit;
+    color: $windowProjectNoteboard-textarea-color;
     display: block;
     flex: 1 1 auto;
     font-family: inherit;
-    font-size: inherit;
     letter-spacing: inherit;
-    line-height: inherit;
     margin: 0;
     min-height: 0;
     outline: none;
     overflow: auto;
-    padding: 0;
+    padding: $globals-contentFields-paddingTop 0 $globals-contentFields-paddingBottom;
     resize: none;
     width: 100%;
   }

@@ -47,13 +47,23 @@ const projectMediaQInputStub = defineComponent({
     placeholder: {
       default: '',
       type: String
+    },
+    type: {
+      default: 'text',
+      type: String
     }
   },
   emits: ['update:modelValue'],
   template: `
     <div class="q-input-stub" v-bind="$attrs">
       <slot name="prepend" />
+      <textarea
+        v-if="type === 'textarea'"
+        :value="modelValue"
+        @input="$emit('update:modelValue', ($event.target).value)"
+      />
       <input
+        v-else
         :placeholder="placeholder"
         :value="modelValue"
         @input="$emit('update:modelValue', ($event.target).value)"
@@ -82,7 +92,17 @@ const projectMediaDialogGlobal = {
     QInput: projectMediaQInputStub,
     QSeparator: { template: '<div class="q-separator-stub" v-bind="$attrs"></div>' },
     QTabPanel: { template: '<div class="q-tab-panel-stub"><slot /></div>' },
-    QTabPanels: { template: '<div class="q-tab-panels-stub"><slot /></div>' }
+    QTabPanels: { template: '<div class="q-tab-panels-stub"><slot /></div>' },
+    DialogProjectMediaMassEditTable: {
+      props: {
+        modelValue: {
+          default: () => [],
+          type: Array
+        }
+      },
+      template:
+        '<div data-test-locator="dialogProjectMedia-massEditTable">{{ modelValue.length }}</div>'
+    }
   }
 } as const
 
@@ -108,8 +128,10 @@ test('Test that DialogProjectMedia renders shell for ProjectMedia input', async 
   expect(w.text()).toContain('dialogs.projectMedia.closeButton')
   expect(w.find('[data-test-locator="dialogProjectMedia-search"]').exists()).toBe(true)
   expect(w.find('.project-media-qdialog-stub').attributes('data-persistent')).toBe('true')
-  expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe('mediaList')
-  expect(w.find('[data-test-locator="dialogProjectMedia-panelTitle-mediaList"]').exists()).toBe(true)
+  expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe('mediaMassEdit')
+  expect(w.find('[data-test-locator="dialogProjectMedia-massEditTable"]').exists()).toBe(true)
+  expect(w.find('[data-test-locator="dialogProjectMedia-massEditTable"]').text()).toBe('0')
+  await w.getComponent(DialogProjectMediaPanelsColumn).vm.$emit('update:massEditRows', [])
   const searchInput = w.get('[data-test-locator="dialogProjectMedia-search"] input')
   await searchInput.setValue('needle')
   await flushPromises()
@@ -302,6 +324,96 @@ test('Test that DialogProjectMedia initialPanel prop selects the add panel', asy
 
 /**
  * DialogProjectMedia
+ * Add online media should replace the add drop zone with the URL textarea on the same slide.
+ */
+test('Test that DialogProjectMedia add online media swaps in the URL textarea', async () => {
+  const w = mount(DialogProjectMedia, {
+    global: projectMediaDialogGlobal,
+    props: {
+      directInput: 'ProjectMedia',
+      initialPanel: 'mediaAdd'
+    }
+  })
+
+  await flushPromises()
+
+  expect(w.find('[data-test-locator="dialogProjectMedia-addDropZone"]').exists()).toBe(true)
+  await w.get('[data-test-locator="dialogProjectMedia-addOnlineMediaButton"]').trigger('click')
+  await flushPromises()
+
+  expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe('mediaAdd')
+  expect(w.find('[data-test-locator="dialogProjectMedia-addDropZone"]').exists()).toBe(false)
+  expect(w.find('[data-test-locator="dialogProjectMedia-addOnlineUrlsTitle"]').exists()).toBe(true)
+  expect(w.find('[data-test-locator="dialogProjectMedia-addOnlineUrlsSubmit"]').exists()).toBe(true)
+  expect(w.text()).toContain('dialogs.projectMedia.addOnlineUrlsTitle')
+  expect(w.text()).toContain('dialogs.projectMedia.addOnlineUrlsSubmitButton')
+  const urlsField = w.get('[data-test-locator="dialogProjectMedia-addOnlineUrlsInput"] textarea')
+  await urlsField.setValue('https://example.com/media')
+  await flushPromises()
+  expect((urlsField.element as HTMLTextAreaElement).value).toBe('https://example.com/media')
+  w.unmount()
+})
+
+/**
+ * DialogProjectMedia
+ * Submit media list should append intake rows and switch to mass-edit.
+ */
+test('Test that DialogProjectMedia submit media list switches to mass-edit with rows', async () => {
+  const w = mount(DialogProjectMedia, {
+    global: projectMediaDialogGlobal,
+    props: {
+      directInput: 'ProjectMedia',
+      initialPanel: 'mediaAdd'
+    }
+  })
+
+  await flushPromises()
+
+  await w.get('[data-test-locator="dialogProjectMedia-addOnlineMediaButton"]').trigger('click')
+  await flushPromises()
+  const urlsField = w.get('[data-test-locator="dialogProjectMedia-addOnlineUrlsInput"] textarea')
+  await urlsField.setValue('https://example.com/one.png\n\nhttps://example.com/two.jpg')
+  await w.get('[data-test-locator="dialogProjectMedia-addOnlineUrlsSubmit"]').trigger('click')
+  await flushPromises()
+
+  expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe('mediaMassEdit')
+  expect(w.find('[data-test-locator="dialogProjectMedia-massEditTable"]').text()).toBe('2')
+  w.unmount()
+})
+
+/**
+ * DialogProjectMedia
+ * Closing the dialog should restore the add drop zone sub-view.
+ */
+test('Test that DialogProjectMedia close resets the add online URLs sub-view', async () => {
+  const w = mount(DialogProjectMedia, {
+    global: projectMediaDialogGlobal,
+    props: {
+      directInput: 'ProjectMedia',
+      initialPanel: 'mediaAdd'
+    }
+  })
+
+  await flushPromises()
+
+  await w.get('[data-test-locator="dialogProjectMedia-addOnlineMediaButton"]').trigger('click')
+  await flushPromises()
+  expect(w.find('[data-test-locator="dialogProjectMedia-addOnlineUrls"]').exists()).toBe(true)
+
+  const dlg = w.findComponent({ name: 'QDialog' })
+  await dlg.vm.$emit('update:modelValue', false)
+  await flushPromises()
+  await dlg.vm.$emit('update:modelValue', true)
+  await flushPromises()
+
+  expect(w.find('[data-test-locator="dialogProjectMedia-addDropZone"]').exists()).toBe(true)
+  expect(w.find('[data-test-locator="dialogProjectMedia-addOnlineUrls"]').exists()).toBe(false)
+  expect(w.find('[data-test-locator="dialogProjectMedia-massEditTable"]').text()).toBe('0')
+  w.unmount()
+})
+
+/**
+ * DialogProjectMedia
  * Live store panel changes switch the slide while the dialog stays open.
  */
 test('Test that DialogProjectMedia switches panel from projectMediaRequestedPanel while open', async () => {
@@ -319,7 +431,7 @@ test('Test that DialogProjectMedia switches panel from projectMediaRequestedPane
 
   await flushPromises()
 
-  expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe('mediaList')
+  expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe('mediaMassEdit')
   st.projectMediaRequestedPanel = 'mediaSingleEdit'
   await flushPromises()
   expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe(

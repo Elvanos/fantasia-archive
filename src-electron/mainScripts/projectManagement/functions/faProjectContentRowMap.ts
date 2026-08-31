@@ -96,7 +96,11 @@ function mapFaProjectMediaType (raw: string): T_faProjectMediaType {
 }
 
 function mapFaProjectMediaInternalType (raw: string): T_faProjectMediaInternalType {
-  if (raw === 'embedded' || raw === 'linked') {
+  if (
+    raw === 'embedded' ||
+    raw === 'linked_outside' ||
+    raw === 'linked_in_project'
+  ) {
     return raw
   }
   return ''
@@ -124,7 +128,6 @@ export function mapFaProjectMediaRow (row: I_faSqlMediaRow): I_faProjectMedia {
   const internalType = mapFaProjectMediaInternalType(row.internal_type)
   const externalType = mapFaProjectMediaExternalType(row.external_type)
   const internalEmbed = mapFaProjectMediaInternalEmbed(row.internal_embed)
-  const internalIsProjectIncluded = row.internal_is_project_included === 1
   return {
     id: row.id,
     displayName: row.display_name,
@@ -134,7 +137,6 @@ export function mapFaProjectMediaRow (row: I_faSqlMediaRow): I_faProjectMedia {
     externalLink: row.external_link,
     internalLink: row.internal_link,
     internalEmbed,
-    internalIsProjectIncluded,
     createdAtMs: row.created_at_ms,
     updatedAtMs: row.updated_at_ms
   }

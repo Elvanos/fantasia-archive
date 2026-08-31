@@ -18,7 +18,7 @@ export interface I_faSqlNamedEntityRow {
   updated_at_ms: number
 }
 
-/** SQLite column layout for the media table (v9+ type/link/embed/include columns). */
+/** SQLite column layout for the media table (v10+ type/link/embed; no include flag). */
 export interface I_faSqlMediaRow {
   id: string
   display_name: string
@@ -28,7 +28,6 @@ export interface I_faSqlMediaRow {
   external_link: string
   internal_link: string
   internal_embed: Uint8Array | null
-  internal_is_project_included: number
   created_at_ms: number
   updated_at_ms: number
 }

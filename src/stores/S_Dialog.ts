@@ -60,8 +60,9 @@ export const S_DialogComponent = defineStore('S_DialogComponent', () => {
 
   /**
    * Project Media slide panel requested by openProjectMediaDialog. Live while open.
+   * TEMPORARY default mass edit. Restore mediaList when the experiment ends.
    */
-  const projectMediaRequestedPanel: Ref<T_faProjectMediaPanel> = ref('mediaList')
+  const projectMediaRequestedPanel: Ref<T_faProjectMediaPanel> = ref('mediaMassEdit')
 
   const componentDialogOpenCount = ref(0)
 

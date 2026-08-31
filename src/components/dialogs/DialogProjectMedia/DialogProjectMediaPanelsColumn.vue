@@ -43,6 +43,7 @@
       >
         <!-- Media addition drop zone -->
         <div
+          v-if="props.addSubView === dropZoneSubViewKey"
           class="dialogProjectMedia__addDropZone"
           data-test-locator="dialogProjectMedia-addDropZone"
         >
@@ -72,6 +73,7 @@
                 color="primary-bright"
                 data-test-locator="dialogProjectMedia-addOnlineMediaButton"
                 :label="$t('dialogs.projectMedia.addOnlineMediaButton')"
+                @click="emit('addOnlineMedia')"
               />
             </div>
           </div>
@@ -87,6 +89,41 @@
           >
             {{ $t('dialogs.projectMedia.addMediaDropZoneDrag') }}
           </p>
+        </div>
+        <!-- Media addition online URLs -->
+        <div
+          v-if="props.addSubView === onlineUrlsSubViewKey"
+          class="dialogProjectMedia__addOnlineUrls"
+          data-test-locator="dialogProjectMedia-addOnlineUrls"
+        >
+          <div class="dialogProjectMedia__addOnlineUrlsStack">
+            <p
+              class="dialogProjectMedia__addOnlineUrlsTitle text-center"
+              data-test-locator="dialogProjectMedia-addOnlineUrlsTitle"
+            >
+              {{ $t('dialogs.projectMedia.addOnlineUrlsTitle') }}
+            </p>
+            <q-input
+              v-model="onlineUrlsDraft"
+              class="dialogProjectMedia__addOnlineUrlsInput"
+              color="primary-bright"
+              dark
+              data-test-locator="dialogProjectMedia-addOnlineUrlsInput"
+              filled
+              hide-bottom-space
+              outlined
+              type="textarea"
+            />
+            <q-btn
+              class="dialogProjectMedia__addOnlineUrlsSubmit"
+              color="primary-bright"
+              data-test-locator="dialogProjectMedia-addOnlineUrlsSubmit"
+              :label="$t('dialogs.projectMedia.addOnlineUrlsSubmitButton')"
+              outline
+              unelevated
+              @click="emit('submitOnlineUrls')"
+            />
+          </div>
         </div>
       </q-tab-panel>
       <q-tab-panel
@@ -107,12 +144,7 @@
         class="dialogProjectMedia__tabPanel q-pa-none"
       >
         <div class="dialogProjectMedia__panelScroll hasScrollbar">
-          <h5
-            class="dialogProjectMedia__panelTitle text-center text-h6"
-            data-test-locator="dialogProjectMedia-panelTitle-mediaMassEdit"
-          >
-            {{ $t('dialogs.projectMedia.panelMassMediumEdit') }}
-          </h5>
+          <DialogProjectMediaMassEditTable v-model="massEditRows" />
         </div>
       </q-tab-panel>
     </q-tab-panels>
@@ -120,22 +152,42 @@
 </template>
 
 <script setup lang="ts">
-import type { T_faProjectMediaPanel } from 'app/types/I_faProjectMediaDomain'
+import type {
+  I_faProjectMediaMassEditRow,
+  T_faProjectMediaAddSubView,
+  T_faProjectMediaPanel
+} from 'app/types/I_faProjectMediaDomain'
+
+import DialogProjectMediaMassEditTable from './DialogProjectMediaMassEditTable.vue'
 
 defineOptions({
   name: 'DialogProjectMediaPanelsColumn'
 })
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   selectedPanel: T_faProjectMediaPanel
+  addSubView?: T_faProjectMediaAddSubView
+}>(), {
+  addSubView: 'dropZone'
+})
+
+const emit = defineEmits<{
+  addOnlineMedia: []
+  submitOnlineUrls: []
 }>()
 
 const searchQuery = defineModel<string>('searchQuery', { required: true })
+const onlineUrlsDraft = defineModel<string>('onlineUrlsDraft', { default: '' })
+const massEditRows = defineModel<I_faProjectMediaMassEditRow[]>('massEditRows', {
+  default: () => []
+})
 
 const listPanelKey: T_faProjectMediaPanel = 'mediaList'
 const addPanelKey: T_faProjectMediaPanel = 'mediaAdd'
 const singleEditPanelKey: T_faProjectMediaPanel = 'mediaSingleEdit'
 const massEditPanelKey: T_faProjectMediaPanel = 'mediaMassEdit'
+const dropZoneSubViewKey: T_faProjectMediaAddSubView = 'dropZone'
+const onlineUrlsSubViewKey: T_faProjectMediaAddSubView = 'onlineUrls'
 </script>
 
 <style lang="scss" scoped src="./styles/DialogProjectMedia.panelsColumn.scoped.scss"></style>

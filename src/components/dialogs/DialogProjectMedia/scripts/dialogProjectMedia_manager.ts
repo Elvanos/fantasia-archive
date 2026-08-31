@@ -3,7 +3,10 @@ import { S_DialogComponent } from 'src/stores/S_Dialog'
 import { onMounted, ref, watch } from 'vue'
 import { Result } from 'neverthrow'
 
-import { normalizeFaProjectMediaPanel } from 'app/src/scripts/faProjectMedia/faProjectMedia_manager'
+import {
+  createFaProjectMediaMassEditRowsFromOnlineUrlsDraft,
+  normalizeFaProjectMediaPanel
+} from 'app/src/scripts/faProjectMedia/faProjectMedia_manager'
 import {
   isDialogProjectMediaDirectInput,
   isDialogProjectMediaStoreTarget
@@ -17,6 +20,10 @@ const resolveDialogComponentStoreBinding = createResolveDialogComponentStore({
 })
 
 const dialogProjectMediaApi = createDialogProjectMedia({
+  createMassEditRowsFromOnlineUrlsDraft: (draft) => createFaProjectMediaMassEditRowsFromOnlineUrlsDraft({
+    createId: () => crypto.randomUUID(),
+    draft
+  }),
   getRequestedPanel: () => {
     const store = resolveDialogComponentStoreBinding.resolveDialogComponentStore()
     return normalizeFaProjectMediaPanel(store?.projectMediaRequestedPanel)

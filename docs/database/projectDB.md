@@ -8,7 +8,7 @@ SQLite **`documents`** = worldbuilding entities (world + optional template). ≠
 
 ## Schema version (`PRAGMA user_version`)
 
-Fresh files bootstrap to **v9**. Live upgrade ladder **v1→v9** ships. Pre-release flatten (squash to single bootstrap) separate — [fantasia-flatten-database-schemas](../../.cursor/skills/fantasia-flatten-database-schemas/SKILL.md).
+Fresh files bootstrap to **v10**. Live upgrade ladder **v1→v10** ships. Pre-release flatten (squash to single bootstrap) separate — [fantasia-flatten-database-schemas](../../.cursor/skills/fantasia-flatten-database-schemas/SKILL.md).
 
 | Version | Contents |
 |---------|----------|
@@ -21,11 +21,12 @@ Fresh files bootstrap to **v9**. Live upgrade ladder **v1→v9** ships. Pre-rele
 | **6** | Renames **worlds.color_pallete** → **worlds.color_palette** (ALTER TABLE … RENAME COLUMN). Idempotent when **color_palette** already present or **color_pallete** absent. Fresh bootstrap DDL uses **color_palette** directly. |
 | **7** | Adds per-world **`tags`** (`id`, `world_id`, `name`, timestamps) + **`document_tags`** M:N (`document_id`, `tag_id`, `sort_order`) with case-insensitive unique tag names per world. Idempotent **`applyFaProjectTagsSchemaPatch`** runs on every open at version **7**. Fresh bootstrap DDL includes both tables. |
 | **8** | Adds **`document_last_opened`** (`document_id` PK → **`documents(id)`** ON DELETE CASCADE, **`opened_at_ms`**) for Project overview MRU (newest first, max **50**). Idempotent **`applyFaProjectDocumentLastOpenedSchemaPatch`** runs on every open at version **8**. Fresh bootstrap DDL includes the table. |
-| **9** | Adds **`media.type`**, **`media.internal_type`**, **`media.external_type`**, **`media.external_link`**, **`media.internal_link`**, **`media.internal_embed`**, **`media.internal_is_project_included`**. Idempotent **`applyFaProjectMediaTypeColumnsSchemaPatch`** runs on every open at version **9** for legacy files missing columns. Fresh bootstrap DDL includes columns. New + backfilled rows **`type = 'external'`**; TEXT empty **`'' NOT NULL DEFAULT ''`**; BLOB empty **NULL**; include flag **`INTEGER NOT NULL DEFAULT 0`** (`CHECK (… IN (0, 1))`). Per-column CHECKs only — no combo CHECKs. |
+| **9** | Adds **`media.type`**, **`media.internal_type`**, **`media.external_type`**, **`media.external_link`**, **`media.internal_link`**, **`media.internal_embed`**, **`media.internal_is_project_included`**. Idempotent **`applyFaProjectMediaTypeColumnsSchemaPatch`** runs on every open (now at max **10** as well) for legacy files missing type/link/embed columns. Does **not** add the include column (dropped in **v10**). New + backfilled rows **`type = 'external'`**; TEXT empty **`'' NOT NULL DEFAULT ''`**; BLOB empty **NULL**. Per-column CHECKs only — no combo CHECKs. |
+| **10** | Rebuilds **`media`**: drops **`internal_is_project_included`**. **`internal_type`** CHECK is **`''`**, **`embedded`**, **`linked_outside`**, **`linked_in_project`**. Copies existing **`internal_type`** as-is (no **`linked`** → **`linked_outside`** map). Idempotent **`applyFaProjectMediaInternalTypeV10SchemaPatch`** rebuilds when the include column remains or sqlite_master still has the v9 **`IN ('', 'embedded', 'linked')`** CHECK. Fresh bootstrap DDL is v10-shaped. |
 
-**Supported max:** **`FA_PROJECT_USER_VERSION_SUPPORTED_MAX = 9`** in **`faProjectDbMigrateWiring.ts`**.
+**Supported max:** **`FA_PROJECT_USER_VERSION_SUPPORTED_MAX = 10`** in **`faProjectDbMigrateWiring.ts`**.
 
-**Migration entry:** **`applyFaProjectMigrations(db, displayProjectName)`** — fresh files start at **0**, bootstrap to **v9** + seed a default **world** when empty; files at **v9** run idempotent patches only; files at **v8** migrate to **v9** then run patches; earlier versions climb **vN→…→v9** then run patches. Any other version is unsupported and throws. Older pre-release dev **.faproject** files must be recreated after a flatten.
+**Migration entry:** **`applyFaProjectMigrations(db, displayProjectName)`** — fresh files start at **0**, bootstrap to **v10** + seed a default **world** when empty; files at **v10** run idempotent patches only; files at **v9** migrate to **v10** then run patches; earlier versions climb **vN→…→v10** then run patches. Any other version is unsupported and throws. Older pre-release dev **.faproject** files must be recreated after a flatten.
 
 **Worlds vs document templates on create:** **`seedFaProjectDefaultWorldIfEmpty`** runs after bootstrap and inserts one default **world** when the table is empty. **Document templates are never auto-seeded** — a new **`.faproject`** may have zero **`document_templates`** rows until the user adds them in **Project Settings**.
 
@@ -92,15 +93,14 @@ Index: **`idx_document_templates_sort_order`**. Unlike **worlds**, new projects 
 | `id` | TEXT PK | UUID |
 | `display_name` | TEXT | Non-empty |
 | `type` | TEXT NOT NULL DEFAULT `'external'` | **`external`** or **`internal`**. New + v9 backfill **`external`**. |
-| `internal_type` | TEXT NOT NULL DEFAULT `''` | **`''`**, **`embedded`**, or **`linked`**. |
+| `internal_type` | TEXT NOT NULL DEFAULT `''` | **`''`**, **`embedded`**, **`linked_outside`**, or **`linked_in_project`**. v9 used **`linked`**; v10 copies as-is (legacy **`linked`** fails the new CHECK if any such row existed). |
 | `external_type` | TEXT NOT NULL DEFAULT `''` | **`''`** or **`linked`**. |
 | `external_link` | TEXT NOT NULL DEFAULT `''` | Path or URL; empty **`''`**. |
 | `internal_link` | TEXT NOT NULL DEFAULT `''` | Path or URL; empty **`''`**. |
 | `internal_embed` | BLOB, nullable | Bytes or **NULL** (empty). SQL name **`internal_embed`**. |
-| `internal_is_project_included` | INTEGER NOT NULL DEFAULT 0 | `CHECK (internal_is_project_included IN (0, 1))`. Renderer **`internalIsProjectIncluded`** boolean. New + v9 backfill **false**. |
 | `created_at_ms`, `updated_at_ms` | INTEGER | |
 
-Create/update IPC this pass still **`displayName`** only; SQL defaults fill type/link/embed/include columns. No blob **write** IPC this pass.
+Create/update IPC this pass still **`displayName`** only; SQL defaults fill type/link/embed columns. No blob **write** IPC this pass.
 
 ### `documents`
 

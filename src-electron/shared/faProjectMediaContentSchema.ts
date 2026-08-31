@@ -58,12 +58,11 @@ export const faProjectMediaPersistedRowSchema = z.object({
   id: faProjectContentIdSchema,
   displayName: z.string().min(1),
   type: z.enum(['external', 'internal']),
-  internalType: z.enum(['', 'embedded', 'linked']),
+  internalType: z.enum(['', 'embedded', 'linked_outside', 'linked_in_project']),
   externalType: z.enum(['', 'linked']),
   externalLink: z.string(),
   internalLink: z.string(),
   internalEmbed: z.instanceof(Uint8Array).nullable(),
-  internalIsProjectIncluded: z.boolean(),
   createdAtMs: z.number(),
   updatedAtMs: z.number()
 }).strict()

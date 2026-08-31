@@ -21,7 +21,6 @@ const stubMediaShape = {
   externalLink: '',
   internalLink: '',
   internalEmbed: null,
-  internalIsProjectIncluded: false,
   createdAtMs: 0,
   updatedAtMs: 0
 }

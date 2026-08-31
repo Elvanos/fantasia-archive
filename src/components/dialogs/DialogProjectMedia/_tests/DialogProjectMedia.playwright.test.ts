@@ -32,7 +32,13 @@ const selectorList = {
   addDropZoneHintOr: 'dialogProjectMedia-addDropZoneHintOr',
   addOfflineMediaButton: 'dialogProjectMedia-addOfflineMediaButton',
   addOnlineMediaButton: 'dialogProjectMedia-addOnlineMediaButton',
+  addOnlineUrls: 'dialogProjectMedia-addOnlineUrls',
+  addOnlineUrlsInput: 'dialogProjectMedia-addOnlineUrlsInput',
+  addOnlineUrlsSubmit: 'dialogProjectMedia-addOnlineUrlsSubmit',
+  addOnlineUrlsTitle: 'dialogProjectMedia-addOnlineUrlsTitle',
   closeButton: 'dialogProjectMedia-button-close',
+  massEditSave: 'dialogProjectMedia-massEditSave',
+  massEditTable: 'dialogProjectMedia-massEditTable',
   panelTitleList: 'dialogProjectMedia-panelTitle-mediaList',
   search: 'dialogProjectMedia-search',
   title: 'dialogProjectMedia-title'
@@ -72,19 +78,21 @@ test.describe.serial('Project Media dialog', () => {
   })
 
   /**
-   * Feed ProjectMedia input and check title, list panel, search, and close chrome.
+   * Feed ProjectMedia input and check title, mass-edit panel, hidden search, and close chrome.
    */
-  test('Open test "ProjectMedia" dialog with title, list panel, search, and close', async () => {
+  test('Open test "ProjectMedia" dialog with title, mass-edit table, and close', async () => {
     const title = appWindow.locator(`[data-test-locator="${selectorList.title}"]`)
-    const listTitle = appWindow.locator(`[data-test-locator="${selectorList.panelTitleList}"]`)
+    const massEditTable = appWindow.locator(`[data-test-locator="${selectorList.massEditTable}"]`)
+    const massEditSave = appWindow.locator(`[data-test-locator="${selectorList.massEditSave}"]`)
     const search = appWindow.locator(`[data-test-locator="${selectorList.search}"]`)
     const closeButton = appWindow.locator(`[data-test-locator="${selectorList.closeButton}"]`)
 
     await expect(title).toHaveCount(1)
     await expect(title).toHaveText(projectMediaMessages.title)
-    await expect(listTitle).toBeVisible()
-    await expect(listTitle).toHaveText(projectMediaMessages.panelMediaList)
-    await expect(search).toBeVisible()
+    await expect(massEditTable).toBeVisible()
+    await expect(massEditSave).toBeVisible()
+    await expect(massEditSave).toHaveText(projectMediaMessages.massEditSaveButton)
+    await expect(search).toBeHidden()
     await expect(closeButton).toHaveCount(1)
     await expect(closeButton).toHaveText(projectMediaMessages.closeButton)
   })
@@ -172,5 +180,25 @@ test.describe.serial('Project Media dialog add panel', () => {
     await expect(hintDrag).toBeVisible()
     await expect(hintDrag).toHaveText(projectMediaMessages.addMediaDropZoneDrag)
     await expect(search).toBeHidden()
+  })
+
+  test('Open test "ProjectMedia" dialog Add online media URL textarea', async () => {
+    const addOnline = appWindow.locator(`[data-test-locator="${selectorList.addOnlineMediaButton}"]`)
+    const dropZone = appWindow.locator(`[data-test-locator="${selectorList.addDropZone}"]`)
+    const urlsPane = appWindow.locator(`[data-test-locator="${selectorList.addOnlineUrls}"]`)
+    const urlsTitle = appWindow.locator(`[data-test-locator="${selectorList.addOnlineUrlsTitle}"]`)
+    const urlsInput = appWindow.locator(`[data-test-locator="${selectorList.addOnlineUrlsInput}"]`)
+    const urlsSubmit = appWindow.locator(`[data-test-locator="${selectorList.addOnlineUrlsSubmit}"]`)
+
+    await expect(dropZone).toBeVisible()
+    await addOnline.click()
+    await expect(dropZone).toBeHidden()
+    await expect(urlsPane).toBeVisible()
+    await expect(urlsTitle).toBeVisible()
+    await expect(urlsTitle).toHaveText(projectMediaMessages.addOnlineUrlsTitle)
+    await expect(urlsInput).toBeVisible()
+    await expect(urlsInput.locator('textarea')).toBeVisible()
+    await expect(urlsSubmit).toBeVisible()
+    await expect(urlsSubmit).toHaveText(projectMediaMessages.addOnlineUrlsSubmitButton)
   })
 })

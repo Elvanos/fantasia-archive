@@ -58,4 +58,6 @@
   --fa-color-tooltip-text: #{$tooltip-text};
   --fa-color-warning: #{$warning};
   --fa-color-white: #{$white};
+  /* Distinct from --fa-color-*: textarea ink; Custom App CSS help panel lists --fa-color-* only. */
+  --fa-content-fields-text-color: #{$content-fields-text-color};
 }

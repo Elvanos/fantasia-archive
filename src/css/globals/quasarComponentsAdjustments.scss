@@ -328,6 +328,16 @@ body.fa-appTheme--fantasy .q-dialog > .q-dialog__inner > .q-card.dialogKeybindSe
   color: var(--fa-color-text-muted);
 }
 
+textarea.q-field__native,
+.q-field--dark textarea.q-field__native,
+.q-field--dark.q-field--readonly textarea.q-field__native {
+  color: $globals-contentFields-textColor;
+  font-size: $globals-contentFields-fontSize;
+  line-height: $globals-contentFields-lineHeight;
+  padding-bottom: $globals-contentFields-paddingBottom;
+  padding-top: $globals-contentFields-paddingTop;
+}
+
 /* Flat Quasar focus chrome: thin hairline (fantasy uses micro-corner fields instead). */
 body.fa-appTheme--flat .q-field__control {
   color: $qField-flat-control-color;

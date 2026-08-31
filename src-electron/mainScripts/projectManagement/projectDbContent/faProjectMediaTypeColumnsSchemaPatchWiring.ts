@@ -5,7 +5,6 @@ import {
   FA_PROJECT_MEDIA_EXTERNAL_LINK_COLUMN,
   FA_PROJECT_MEDIA_EXTERNAL_TYPE_COLUMN,
   FA_PROJECT_MEDIA_INTERNAL_EMBED_COLUMN,
-  FA_PROJECT_MEDIA_INTERNAL_IS_PROJECT_INCLUDED_COLUMN,
   FA_PROJECT_MEDIA_INTERNAL_LINK_COLUMN,
   FA_PROJECT_MEDIA_INTERNAL_TYPE_COLUMN,
   FA_PROJECT_MEDIA_TYPE_COLUMN,
@@ -38,7 +37,7 @@ function addFaProjectMediaColumnIfMissing (
 }
 
 /**
- * Idempotent v9 patch: adds media type, link, embed, and include columns when missing.
+ * Idempotent v9 patch: adds media type, link, and embed columns when missing.
  */
 export function applyFaProjectMediaTypeColumnsSchemaPatch (db: I_faProjectDbExec): void {
   const columnNames = readFaProjectTableColumnNames(db, FA_PROJECT_TABLE_MEDIA)
@@ -80,12 +79,5 @@ export function applyFaProjectMediaTypeColumnsSchemaPatch (db: I_faProjectDbExec
     columnNames,
     FA_PROJECT_MEDIA_INTERNAL_EMBED_COLUMN,
     `${FA_PROJECT_MEDIA_INTERNAL_EMBED_COLUMN} BLOB`
-  )
-  addFaProjectMediaColumnIfMissing(
-    db,
-    columnNames,
-    FA_PROJECT_MEDIA_INTERNAL_IS_PROJECT_INCLUDED_COLUMN,
-    `${FA_PROJECT_MEDIA_INTERNAL_IS_PROJECT_INCLUDED_COLUMN} INTEGER NOT NULL DEFAULT 0 ` +
-    `CHECK (${FA_PROJECT_MEDIA_INTERNAL_IS_PROJECT_INCLUDED_COLUMN} IN (0, 1))`
   )
 }

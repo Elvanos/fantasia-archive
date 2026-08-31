@@ -58,6 +58,9 @@ function applyMockUserVersionPragma (
   if (name === 'user_version = 9') {
     pragmas.user_version = 9
   }
+  if (name === 'user_version = 10') {
+    pragmas.user_version = 10
+  }
 }
 
 function createFaProjectMigrationPrepareMock (
@@ -113,7 +116,7 @@ test('applyFaProjectMigrations bootstraps schema when user_version is 0', () => 
   applyFaProjectMigrations(db as never, 'Realm')
   expect(db.exec).toHaveBeenCalled()
   expect(insertRun).toHaveBeenCalledTimes(2)
-  expect(pragmas.user_version).toBe(9)
+  expect(pragmas.user_version).toBe(10)
   expect(seedFaProjectDefaultWorldIfEmptyMock).toHaveBeenCalledWith(db, 'Realm')
   expect(
     db.exec.mock.calls.some(
@@ -174,7 +177,7 @@ test('applyFaProjectMigrations applies hierarchy patch when user_version already
     prepare: vi.fn(),
     pragma: vi.fn((name: string, opts?: { simple?: boolean }) => {
       if (name === 'user_version' && opts?.simple === true) {
-        return 9
+        return 10
       }
       return undefined
     }),
@@ -185,7 +188,7 @@ test('applyFaProjectMigrations applies hierarchy patch when user_version already
   expect(seedFaProjectDefaultWorldIfEmptyMock).not.toHaveBeenCalled()
 })
 
-test('applyFaProjectMigrations migrates user_version 4 to 9', () => {
+test('applyFaProjectMigrations migrates user_version 4 to 10', () => {
   const run = vi.fn((fn: () => void) => {
     return () => {
       fn()
@@ -211,11 +214,11 @@ test('applyFaProjectMigrations migrates user_version 4 to 9', () => {
     transaction: run
   }
   applyFaProjectMigrations(db as never, 'Realm')
-  expect(pragmas.user_version).toBe(9)
+  expect(pragmas.user_version).toBe(10)
   expect(execCalls.some((sql) => sql.includes('extra_classes'))).toBe(true)
 })
 
-test('applyFaProjectMigrations migrates user_version 5 to 9', () => {
+test('applyFaProjectMigrations migrates user_version 5 to 10', () => {
   const run = vi.fn((fn: () => void) => {
     return () => {
       fn()
@@ -241,11 +244,11 @@ test('applyFaProjectMigrations migrates user_version 5 to 9', () => {
     transaction: run
   }
   applyFaProjectMigrations(db as never, 'Realm')
-  expect(pragmas.user_version).toBe(9)
+  expect(pragmas.user_version).toBe(10)
   expect(execCalls.some((sql) => sql.includes('RENAME COLUMN color_pallete TO color_palette'))).toBe(true)
 })
 
-test('applyFaProjectMigrations migrates user_version 6 to 9', () => {
+test('applyFaProjectMigrations migrates user_version 6 to 10', () => {
   const run = vi.fn((fn: () => void) => {
     return () => {
       fn()
@@ -268,11 +271,11 @@ test('applyFaProjectMigrations migrates user_version 6 to 9', () => {
     transaction: run
   }
   applyFaProjectMigrations(db as never, 'Realm')
-  expect(pragmas.user_version).toBe(9)
+  expect(pragmas.user_version).toBe(10)
   expect(execCalls.some((sql) => sql.includes('document_tags'))).toBe(true)
 })
 
-test('applyFaProjectMigrations migrates user_version 8 to 9', () => {
+test('applyFaProjectMigrations migrates user_version 8 to 10', () => {
   const run = vi.fn((fn: () => void) => {
     return () => {
       fn()
@@ -298,13 +301,14 @@ test('applyFaProjectMigrations migrates user_version 8 to 9', () => {
     transaction: run
   }
   applyFaProjectMigrations(db as never, 'Realm')
-  expect(pragmas.user_version).toBe(9)
+  expect(pragmas.user_version).toBe(10)
   expect(execCalls.some((sql) => sql.includes('internal_embed'))).toBe(true)
-  expect(execCalls.some((sql) => sql.includes('internal_is_project_included'))).toBe(true)
+  expect(execCalls.some((sql) => sql.includes('linked_outside'))).toBe(true)
   expect(execCalls.some((sql) => sql.includes('ALTER TABLE media'))).toBe(true)
+  expect(execCalls.some((sql) => sql.includes('internal_is_project_included'))).toBe(false)
 })
 
-test('applyFaProjectMigrations migrates user_version 7 to 9', () => {
+test('applyFaProjectMigrations migrates user_version 7 to 10', () => {
   const run = vi.fn((fn: () => void) => {
     return () => {
       fn()
@@ -327,11 +331,11 @@ test('applyFaProjectMigrations migrates user_version 7 to 9', () => {
     transaction: run
   }
   applyFaProjectMigrations(db as never, 'Realm')
-  expect(pragmas.user_version).toBe(9)
+  expect(pragmas.user_version).toBe(10)
   expect(execCalls.some((sql) => sql.includes('document_last_opened'))).toBe(true)
 })
 
-test('applyFaProjectMigrations migrates user_version 1 to 9', () => {
+test('applyFaProjectMigrations migrates user_version 1 to 10', () => {
   const run = vi.fn((fn: () => void) => {
     return () => {
       fn()
@@ -357,11 +361,11 @@ test('applyFaProjectMigrations migrates user_version 1 to 9', () => {
     transaction: run
   }
   applyFaProjectMigrations(db as never, 'Realm')
-  expect(pragmas.user_version).toBe(9)
+  expect(pragmas.user_version).toBe(10)
   expect(execCalls.some((sql) => sql.includes('is_category'))).toBe(true)
 })
 
-test('applyFaProjectMigrations migrates user_version 2 to 9', () => {
+test('applyFaProjectMigrations migrates user_version 2 to 10', () => {
   const run = vi.fn((fn: () => void) => {
     return () => {
       fn()
@@ -387,11 +391,11 @@ test('applyFaProjectMigrations migrates user_version 2 to 9', () => {
     transaction: run
   }
   applyFaProjectMigrations(db as never, 'Realm')
-  expect(pragmas.user_version).toBe(9)
+  expect(pragmas.user_version).toBe(10)
   expect(execCalls.some((sql) => sql.includes('tree_order_number'))).toBe(true)
 })
 
-test('applyFaProjectMigrations migrates user_version 3 to 9', () => {
+test('applyFaProjectMigrations migrates user_version 3 to 10', () => {
   const run = vi.fn((fn: () => void) => {
     return () => {
       fn()
@@ -417,7 +421,7 @@ test('applyFaProjectMigrations migrates user_version 3 to 9', () => {
     transaction: run
   }
   applyFaProjectMigrations(db as never, 'Realm')
-  expect(pragmas.user_version).toBe(9)
+  expect(pragmas.user_version).toBe(10)
   expect(execCalls.some((sql) => sql.includes('tree_order_number'))).toBe(true)
 })
 

@@ -2,6 +2,8 @@ import { expect, test } from 'vitest'
 
 import {
   FA_DIALOG_PROJECT_MEDIA_ADD_PANEL,
+  FA_DIALOG_PROJECT_MEDIA_ADD_SUBVIEW_DROP_ZONE,
+  FA_DIALOG_PROJECT_MEDIA_ADD_SUBVIEW_ONLINE_URLS,
   FA_DIALOG_PROJECT_MEDIA_LIST_PANEL,
   FA_DIALOG_PROJECT_MEDIA_MASS_EDIT_PANEL,
   FA_DIALOG_PROJECT_MEDIA_SINGLE_EDIT_PANEL,
@@ -28,13 +30,15 @@ test('Test that normalizeFaProjectMediaPanel maps known ids and garbage to list'
   )
   expect(normalizeFaProjectMediaPanel(undefined)).toBe(FA_DIALOG_PROJECT_MEDIA_LIST_PANEL)
   expect(normalizeFaProjectMediaPanel('nope')).toBe(FA_DIALOG_PROJECT_MEDIA_LIST_PANEL)
+  expect(FA_DIALOG_PROJECT_MEDIA_ADD_SUBVIEW_DROP_ZONE).toBe('dropZone')
+  expect(FA_DIALOG_PROJECT_MEDIA_ADD_SUBVIEW_ONLINE_URLS).toBe('onlineUrls')
 })
 
 /**
  * resolveFaProjectMediaOpenPanel
- * Known initialPanel wins. Empty library defaults to add; nonempty to list.
+ * Known initialPanel wins. TEMPORARY: missing or unknown ids open mass edit.
  */
-test('Test that resolveFaProjectMediaOpenPanel prefers explicit ids then empty-add', () => {
+test('Test that resolveFaProjectMediaOpenPanel prefers explicit ids then mass edit', () => {
   expect(resolveFaProjectMediaOpenPanel({
     hasAnyMedia: false,
     initialPanelRaw: FA_DIALOG_PROJECT_MEDIA_LIST_PANEL
@@ -42,15 +46,15 @@ test('Test that resolveFaProjectMediaOpenPanel prefers explicit ids then empty-a
   expect(resolveFaProjectMediaOpenPanel({
     hasAnyMedia: false,
     initialPanelRaw: undefined
-  })).toBe(FA_DIALOG_PROJECT_MEDIA_ADD_PANEL)
+  })).toBe(FA_DIALOG_PROJECT_MEDIA_MASS_EDIT_PANEL)
   expect(resolveFaProjectMediaOpenPanel({
     hasAnyMedia: true,
     initialPanelRaw: undefined
-  })).toBe(FA_DIALOG_PROJECT_MEDIA_LIST_PANEL)
+  })).toBe(FA_DIALOG_PROJECT_MEDIA_MASS_EDIT_PANEL)
   expect(resolveFaProjectMediaOpenPanel({
     hasAnyMedia: false,
     initialPanelRaw: 'nope'
-  })).toBe(FA_DIALOG_PROJECT_MEDIA_ADD_PANEL)
+  })).toBe(FA_DIALOG_PROJECT_MEDIA_MASS_EDIT_PANEL)
   expect(resolveFaProjectMediaOpenPanel({
     hasAnyMedia: true,
     initialPanelRaw: FA_DIALOG_PROJECT_MEDIA_MASS_EDIT_PANEL

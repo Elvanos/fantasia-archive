@@ -85,7 +85,6 @@ test('Test that project content schema parsers accept valid payloads', () => {
     externalLink: '',
     internalLink: '',
     internalEmbed: null,
-    internalIsProjectIncluded: false,
     createdAtMs: 1,
     updatedAtMs: 2
   }).internalEmbed).toBeNull()
@@ -98,7 +97,6 @@ test('Test that project content schema parsers accept valid payloads', () => {
     externalLink: 'https://example.test/a',
     internalLink: '',
     internalEmbed: new Uint8Array([9]),
-    internalIsProjectIncluded: true,
     createdAtMs: 1,
     updatedAtMs: 2
   }).type).toBe('internal')

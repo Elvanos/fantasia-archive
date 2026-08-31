@@ -17,11 +17,16 @@
       </h5>
 
       <q-card-section
-        :class="['dialogComponent__content', 'dialogProjectMedia__body', `${documentName}`, 'q-mb-lg', 'q-mr-lg', 'q-ml-xl', 'q-pt-none']"
+        :class="['dialogComponent__content', 'dialogProjectMedia__body', `${documentName}`, 'q-mb-lg', 'q-mx-xl', 'q-pt-none']"
       >
         <DialogProjectMediaPanelsColumn
+          v-model:mass-edit-rows="massEditRows"
+          v-model:online-urls-draft="onlineUrlsDraft"
           v-model:search-query="searchQuery"
+          :add-sub-view="addSubView"
           :selected-panel="selectedPanel"
+          @add-online-media="showAddOnlineUrlsSubView"
+          @submit-online-urls="submitOnlineUrls"
         />
       </q-card-section>
 
@@ -64,10 +69,15 @@ const props = defineProps<{
 }>()
 
 const {
+  addSubView,
   dialogModel,
   documentName,
+  massEditRows,
+  onlineUrlsDraft,
   searchQuery,
-  selectedPanel
+  selectedPanel,
+  showAddOnlineUrlsSubView,
+  submitOnlineUrls
 } = useDialogProjectMedia(props)
 </script>
 

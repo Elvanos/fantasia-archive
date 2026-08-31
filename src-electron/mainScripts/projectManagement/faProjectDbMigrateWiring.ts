@@ -30,12 +30,16 @@ import { applyFaProjectWorldColorEmptyAllowedSchemaPatch } from './projectDbCont
 import { applyFaProjectTagsSchemaPatch } from './projectDbContent/faProjectTagsSchemaPatchWiring'
 import { applyFaProjectDocumentLastOpenedSchemaPatch } from './projectDbContent/faProjectDocumentLastOpenedSchemaPatchWiring'
 import { applyFaProjectMediaTypeColumnsSchemaPatch } from './projectDbContent/faProjectMediaTypeColumnsSchemaPatchWiring'
+import {
+  applyFaProjectMediaInternalTypeV10SchemaPatch,
+  rebuildFaProjectMediaTableForV10
+} from './projectDbContent/faProjectMediaInternalTypeV10SchemaPatchWiring'
 
 const OPTION_PROJECT_NAME = 'project_name'
 const OPTION_PROJECT_UUID = 'project_uuid'
 
-/** Current schema revision: flattened bootstrap + v2–v8 + v9 media type/link/embed/include. */
-export const FA_PROJECT_USER_VERSION_SUPPORTED_MAX = 9
+/** Current schema revision: flattened bootstrap + v2–v9 + v10 media internal_type. */
+export const FA_PROJECT_USER_VERSION_SUPPORTED_MAX = 10
 
 const applyFaProjectDocumentsHierarchySchemaPatch = createApplyFaProjectDocumentsHierarchySchemaPatch({
   documentsTableName: FA_PROJECT_TABLE_DOCUMENTS,
@@ -109,6 +113,7 @@ function applyFaProjectSchemaPatchesAtCurrentVersion (db: Database): void {
   applyFaProjectTagsSchemaPatch(db)
   applyFaProjectDocumentLastOpenedSchemaPatch(db)
   applyFaProjectMediaTypeColumnsSchemaPatch(db)
+  applyFaProjectMediaInternalTypeV10SchemaPatch(db)
   applyFaProjectOpenedDocumentsSchemaV1(db)
 }
 
@@ -194,6 +199,14 @@ function migrateFaProjectSchemaV8ToV9 (db: Database): void {
   runMigration()
 }
 
+function migrateFaProjectSchemaV9ToV10 (db: Database): void {
+  const runMigration = db.transaction(() => {
+    rebuildFaProjectMediaTableForV10(db)
+    db.pragma('user_version = 10')
+  })
+  runMigration()
+}
+
 const FA_PROJECT_SCHEMA_CLIMB_STEPS = [
   migrateFaProjectSchemaV1ToV2,
   migrateFaProjectSchemaV2ToV3,
@@ -202,7 +215,8 @@ const FA_PROJECT_SCHEMA_CLIMB_STEPS = [
   migrateFaProjectSchemaV5ToV6,
   migrateFaProjectSchemaV6ToV7,
   migrateFaProjectSchemaV7ToV8,
-  migrateFaProjectSchemaV8ToV9
+  migrateFaProjectSchemaV8ToV9,
+  migrateFaProjectSchemaV9ToV10
 ]
 
 function climbFaProjectSchemaFromVersion (db: Database, startVer: number): void {

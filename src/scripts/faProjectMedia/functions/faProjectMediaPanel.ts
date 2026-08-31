@@ -1,4 +1,7 @@
-import type { T_faProjectMediaPanel } from 'app/types/I_faProjectMediaDomain'
+import type {
+  T_faProjectMediaAddSubView,
+  T_faProjectMediaPanel
+} from 'app/types/I_faProjectMediaDomain'
 
 /** Horizontal panel id for the Project Media list. */
 export const FA_DIALOG_PROJECT_MEDIA_LIST_PANEL = 'mediaList'
@@ -11,6 +14,13 @@ export const FA_DIALOG_PROJECT_MEDIA_SINGLE_EDIT_PANEL = 'mediaSingleEdit'
 
 /** Horizontal panel id for mass-editing media. */
 export const FA_DIALOG_PROJECT_MEDIA_MASS_EDIT_PANEL = 'mediaMassEdit'
+
+/** Add-panel sub-view: dashed drop zone with offline / online CTAs. */
+export const FA_DIALOG_PROJECT_MEDIA_ADD_SUBVIEW_DROP_ZONE: T_faProjectMediaAddSubView = 'dropZone'
+
+/** Add-panel sub-view: paste media URLs, one per line. */
+export const FA_DIALOG_PROJECT_MEDIA_ADD_SUBVIEW_ONLINE_URLS: T_faProjectMediaAddSubView =
+  'onlineUrls'
 
 function isKnownFaProjectMediaPanel (value: unknown): value is T_faProjectMediaPanel {
   if (value === FA_DIALOG_PROJECT_MEDIA_LIST_PANEL) {
@@ -40,7 +50,9 @@ export function normalizeFaProjectMediaPanel (value: unknown): T_faProjectMediaP
 
 /**
  * Resolves the panel for openProjectMediaDialog.
- * Explicit known ids win. Otherwise empty library defaults to add; nonempty to list.
+ * Explicit known ids win.
+ * TEMPORARY: missing or unknown initialPanel opens mass edit. Restore empty library
+ * to add and nonempty library to list when this experiment ends.
  */
 export function resolveFaProjectMediaOpenPanel (input: {
   hasAnyMedia: boolean
@@ -49,8 +61,6 @@ export function resolveFaProjectMediaOpenPanel (input: {
   if (isKnownFaProjectMediaPanel(input.initialPanelRaw)) {
     return input.initialPanelRaw
   }
-  if (!input.hasAnyMedia) {
-    return FA_DIALOG_PROJECT_MEDIA_ADD_PANEL
-  }
-  return FA_DIALOG_PROJECT_MEDIA_LIST_PANEL
+  void input.hasAnyMedia
+  return FA_DIALOG_PROJECT_MEDIA_MASS_EDIT_PANEL
 }

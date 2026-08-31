@@ -61,6 +61,22 @@ test('Test that parseFaColorCustomPropertyNamesFromThemeScss extracts sorted uni
 
 /**
  * parseFaColorCustomPropertyNamesFromThemeScss
+ * Distinct --fa-content-fields-text-color is not a --fa-color-* help-panel token.
+ */
+test('Test that parseFaColorCustomPropertyNamesFromThemeScss skips content-fields textarea ink', () => {
+  const src = [
+    ':root {',
+    '  --fa-color-primary: #d7ac47;',
+    '  --fa-content-fields-text-color: #dcdcdc;',
+    '}'
+  ].join('\n')
+  expect(parseFaColorCustomPropertyNamesFromThemeScss(src)).toEqual([
+    '--fa-color-primary'
+  ])
+})
+
+/**
+ * parseFaColorCustomPropertyNamesFromThemeScss
  * Skips lines that are not custom property assignments.
  */
 test('Test that parseFaColorCustomPropertyNamesFromThemeScss ignores at-rules and non-property lines', () => {
@@ -85,4 +101,5 @@ test('Test that getFaColorCustomPropertyNamesForHelpPanel includes common tokens
   expect(list).toContain('--fa-color-primary')
   expect(list).toContain('--fa-color-tooltip-background')
   expect(list).toContain('--fa-color-tooltip-text')
+  expect(list).not.toContain('--fa-content-fields-text-color')
 })

@@ -3,5 +3,6 @@
 
 /* COMPONENT - WINDOW PROJECT NOTEBOARD */
 $windowProjectNoteboard-editorRegion-backgroundColor: fa-v('dark-lighter', $dark-lighter);
+$windowProjectNoteboard-textarea-color: var(--fa-content-fields-text-color, #{$content-fields-text-color});
 $windowProjectNoteboard-title-margin: floatingWindowSurface.$floatingWindowComponent-title-margin;
 $windowProjectNoteboard-titleRow-minHeight: floatingWindowSurface.$floatingWindowComponent-titleRow-minHeight;

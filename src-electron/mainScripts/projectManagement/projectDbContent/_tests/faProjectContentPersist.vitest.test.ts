@@ -175,7 +175,6 @@ function makeProjectContentTestDb (): {
               external_link: '',
               internal_link: '',
               internal_embed: null,
-              internal_is_project_included: 0,
               created_at_ms: args[2] as number,
               updated_at_ms: args[3] as number
             }
@@ -895,7 +894,6 @@ test('Test that getFaProjectMediaById returns a created media row', () => {
   expect(media.externalLink).toBe('')
   expect(media.internalLink).toBe('')
   expect(media.internalEmbed).toBeNull()
-  expect(media.internalIsProjectIncluded).toBe(false)
   expect(getFaProjectMediaById(db as never, media.id).displayName).toBe('Pic')
   expect(getFaProjectMediaById(db as never, media.id).type).toBe('external')
 })
@@ -1147,7 +1145,6 @@ test('Test that listFaProjectMedia and listFaProjectDocumentTemplates return ite
   expect(listedMedia).toHaveLength(1)
   expect(listedMedia[0]?.type).toBe('external')
   expect(listedMedia[0]?.internalEmbed).toBeNull()
-  expect(listedMedia[0]?.internalIsProjectIncluded).toBe(false)
   expect(listFaProjectDocumentTemplates(db as never).items).toHaveLength(1)
 })
 
