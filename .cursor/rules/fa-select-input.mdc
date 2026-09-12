@@ -44,7 +44,7 @@ Domain barrel: **`src/scripts/faSelectInput/faSelectInput_manager.ts`**.
 
 Menu width **600px** — **`$faSelectInput-menu-width`** / **`minWidth`** / **`maxWidth`** in **`styles/_variables.scss`** (forwarded via **`src/css/quasar.variables.scss`**). Keep in sync with **`FaSelectInput.unscoped.scss`**.
 
-Hardcoded on SFC: **`menu-anchor="bottom middle"`**, **`menu-self="top middle"`**, default **`popup-content-class="faSelectInput__menu"`**, **`use-input`**, **`input-debounce="0"`**. **`use-chips`** when **`selectionPresentation`** is **`chips`** (default). **`chipRemovable`** (default **`true`**) — set **`false`** for mandatory single chip without X.
+Hardcoded on SFC: **`menu-anchor="bottom middle"`**, **`menu-self="top middle"`**, default **`popup-content-class="faSelectInput__menu"`**, **`use-input`**, **`input-debounce="0"`**. **`use-chips`** when **`selectionPresentation`** is **`chips`** (default). **`chipRemovable`** (default **`true`**) — set **`false`** for mandatory single chip without X. Teleported menu **`z-index` 7002** (`$faSelectInput-menu-zIndex`) so lists stack above modal **`QDialog`**.
 
 ## Menu / option styling
 

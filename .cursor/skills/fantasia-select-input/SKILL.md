@@ -62,7 +62,7 @@ App Settings enum **`q-select`** stays in **`DialogAppSettingsSettingBlock`** un
 - Filter = FA 1.0 multi-token match: space-split query words AND-matched against distinct label words (equality and/or includes); highlight claimed words only (not letter-only wash); results sorted exact → full-word → partial
 - **Default:** keyboard-highlight first option on popup-show and after every filter update (model unchanged)
 - **Focus opens menu:** Tab / Shift+Tab via **`keyup` Tab** (not `@focus` `showPopup` — that races Quasar click toggle; **`QSelect` `inheritAttrs: false`** drops wrapper `@mousedown`); parents may still call **`openPopup()`** (Quick Add template)
-- Menu fixed **600px**, center under field (**`bottom middle`** / **`top middle`**); optional **`popupContentClass`**
+- Menu fixed **600px**, center under field (**`bottom middle`** / **`top middle`**); optional **`popupContentClass`**; teleported menu **`z-index` 7002** (above **`QDialog`**)
 - **separatorAlt** via CSS border on option item (single virtual-scroll root); **`virtual-scroll-slice-size` 80** fills tall menus on first open; selected = side bars on **`::before`** + idle non-match text; filter **optionMatch** gold on selected too; fantasy hover/keyboard = menu bottom-edge glow (**`faMenuItemGlow`** on **`::after`**); label/icon stay idle color (no hover wash tint)
 - Create-new: trim; simple string or object **`{ id: crypto.randomUUID(), name, isNew: true }`**
 

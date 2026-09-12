@@ -28,7 +28,7 @@ yarn
 
 ## Optional: Caveman ecosystem (AI)
 
-Not required to build/run app. **caveman** compressed agent replies — [`.cursor/rules/caveman-default.mdc`](.cursor/rules/caveman-default.mdc). **YAGNI** minimal implementation — [`.cursor/rules/yagni.mdc`](.cursor/rules/yagni.mdc). **cavemem** cross-session memory — global install + [`.cursor/hooks.json`](.cursor/hooks.json). Setup:
+Not required to build/run app. **caveman** compressed agent replies — [`.cursor/rules/caveman-default.mdc`](.cursor/rules/caveman-default.mdc). **YAGNI** minimal implementation — [`.cursor/rules/yagni.mdc`](.cursor/rules/yagni.mdc). **cavemem** cross-session memory — global install + [`.cursor/hooks.json`](.cursor/hooks.json). **Arbor** (optional MCP code graph) — local gitignored **`.cursor/mcp.json`** (`arbor.exe` **`bridge`**), [fantasia-arbor](.cursor/skills/fantasia-arbor/SKILL.md). Setup cavemem:
 
 ```bash
 npm install -g cavemem
@@ -226,7 +226,7 @@ After Electron/Node version changes: clean **`yarn install`** (**`postinstall`**
 
 ## Project databases (`.faproject`)
 
-SQLite per project; schema **`user_version` max 10** — [docs/database/projectDB.md](docs/database/projectDB.md). Template custom fields design: [templateCustomFields.md](docs/database/templateCustomFields.md).
+SQLite per project; schema **`user_version` max 11** — [docs/database/projectDB.md](docs/database/projectDB.md). Template custom fields design: [templateCustomFields.md](docs/database/templateCustomFields.md).
 
 **Project settings refresh:** **`DialogProjectSettings`** IPC-reads on open (**`getProjectSettings`**, **`listWorldsForProjectSettings`**, **`listDocumentTemplatesForProjectSettings`**); save via **`saveProjectSettings`**. No Pinia-only seed. See [fa-project-database-access.mdc](.cursor/rules/fa-project-database-access.mdc), [fantasia-sqlite-main](.cursor/skills/fantasia-sqlite-main/SKILL.md).
 
