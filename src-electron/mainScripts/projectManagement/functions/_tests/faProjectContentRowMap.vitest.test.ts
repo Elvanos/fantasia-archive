@@ -88,6 +88,7 @@ function buildFaSqlMediaRowFixture (overrides: Partial<I_faSqlMediaRow> = {}): I
     internal_type: '',
     external_type: '',
     external_link: '',
+    external_embed: '',
     internal_link: '',
     internal_embed: null,
     created_at_ms: 7,
@@ -106,6 +107,7 @@ test('Test that mapFaProjectMediaRow maps type columns and empty embed', () => {
   expect(mapped.internalType).toBe('')
   expect(mapped.externalType).toBe('')
   expect(mapped.externalLink).toBe('')
+  expect(mapped.externalEmbed).toBe('')
   expect(mapped.internalLink).toBe('')
   expect(mapped.internalEmbed).toBeNull()
 })
@@ -151,4 +153,20 @@ test('Test that mapFaProjectMediaRow maps unknown internal_type including legacy
     internal_type: 'linked'
   }))
   expect(mapped.internalType).toBe('')
+})
+
+test('Test that mapFaProjectMediaRow maps embed external_type and external_embed', () => {
+  const mapped = mapFaProjectMediaRow(buildFaSqlMediaRowFixture({
+    external_type: 'embed',
+    external_embed: '<iframe></iframe>'
+  }))
+  expect(mapped.externalType).toBe('embed')
+  expect(mapped.externalEmbed).toBe('<iframe></iframe>')
+})
+
+test('Test that mapFaProjectMediaRow maps unknown external_type to empty', () => {
+  const mapped = mapFaProjectMediaRow(buildFaSqlMediaRowFixture({
+    external_type: 'nope'
+  }))
+  expect(mapped.externalType).toBe('')
 })

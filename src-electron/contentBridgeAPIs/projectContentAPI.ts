@@ -58,6 +58,9 @@ export const projectContentAPI: I_faProjectContentAPI = {
   listMedia: async () => {
     return await invokeProjectContent(FA_PROJECT_CONTENT_IPC.listMediaAsync)
   },
+  upsertMedia: async (items) => {
+    return await invokeProjectContent(FA_PROJECT_CONTENT_IPC.upsertMediaAsync, { items })
+  },
   createDocumentTemplate: async (input) => {
     return await invokeProjectContent(
       FA_PROJECT_CONTENT_IPC.createDocumentTemplateAsync,

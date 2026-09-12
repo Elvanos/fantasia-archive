@@ -8,7 +8,7 @@ SQLite **`documents`** = worldbuilding entities (world + optional template). ≠
 
 ## Schema version (`PRAGMA user_version`)
 
-Fresh files bootstrap to **v10**. Live upgrade ladder **v1→v10** ships. Pre-release flatten (squash to single bootstrap) separate — [fantasia-flatten-database-schemas](../../.cursor/skills/fantasia-flatten-database-schemas/SKILL.md).
+Fresh files bootstrap to **v11**. Live upgrade ladder **v1→v11** ships. Pre-release flatten (squash to single bootstrap) separate — [fantasia-flatten-database-schemas](../../.cursor/skills/fantasia-flatten-database-schemas/SKILL.md).
 
 | Version | Contents |
 |---------|----------|
@@ -21,12 +21,13 @@ Fresh files bootstrap to **v10**. Live upgrade ladder **v1→v10** ships. Pre-re
 | **6** | Renames **worlds.color_pallete** → **worlds.color_palette** (ALTER TABLE … RENAME COLUMN). Idempotent when **color_palette** already present or **color_pallete** absent. Fresh bootstrap DDL uses **color_palette** directly. |
 | **7** | Adds per-world **`tags`** (`id`, `world_id`, `name`, timestamps) + **`document_tags`** M:N (`document_id`, `tag_id`, `sort_order`) with case-insensitive unique tag names per world. Idempotent **`applyFaProjectTagsSchemaPatch`** runs on every open at version **7**. Fresh bootstrap DDL includes both tables. |
 | **8** | Adds **`document_last_opened`** (`document_id` PK → **`documents(id)`** ON DELETE CASCADE, **`opened_at_ms`**) for Project overview MRU (newest first, max **50**). Idempotent **`applyFaProjectDocumentLastOpenedSchemaPatch`** runs on every open at version **8**. Fresh bootstrap DDL includes the table. |
-| **9** | Adds **`media.type`**, **`media.internal_type`**, **`media.external_type`**, **`media.external_link`**, **`media.internal_link`**, **`media.internal_embed`**, **`media.internal_is_project_included`**. Idempotent **`applyFaProjectMediaTypeColumnsSchemaPatch`** runs on every open (now at max **10** as well) for legacy files missing type/link/embed columns. Does **not** add the include column (dropped in **v10**). New + backfilled rows **`type = 'external'`**; TEXT empty **`'' NOT NULL DEFAULT ''`**; BLOB empty **NULL**. Per-column CHECKs only — no combo CHECKs. |
-| **10** | Rebuilds **`media`**: drops **`internal_is_project_included`**. **`internal_type`** CHECK is **`''`**, **`embedded`**, **`linked_outside`**, **`linked_in_project`**. Copies existing **`internal_type`** as-is (no **`linked`** → **`linked_outside`** map). Idempotent **`applyFaProjectMediaInternalTypeV10SchemaPatch`** rebuilds when the include column remains or sqlite_master still has the v9 **`IN ('', 'embedded', 'linked')`** CHECK. Fresh bootstrap DDL is v10-shaped. |
+| **9** | Adds **`media.type`**, **`media.internal_type`**, **`media.external_type`**, **`media.external_link`**, **`media.internal_link`**, **`media.internal_embed`**, **`media.internal_is_project_included`**. Idempotent **`applyFaProjectMediaTypeColumnsSchemaPatch`** runs on every open (now at max **11** as well) for legacy files missing type/link/embed columns. Does **not** add the include column (dropped in **v10**). New + backfilled rows **`type = 'external'`**; TEXT empty **`'' NOT NULL DEFAULT ''`**; BLOB empty **NULL**. Per-column CHECKs only — no combo CHECKs. |
+| **10** | Rebuilds **`media`**: drops **`internal_is_project_included`**. **`internal_type`** CHECK is **`''`**, **`embedded`**, **`linked_outside`**, **`linked_in_project`**. Copies existing **`internal_type`** as-is (no **`linked`** → **`linked_outside`** map). Idempotent **`applyFaProjectMediaInternalTypeV10SchemaPatch`** rebuilds when the include column remains or sqlite_master still has the v9 **`IN ('', 'embedded', 'linked')`** CHECK. v10 rebuild stays v10-shaped (no **`external_embed`**). |
+| **11** | Rebuilds **`media`**: adds **`external_embed`** TEXT NOT NULL DEFAULT **`''`**. **`external_type`** CHECK is **`''`**, **`linked`**, **`embed`**. Copies **`external_embed`** when the column already exists, else **`''`**. Idempotent **`applyFaProjectMediaExternalEmbedV11SchemaPatch`** rebuilds when the column is missing or sqlite_master still has the v10 **`IN ('', 'linked')`** CHECK. Fresh bootstrap DDL is v11-shaped. |
 
-**Supported max:** **`FA_PROJECT_USER_VERSION_SUPPORTED_MAX = 10`** in **`faProjectDbMigrateWiring.ts`**.
+**Supported max:** **`FA_PROJECT_USER_VERSION_SUPPORTED_MAX = 11`** in **`faProjectDbMigrateWiring.ts`**.
 
-**Migration entry:** **`applyFaProjectMigrations(db, displayProjectName)`** — fresh files start at **0**, bootstrap to **v10** + seed a default **world** when empty; files at **v10** run idempotent patches only; files at **v9** migrate to **v10** then run patches; earlier versions climb **vN→…→v10** then run patches. Any other version is unsupported and throws. Older pre-release dev **.faproject** files must be recreated after a flatten.
+**Migration entry:** **`applyFaProjectMigrations(db, displayProjectName)`** — fresh files start at **0**, bootstrap to **v11** + seed a default **world** when empty; files at **v11** run idempotent patches only; files at **v10** migrate to **v11** then run patches; earlier versions climb **vN→…→v11** then run patches. Any other version is unsupported and throws. Older pre-release dev **.faproject** files must be recreated after a flatten.
 
 **Worlds vs document templates on create:** **`seedFaProjectDefaultWorldIfEmpty`** runs after bootstrap and inserts one default **world** when the table is empty. **Document templates are never auto-seeded** — a new **`.faproject`** may have zero **`document_templates`** rows until the user adds them in **Project Settings**.
 
@@ -94,13 +95,14 @@ Index: **`idx_document_templates_sort_order`**. Unlike **worlds**, new projects 
 | `display_name` | TEXT | Non-empty |
 | `type` | TEXT NOT NULL DEFAULT `'external'` | **`external`** or **`internal`**. New + v9 backfill **`external`**. |
 | `internal_type` | TEXT NOT NULL DEFAULT `''` | **`''`**, **`embedded`**, **`linked_outside`**, or **`linked_in_project`**. v9 used **`linked`**; v10 copies as-is (legacy **`linked`** fails the new CHECK if any such row existed). |
-| `external_type` | TEXT NOT NULL DEFAULT `''` | **`''`** or **`linked`**. |
-| `external_link` | TEXT NOT NULL DEFAULT `''` | Path or URL; empty **`''`**. |
+| `external_type` | TEXT NOT NULL DEFAULT `''` | **`''`**, **`linked`**, or **`embed`**. |
+| `external_link` | TEXT NOT NULL DEFAULT `''` | Path or URL; empty **`''`**. Unused when **`external_type`** is **`embed`** (value kept). |
+| `external_embed` | TEXT NOT NULL DEFAULT `''` | iframe / embed HTML body; empty **`''`**. v11+. |
 | `internal_link` | TEXT NOT NULL DEFAULT `''` | Path or URL; empty **`''`**. |
 | `internal_embed` | BLOB, nullable | Bytes or **NULL** (empty). SQL name **`internal_embed`**. |
 | `created_at_ms`, `updated_at_ms` | INTEGER | |
 
-Create/update IPC this pass still **`displayName`** only; SQL defaults fill type/link/embed columns. No blob **write** IPC this pass.
+Create/update IPC (`create-media-async` / `update-media-async`) still **`displayName`** only; SQL defaults fill type/link/embed on those paths. **`upsert-media-async`** inserts or updates by **`id`** (title, type, subtypes, links, **`external_embed`**). Does not write **`internal_embed`** blob. **`list-media-async`** / **`listFaProjectMedia`**: **ORDER BY created_at_ms DESC, id DESC** (newest add first; not **`updated_at_ms`**, not **`display_name`**).
 
 ### `documents`
 
@@ -234,15 +236,15 @@ Singleton workspace tab snapshot (one row, **`id = 1`**).
 
 **Link helpers (FK assignment):** **`setFaProjectDocumentWorld`**, **`setFaProjectDocumentTemplate`** in **`faProjectDocumentsPersistWiring.ts`**.
 
-## Planned extensions (after version 5)
+## Planned extensions (after current max)
 
-Template custom fields (defs, typed values, orphan retention) in [templateCustomFields.md](templateCustomFields.md); future migration (**v6+**); table detail lands here when shipped.
+Template custom fields (defs, typed values, orphan retention) in [templateCustomFields.md](templateCustomFields.md); future migration (**v12+**); table detail lands here when shipped.
 
 ## Main-process module map
 
 ```
 src-electron/mainScripts/projectManagement/
-  faProjectDbMigrateWiring.ts          # migrations v1→v5 + bootstrap, metadata read helpers
+  faProjectDbMigrateWiring.ts          # migrations v1→v11 + bootstrap, metadata read helpers
   faProjectDatabaseEnsureConnectedWiring.ts  # runWithFaProjectDatabase* (required entry)
   faProjectDataKvWiring.ts
   faProjectSettingsPersistWiring.ts
@@ -267,6 +269,9 @@ src-electron/mainScripts/projectManagement/
     faProjectDocumentTemplatesSqlWiring.ts
     faProjectDocumentTemplatesSnapshotWiring.ts
     faProjectMediaPersistWiring.ts
+    faProjectMediaTypeColumnsSchemaPatchWiring.ts  # idempotent v9 media type/link columns
+    faProjectMediaInternalTypeV10SchemaPatchWiring.ts  # idempotent v10 internal_type rebuild
+    faProjectMediaExternalEmbedV11SchemaPatchWiring.ts  # idempotent v11 external_embed rebuild
     faProjectWorldsSnapshotWiring.ts
     faProjectWorldTemplateLayoutReadWiring.ts
     faProjectWorldTemplateLayoutSnapshotWiring.ts
@@ -307,9 +312,10 @@ All content handlers wrap **`runWithFaProjectDatabaseForIpcAsync`**.
 | `save-worlds-snapshot-async` | `replaceFaProjectWorldsSnapshot` (transactional full list replace from Project Settings) |
 | `create-media-async` | `createFaProjectMedia` |
 | `update-media-async` | `updateFaProjectMedia` |
+| `upsert-media-async` | `upsertFaProjectMediaMany` (transactional insert-or-update by id; no blob write) |
 | `delete-media-async` | `deleteFaProjectMedia` |
 | `get-media-by-id-async` | `getFaProjectMediaById` |
-| `list-media-async` | `listFaProjectMedia` |
+| `list-media-async` | `listFaProjectMedia` (**`created_at_ms DESC`**, **`id DESC`**) |
 | `create-document-template-async` | `createFaProjectDocumentTemplate` |
 | `update-document-template-async` | `updateFaProjectDocumentTemplate` |
 | `delete-document-template-async` | `deleteFaProjectDocumentTemplate` |
@@ -381,6 +387,7 @@ Missing entity ids → **`FaProjectContentNotFoundError`** (`faProjectContentNot
 - DDL / row map: **`functions/_tests/faProjectDbSchemaDdl.vitest.test.ts`**, **`faProjectContentRowMap.vitest.test.ts`**
 - Persist (mock DB): **`projectDbContent/_tests/faProjectContentPersist.vitest.test.ts`**
 - Media type columns patch: **`projectDbContent/_tests/faProjectMediaTypeColumnsSchemaPatchWiring.vitest.test.ts`**
+- Media v10 internal type / v11 external embed patches: **`faProjectMediaInternalTypeV10SchemaPatchWiring.vitest.test.ts`**, **`faProjectMediaExternalEmbedV11SchemaPatchWiring.vitest.test.ts`**
 - IPC: **`ipcManagement/_tests/registerFaProjectContentIpc.vitest.test.ts`**
 - Preload: **`contentBridgeAPIs/_tests/projectContentAPI.vitest.test.ts`**
 - Zod: **`shared/_tests/faProjectContentSchemas.vitest.test.ts`**

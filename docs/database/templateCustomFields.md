@@ -1,6 +1,6 @@
 # Document template custom fields (approved design)
 
-**Status:** Architecture approved. **Not implemented** in SQLite, IPC, or UI. Shipped **`user_version` max 10** per [projectDB.md](projectDB.md) (includes **`worlds.color`**, **`worlds.color_palette`**, **`worlds.sort_order`**, per-world template layout via **`world_template_groups`** / **`world_template_placements`**, per-locale translations, default-world seed on create, document hierarchy/status/appearance/`extra_classes`, per-world **`tags`** / **`document_tags`**, **`document_last_opened`** MRU, **`media`** type/link/embed + v10 **`internal_type`**). Custom fields = **separate future migration** after supported max (**v11+**).
+**Status:** Architecture approved. **Not implemented** in SQLite, IPC, or UI. Shipped **`user_version` max 11** per [projectDB.md](projectDB.md) (includes **`worlds.color`**, **`worlds.color_palette`**, **`worlds.sort_order`**, per-world template layout via **`world_template_groups`** / **`world_template_placements`**, per-locale translations, default-world seed on create, document hierarchy/status/appearance/`extra_classes`, per-world **`tags`** / **`document_tags`**, **`document_last_opened`** MRU, **`media`** type/link/embed + v10 **`internal_type`** + v11 **`external_embed`**). Custom fields = **separate future migration** after supported max (**v12+**).
 
 ## Problem
 
@@ -188,15 +188,15 @@ Templates define a live, soft-deletable field catalog; documents store a persist
 
 Phases are ordered for future work. Update [projectDB.md](projectDB.md) in the **same commit** as each schema/IPC phase.
 
-### Phase 1 — Schema v11+ (custom fields)
+### Phase 1 — Schema v12+ (custom fields)
 
-Baseline = shipped max (**`FA_PROJECT_USER_VERSION_SUPPORTED_MAX = 6`**); see [projectDB.md](projectDB.md).
+Baseline = shipped max (**`FA_PROJECT_USER_VERSION_SUPPORTED_MAX = 11`**); see [projectDB.md](projectDB.md).
 
 - **`src-electron/mainScripts/projectManagement/functions/faProjectDbSchemaDdl.ts`** — add DDL for `template_fields`, `document_field_values`, link tables, indexes.
-- **`src-electron/mainScripts/projectManagement/faProjectDbMigrateWiring.ts`** — add **v6→v7** (or next) migration step; bump **`FA_PROJECT_USER_VERSION_SUPPORTED_MAX`**; chain in **`applyFaProjectMigrations`** (see [fantasia-flatten-database-schemas](../../.cursor/skills/fantasia-flatten-database-schemas/SKILL.md) **Adding migrations again**).
+- **`src-electron/mainScripts/projectManagement/faProjectDbMigrateWiring.ts`** — add **v11→v12** (or next) migration step; bump **`FA_PROJECT_USER_VERSION_SUPPORTED_MAX`**; chain in **`applyFaProjectMigrations`** (see [fantasia-flatten-database-schemas](../../.cursor/skills/fantasia-flatten-database-schemas/SKILL.md) **Adding migrations again**).
 - Fold resulting tables into **`projectDB.md`**; relabel sections here from **proposed** to **implemented**.
 
-**Note:** Shipped schema through **v6** includes **`worlds.color`**, **`worlds.sort_order`**, per-world template layout, per-locale translations — see [projectDB.md](projectDB.md).
+**Note:** Shipped schema through **v11** includes **`worlds.color`**, **`worlds.sort_order`**, per-world template layout, per-locale translations, media **`external_embed`** — see [projectDB.md](projectDB.md).
 
 ### Phase 2 — Main persist
 

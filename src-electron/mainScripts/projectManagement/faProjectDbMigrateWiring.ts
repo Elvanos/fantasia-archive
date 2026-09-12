@@ -34,12 +34,16 @@ import {
   applyFaProjectMediaInternalTypeV10SchemaPatch,
   rebuildFaProjectMediaTableForV10
 } from './projectDbContent/faProjectMediaInternalTypeV10SchemaPatchWiring'
+import {
+  applyFaProjectMediaExternalEmbedV11SchemaPatch,
+  rebuildFaProjectMediaTableForV11
+} from './projectDbContent/faProjectMediaExternalEmbedV11SchemaPatchWiring'
 
 const OPTION_PROJECT_NAME = 'project_name'
 const OPTION_PROJECT_UUID = 'project_uuid'
 
-/** Current schema revision: flattened bootstrap + v2–v9 + v10 media internal_type. */
-export const FA_PROJECT_USER_VERSION_SUPPORTED_MAX = 10
+/** Current schema revision: flattened bootstrap + v2–v10 + v11 media external embed. */
+export const FA_PROJECT_USER_VERSION_SUPPORTED_MAX = 11
 
 const applyFaProjectDocumentsHierarchySchemaPatch = createApplyFaProjectDocumentsHierarchySchemaPatch({
   documentsTableName: FA_PROJECT_TABLE_DOCUMENTS,
@@ -114,6 +118,7 @@ function applyFaProjectSchemaPatchesAtCurrentVersion (db: Database): void {
   applyFaProjectDocumentLastOpenedSchemaPatch(db)
   applyFaProjectMediaTypeColumnsSchemaPatch(db)
   applyFaProjectMediaInternalTypeV10SchemaPatch(db)
+  applyFaProjectMediaExternalEmbedV11SchemaPatch(db)
   applyFaProjectOpenedDocumentsSchemaV1(db)
 }
 
@@ -207,6 +212,14 @@ function migrateFaProjectSchemaV9ToV10 (db: Database): void {
   runMigration()
 }
 
+function migrateFaProjectSchemaV10ToV11 (db: Database): void {
+  const runMigration = db.transaction(() => {
+    rebuildFaProjectMediaTableForV11(db)
+    db.pragma('user_version = 11')
+  })
+  runMigration()
+}
+
 const FA_PROJECT_SCHEMA_CLIMB_STEPS = [
   migrateFaProjectSchemaV1ToV2,
   migrateFaProjectSchemaV2ToV3,
@@ -216,7 +229,8 @@ const FA_PROJECT_SCHEMA_CLIMB_STEPS = [
   migrateFaProjectSchemaV6ToV7,
   migrateFaProjectSchemaV7ToV8,
   migrateFaProjectSchemaV8ToV9,
-  migrateFaProjectSchemaV9ToV10
+  migrateFaProjectSchemaV9ToV10,
+  migrateFaProjectSchemaV10ToV11
 ]
 
 function climbFaProjectSchemaFromVersion (db: Database, startVer: number): void {

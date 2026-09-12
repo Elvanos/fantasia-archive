@@ -31,7 +31,9 @@ import {
 import { createFaProjectNamedEntity } from '../faProjectContentNamedEntitySqlWiring'
 import {
   createFaProjectMedia,
-  getFaProjectMediaById
+  getFaProjectMediaById,
+  upsertFaProjectMedia,
+  upsertFaProjectMediaMany
 } from '../faProjectMediaPersistWiring'
 import {
   createFaProjectWorld,
@@ -50,7 +52,7 @@ import {
 import { assertFaProjectDocumentTemplateExists } from '../faProjectDocumentTemplatesSqlWiring'
 import { replaceFaProjectWorldTemplateLayoutSnapshot } from '../faProjectWorldTemplateLayoutSnapshotWiring'
 
-type T_row = Record<string, string | number | null>
+type T_row = Record<string, string | number | null | Uint8Array>
 
 function readMockWorldMaxSortOrder (worlds: Map<string, T_row>): number | null {
   let max: number | null = null
@@ -61,6 +63,21 @@ function readMockWorldMaxSortOrder (worlds: Map<string, T_row>): number | null {
     }
   }
   return max
+}
+
+function sortFaProjectMediaListMockRows (media: Map<string, T_row>): T_row[] {
+  return [...media.values()].sort((left, right) => {
+    const createdDelta = (right.created_at_ms as number) - (left.created_at_ms as number)
+    if (createdDelta !== 0) {
+      return createdDelta
+    }
+    const rightId = String(right.id)
+    const leftId = String(left.id)
+    if (rightId === leftId) {
+      return 0
+    }
+    return rightId < leftId ? -1 : 1
+  })
 }
 
 function readMockDocumentTemplateMaxSortOrder (
@@ -103,10 +120,8 @@ function makeProjectContentTestDb (): {
   const junctionDocumentMedia = new Set<string>()
 
   const db = {
-    transaction: (fn: () => void) => {
-      return () => {
-        fn()
-      }
+    transaction: (fn: () => unknown) => {
+      return () => fn()
     },
     prepare: vi.fn((sql: string) => {
       const normalized = sql.replace(/\s+/g, ' ').trim()
@@ -163,6 +178,26 @@ function makeProjectContentTestDb (): {
           }
         }
       }
+      if (normalized.includes('INSERT INTO media') && normalized.includes('internal_type')) {
+        return {
+          run: (...args: Array<string | number>) => {
+            const row: T_row = {
+              id: args[0] as string,
+              display_name: args[1] as string,
+              type: args[2] as string,
+              internal_type: args[3] as string,
+              external_type: args[4] as string,
+              external_link: args[5] as string,
+              external_embed: args[6] as string,
+              internal_link: args[7] as string,
+              internal_embed: null,
+              created_at_ms: args[8] as number,
+              updated_at_ms: args[9] as number
+            }
+            tables.media.set(row.id as string, row)
+          }
+        }
+      }
       if (normalized.includes('INSERT INTO media')) {
         return {
           run: (...args: Array<string | number>) => {
@@ -173,6 +208,7 @@ function makeProjectContentTestDb (): {
               internal_type: '',
               external_type: '',
               external_link: '',
+              external_embed: '',
               internal_link: '',
               internal_embed: null,
               created_at_ms: args[2] as number,
@@ -442,6 +478,32 @@ function makeProjectContentTestDb (): {
       }
       if (
         normalized.includes('UPDATE') &&
+        normalized.includes('media') &&
+        normalized.includes('type = ?')
+      ) {
+        return {
+          run: (...args: Array<string | number>) => {
+            const id = args[args.length - 1] as string
+            const existing = tables.media.get(id)
+            if (existing === undefined) {
+              return
+            }
+            tables.media.set(id, {
+              ...existing,
+              display_name: args[0] as string,
+              type: args[1] as string,
+              internal_type: args[2] as string,
+              external_type: args[3] as string,
+              external_link: args[4] as string,
+              external_embed: args[5] as string,
+              internal_link: args[6] as string,
+              updated_at_ms: args[7] as number
+            })
+          }
+        }
+      }
+      if (
+        normalized.includes('UPDATE') &&
         normalized.includes('SET display_name = ?') &&
         !normalized.includes('world_template_groups') &&
         !normalized.includes('world_template_placements')
@@ -627,7 +689,7 @@ function makeProjectContentTestDb (): {
       ) {
         return {
           get: (id: string) => tables.media.get(id),
-          all: () => [...tables.media.values()]
+          all: () => sortFaProjectMediaListMockRows(tables.media)
         }
       }
       if (normalized.includes('SELECT') && normalized.includes(`FROM ${FA_PROJECT_TABLE_MEDIA}`)) {
@@ -892,6 +954,7 @@ test('Test that getFaProjectMediaById returns a created media row', () => {
   expect(media.internalType).toBe('')
   expect(media.externalType).toBe('')
   expect(media.externalLink).toBe('')
+  expect(media.externalEmbed).toBe('')
   expect(media.internalLink).toBe('')
   expect(media.internalEmbed).toBeNull()
   expect(getFaProjectMediaById(db as never, media.id).displayName).toBe('Pic')
@@ -1149,6 +1212,30 @@ test('Test that listFaProjectMedia and listFaProjectDocumentTemplates return ite
 })
 
 /**
+ * listFaProjectMedia
+ * Newest created_at_ms first; name order is ignored; updated_at_ms is ignored.
+ */
+test('Test that listFaProjectMedia sorts by created_at_ms newest first', () => {
+  const { db, tables } = makeProjectContentTestDb()
+  const older = createFaProjectMedia(db as never, { displayName: 'AAA' })
+  const newer = createFaProjectMedia(db as never, { displayName: 'ZZZ' })
+  const olderRow = tables.media.get(older.id)
+  const newerRow = tables.media.get(newer.id)
+  expect(olderRow).toBeDefined()
+  expect(newerRow).toBeDefined()
+  if (olderRow !== undefined) {
+    olderRow.created_at_ms = 100
+    olderRow.updated_at_ms = 500
+  }
+  if (newerRow !== undefined) {
+    newerRow.created_at_ms = 200
+    newerRow.updated_at_ms = 300
+  }
+  const listedIds = listFaProjectMedia(db as never).items.map((item) => item.id)
+  expect(listedIds).toEqual([newer.id, older.id])
+})
+
+/**
  * deleteFaProjectMedia
  * Throws when the media id does not exist.
  */
@@ -1168,6 +1255,118 @@ test('Test that deleteFaProjectMedia removes an existing media row', () => {
   const media = createFaProjectMedia(db as never, { displayName: 'X' })
   deleteFaProjectMedia(db as never, media.id)
   expect(tables.media.has(media.id)).toBe(false)
+})
+
+/**
+ * upsertFaProjectMedia
+ * Inserts a new media row when the id is unused.
+ */
+test('Test that upsertFaProjectMedia inserts a new row when the id is unused', () => {
+  const { db } = makeProjectContentTestDb()
+  const id = '550e8400-e29b-41d4-a716-446655440099'
+  const inserted = upsertFaProjectMedia(db as never, {
+    displayName: 'Poster',
+    externalEmbed: '<iframe></iframe>',
+    externalLink: 'https://cdn.example.test/poster.png',
+    externalType: 'embed',
+    id,
+    internalLink: '',
+    internalType: '',
+    type: 'external'
+  })
+  expect(inserted.id).toBe(id)
+  expect(inserted.displayName).toBe('Poster')
+  expect(inserted.externalType).toBe('embed')
+  expect(inserted.externalEmbed).toBe('<iframe></iframe>')
+  expect(inserted.internalEmbed).toBeNull()
+})
+
+/**
+ * upsertFaProjectMedia
+ * Updates type and link columns when the id already exists.
+ */
+test('Test that upsertFaProjectMedia updates an existing row by id', () => {
+  const { db } = makeProjectContentTestDb()
+  const media = createFaProjectMedia(db as never, { displayName: 'Old' })
+  const updated = upsertFaProjectMedia(db as never, {
+    displayName: 'New',
+    externalEmbed: '',
+    externalLink: '',
+    externalType: '',
+    id: media.id,
+    internalLink: 'https://files.example.test/clip.mp4',
+    internalType: 'linked_outside',
+    type: 'internal'
+  })
+  expect(updated.id).toBe(media.id)
+  expect(updated.displayName).toBe('New')
+  expect(updated.type).toBe('internal')
+  expect(updated.internalType).toBe('linked_outside')
+  expect(updated.internalLink).toBe('https://files.example.test/clip.mp4')
+  expect(updated.createdAtMs).toBe(media.createdAtMs)
+})
+
+/**
+ * upsertFaProjectMedia
+ * Update leaves the internal embed blob untouched.
+ */
+test('Test that upsertFaProjectMedia update keeps internal embed bytes', () => {
+  const { db, tables } = makeProjectContentTestDb()
+  const media = createFaProjectMedia(db as never, { displayName: 'Blob' })
+  const existing = tables.media.get(media.id)
+  expect(existing).toBeDefined()
+  if (existing !== undefined) {
+    existing.internal_embed = new Uint8Array([7, 8])
+    tables.media.set(media.id, existing)
+  }
+  const updated = upsertFaProjectMedia(db as never, {
+    displayName: 'Blob 2',
+    externalEmbed: '',
+    externalLink: '',
+    externalType: '',
+    id: media.id,
+    internalLink: '',
+    internalType: 'embedded',
+    type: 'internal'
+  })
+  expect(updated.displayName).toBe('Blob 2')
+  expect(updated.internalEmbed).toEqual(new Uint8Array([7, 8]))
+})
+
+/**
+ * upsertFaProjectMediaMany
+ * Empty list is a no-op and mixed ids insert or update.
+ */
+test('Test that upsertFaProjectMediaMany inserts and updates in one batch', () => {
+  const { db } = makeProjectContentTestDb()
+  expect(upsertFaProjectMediaMany(db as never, []).items).toEqual([])
+  const existing = createFaProjectMedia(db as never, { displayName: 'Keep' })
+  const freshId = '6ba7b810-9dad-11d1-80b4-00c04fd430c8'
+  const result = upsertFaProjectMediaMany(db as never, [
+    {
+      displayName: 'Keep 2',
+      externalEmbed: '',
+      externalLink: 'https://cdn.example.test/keep.png',
+      externalType: 'linked',
+      id: existing.id,
+      internalLink: '',
+      internalType: '',
+      type: 'external'
+    },
+    {
+      displayName: 'Fresh',
+      externalEmbed: '',
+      externalLink: 'https://cdn.example.test/fresh.png',
+      externalType: 'linked',
+      id: freshId,
+      internalLink: '',
+      internalType: '',
+      type: 'external'
+    }
+  ])
+  expect(result.items).toHaveLength(2)
+  expect(getFaProjectMediaById(db as never, existing.id).displayName).toBe('Keep 2')
+  expect(getFaProjectMediaById(db as never, freshId).displayName).toBe('Fresh')
 })
 
 /**

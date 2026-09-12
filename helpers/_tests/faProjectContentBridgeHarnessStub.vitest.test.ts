@@ -19,6 +19,7 @@ const stubMediaShape = {
   internalType: '',
   externalType: '',
   externalLink: '',
+  externalEmbed: '',
   internalLink: '',
   internalEmbed: null,
   createdAtMs: 0,
@@ -100,6 +101,16 @@ test('Test that createFaProjectContentBridgeHarnessStub update and set methods r
   await expect(api.updateDocumentTemplate(STUB_UUID, { displayName: 'Updated' })).resolves.toEqual(stubDocumentTemplateShape)
   await expect(api.updateMedia(STUB_UUID, { displayName: 'Updated' })).resolves.toEqual(stubMediaShape)
   await expect(api.updateWorld(STUB_UUID, { displayName: 'Updated' })).resolves.toEqual(stubWorldShape)
+  await expect(api.upsertMedia([{
+    displayName: 'Updated',
+    externalEmbed: '',
+    externalLink: '',
+    externalType: '',
+    id: STUB_UUID,
+    internalLink: '',
+    internalType: '',
+    type: 'external'
+  }])).resolves.toEqual({ items: [stubMediaShape] })
 
   await expect(api.setDocumentTemplate({
     documentId: STUB_UUID,

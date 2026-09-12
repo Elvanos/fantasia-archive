@@ -12,11 +12,14 @@ export const FA_PROJECT_MEDIA_TYPE_COLUMN = 'type'
 /** media.internal_type: embedded, linked_outside, linked_in_project, or empty */
 export const FA_PROJECT_MEDIA_INTERNAL_TYPE_COLUMN = 'internal_type'
 
-/** media.external_type: linked or empty */
+/** media.external_type: linked, embed, or empty */
 export const FA_PROJECT_MEDIA_EXTERNAL_TYPE_COLUMN = 'external_type'
 
 /** media.external_link: path or URL, or empty */
 export const FA_PROJECT_MEDIA_EXTERNAL_LINK_COLUMN = 'external_link'
+
+/** media.external_embed: iframe / embed HTML body, or empty */
+export const FA_PROJECT_MEDIA_EXTERNAL_EMBED_COLUMN = 'external_embed'
 
 /** media.internal_link: path or URL, or empty */
 export const FA_PROJECT_MEDIA_INTERNAL_LINK_COLUMN = 'internal_link'
@@ -35,15 +38,19 @@ export const FA_PROJECT_MEDIA_DEFAULT_TYPE = 'external'
 export const FA_PROJECT_MEDIA_INTERNAL_TYPE_CHECK_SQL =
   `(${FA_PROJECT_MEDIA_INTERNAL_TYPE_COLUMN} IN ('', 'embedded', 'linked_outside', 'linked_in_project'))`
 
+/** media.external_type CHECK (v11). */
+export const FA_PROJECT_MEDIA_EXTERNAL_TYPE_CHECK_SQL =
+  `(${FA_PROJECT_MEDIA_EXTERNAL_TYPE_COLUMN} IN ('', 'linked', 'embed'))`
+
 /** SELECT list for full media rows (unaliased). */
 export const FA_PROJECT_MEDIA_SELECT_SQL =
   'id, display_name, type, internal_type, external_type, external_link, ' +
-  'internal_link, internal_embed, created_at_ms, updated_at_ms'
+  'external_embed, internal_link, internal_embed, created_at_ms, updated_at_ms'
 
 /** SELECT list for full media rows aliased as m (document_media joins). */
 export const FA_PROJECT_MEDIA_SELECT_SQL_ALIASED_M =
   'm.id, m.display_name, m.type, m.internal_type, m.external_type, m.external_link, ' +
-  'm.internal_link, m.internal_embed, m.created_at_ms, m.updated_at_ms'
+  'm.external_embed, m.internal_link, m.internal_embed, m.created_at_ms, m.updated_at_ms'
 
 export const FA_PROJECT_TABLE_DOCUMENT_MEDIA = 'document_media'
 export const FA_PROJECT_TABLE_TAGS = 'tags'
@@ -256,8 +263,9 @@ CREATE TABLE IF NOT EXISTS ${FA_PROJECT_TABLE_MEDIA} (
   ${FA_PROJECT_MEDIA_INTERNAL_TYPE_COLUMN} TEXT NOT NULL DEFAULT ''
   CHECK ${FA_PROJECT_MEDIA_INTERNAL_TYPE_CHECK_SQL},
   ${FA_PROJECT_MEDIA_EXTERNAL_TYPE_COLUMN} TEXT NOT NULL DEFAULT ''
-  CHECK (${FA_PROJECT_MEDIA_EXTERNAL_TYPE_COLUMN} IN ('', 'linked')),
+  CHECK ${FA_PROJECT_MEDIA_EXTERNAL_TYPE_CHECK_SQL},
   ${FA_PROJECT_MEDIA_EXTERNAL_LINK_COLUMN} TEXT NOT NULL DEFAULT '',
+  ${FA_PROJECT_MEDIA_EXTERNAL_EMBED_COLUMN} TEXT NOT NULL DEFAULT '',
   ${FA_PROJECT_MEDIA_INTERNAL_LINK_COLUMN} TEXT NOT NULL DEFAULT '',
   ${FA_PROJECT_MEDIA_INTERNAL_EMBED_COLUMN} BLOB,
   created_at_ms INTEGER NOT NULL,

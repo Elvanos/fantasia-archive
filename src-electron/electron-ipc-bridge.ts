@@ -149,6 +149,7 @@ export const FA_PROJECT_CONTENT_IPC = {
   updateDocumentTemplateAsync: 'fa-project-content-update-document-template-async',
   updateMediaAsync: 'fa-project-content-update-media-async',
   updateWorldAsync: 'fa-project-content-update-world-async',
+  upsertMediaAsync: 'fa-project-content-upsert-media-async',
   listWorkspaceHierarchyLayoutAsync: 'fa-project-content-list-workspace-hierarchy-layout-async',
   listPlacementDocumentChildrenAsync: 'fa-project-content-list-placement-document-children-async',
   moveDocumentInHierarchyAsync: 'fa-project-content-move-document-in-hierarchy-async',

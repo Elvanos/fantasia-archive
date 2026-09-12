@@ -48,7 +48,8 @@ vi.mock(
     updateFaProjectMedia: vi.fn(() => ({ id: 'm' })),
     deleteFaProjectMedia: vi.fn(),
     getFaProjectMediaById: vi.fn(() => ({ id: 'm' })),
-    listFaProjectMedia: vi.fn(() => ({ items: [] }))
+    listFaProjectMedia: vi.fn(() => ({ items: [] })),
+    upsertFaProjectMediaMany: vi.fn(() => ({ items: [] }))
   })
 )
 
@@ -207,6 +208,7 @@ test('Test that registerFaProjectContentIpc registers all project content channe
   registerFaProjectContentIpc()
   const channels = handleMock.mock.calls.map((call) => call[0]!)
   expect(channels).toContain(FA_PROJECT_CONTENT_IPC.createWorldAsync)
+  expect(channels).toContain(FA_PROJECT_CONTENT_IPC.upsertMediaAsync)
   expect(channels).toContain(FA_PROJECT_CONTENT_IPC.listDocumentMediaAsync)
   expect(channels).toContain(FA_PROJECT_CONTENT_IPC.setDocumentTagsAsync)
   expect(channels).toContain(FA_PROJECT_CONTENT_IPC.renameTagAsync)
@@ -267,6 +269,18 @@ test('Test that every project content IPC handler runs through runWithFaProjectD
   await handlerFor(FA_PROJECT_CONTENT_IPC.deleteMediaAsync)(event, { id: SAMPLE_UUID })
   await handlerFor(FA_PROJECT_CONTENT_IPC.getMediaByIdAsync)(event, { id: SAMPLE_UUID })
   await handlerFor(FA_PROJECT_CONTENT_IPC.listMediaAsync)(event)
+  await handlerFor(FA_PROJECT_CONTENT_IPC.upsertMediaAsync)(event, {
+    items: [{
+      displayName: 'M',
+      externalEmbed: '',
+      externalLink: 'https://cdn.example.test/m.png',
+      externalType: 'linked',
+      id: SAMPLE_UUID,
+      internalLink: '',
+      internalType: '',
+      type: 'external'
+    }]
+  })
 
   await handlerFor(FA_PROJECT_CONTENT_IPC.createDocumentTemplateAsync)(event, { displayName: 'T' })
   await handlerFor(FA_PROJECT_CONTENT_IPC.updateDocumentTemplateAsync)(event, {

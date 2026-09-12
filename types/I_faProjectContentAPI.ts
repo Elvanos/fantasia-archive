@@ -40,7 +40,8 @@ import type {
   I_faProjectMedia,
   I_faProjectMediaCreateInput,
   I_faProjectMediaListResult,
-  I_faProjectMediaPatch
+  I_faProjectMediaPatch,
+  I_faProjectMediaUpsertItem
 } from 'app/types/I_faProjectMediaDomain'
 import type {
   I_faProjectHierarchyTreeDocumentChild,
@@ -125,6 +126,7 @@ export interface I_faProjectContentAPI {
   setDocumentWorld: (input: I_faProjectSetDocumentWorldInput) => Promise<I_faProjectDocument>
   deleteTag: (input: I_faProjectDeleteTagInput) => Promise<void>
   unlinkDocumentMedia: (input: I_faProjectDocumentMediaLinkInput) => Promise<void>
+  upsertMedia: (items: I_faProjectMediaUpsertItem[]) => Promise<I_faProjectMediaListResult>
   updateDocument: (id: string, patch: I_faProjectDocumentPatch) => Promise<I_faProjectDocument>
   updateDocumentTemplate: (
     id: string,

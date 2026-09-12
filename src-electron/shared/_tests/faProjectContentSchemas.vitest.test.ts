@@ -28,7 +28,8 @@ import {
   parseFaProjectMediaIdPayload,
   parseFaProjectMediaPatch,
   parseFaProjectMediaPersistedRow,
-  parseFaProjectMediaUpdatePayload
+  parseFaProjectMediaUpdatePayload,
+  parseFaProjectMediaUpsertPayload
 } from '../faProjectMediaContentSchema'
 import {
   parseFaProjectWorldCreateInput,
@@ -76,6 +77,18 @@ test('Test that project content schema parsers accept valid payloads', () => {
     patch: { displayName: 'Pic 2' }
   }).patch.displayName).toBe('Pic 2')
   expect(parseFaProjectMediaIdPayload({ id: SAMPLE_UUID })).toBe(SAMPLE_UUID)
+  expect(parseFaProjectMediaUpsertPayload({
+    items: [{
+      displayName: '  Pic  ',
+      externalEmbed: '<iframe></iframe>',
+      externalLink: 'https://cdn.example.test/pic.png',
+      externalType: 'embed',
+      id: SAMPLE_UUID,
+      internalLink: '',
+      internalType: '',
+      type: 'external'
+    }]
+  })[0]?.displayName).toBe('Pic')
   expect(parseFaProjectMediaPersistedRow({
     id: SAMPLE_UUID,
     displayName: 'Pic',
@@ -83,6 +96,7 @@ test('Test that project content schema parsers accept valid payloads', () => {
     internalType: '',
     externalType: '',
     externalLink: '',
+    externalEmbed: '',
     internalLink: '',
     internalEmbed: null,
     createdAtMs: 1,
@@ -95,11 +109,25 @@ test('Test that project content schema parsers accept valid payloads', () => {
     internalType: 'embedded',
     externalType: 'linked',
     externalLink: 'https://example.test/a',
+    externalEmbed: '',
     internalLink: '',
     internalEmbed: new Uint8Array([9]),
     createdAtMs: 1,
     updatedAtMs: 2
   }).type).toBe('internal')
+  expect(parseFaProjectMediaPersistedRow({
+    id: SAMPLE_UUID,
+    displayName: 'Pic',
+    type: 'external',
+    internalType: '',
+    externalType: 'embed',
+    externalLink: '',
+    externalEmbed: '<iframe src="https://www.youtube.com/embed/x"></iframe>',
+    internalLink: '',
+    internalEmbed: null,
+    createdAtMs: 1,
+    updatedAtMs: 2
+  }).externalEmbed).toBe('<iframe src="https://www.youtube.com/embed/x"></iframe>')
 
   expect(parseFaProjectDocumentTemplateCreateInput({ displayName: 'Tpl' }).displayName).toBe('Tpl')
   expect(parseFaProjectDocumentTemplateUpdatePayload({

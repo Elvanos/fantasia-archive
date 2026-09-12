@@ -54,6 +54,8 @@ test('Test that applyFaProjectContentSchemaV1 runs exec with worlds and related 
   expect(sql).toContain(FA_PROJECT_TABLE_DOCUMENT_TEMPLATES)
   expect(sql).toContain('document_media')
   expect(sql).toContain('internal_embed')
+  expect(sql).toContain('external_embed')
+  expect(sql).toContain("'embed'")
   expect(sql).not.toContain('internal_is_project_included')
   expect(sql).toContain("IN ('external', 'internal')")
   expect(sql).toContain('linked_outside')

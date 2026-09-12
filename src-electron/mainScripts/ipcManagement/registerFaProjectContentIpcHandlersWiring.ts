@@ -21,7 +21,8 @@ import {
   deleteFaProjectMedia,
   getFaProjectMediaById,
   listFaProjectMedia,
-  updateFaProjectMedia
+  updateFaProjectMedia,
+  upsertFaProjectMediaMany
 } from 'app/src-electron/mainScripts/projectManagement/projectDbContent/faProjectMediaPersistWiring'
 import {
   createFaProjectWorld,
@@ -47,7 +48,8 @@ import {
 import {
   parseFaProjectMediaCreateInput,
   parseFaProjectMediaIdPayload,
-  parseFaProjectMediaUpdatePayload
+  parseFaProjectMediaUpdatePayload,
+  parseFaProjectMediaUpsertPayload
 } from 'app/src-electron/shared/faProjectMediaContentSchema'
 import {
   parseFaProjectWorldCreateInput,
@@ -127,6 +129,11 @@ export function wireFaProjectContentMediaIpcHandlers (ipcMain: IpcMain): void {
   ipcMain.handle(FA_PROJECT_CONTENT_IPC.listMediaAsync, async (event) => {
     return await runFaProjectContentIpcWork(event, (db) => {
       return listFaProjectMedia(db)
+    })
+  })
+  ipcMain.handle(FA_PROJECT_CONTENT_IPC.upsertMediaAsync, async (event, payload) => {
+    return await runFaProjectContentIpcWork(event, (db) => {
+      return upsertFaProjectMediaMany(db, parseFaProjectMediaUpsertPayload(payload))
     })
   })
 }

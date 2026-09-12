@@ -107,8 +107,8 @@ function mapFaProjectMediaInternalType (raw: string): T_faProjectMediaInternalTy
 }
 
 function mapFaProjectMediaExternalType (raw: string): T_faProjectMediaExternalType {
-  if (raw === 'linked') {
-    return 'linked'
+  if (raw === 'linked' || raw === 'embed') {
+    return raw
   }
   return ''
 }
@@ -135,6 +135,7 @@ export function mapFaProjectMediaRow (row: I_faSqlMediaRow): I_faProjectMedia {
     internalType,
     externalType,
     externalLink: row.external_link,
+    externalEmbed: row.external_embed,
     internalLink: row.internal_link,
     internalEmbed,
     createdAtMs: row.created_at_ms,

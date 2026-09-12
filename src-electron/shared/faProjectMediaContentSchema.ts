@@ -9,7 +9,8 @@ import { dropUndefinedRecordValues } from 'app/src-electron/shared/faExactOption
 import type {
   I_faProjectMedia,
   I_faProjectMediaCreateInput,
-  I_faProjectMediaPatch
+  I_faProjectMediaPatch,
+  I_faProjectMediaUpsertItem
 } from 'app/types/I_faProjectMediaDomain'
 
 export const faProjectMediaCreateInputSchema = z.object({
@@ -59,8 +60,9 @@ export const faProjectMediaPersistedRowSchema = z.object({
   displayName: z.string().min(1),
   type: z.enum(['external', 'internal']),
   internalType: z.enum(['', 'embedded', 'linked_outside', 'linked_in_project']),
-  externalType: z.enum(['', 'linked']),
+  externalType: z.enum(['', 'embed', 'linked']),
   externalLink: z.string(),
+  externalEmbed: z.string(),
   internalLink: z.string(),
   internalEmbed: z.instanceof(Uint8Array).nullable(),
   createdAtMs: z.number(),
@@ -69,4 +71,27 @@ export const faProjectMediaPersistedRowSchema = z.object({
 
 export function parseFaProjectMediaPersistedRow (payload: unknown): I_faProjectMedia {
   return faProjectMediaPersistedRowSchema.parse(payload)
+}
+
+export const faProjectMediaUpsertItemSchema = z.object({
+  id: faProjectContentIdSchema,
+  displayName: faProjectContentDisplayNameSchema,
+  type: z.enum(['external', 'internal']),
+  internalType: z.enum(['', 'embedded', 'linked_outside', 'linked_in_project']),
+  externalType: z.enum(['', 'embed', 'linked']),
+  externalLink: z.string(),
+  externalEmbed: z.string(),
+  internalLink: z.string()
+}).strict()
+
+export const faProjectMediaUpsertPayloadSchema = z.object({
+  items: z.array(faProjectMediaUpsertItemSchema)
+}).strict()
+
+export function parseFaProjectMediaUpsertPayload (
+  payload: unknown
+): I_faProjectMediaUpsertItem[] {
+  return faProjectMediaUpsertPayloadSchema.parse(
+    parseFaProjectContentPlainRecord(payload)
+  ).items
 }

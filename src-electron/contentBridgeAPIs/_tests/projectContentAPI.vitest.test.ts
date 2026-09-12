@@ -48,6 +48,16 @@ test('Test that projectContentAPI methods invoke expected IPC channels', async (
   await projectContentAPI.deleteMedia(SAMPLE_UUID)
   await projectContentAPI.getMediaById(SAMPLE_UUID)
   await projectContentAPI.listMedia()
+  await projectContentAPI.upsertMedia([{
+    displayName: 'Art 3',
+    externalEmbed: '',
+    externalLink: 'https://cdn.example.test/art.png',
+    externalType: 'linked',
+    id: SAMPLE_UUID,
+    internalLink: '',
+    internalType: '',
+    type: 'external'
+  }])
 
   await projectContentAPI.createDocumentTemplate({ displayName: 'Tpl' })
   await projectContentAPI.updateDocumentTemplate(SAMPLE_UUID, { displayName: 'Tpl 2' })
@@ -164,6 +174,21 @@ test('Test that projectContentAPI methods invoke expected IPC channels', async (
           titleSingularTranslations: {},
         }
       ]
+    }
+  )
+  expect(invokeMock).toHaveBeenCalledWith(
+    FA_PROJECT_CONTENT_IPC.upsertMediaAsync,
+    {
+      items: [{
+        displayName: 'Art 3',
+        externalEmbed: '',
+        externalLink: 'https://cdn.example.test/art.png',
+        externalType: 'linked',
+        id: SAMPLE_UUID,
+        internalLink: '',
+        internalType: '',
+        type: 'external'
+      }]
     }
   )
   expect(invokeMock).toHaveBeenCalledWith(

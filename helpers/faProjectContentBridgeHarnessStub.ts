@@ -18,6 +18,7 @@ function stubMedia () {
     internalType: '' as const,
     externalType: '' as const,
     externalLink: '',
+    externalEmbed: '',
     internalLink: '',
     internalEmbed: null,
     createdAtMs: 0,
@@ -163,6 +164,7 @@ export function createFaProjectContentBridgeHarnessStub (): I_faProjectContentAP
     updateDocument: async () => stubDocument(),
     updateDocumentTemplate: async () => stubDocumentTemplate(),
     updateMedia: async () => stubMedia(),
-    updateWorld: async () => stubWorld()
+    updateWorld: async () => stubWorld(),
+    upsertMedia: async () => ({ items: [stubMedia()] })
   }
 }
