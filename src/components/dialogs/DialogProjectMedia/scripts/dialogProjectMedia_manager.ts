@@ -94,3 +94,9 @@ export const resolveDialogComponentStore = dialogProjectMediaApi.resolveDialogCo
 export const useDialogProjectMedia = dialogProjectMediaApi.useDialogProjectMedia
 
 export { FA_DIALOG_PROJECT_MEDIA_SINGLE_EDIT_SLIDE_MS }
+export {
+  resolveDialogProjectMediaSingleEditNavPanes,
+  resolveDialogProjectMediaSingleEditNavTrackClassList,
+  shouldFinishDialogProjectMediaSingleEditNavTrackTransition,
+  shouldIgnoreFaProjectMediaSingleEditLiveRowUpdate
+} from './functions/dialogProjectMediaSingleEditNavTrack'

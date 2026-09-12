@@ -25,7 +25,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Project Media list single-edit slide-out: 700px right panel (max-width 100%) over a blocking dim backdrop, Previous/Next, Close, Save without close, and Save and close, no heading. Preview is full-width 300px (contain image, playable video/audio, raw embed HTML).'
+          'Project Media list single-edit slide-out: 700px right panel (max-width 100%) over a blocking dim backdrop, Previous/Next (body duplicates; Previous incoming from the left, Next from the right; footer stays), Close, Save without close, and Save and close, no heading. Preview is full-width 300px (contain image, playable video/audio, raw embed HTML).'
       }
     },
     layout: 'padded'
