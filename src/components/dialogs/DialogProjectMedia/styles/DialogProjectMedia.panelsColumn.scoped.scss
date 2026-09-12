@@ -44,6 +44,12 @@
   min-height: 0;
   min-width: 0;
   overflow: auto;
+  padding-inline: $dialogProjectMedia-body-paddingInline;
+}
+
+.dialogProjectMedia__panelScroll--massEdit {
+  overflow: hidden;
+  padding-inline: 0;
 }
 
 .dialogProjectMedia__panelTitle {
@@ -58,10 +64,12 @@
   min-height: 0;
   min-width: 0;
   overflow: auto;
+  padding-inline: $dialogProjectMedia-body-paddingInline;
 }
 
 .dialogProjectMedia__listHeader {
   flex: 0 0 auto;
+  min-height: $dialogProjectMedia-listHeader-minHeight;
   position: relative;
 
   .dialogProjectMedia__panelTitle {
@@ -92,8 +100,10 @@
   flex-direction: column;
   height: 100%;
   justify-content: center;
+  margin-inline: $dialogProjectMedia-body-paddingInline;
   min-height: 0;
   min-width: 0;
+  width: auto;
 }
 
 .dialogProjectMedia__addDropZoneHint {
@@ -148,6 +158,7 @@
   justify-content: center;
   min-height: 0;
   min-width: 0;
+  padding-inline: $dialogProjectMedia-body-paddingInline;
   width: 100%;
 }
 
@@ -181,9 +192,4 @@
     resize: none;
   }
   /* stylelint-enable selector-pseudo-class-no-unknown */
-}
-
-.dialogProjectMedia__addOnlineUrlsSubmit {
-  flex: 0 0 auto;
-  margin-top: $dialogProjectMedia-addOnlineUrlsSubmit-marginTop;
 }

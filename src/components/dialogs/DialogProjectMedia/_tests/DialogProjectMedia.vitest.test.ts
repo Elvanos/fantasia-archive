@@ -5,6 +5,19 @@ import { createPinia, setActivePinia } from 'pinia'
 import { defineComponent } from 'vue'
 import { beforeEach, expect, test, vi } from 'vitest'
 
+const { runFaActionAwaitMock } = vi.hoisted(() => {
+  return {
+    runFaActionAwaitMock: vi.fn(async () => true)
+  }
+})
+
+vi.mock('app/src/scripts/actionManager/faActionManagerRun_manager', () => {
+  return {
+    runFaActionAwait: runFaActionAwaitMock
+  }
+})
+
+import type { I_faProjectMedia } from 'app/types/I_faProjectMediaDomain'
 import * as dialogStores from 'app/src/stores/S_Dialog'
 import { S_DialogComponent } from 'app/src/stores/S_Dialog'
 
@@ -29,6 +42,7 @@ const projectMediaQDialogStub = defineComponent({
     <div
       class="project-media-qdialog-stub"
       :data-persistent="String(persistent)"
+      v-bind="$attrs"
     >
       <div v-if="modelValue" class="project-media-qdialog-inner">
         <slot />
@@ -54,6 +68,11 @@ const projectMediaQInputStub = defineComponent({
     }
   },
   emits: ['update:modelValue'],
+  methods: {
+    focus () {
+      return undefined
+    }
+  },
   template: `
     <div class="q-input-stub" v-bind="$attrs">
       <slot name="prepend" />
@@ -77,12 +96,16 @@ const projectMediaDialogGlobal = {
   stubs: {
     QBtn: {
       props: {
+        disable: {
+          default: false,
+          type: Boolean
+        },
         label: {
           default: '',
           type: String
         }
       },
-      template: '<button type="button" v-bind="$attrs">{{ label }}<slot /></button>'
+      template: '<button type="button" v-bind="$attrs" :disabled="disable">{{ label }}<slot /></button>'
     },
     QCard: { template: '<div><slot /></div>' },
     QCardActions: { template: '<div><slot /></div>' },
@@ -93,7 +116,17 @@ const projectMediaDialogGlobal = {
     QSeparator: { template: '<div class="q-separator-stub" v-bind="$attrs"></div>' },
     QTabPanel: { template: '<div class="q-tab-panel-stub"><slot /></div>' },
     QTabPanels: { template: '<div class="q-tab-panels-stub"><slot /></div>' },
-    DialogProjectMediaMassEditTable: {
+    DialogProjectMediaListGrid: {
+      props: {
+        items: {
+          default: () => [],
+          type: Array
+        }
+      },
+      template:
+        '<div data-test-locator="dialogProjectMedia-listGrid">{{ items.length }}</div>'
+    },
+    DialogProjectMediaMassEditList: {
       props: {
         modelValue: {
           default: () => [],
@@ -101,13 +134,50 @@ const projectMediaDialogGlobal = {
         }
       },
       template:
-        '<div data-test-locator="dialogProjectMedia-massEditTable">{{ modelValue.length }}</div>'
+        '<div data-test-locator="dialogProjectMedia-massEditList">{{ modelValue.length }}</div>'
+    },
+    DialogProjectMediaSingleEditPanel: {
+      name: 'DialogProjectMediaSingleEditPanel',
+      props: ['row', 'isSaveDisabled'],
+      template: `
+        <div>
+          <div data-test-locator="dialogProjectMedia-title-mediaSingleEdit">
+            dialogs.projectMedia.titleSingle
+          </div>
+          <button
+            type="button"
+            data-test-locator="dialogProjectMedia-singleEdit-close"
+          >
+            dialogs.projectMedia.closeButton
+          </button>
+          <button
+            type="button"
+            data-test-locator="dialogProjectMedia-singleEdit-saveAndClose"
+            :disabled="isSaveDisabled"
+          >
+            dialogs.projectMedia.singleEditSaveAndCloseButton
+          </button>
+        </div>
+      `
+    },
+    DialogProjectMediaSingleEditSlide: {
+      name: 'DialogProjectMediaSingleEditSlide',
+      props: ['row', 'nextDisabled', 'previousDisabled'],
+      emits: ['close', 'next', 'previous', 'save', 'saveStay', 'update:row'],
+      template: '<div data-test-locator="dialogProjectMedia-singleEditSlide"></div>'
+    },
+    Transition: {
+      name: 'Transition',
+      emits: ['after-leave'],
+      template: '<div class="project-media-transition-stub"><slot /></div>'
     }
   }
 } as const
 
 beforeEach(() => {
   vi.restoreAllMocks()
+  runFaActionAwaitMock.mockReset()
+  runFaActionAwaitMock.mockResolvedValue(true)
 })
 
 /**
@@ -124,13 +194,28 @@ test('Test that DialogProjectMedia renders shell for ProjectMedia input', async 
 
   expect(w.html()).toContain('dialogComponent')
   expect(w.html()).toContain('ProjectMedia')
-  expect(w.text()).toContain('dialogs.projectMedia.title')
+  expect(w.get('[data-test-locator="dialogProjectMedia-title-mediaList"]').text())
+    .toBe('dialogs.projectMedia.titleList')
+  expect(w.get('[data-test-locator="dialogProjectMedia-title-mediaAdd"]').text())
+    .toBe('dialogs.projectMedia.titleAdd')
+  expect(w.get('[data-test-locator="dialogProjectMedia-title-mediaAddOnlineUrls"]').text())
+    .toBe('dialogs.projectMedia.titleAddOnline')
+  expect(w.get('[data-test-locator="dialogProjectMedia-title-mediaMassEdit"]').text())
+    .toBe('dialogs.projectMedia.titleMassEdit')
+  expect(w.find('.project-media-qdialog-stub').attributes('aria-label'))
+    .toBe('dialogs.projectMedia.titleList')
   expect(w.text()).toContain('dialogs.projectMedia.closeButton')
+  expect(w.text()).not.toContain('dialogs.projectMedia.panelMediaList')
+  expect(w.find('[data-test-locator="dialogProjectMedia-panelTitle-mediaList"]').exists()).toBe(false)
   expect(w.find('[data-test-locator="dialogProjectMedia-search"]').exists()).toBe(true)
+  expect(w.find('[data-test-locator="dialogProjectMedia-listGrid"]').exists()).toBe(true)
+  expect(w.find('[data-test-locator="dialogProjectMedia-listGrid"]').text()).toBe('0')
+  expect(w.find('[data-test-locator="dialogProjectMedia-addOnlineUrlsSubmit"]').exists()).toBe(false)
+  expect(w.find('.dialogProjectMedia__cardActions').exists()).toBe(false)
   expect(w.find('.project-media-qdialog-stub').attributes('data-persistent')).toBe('true')
-  expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe('mediaMassEdit')
-  expect(w.find('[data-test-locator="dialogProjectMedia-massEditTable"]').exists()).toBe(true)
-  expect(w.find('[data-test-locator="dialogProjectMedia-massEditTable"]').text()).toBe('0')
+  expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe('mediaList')
+  expect(w.find('[data-test-locator="dialogProjectMedia-massEditList"]').exists()).toBe(true)
+  expect(w.find('[data-test-locator="dialogProjectMedia-massEditList"]').text()).toBe('0')
   await w.getComponent(DialogProjectMediaPanelsColumn).vm.$emit('update:massEditRows', [])
   const searchInput = w.get('[data-test-locator="dialogProjectMedia-search"] input')
   await searchInput.setValue('needle')
@@ -163,7 +248,8 @@ test('Test that DialogProjectMedia opens from S_DialogComponent UUID watch', asy
   await flushPromises()
 
   expect(w.find('.project-media-qdialog-inner').exists()).toBe(true)
-  expect(w.text()).toContain('dialogs.projectMedia.title')
+  expect(w.get('[data-test-locator="dialogProjectMedia-title-mediaList"]').text())
+    .toBe('dialogs.projectMedia.titleList')
   w.unmount()
 })
 
@@ -181,7 +267,8 @@ test('Test that DialogProjectMedia reacts to directInput prop after mount', asyn
   await w.setProps({ directInput: 'ProjectMedia' })
   await flushPromises()
 
-  expect(w.text()).toContain('dialogs.projectMedia.title')
+  expect(w.get('[data-test-locator="dialogProjectMedia-title-mediaList"]').text())
+    .toBe('dialogs.projectMedia.titleList')
   w.unmount()
 })
 
@@ -316,6 +403,9 @@ test('Test that DialogProjectMedia initialPanel prop selects the add panel', asy
   await flushPromises()
 
   expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe('mediaAdd')
+  expect(w.find('.project-media-qdialog-stub').attributes('data-persistent')).toBe('false')
+  expect(w.find('.project-media-qdialog-stub').attributes('aria-label'))
+    .toBe('dialogs.projectMedia.titleAdd')
   expect(w.find('[data-test-locator="dialogProjectMedia-addDropZone"]').exists()).toBe(true)
   expect(w.find('[data-test-locator="dialogProjectMedia-addOfflineMediaButton"]').exists()).toBe(true)
   expect(w.find('[data-test-locator="dialogProjectMedia-addOnlineMediaButton"]').exists()).toBe(true)
@@ -324,9 +414,9 @@ test('Test that DialogProjectMedia initialPanel prop selects the add panel', asy
 
 /**
  * DialogProjectMedia
- * Add online media should replace the add drop zone with the URL textarea on the same slide.
+ * Add online media should slide to the URL textarea panel.
  */
-test('Test that DialogProjectMedia add online media swaps in the URL textarea', async () => {
+test('Test that DialogProjectMedia add online media slides to the URL textarea', async () => {
   const w = mount(DialogProjectMedia, {
     global: projectMediaDialogGlobal,
     props: {
@@ -341,16 +431,36 @@ test('Test that DialogProjectMedia add online media swaps in the URL textarea', 
   await w.get('[data-test-locator="dialogProjectMedia-addOnlineMediaButton"]').trigger('click')
   await flushPromises()
 
-  expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe('mediaAdd')
-  expect(w.find('[data-test-locator="dialogProjectMedia-addDropZone"]').exists()).toBe(false)
+  expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe(
+    'mediaAddOnlineUrls'
+  )
+  expect(w.find('.project-media-qdialog-stub').attributes('aria-label'))
+    .toBe('dialogs.projectMedia.titleAddOnline')
+  expect(w.find('.project-media-qdialog-stub').attributes('data-persistent')).toBe('false')
+  expect(w.find('.dialogProjectMedia__cardActions').exists()).toBe(true)
   expect(w.find('[data-test-locator="dialogProjectMedia-addOnlineUrlsTitle"]').exists()).toBe(true)
+  expect(w.get('[data-test-locator="dialogProjectMedia-addOnlineUrlsTitle"]').element.tagName)
+    .toBe('H6')
   expect(w.find('[data-test-locator="dialogProjectMedia-addOnlineUrlsSubmit"]').exists()).toBe(true)
+  expect(
+    (w.get('[data-test-locator="dialogProjectMedia-addOnlineUrlsSubmit"]').element as HTMLButtonElement)
+      .disabled
+  ).toBe(true)
   expect(w.text()).toContain('dialogs.projectMedia.addOnlineUrlsTitle')
   expect(w.text()).toContain('dialogs.projectMedia.addOnlineUrlsSubmitButton')
+  expect(w.text()).toContain('dialogs.projectMedia.closeButton')
   const urlsField = w.get('[data-test-locator="dialogProjectMedia-addOnlineUrlsInput"] textarea')
   await urlsField.setValue('https://example.com/media')
   await flushPromises()
   expect((urlsField.element as HTMLTextAreaElement).value).toBe('https://example.com/media')
+  expect(w.find('.project-media-qdialog-stub').attributes('data-persistent')).toBe('true')
+  expect(
+    (w.get('[data-test-locator="dialogProjectMedia-addOnlineUrlsSubmit"]').element as HTMLButtonElement)
+      .disabled
+  ).toBe(false)
+  await urlsField.setValue('')
+  await flushPromises()
+  expect(w.find('.project-media-qdialog-stub').attributes('data-persistent')).toBe('false')
   w.unmount()
 })
 
@@ -377,15 +487,24 @@ test('Test that DialogProjectMedia submit media list switches to mass-edit with 
   await flushPromises()
 
   expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe('mediaMassEdit')
-  expect(w.find('[data-test-locator="dialogProjectMedia-massEditTable"]').text()).toBe('2')
+  expect(w.find('.project-media-qdialog-stub').attributes('data-persistent')).toBe('true')
+  expect(w.find('.project-media-qdialog-stub').attributes('aria-label'))
+    .toBe('dialogs.projectMedia.titleMassEdit')
+  expect(w.find('[data-test-locator="dialogProjectMedia-massEditList"]').text()).toBe('2')
+  expect(w.text()).toContain('dialogs.projectMedia.massEditCloseWithoutSavingButton')
+  expect(w.text()).toContain('dialogs.projectMedia.massEditSaveAndBackToListButton')
+  expect(w.text()).toContain('dialogs.projectMedia.massEditSaveAndCloseButton')
+  expect(w.find('[data-test-locator="dialogProjectMedia-button-saveAndBackToList"]').exists())
+    .toBe(true)
+  expect(w.find('[data-test-locator="dialogProjectMedia-button-saveAndClose"]').exists()).toBe(true)
   w.unmount()
 })
 
 /**
  * DialogProjectMedia
- * Closing the dialog should restore the add drop zone sub-view.
+ * Closing the dialog should restore the add drop zone panel.
  */
-test('Test that DialogProjectMedia close resets the add online URLs sub-view', async () => {
+test('Test that DialogProjectMedia close resets the add online URLs panel', async () => {
   const w = mount(DialogProjectMedia, {
     global: projectMediaDialogGlobal,
     props: {
@@ -398,7 +517,9 @@ test('Test that DialogProjectMedia close resets the add online URLs sub-view', a
 
   await w.get('[data-test-locator="dialogProjectMedia-addOnlineMediaButton"]').trigger('click')
   await flushPromises()
-  expect(w.find('[data-test-locator="dialogProjectMedia-addOnlineUrls"]').exists()).toBe(true)
+  expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe(
+    'mediaAddOnlineUrls'
+  )
 
   const dlg = w.findComponent({ name: 'QDialog' })
   await dlg.vm.$emit('update:modelValue', false)
@@ -406,9 +527,9 @@ test('Test that DialogProjectMedia close resets the add online URLs sub-view', a
   await dlg.vm.$emit('update:modelValue', true)
   await flushPromises()
 
-  expect(w.find('[data-test-locator="dialogProjectMedia-addDropZone"]').exists()).toBe(true)
-  expect(w.find('[data-test-locator="dialogProjectMedia-addOnlineUrls"]').exists()).toBe(false)
-  expect(w.find('[data-test-locator="dialogProjectMedia-massEditTable"]').text()).toBe('0')
+  expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe('mediaAdd')
+  expect(w.find('.project-media-qdialog-stub').attributes('data-persistent')).toBe('false')
+  expect(w.find('[data-test-locator="dialogProjectMedia-massEditList"]').text()).toBe('0')
   w.unmount()
 })
 
@@ -431,11 +552,226 @@ test('Test that DialogProjectMedia switches panel from projectMediaRequestedPane
 
   await flushPromises()
 
-  expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe('mediaMassEdit')
+  expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe('mediaList')
   st.projectMediaRequestedPanel = 'mediaSingleEdit'
   await flushPromises()
   expect(w.getComponent(DialogProjectMediaPanelsColumn).props('selectedPanel')).toBe(
     'mediaSingleEdit'
   )
   w.unmount()
+})
+
+/**
+ * DialogProjectMedia
+ * Opening the list slide fills the grid from listMedia.
+ */
+test('Test that DialogProjectMedia fills the list grid from listMedia', async () => {
+  const listed: I_faProjectMedia[] = [{
+    createdAtMs: 0,
+    displayName: 'saved',
+    externalEmbed: '',
+    externalLink: 'https://cdn.example.com/foo/bar.png',
+    externalType: 'linked',
+    id: 'saved',
+    internalEmbed: null,
+    internalLink: '',
+    internalType: 'linked_outside',
+    type: 'external',
+    updatedAtMs: 0
+  }]
+  vi.mocked(window.faContentBridgeAPIs.projectContent.listMedia).mockResolvedValue({
+    items: listed
+  })
+
+  const w = mount(DialogProjectMedia, {
+    global: projectMediaDialogGlobal,
+    props: { directInput: 'ProjectMedia' }
+  })
+
+  await flushPromises()
+
+  expect(w.find('[data-test-locator="dialogProjectMedia-listGrid"]').text()).toBe('1')
+  w.unmount()
+})
+
+/**
+ * DialogProjectMedia
+ * Single-edit tab hides generic Close and disables Save and close when empty.
+ */
+test('Test that DialogProjectMedia single-edit tab hides generic Close and disables save', async () => {
+  const w = mount(DialogProjectMedia, {
+    global: projectMediaDialogGlobal,
+    props: {
+      directInput: 'ProjectMedia',
+      initialPanel: 'mediaSingleEdit'
+    }
+  })
+
+  await flushPromises()
+
+  expect(w.get('[data-test-locator="dialogProjectMedia-title-mediaSingleEdit"]').text())
+    .toBe('dialogs.projectMedia.titleSingle')
+  expect(w.find('[data-test-locator="dialogProjectMedia-button-close"]').exists()).toBe(false)
+  expect(w.find('[data-test-locator="dialogProjectMedia-singleEdit-close"]').exists()).toBe(true)
+  expect(
+    (w.get('[data-test-locator="dialogProjectMedia-singleEdit-saveAndClose"]')
+      .element as HTMLButtonElement).disabled
+  ).toBe(true)
+  expect(w.find('.project-media-qdialog-stub').attributes('data-persistent')).toBe('false')
+  w.unmount()
+})
+
+/**
+ * DialogProjectMedia
+ * List thumb select opens the slide and hides the generic Close footer.
+ */
+test('Test that DialogProjectMedia list select opens the single-edit slide', async () => {
+  const listed: I_faProjectMedia = {
+    createdAtMs: 0,
+    displayName: 'saved',
+    externalEmbed: '',
+    externalLink: 'https://cdn.example.com/foo/bar.png',
+    externalType: 'linked',
+    id: 'saved',
+    internalEmbed: null,
+    internalLink: '',
+    internalType: 'linked_outside',
+    type: 'external',
+    updatedAtMs: 0
+  }
+  const w = mount(DialogProjectMedia, {
+    global: projectMediaDialogGlobal,
+    props: { directInput: 'ProjectMedia' }
+  })
+
+  await flushPromises()
+
+  expect(w.find('[data-test-locator="dialogProjectMedia-singleEditSlide"]').exists()).toBe(false)
+  expect(w.find('[data-test-locator="dialogProjectMedia-button-close"]').exists()).toBe(true)
+  await w.getComponent(DialogProjectMediaPanelsColumn).vm.$emit('selectListItem', listed)
+  await flushPromises()
+  expect(w.find('[data-test-locator="dialogProjectMedia-singleEditSlide"]').exists()).toBe(true)
+  expect(w.find('[data-test-locator="dialogProjectMedia-button-close"]').exists()).toBe(false)
+  const slide = w.getComponent({ name: 'DialogProjectMediaSingleEditSlide' })
+  await w.getComponent(DialogProjectMediaPanelsColumn).vm.$emit(
+    'update:singleEditRow',
+    {
+      createdAtMs: listed.createdAtMs,
+      displayName: listed.displayName,
+      externalEmbed: listed.externalEmbed,
+      externalLink: listed.externalLink,
+      externalType: listed.externalType,
+      id: listed.id,
+      internalEmbed: listed.internalEmbed,
+      internalLink: listed.internalLink,
+      internalType: listed.internalType,
+      isNew: false,
+      type: listed.type,
+      updatedAtMs: listed.updatedAtMs
+    }
+  )
+  await slide.vm.$emit('update:row', {
+    createdAtMs: listed.createdAtMs,
+    displayName: 'renamed',
+    externalEmbed: listed.externalEmbed,
+    externalLink: listed.externalLink,
+    externalType: listed.externalType,
+    id: listed.id,
+    internalEmbed: listed.internalEmbed,
+    internalLink: listed.internalLink,
+    internalType: listed.internalType,
+    isNew: false,
+    type: listed.type,
+    updatedAtMs: listed.updatedAtMs
+  })
+  await slide.vm.$emit('previous')
+  await slide.vm.$emit('next')
+  await slide.vm.$emit('saveStay')
+  await slide.vm.$emit('save')
+  await slide.vm.$emit('close')
+  await flushPromises()
+  await w.getComponent({ name: 'Transition' }).vm.$emit('after-leave')
+  await flushPromises()
+  w.unmount()
+})
+
+/**
+ * DialogProjectMedia
+ * Mass-edit footer save buttons persist rows.
+ */
+test('Test that DialogProjectMedia mass-edit save buttons persist', async () => {
+  const w = mount(DialogProjectMedia, {
+    global: projectMediaDialogGlobal,
+    props: {
+      directInput: 'ProjectMedia',
+      initialPanel: 'mediaAdd'
+    }
+  })
+
+  await flushPromises()
+  await w.get('[data-test-locator="dialogProjectMedia-addOnlineMediaButton"]').trigger('click')
+  await flushPromises()
+  const urlsField = w.get('[data-test-locator="dialogProjectMedia-addOnlineUrlsInput"] textarea')
+  await urlsField.setValue('https://example.com/one.png')
+  await w.get('[data-test-locator="dialogProjectMedia-addOnlineUrlsSubmit"]').trigger('click')
+  await flushPromises()
+  await w.get('[data-test-locator="dialogProjectMedia-button-saveAndBackToList"]').trigger('click')
+  await flushPromises()
+  expect(runFaActionAwaitMock).toHaveBeenCalled()
+  w.unmount()
+
+  const closeSave = mount(DialogProjectMedia, {
+    global: projectMediaDialogGlobal,
+    props: {
+      directInput: 'ProjectMedia',
+      initialPanel: 'mediaAdd'
+    }
+  })
+  await flushPromises()
+  await closeSave.get('[data-test-locator="dialogProjectMedia-addOnlineMediaButton"]').trigger(
+    'click'
+  )
+  await flushPromises()
+  await closeSave.get('[data-test-locator="dialogProjectMedia-addOnlineUrlsInput"] textarea')
+    .setValue('https://example.com/two.png')
+  await closeSave.get('[data-test-locator="dialogProjectMedia-addOnlineUrlsSubmit"]').trigger(
+    'click'
+  )
+  await flushPromises()
+  await closeSave.get('[data-test-locator="dialogProjectMedia-button-saveAndClose"]').trigger(
+    'click'
+  )
+  await flushPromises()
+  closeSave.unmount()
+})
+
+/**
+ * DialogProjectMedia
+ * Single-edit tab close and save handlers run.
+ */
+test('Test that DialogProjectMedia single-edit tab emits close and save', async () => {
+  const w = mount(DialogProjectMedia, {
+    global: projectMediaDialogGlobal,
+    props: {
+      directInput: 'ProjectMedia',
+      initialPanel: 'mediaSingleEdit'
+    }
+  })
+
+  await flushPromises()
+  await w.getComponent(DialogProjectMediaPanelsColumn).vm.$emit('singleEditSave')
+  await flushPromises()
+  w.unmount()
+
+  const closeTab = mount(DialogProjectMedia, {
+    global: projectMediaDialogGlobal,
+    props: {
+      directInput: 'ProjectMedia',
+      initialPanel: 'mediaSingleEdit'
+    }
+  })
+  await flushPromises()
+  await closeTab.getComponent(DialogProjectMediaPanelsColumn).vm.$emit('singleEditClose')
+  await flushPromises()
+  closeTab.unmount()
 })

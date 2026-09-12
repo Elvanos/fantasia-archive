@@ -1,0 +1,20 @@
+.dialogProjectMediaSingleEditForm {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: $dialogProjectMedia-massEditBlock-innerGap;
+  justify-content: center;
+  margin-inline: auto;
+  min-width: 0;
+  padding-inline: $dialogProjectMedia-singleEditForm-paddingInline;
+  width: $dialogProjectMedia-singleEditForm-width;
+
+  /* stylelint-disable selector-pseudo-class-no-unknown -- scoped :deep into mass-edit fields root */
+  :deep(.dialogProjectMediaMassEditBlockFields) {
+    flex: 0 0 auto;
+    width: $dialogProjectMedia-singleEditForm-width;
+  }
+  /* stylelint-enable selector-pseudo-class-no-unknown */
+}

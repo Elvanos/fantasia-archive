@@ -1,7 +1,7 @@
 /** @vitest-environment jsdom */
 import { afterEach, expect, test, vi } from 'vitest'
 
-import { hasAnyFaProjectMediaFromBridge } from '../faProjectMediaHasAnyWiring'
+import { hasAnyFaProjectMediaFromBridge, loadFaProjectMediaListFromBridge } from '../faProjectMediaHasAnyWiring'
 
 afterEach(() => {
   vi.unstubAllGlobals()
@@ -61,4 +61,45 @@ test('Test that hasAnyFaProjectMediaFromBridge is true when listMedia rejects', 
     }
   })
   await expect(hasAnyFaProjectMediaFromBridge()).resolves.toBe(true)
+})
+
+/**
+ * loadFaProjectMediaListFromBridge
+ * Missing listMedia is an empty library.
+ */
+test('Test that loadFaProjectMediaListFromBridge is empty without listMedia', async () => {
+  vi.stubGlobal('window', { faContentBridgeAPIs: {} })
+  await expect(loadFaProjectMediaListFromBridge()).resolves.toEqual([])
+})
+
+/**
+ * loadFaProjectMediaListFromBridge
+ * Successful listMedia returns items.
+ */
+test('Test that loadFaProjectMediaListFromBridge returns listed items', async () => {
+  vi.stubGlobal('window', {
+    faContentBridgeAPIs: {
+      projectContent: {
+        listMedia: async () => ({ items: [{ id: 'm1' }] })
+      }
+    }
+  })
+  await expect(loadFaProjectMediaListFromBridge()).resolves.toEqual([{ id: 'm1' }])
+})
+
+/**
+ * loadFaProjectMediaListFromBridge
+ * A rejected listMedia call is an empty library.
+ */
+test('Test that loadFaProjectMediaListFromBridge is empty when listMedia rejects', async () => {
+  vi.stubGlobal('window', {
+    faContentBridgeAPIs: {
+      projectContent: {
+        listMedia: async () => {
+          throw new Error('ipc')
+        }
+      }
+    }
+  })
+  await expect(loadFaProjectMediaListFromBridge()).resolves.toEqual([])
 })

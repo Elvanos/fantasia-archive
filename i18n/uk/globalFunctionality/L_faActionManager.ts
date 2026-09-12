@@ -33,6 +33,7 @@ export default {
     openProjectSettingsDialog: 'Відкрити параметри проекту',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'Зберегти параметри проекту',
+    saveProjectMedia: 'Save Project Media',
     openLicenseDialog: 'Відкрита ліцензія',
     openAppSettingsDialog: 'Відкрийте налаштування програми',
     openAppStylingWindow: 'Відкрити спеціальну програму CSS',

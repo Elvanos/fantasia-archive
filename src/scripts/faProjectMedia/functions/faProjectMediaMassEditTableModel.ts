@@ -29,63 +29,23 @@ export function buildFaProjectMediaMassEditSelectOptionLists (t: (key: string) =
     id: 'linked',
     name: t('dialogs.projectMedia.massEditExternalTypeLinked')
   }
+  const externalEmbed: I_faSelectInputObjectItem = {
+    id: 'embed',
+    icon: 'fa-solid fa-file-code',
+    name: t('dialogs.projectMedia.massEditExternalTypeEmbed')
+  }
   const typeOptions = [typeInternal, typeExternal]
   const internalTypeOptions = [
     internalEmbedded,
     internalLinkedOutside,
     internalLinkedInProject
   ]
-  const externalTypeOptions = [externalLinked]
+  const externalTypeOptions = [externalLinked, externalEmbed]
   return {
     externalTypeOptions,
     internalTypeOptions,
     typeOptions
   }
-}
-
-export function buildFaProjectMediaMassEditTableColumns (t: (key: string) => string): Array<{
-  align: 'left'
-  field: string
-  label: string
-  name: string
-}> {
-  const displayName = {
-    align: 'left' as const,
-    field: 'displayName',
-    label: t('dialogs.projectMedia.massEditColumnTitle'),
-    name: 'displayName'
-  }
-  const type = {
-    align: 'left' as const,
-    field: 'type',
-    label: t('dialogs.projectMedia.massEditColumnType'),
-    name: 'type'
-  }
-  const internalType = {
-    align: 'left' as const,
-    field: 'internalType',
-    label: t('dialogs.projectMedia.massEditColumnInternalType'),
-    name: 'internalType'
-  }
-  const externalType = {
-    align: 'left' as const,
-    field: 'externalType',
-    label: t('dialogs.projectMedia.massEditColumnExternalType'),
-    name: 'externalType'
-  }
-  const internalLink = {
-    align: 'left' as const,
-    field: 'internalLink',
-    label: t('dialogs.projectMedia.massEditColumnInternalLink'),
-    name: 'internalLink'
-  }
-  const externalLink = {
-    align: 'left' as const,
-    field: 'externalLink',
-    label: t('dialogs.projectMedia.massEditColumnExternalLink'),
-    name: 'externalLink'
-  }
-  return [displayName, type, internalType, externalType, internalLink, externalLink]
 }
 
 export function selectFaProjectMediaMassEditOptionById (

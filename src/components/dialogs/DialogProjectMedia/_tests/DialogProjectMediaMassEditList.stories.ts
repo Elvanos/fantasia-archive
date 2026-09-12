@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 import type { I_faProjectMediaMassEditRow } from 'app/types/I_faProjectMediaDomain'
 
-import DialogProjectMediaMassEditTable from '../DialogProjectMediaMassEditTable.vue'
+import DialogProjectMediaMassEditList from '../DialogProjectMediaMassEditList.vue'
 
 const sampleRows: I_faProjectMediaMassEditRow[] = [
   {
@@ -15,6 +15,21 @@ const sampleRows: I_faProjectMediaMassEditRow[] = [
     externalLink: 'https://cdn.example.com/foo/bar.png',
     internalLink: '',
     internalEmbed: null,
+    externalEmbed: '',
+    createdAtMs: 0,
+    updatedAtMs: 0,
+    isNew: true
+  },
+  {
+    id: '550e8400-e29b-41d4-a716-446655440002',
+    displayName: 'baz',
+    type: 'external',
+    internalType: 'linked_outside',
+    externalType: 'linked',
+    externalLink: 'https://cdn.example.com/foo/baz.png',
+    internalLink: '',
+    internalEmbed: null,
+    externalEmbed: '',
     createdAtMs: 0,
     updatedAtMs: 0,
     isNew: true
@@ -22,42 +37,42 @@ const sampleRows: I_faProjectMediaMassEditRow[] = [
 ]
 
 const meta = {
-  component: DialogProjectMediaMassEditTable,
+  component: DialogProjectMediaMassEditList,
   parameters: {
     docs: {
       description: {
         component:
-          'Project Media mass-edit table: session rows only (intake, not loaded from the project file). Save media changes is a placeholder.'
+          'Project Media mass-edit list: one row per session item (intake, not loaded from the project file), with a themed divider between items.'
       }
     },
     layout: 'padded'
   },
   tags: ['autodocs', 'skip-visual'],
-  title: 'Components/dialogs/DialogProjectMediaMassEditTable'
-} satisfies Meta<typeof DialogProjectMediaMassEditTable>
+  title: 'Components/dialogs/DialogProjectMediaMassEditList'
+} satisfies Meta<typeof DialogProjectMediaMassEditList>
 
 export default meta
 
 export const Empty: StoryObj<typeof meta> = {
   render: () => ({
-    components: { DialogProjectMediaMassEditTable },
+    components: { DialogProjectMediaMassEditList },
     setup () {
       const rows = ref<I_faProjectMediaMassEditRow[]>([])
       return { rows }
     },
-    template: '<DialogProjectMediaMassEditTable v-model="rows" />'
+    template: '<DialogProjectMediaMassEditList v-model="rows" />'
   })
 }
 
 export const WithIntakeRows: StoryObj<typeof meta> = {
   render: () => ({
-    components: { DialogProjectMediaMassEditTable },
+    components: { DialogProjectMediaMassEditList },
     setup () {
       const rows = ref<I_faProjectMediaMassEditRow[]>(sampleRows.map((row) => {
         return { ...row }
       }))
       return { rows }
     },
-    template: '<DialogProjectMediaMassEditTable v-model="rows" />'
+    template: '<DialogProjectMediaMassEditList v-model="rows" />'
   })
 }

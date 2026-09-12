@@ -46,6 +46,7 @@ import {
   handleSaveKeybindSettings,
   handleSaveAppSettings,
   handleSaveProjectSettings,
+  handleSaveProjectMedia,
   handleSaveAppStyling,
   handleSaveProjectStyling,
   handleToggleDeveloperTools,
@@ -239,6 +240,12 @@ export const FA_ACTION_DEFINITIONS_HEAD: ReadonlyArray<I_faActionDefinition<T_fa
   {
     handler: handleSaveProjectSettings as I_faActionDefinition<T_faActionId>['handler'],
     id: 'saveProjectSettings',
+    kind: 'async'
+  },
+  {
+    dedup: true,
+    handler: handleSaveProjectMedia as I_faActionDefinition<T_faActionId>['handler'],
+    id: 'saveProjectMedia',
     kind: 'async'
   },
   {

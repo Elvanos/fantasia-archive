@@ -33,6 +33,7 @@ export default {
     openProjectSettingsDialog: 'Avaa projektiasetukset',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'Tallenna projektiasetukset',
+    saveProjectMedia: 'Save Project Media',
     openLicenseDialog: 'Avaa Lisenssi',
     openAppSettingsDialog: 'Avaa Sovellusasetukset',
     openAppStylingWindow: 'Avaa mukautettu sovellus CSS',

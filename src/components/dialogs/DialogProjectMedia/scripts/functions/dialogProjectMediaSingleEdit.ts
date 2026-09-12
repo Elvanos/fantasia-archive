@@ -1,0 +1,232 @@
+import type {
+  I_bindDialogProjectMediaSingleEditBound,
+  I_bindDialogProjectMediaSingleEditInput,
+  I_dialogProjectMediaSingleEditKeydownEvent
+} from 'app/types/I_bindDialogProjectMediaSingleEdit'
+import type {
+  I_faProjectMedia,
+  I_faProjectMediaMassEditRow,
+  T_faProjectMediaPanel
+} from 'app/types/I_faProjectMediaDomain'
+import type { I_computedRef, I_ref } from 'app/types/I_vueCompositionShims'
+
+const singleEditPanel: T_faProjectMediaPanel = 'mediaSingleEdit'
+
+/** Vue Transition duration for the list single-edit slide. Matches the CSS token. */
+export const FA_DIALOG_PROJECT_MEDIA_SINGLE_EDIT_SLIDE_MS = 300
+
+/**
+ * True when Escape should dismiss the list single-edit slide.
+ */
+export function shouldCloseFaProjectMediaSingleEditSlideOnEscape (input: {
+  isDirty: boolean
+  isSlideOpen: boolean
+  key: string
+}): boolean {
+  return input.isSlideOpen && !input.isDirty && input.key === 'Escape'
+}
+
+/**
+ * Clone a saved medium into draft plus baseline and open the slide.
+ */
+export function openFaProjectMediaSingleEditSlide (input: {
+  baseline: I_ref<I_faProjectMediaMassEditRow | null>
+  draft: I_ref<I_faProjectMediaMassEditRow | null>
+  item: I_faProjectMedia
+  mapItemToRow: (item: I_faProjectMedia) => I_faProjectMediaMassEditRow
+  slideOpen: I_ref<boolean>
+}): void {
+  input.draft.value = input.mapItemToRow(input.item)
+  input.baseline.value = input.mapItemToRow(input.item)
+  input.slideOpen.value = true
+}
+
+/**
+ * Hide the list slide so Vue can play the leave transition. Draft stays until discard.
+ */
+export function closeFaProjectMediaSingleEditSlide (input: {
+  slideOpen: I_ref<boolean>
+}): void {
+  input.slideOpen.value = false
+}
+
+/**
+ * Drop the single-edit draft after the slide leave transition, or when the dialog resets.
+ */
+export function discardFaProjectMediaSingleEditDraft (input: {
+  baseline: I_ref<I_faProjectMediaMassEditRow | null>
+  draft: I_ref<I_faProjectMediaMassEditRow | null>
+}): void {
+  input.draft.value = null
+  input.baseline.value = null
+}
+
+/**
+ * True when the generic dialog Close footer should show.
+ */
+export function resolveDialogProjectMediaShowGenericClose (input: {
+  isAddOnlineUrlsPanel: boolean
+  isMassEditPanel: boolean
+  isSingleEditPanel: boolean
+  isSingleEditSlideOpen: boolean
+}): boolean {
+  if (input.isMassEditPanel) {
+    return false
+  }
+  if (input.isAddOnlineUrlsPanel) {
+    return false
+  }
+  if (input.isSingleEditPanel) {
+    return false
+  }
+  return !input.isSingleEditSlideOpen
+}
+
+/**
+ * Attach Escape while the list single-edit slide is open. Detach on close and unmount.
+ */
+export function bindFaProjectMediaSingleEditSlideEscape (input: {
+  attachWindowKeydown: (
+    handler: (event: I_dialogProjectMediaSingleEditKeydownEvent) => void
+  ) => void
+  closeSlide: () => void
+  detachWindowKeydown: (
+    handler: (event: I_dialogProjectMediaSingleEditKeydownEvent) => void
+  ) => void
+  isDirty: I_computedRef<boolean>
+  isSlideOpen: I_ref<boolean>
+  onBeforeUnmount: (hook: () => void) => void
+  watch: (source: () => unknown, effect: () => void) => void
+}): void {
+  function onSingleEditSlideKeydown (event: I_dialogProjectMediaSingleEditKeydownEvent): void {
+    if (!shouldCloseFaProjectMediaSingleEditSlideOnEscape({
+      isDirty: input.isDirty.value,
+      isSlideOpen: input.isSlideOpen.value,
+      key: event.key
+    })) {
+      return
+    }
+    event.preventDefault()
+    input.closeSlide()
+  }
+  input.watch(() => input.isSlideOpen.value, () => {
+    if (input.isSlideOpen.value) {
+      input.attachWindowKeydown(onSingleEditSlideKeydown)
+      return
+    }
+    input.detachWindowKeydown(onSingleEditSlideKeydown)
+  })
+  input.onBeforeUnmount(() => {
+    input.detachWindowKeydown(onSingleEditSlideKeydown)
+  })
+}
+
+/**
+ * Session + chrome for list slide-out and the single-edit tab.
+ */
+export function bindDialogProjectMediaSingleEdit (
+  input: I_bindDialogProjectMediaSingleEditInput
+): I_bindDialogProjectMediaSingleEditBound {
+  const singleEditDraft = input.ref<I_faProjectMediaMassEditRow | null>(null)
+  const singleEditBaseline = input.ref<I_faProjectMediaMassEditRow | null>(null)
+  const isSingleEditSlideOpen = input.ref(false)
+  const isSingleEditDirty = input.computed(() => {
+    return input.isDirtyFn(singleEditDraft.value, singleEditBaseline.value)
+  })
+  const isSingleEditPanel = input.computed(() => {
+    return input.selectedPanel.value === singleEditPanel
+  })
+  const isSingleEditSaveDisabled = input.computed(() => {
+    return singleEditDraft.value === null
+  })
+  const showGenericClose = input.computed(() => {
+    return resolveDialogProjectMediaShowGenericClose({
+      isAddOnlineUrlsPanel: input.isAddOnlineUrlsPanel.value,
+      isMassEditPanel: input.isMassEditPanel.value,
+      isSingleEditPanel: isSingleEditPanel.value,
+      isSingleEditSlideOpen: isSingleEditSlideOpen.value
+    })
+  })
+
+  function closeSingleEditSlide (): void {
+    closeFaProjectMediaSingleEditSlide({
+      slideOpen: isSingleEditSlideOpen
+    })
+  }
+
+  function discardSingleEditSlide (): void {
+    discardFaProjectMediaSingleEditDraft({
+      baseline: singleEditBaseline,
+      draft: singleEditDraft
+    })
+  }
+
+  function openSingleEditSlide (item: I_faProjectMedia): void {
+    openFaProjectMediaSingleEditSlide({
+      baseline: singleEditBaseline,
+      draft: singleEditDraft,
+      item,
+      mapItemToRow: input.mapItemToRow,
+      slideOpen: isSingleEditSlideOpen
+    })
+  }
+
+  function closeSingleEditDialog (): void {
+    input.dialogModel.value = false
+  }
+
+  const persistence = input.wirePersistence({
+    applyListLoad: input.applyListLoad,
+    bindSingleEditSave: input.bindSingleEditSave,
+    closeSingleEditSlide,
+    computed: input.computed,
+    dialogModel: input.dialogModel,
+    isSingleEditDirty,
+    listLoadGeneration: input.listLoadGeneration,
+    listMediaItems: input.listMediaItems,
+    loadListMedia: input.loadListMedia,
+    mapItemToRow: input.mapItemToRow,
+    mapRowToUpsertItem: input.mapRowToUpsertItem,
+    openSingleEditSlide,
+    runFaActionAwait: input.runFaActionAwait,
+    singleEditBaseline,
+    singleEditDraft
+  })
+  bindFaProjectMediaSingleEditSlideEscape({
+    attachWindowKeydown: input.attachWindowKeydown,
+    closeSlide: closeSingleEditSlide,
+    detachWindowKeydown: input.detachWindowKeydown,
+    isDirty: isSingleEditDirty,
+    isSlideOpen: isSingleEditSlideOpen,
+    onBeforeUnmount: input.onBeforeUnmount,
+    watch: input.watch
+  })
+
+  const saveSingleEditAndCloseDialog = persistence.saveAndCloseDialog
+  const saveSingleEditSlide = persistence.saveSlide
+  const saveSingleEditSlideStay = persistence.saveSlideStay
+  const isSlideNextDisabled = persistence.isSlideNextDisabled
+  const isSlidePreviousDisabled = persistence.isSlidePreviousDisabled
+  const openSingleEditSlideNext = persistence.openSingleEditSlideNext
+  const openSingleEditSlidePrevious = persistence.openSingleEditSlidePrevious
+  return {
+    closeSingleEditDialog,
+    closeSingleEditSlide,
+    discardSingleEditSlide,
+    isSingleEditDirty,
+    isSingleEditPanel,
+    isSingleEditSaveDisabled,
+    isSingleEditSlideOpen,
+    isSlideNextDisabled,
+    isSlidePreviousDisabled,
+    openSingleEditSlide,
+    openSingleEditSlideNext,
+    openSingleEditSlidePrevious,
+    saveSingleEditAndCloseDialog,
+    saveSingleEditSlide,
+    saveSingleEditSlideStay,
+    showGenericClose,
+    singleEditBaseline,
+    singleEditDraft
+  }
+}

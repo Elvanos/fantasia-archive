@@ -10,6 +10,7 @@ import { S_FaProjectWorkspaceWorlds } from 'app/src/stores/S_FaProjectWorkspaceW
 import { S_FaProjectHierarchyTree } from 'app/src/stores/S_FaProjectHierarchyTree'
 import { S_FaUserSettings } from 'app/src/stores/S_FaUserSettings'
 import { canOpenFloatingWindowWhileNoModal } from 'app/src/scripts/appNoteboard/appNoteboard_manager'
+import { upsertFaProjectMediaViaContentBridge } from 'app/src/scripts/faProjectMedia/faProjectMediaUpsertWiring'
 import { toggleDevTools } from 'app/src/scripts/appGlobalManagementUI/appGlobalManagementUI_manager'
 import { applyFaUserSettingsLanguageSelection } from 'app/src/scripts/appInternals/faAppInternalsLocale_manager'
 import { faProjectDocumentTemplatesPersistSnapshotFromDialog } from 'app/src/stores/scripts/sFaProjectDocumentTemplatesBridge'
@@ -31,6 +32,7 @@ import { copyToClipboard } from 'quasar'
 
 import { createFaActionDefinitionHandlers } from './functions/createFaActionDefinitionHandlers'
 import { createFaActionDefinitionHandlersDocumentWorkspace } from './functions/createFaActionDefinitionHandlersDocumentWorkspace'
+import { createFaActionDefinitionHandlersProjectMedia } from './functions/createFaActionDefinitionHandlersProjectMedia'
 import { createFaActionDefinitionHandlersOpenedDocumentTabClipboard } from './faActionDefinitionHandlersOpenedDocumentTabClipboardWiring'
 import { createFaActionDefinitionHandlersHierarchyTreeDocumentClipboard } from './faActionDefinitionHandlersHierarchyTreeDocumentClipboardWiring'
 import { createFaActionDefinitionHandlersHierarchyTreeDocumentActions } from './faActionDefinitionHandlersHierarchyTreeDocumentActionsWiring'
@@ -127,6 +129,12 @@ const faActionDefinitionHandlersApi = {
     S_FaOpenedDocuments,
     i18n,
     notifyCreate: notifyCreateForFaActionDefinitionHandlers
+  }),
+  ...createFaActionDefinitionHandlersProjectMedia({
+    i18n,
+    notifyCreate: notifyCreateForFaActionDefinitionHandlers,
+    S_FaActiveProject,
+    upsertMedia: upsertFaProjectMediaViaContentBridge
   })
 }
 
@@ -160,6 +168,8 @@ export const handleSaveKeybindSettings =
 export const handleSaveAppSettings = faActionDefinitionHandlersApi.handleSaveAppSettings
 
 export const handleSaveProjectSettings = faActionDefinitionHandlersApi.handleSaveProjectSettings
+
+export const handleSaveProjectMedia = faActionDefinitionHandlersApi.handleSaveProjectMedia
 
 export const handleSaveAppStyling = faActionDefinitionHandlersApi.handleSaveAppStyling
 

@@ -1,0 +1,152 @@
+.dialogProjectMediaMassEditPreviewThumb {
+  aspect-ratio: 1 / 1;
+  background-color: $dialogProjectMedia-massEditThumb-backgroundColor;
+  border: $dialogProjectMedia-massEditThumb-borderWidth solid $dialogProjectMedia-massEditThumb-borderColor;
+  border-radius: $dialogProjectMedia-massEditThumb-borderRadius;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  height: $dialogProjectMedia-massEditThumb-height;
+  overflow: hidden;
+  place-self: start;
+  position: relative;
+  width: $dialogProjectMedia-massEditThumb-height;
+
+  &--list {
+    height: $dialogProjectMedia-listThumb-height;
+    width: $dialogProjectMedia-listThumb-height;
+  }
+
+  &--previewError {
+    border-color: $dialogProjectMedia-massEditThumb-previewErrorBorderColor;
+  }
+
+  &--previewGlyph {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+
+  &--singleEdit {
+    align-items: center;
+    aspect-ratio: unset;
+    display: flex;
+    height: $dialogProjectMedia-singleEditThumb-height;
+    justify-content: center;
+    place-self: stretch;
+    width: $dialogProjectMedia-singleEditThumb-width;
+
+    .dialogProjectMediaMassEditPreviewThumb__image {
+      object-fit: $dialogProjectMedia-singleEditThumb-imageObjectFit;
+      object-position: $dialogProjectMedia-singleEditThumb-objectPosition;
+    }
+  }
+
+  &--singleEditAudio {
+    box-sizing: border-box;
+    padding-inline: $dialogProjectMedia-singleEditThumb-audioPaddingInline;
+  }
+
+  &--singleEditEmbed {
+    height: $dialogProjectMedia-singleEditThumb-embedHeight;
+    overflow: $dialogProjectMedia-singleEditThumb-embedOverflow;
+  }
+
+  &__warning {
+    --fa-color-glyph-base: #{$dialogProjectMedia-massEditThumb-warningIcon-color};
+
+    color: var(--fa-color-glyph-base);
+    font-size: $dialogProjectMedia-massEditThumb-warningIconSize;
+  }
+
+  &__typeIcon {
+    --fa-color-glyph-base: #{$dialogProjectMedia-massEditThumb-typeIcon-color};
+
+    color: var(--fa-color-glyph-base);
+    font-size: $dialogProjectMedia-massEditThumb-warningIconSize;
+  }
+
+  &__image {
+    display: block;
+    height: 100%;
+    object-fit: $dialogProjectMedia-massEditThumb-imageObjectFit;
+    width: 100%;
+
+    &--pending {
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      position: absolute;
+      visibility: hidden;
+    }
+  }
+
+  &__mediaProbe {
+    height: 0;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    visibility: hidden;
+    width: 0;
+  }
+
+  &__videoPlayer {
+    display: block;
+    height: 100%;
+    object-fit: $dialogProjectMedia-singleEditThumb-imageObjectFit;
+    object-position: $dialogProjectMedia-singleEditThumb-objectPosition;
+    width: $dialogProjectMedia-singleEditThumb-width;
+  }
+
+  &__audioPlayer {
+    color-scheme: $dialogProjectMedia-singleEditThumb-audioColorScheme;
+    display: block;
+    flex: 0 0 auto;
+    height: $dialogProjectMedia-singleEditThumb-audioHeight;
+    min-height: $dialogProjectMedia-singleEditThumb-audioHeight;
+    min-width: $dialogProjectMedia-singleEditThumb-width;
+    width: $dialogProjectMedia-singleEditThumb-width;
+  }
+
+  &__embed {
+    border-radius: $dialogProjectMedia-massEditThumb-borderRadius;
+    overflow: $dialogProjectMedia-singleEditThumb-embedOverflow;
+    width: $dialogProjectMedia-singleEditThumb-width;
+
+    /* stylelint-disable selector-pseudo-class-no-unknown -- scoped :deep into user embed HTML */
+    :deep(iframe) {
+      border-radius: $dialogProjectMedia-massEditThumb-borderRadius;
+      display: block;
+      max-width: $dialogProjectMedia-singleEditThumb-width;
+      width: $dialogProjectMedia-singleEditThumb-width;
+    }
+    /* stylelint-enable selector-pseudo-class-no-unknown */
+  }
+
+  &__caption {
+    align-items: center;
+    background-color: $dialogProjectMedia-thumbCaption-backgroundColor;
+    bottom: 0;
+    box-sizing: border-box;
+    color: $dialogProjectMedia-thumbCaption-textColor;
+    display: flex;
+    font-size: $dialogProjectMedia-thumbCaption-fontSize;
+    font-weight: $dialogProjectMedia-thumbCaption-fontWeight;
+    justify-content: center;
+    left: 0;
+    line-height: $dialogProjectMedia-thumbCaption-lineHeight;
+    overflow: hidden;
+    padding: $dialogProjectMedia-thumbCaption-padding;
+    pointer-events: none;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    z-index: $dialogProjectMedia-thumbCaption-zIndex;
+  }
+
+  &__captionText {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    width: $dialogProjectMedia-thumbCaption-innerWidth;
+    word-break: break-word;
+  }
+}

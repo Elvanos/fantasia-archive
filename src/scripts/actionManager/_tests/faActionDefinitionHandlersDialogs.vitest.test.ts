@@ -235,7 +235,7 @@ test('Test that handleOpenProjectSettingsDialog skips without an active project'
 test('Test that handleOpenProjectMediaDialog opens ProjectMedia when a project is active', async () => {
   await handleOpenProjectMediaDialog()
   expect(tryDismissFaComponentDialogIfOpenMock).not.toHaveBeenCalled()
-  expect(setProjectMediaRequestedPanelMock).toHaveBeenCalledWith('mediaMassEdit')
+  expect(setProjectMediaRequestedPanelMock).toHaveBeenCalledWith('mediaList')
   expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectMedia')
 })
 
@@ -251,22 +251,22 @@ test('Test that handleOpenProjectMediaDialog sets requested panel when provided'
 
 /**
  * handleOpenProjectMediaDialog
- * Invalid initialPanel values use the temporary mass-edit default.
+ * Invalid initialPanel values use list when the library has media.
  */
-test('Test that handleOpenProjectMediaDialog maps invalid initialPanel to mass edit', async () => {
+test('Test that handleOpenProjectMediaDialog maps invalid initialPanel to list when the library has media', async () => {
   await handleOpenProjectMediaDialog({ initialPanel: 'nope' as never })
-  expect(setProjectMediaRequestedPanelMock).toHaveBeenCalledWith('mediaMassEdit')
+  expect(setProjectMediaRequestedPanelMock).toHaveBeenCalledWith('mediaList')
   expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectMedia')
 })
 
 /**
  * handleOpenProjectMediaDialog
- * TEMPORARY: empty library also defaults to mass edit when no known initialPanel is given.
+ * Empty library defaults to add when no known initialPanel is given.
  */
-test('Test that handleOpenProjectMediaDialog defaults to mass edit when the library is empty', async () => {
+test('Test that handleOpenProjectMediaDialog defaults to add when the library is empty', async () => {
   listMediaMock.mockImplementation(async () => ({ items: [] }))
   await handleOpenProjectMediaDialog()
-  expect(setProjectMediaRequestedPanelMock).toHaveBeenCalledWith('mediaMassEdit')
+  expect(setProjectMediaRequestedPanelMock).toHaveBeenCalledWith('mediaAdd')
   expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectMedia')
 })
 

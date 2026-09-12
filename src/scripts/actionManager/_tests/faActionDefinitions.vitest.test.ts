@@ -641,7 +641,7 @@ test('Test that openQuickSearchDocumentDialog skips dismiss when allowQuickPopup
 test('Test that openProjectMediaDialog handler opens ProjectMedia when a project is active', async () => {
   await definitionFor('openProjectMediaDialog').handler(undefined)
   expect(tryDismissFaComponentDialogIfOpenMock).not.toHaveBeenCalled()
-  expect(S_DialogComponent().projectMediaRequestedPanel).toBe('mediaMassEdit')
+  expect(S_DialogComponent().projectMediaRequestedPanel).toBe('mediaList')
   expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectMedia')
 })
 
@@ -658,7 +658,7 @@ test('Test that openProjectMediaDialog sets requested panel from payload', async
   expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectMedia')
 })
 
-test('Test that openProjectMediaDialog defaults to mass edit when listMedia is empty', async () => {
+test('Test that openProjectMediaDialog defaults to add when listMedia is empty', async () => {
   const prev = window.faContentBridgeAPIs
   Object.assign(window, {
     faContentBridgeAPIs: {
@@ -670,7 +670,7 @@ test('Test that openProjectMediaDialog defaults to mass edit when listMedia is e
   })
   try {
     await definitionFor('openProjectMediaDialog').handler(undefined)
-    expect(S_DialogComponent().projectMediaRequestedPanel).toBe('mediaMassEdit')
+    expect(S_DialogComponent().projectMediaRequestedPanel).toBe('mediaAdd')
     expect(openDialogComponentMock).toHaveBeenCalledWith('ProjectMedia')
   } finally {
     window.faContentBridgeAPIs = prev

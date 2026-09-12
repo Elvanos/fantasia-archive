@@ -1,0 +1,50 @@
+.dialogProjectMediaSingleEditSlide {
+  inset: 0;
+  overflow: hidden;
+  pointer-events: auto;
+  position: absolute;
+  z-index: $dialogProjectMedia-singleEditSlide-zIndex;
+
+  &__backdrop {
+    background-color: $dialogProjectMedia-singleEditSlide-backdropColor;
+    inset: 0;
+    pointer-events: auto;
+    position: absolute;
+  }
+
+  &__panel {
+    background-color: var(--q-dark);
+    bottom: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    max-width: $dialogProjectMedia-singleEditSlide-maxWidth;
+    pointer-events: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: $dialogProjectMedia-singleEditSlide-width;
+    z-index: 1;
+  }
+
+  &__body {
+    align-items: center;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 0;
+    overflow: auto;
+  }
+
+  &__footer {
+    flex: 0 0 auto;
+  }
+
+  &__nav,
+  &__actions {
+    align-items: center;
+    display: flex;
+    gap: $dialogProjectMedia-cardActions-gap;
+  }
+}

@@ -1,0 +1,86 @@
+@use './variables' as *;
+
+.dialogProjectMediaSingleEditSlide-enter-active,
+.dialogProjectMediaSingleEditSlide-leave-active {
+  transition: opacity $dialogProjectMedia-singleEditSlide-duration ease;
+
+  .dialogProjectMediaSingleEditSlide__backdrop {
+    transition: opacity $dialogProjectMedia-singleEditSlide-duration ease;
+  }
+
+  .dialogProjectMediaSingleEditSlide__panel {
+    transition: transform $dialogProjectMedia-singleEditSlide-duration ease;
+  }
+}
+
+.dialogProjectMediaSingleEditSlide-leave-active {
+  pointer-events: none;
+}
+
+.dialogProjectMediaSingleEditSlide-enter-from,
+.dialogProjectMediaSingleEditSlide-leave-to {
+  .dialogProjectMediaSingleEditSlide__backdrop {
+    opacity: 0;
+  }
+
+  .dialogProjectMediaSingleEditSlide__panel {
+    transform: translateX(100%);
+  }
+}
+
+.dialogProjectMediaSingleEditSlide-leave-to {
+  opacity: 0;
+}
+
+.dialogProjectMediaSingleEditSlide-enter-to,
+.dialogProjectMediaSingleEditSlide-leave-from {
+  .dialogProjectMediaSingleEditSlide__backdrop {
+    opacity: 1;
+  }
+
+  .dialogProjectMediaSingleEditSlide__panel {
+    transform: translateX(0);
+  }
+}
+
+.q-dialog.dialogComponent.ProjectMedia {
+  .dialogProjectMediaSingleEditSlide__footer.dialogProjectMedia__cardActions {
+    justify-content: space-between;
+  }
+
+  /*
+   * Icon-only outline q-btn must fill the same padding-box as its locked height.
+   * Extra slack (taller height, old 8px Y padding) puts fantasy ::after bloom under
+   * the Quasar ::before rim. Y padding + icon = height, like labeled Save at 36px.
+   */
+  .dialogProjectMediaSingleEditSlide__navBtn {
+    box-sizing: border-box;
+    height: $dialogProjectMedia-singleEditSlide-navButton-height;
+    justify-content: center;
+    line-height: 1;
+    min-height: $dialogProjectMedia-singleEditSlide-navButton-height;
+    padding:
+      $dialogProjectMedia-singleEditSlide-navButton-paddingY
+      $dialogProjectMedia-cardActions-button-paddingX;
+
+    > span {
+      letter-spacing: 0;
+    }
+
+    .q-icon {
+      font-size: $dialogProjectMedia-singleEditSlide-navButton-iconSize;
+      height: $dialogProjectMedia-singleEditSlide-navButton-iconSize;
+      width: $dialogProjectMedia-singleEditSlide-navButton-iconSize;
+    }
+  }
+}
+
+/*
+ * Wide outline Save keeps the 32px idle bloom; on a 40px icon button that wash
+ * covers the glyph. Shrink ::after so the line stays on the Quasar rim.
+ */
+body.fa-appTheme--fantasy .q-dialog.dialogComponent.ProjectMedia {
+  .dialogProjectMediaSingleEditSlide__navBtn.q-btn--outline::after {
+    height: $dialogProjectMedia-singleEditSlide-navButton-glowBloomSize;
+  }
+}

@@ -11,15 +11,13 @@
         :name="listPanelKey"
         class="dialogProjectMedia__tabPanel q-pa-none"
       >
-        <!-- Media list: title + search -->
+        <DialogProjectMediaSlideTitle
+          :label="$t('dialogs.projectMedia.titleList')"
+          test-locator="dialogProjectMedia-title-mediaList"
+        />
+        <!-- Media list: search + thumbnail grid -->
         <div class="dialogProjectMedia__listPanel hasScrollbar">
           <div class="dialogProjectMedia__listHeader">
-            <h5
-              class="dialogProjectMedia__panelTitle text-center text-h6"
-              data-test-locator="dialogProjectMedia-panelTitle-mediaList"
-            >
-              {{ $t('dialogs.projectMedia.panelMediaList') }}
-            </h5>
             <div class="dialogProjectMedia__searchWrapper">
               <q-input
                 v-model="searchQuery"
@@ -35,15 +33,22 @@
               </q-input>
             </div>
           </div>
+          <DialogProjectMediaListGrid
+            :items="props.listMediaItems"
+            @select-item="emit('selectListItem', $event)"
+          />
         </div>
       </q-tab-panel>
       <q-tab-panel
         :name="addPanelKey"
         class="dialogProjectMedia__tabPanel q-pa-none"
       >
+        <DialogProjectMediaSlideTitle
+          :label="$t('dialogs.projectMedia.titleAdd')"
+          test-locator="dialogProjectMedia-title-mediaAdd"
+        />
         <!-- Media addition drop zone -->
         <div
-          v-if="props.addSubView === dropZoneSubViewKey"
           class="dialogProjectMedia__addDropZone"
           data-test-locator="dialogProjectMedia-addDropZone"
         >
@@ -90,20 +95,29 @@
             {{ $t('dialogs.projectMedia.addMediaDropZoneDrag') }}
           </p>
         </div>
+      </q-tab-panel>
+      <q-tab-panel
+        :name="addOnlineUrlsPanelKey"
+        class="dialogProjectMedia__tabPanel q-pa-none"
+      >
+        <DialogProjectMediaSlideTitle
+          :label="$t('dialogs.projectMedia.titleAddOnline')"
+          test-locator="dialogProjectMedia-title-mediaAddOnlineUrls"
+        />
         <!-- Media addition online URLs -->
         <div
-          v-if="props.addSubView === onlineUrlsSubViewKey"
           class="dialogProjectMedia__addOnlineUrls"
           data-test-locator="dialogProjectMedia-addOnlineUrls"
         >
           <div class="dialogProjectMedia__addOnlineUrlsStack">
-            <p
+            <h6
               class="dialogProjectMedia__addOnlineUrlsTitle text-center"
               data-test-locator="dialogProjectMedia-addOnlineUrlsTitle"
             >
               {{ $t('dialogs.projectMedia.addOnlineUrlsTitle') }}
-            </p>
+            </h6>
             <q-input
+              ref="onlineUrlsInputRef"
               v-model="onlineUrlsDraft"
               class="dialogProjectMedia__addOnlineUrlsInput"
               color="primary-bright"
@@ -114,15 +128,6 @@
               outlined
               type="textarea"
             />
-            <q-btn
-              class="dialogProjectMedia__addOnlineUrlsSubmit"
-              color="primary-bright"
-              data-test-locator="dialogProjectMedia-addOnlineUrlsSubmit"
-              :label="$t('dialogs.projectMedia.addOnlineUrlsSubmitButton')"
-              outline
-              unelevated
-              @click="emit('submitOnlineUrls')"
-            />
           </div>
         </div>
       </q-tab-panel>
@@ -130,21 +135,23 @@
         :name="singleEditPanelKey"
         class="dialogProjectMedia__tabPanel q-pa-none"
       >
-        <div class="dialogProjectMedia__panelScroll hasScrollbar">
-          <h5
-            class="dialogProjectMedia__panelTitle text-center text-h6"
-            data-test-locator="dialogProjectMedia-panelTitle-mediaSingleEdit"
-          >
-            {{ $t('dialogs.projectMedia.panelSingleMediumEdit') }}
-          </h5>
-        </div>
+        <DialogProjectMediaSingleEditPanel
+          v-model:row="singleEditRow"
+          :is-save-disabled="props.isSingleEditSaveDisabled"
+          @close="emit('singleEditClose')"
+          @save="emit('singleEditSave')"
+        />
       </q-tab-panel>
       <q-tab-panel
         :name="massEditPanelKey"
         class="dialogProjectMedia__tabPanel q-pa-none"
       >
-        <div class="dialogProjectMedia__panelScroll hasScrollbar">
-          <DialogProjectMediaMassEditTable v-model="massEditRows" />
+        <DialogProjectMediaSlideTitle
+          :label="$t('dialogs.projectMedia.titleMassEdit')"
+          test-locator="dialogProjectMedia-title-mediaMassEdit"
+        />
+        <div class="dialogProjectMedia__panelScroll dialogProjectMedia__panelScroll--massEdit">
+          <DialogProjectMediaMassEditList v-model="massEditRows" />
         </div>
       </q-tab-panel>
     </q-tab-panels>
@@ -153,27 +160,36 @@
 
 <script setup lang="ts">
 import type {
+  I_faProjectMedia,
   I_faProjectMediaMassEditRow,
-  T_faProjectMediaAddSubView,
   T_faProjectMediaPanel
 } from 'app/types/I_faProjectMediaDomain'
 
-import DialogProjectMediaMassEditTable from './DialogProjectMediaMassEditTable.vue'
+import { nextTick, ref, watch } from 'vue'
+
+import DialogProjectMediaListGrid from './DialogProjectMediaListGrid.vue'
+import DialogProjectMediaMassEditList from './DialogProjectMediaMassEditList.vue'
+import DialogProjectMediaSingleEditPanel from './DialogProjectMediaSingleEditPanel.vue'
+import DialogProjectMediaSlideTitle from './DialogProjectMediaSlideTitle.vue'
 
 defineOptions({
   name: 'DialogProjectMediaPanelsColumn'
 })
 
 const props = withDefaults(defineProps<{
+  isSingleEditSaveDisabled?: boolean
+  listMediaItems?: I_faProjectMedia[]
   selectedPanel: T_faProjectMediaPanel
-  addSubView?: T_faProjectMediaAddSubView
 }>(), {
-  addSubView: 'dropZone'
+  isSingleEditSaveDisabled: true,
+  listMediaItems: () => []
 })
 
 const emit = defineEmits<{
   addOnlineMedia: []
-  submitOnlineUrls: []
+  selectListItem: [item: I_faProjectMedia]
+  singleEditClose: []
+  singleEditSave: []
 }>()
 
 const searchQuery = defineModel<string>('searchQuery', { required: true })
@@ -181,13 +197,34 @@ const onlineUrlsDraft = defineModel<string>('onlineUrlsDraft', { default: '' })
 const massEditRows = defineModel<I_faProjectMediaMassEditRow[]>('massEditRows', {
   default: () => []
 })
+const singleEditRow = defineModel<I_faProjectMediaMassEditRow | null>('singleEditRow', {
+  default: null
+})
 
 const listPanelKey: T_faProjectMediaPanel = 'mediaList'
 const addPanelKey: T_faProjectMediaPanel = 'mediaAdd'
+const addOnlineUrlsPanelKey: T_faProjectMediaPanel = 'mediaAddOnlineUrls'
 const singleEditPanelKey: T_faProjectMediaPanel = 'mediaSingleEdit'
 const massEditPanelKey: T_faProjectMediaPanel = 'mediaMassEdit'
-const dropZoneSubViewKey: T_faProjectMediaAddSubView = 'dropZone'
-const onlineUrlsSubViewKey: T_faProjectMediaAddSubView = 'onlineUrls'
+
+const onlineUrlsInputRef = ref<{ focus: () => void } | null>(null)
+
+function focusOnlineUrlsInput (): void {
+  onlineUrlsInputRef.value?.focus()
+}
+
+function focusOnlineUrlsInputIfActivePanel (): void {
+  if (props.selectedPanel !== addOnlineUrlsPanelKey) {
+    return
+  }
+  void nextTick(focusOnlineUrlsInput)
+}
+
+watch(
+  () => props.selectedPanel,
+  focusOnlineUrlsInputIfActivePanel,
+  { immediate: true }
+)
 </script>
 
 <style lang="scss" scoped src="./styles/DialogProjectMedia.panelsColumn.scoped.scss"></style>

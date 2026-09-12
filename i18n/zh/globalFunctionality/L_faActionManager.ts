@@ -33,6 +33,7 @@ export default {
     openProjectSettingsDialog: '打开项目设置',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: '保存项目设置',
+    saveProjectMedia: 'Save Project Media',
     openLicenseDialog: '开放许可证',
     openAppSettingsDialog: '打开应用程序设置',
     openAppStylingWindow: '打开自定义应用程序 CSS',

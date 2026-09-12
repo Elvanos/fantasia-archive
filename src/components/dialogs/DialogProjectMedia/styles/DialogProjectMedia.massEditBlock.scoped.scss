@@ -1,0 +1,6 @@
+.dialogProjectMediaMassEditBlock {
+  display: grid;
+  gap: $dialogProjectMedia-massEditBlock-innerGap;
+  grid-template-columns: auto minmax(0, 1fr);
+  min-width: 0;
+}

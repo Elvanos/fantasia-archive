@@ -33,6 +33,7 @@ export default {
     openProjectSettingsDialog: 'فتح إعدادات المشروع',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'حفظ إعدادات المشروع',
+    saveProjectMedia: 'Save Project Media',
     openLicenseDialog: 'فتح الترخيص',
     openAppSettingsDialog: 'افتح إعدادات التطبيق',
     openAppStylingWindow: 'افتح التطبيق المخصص CSS',

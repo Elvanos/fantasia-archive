@@ -1,4 +1,7 @@
-import type { T_faProjectMediaPanel } from 'app/types/I_faProjectMediaDomain'
+import type {
+  I_faProjectMediaUpsertItem,
+  T_faProjectMediaPanel
+} from 'app/types/I_faProjectMediaDomain'
 import type { I_faKeybindsRoot } from 'app/types/I_faKeybindsDomain'
 import type {
   I_faAppConfigApplyInput
@@ -26,6 +29,7 @@ export const FA_ACTION_IDS = [
   'openProjectMediaDialog',
   'showProjectDashboard',
   'saveProjectSettings',
+  'saveProjectMedia',
   'saveAppStyling',
   'saveProjectStyling',
   'openAdvancedSearchGuideDialog',
@@ -120,6 +124,7 @@ export interface I_faActionPayloadMap {
     settings: import('app/types/I_faProjectSettingsDomain').I_faProjectSettingsPatch
     worlds?: import('app/types/I_faProjectWorldDomain').I_faProjectWorldSnapshotItem[] | undefined
   }
+  saveProjectMedia: { items: I_faProjectMediaUpsertItem[] }
   saveAppStyling: { css: string }
   saveProjectStyling: { css: string }
   openAdvancedSearchGuideDialog: void

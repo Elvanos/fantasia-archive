@@ -23,6 +23,8 @@ $faSelectInput-menu-separatorAlt-color: fa-v('text-menu-separator', $text-menu-s
 $faSelectInput-menu-separatorAlt-height: 0.5px;
 $faSelectInput-menu-separatorAlt-opacity: 0.2;
 $faSelectInput-menu-width: 600px;
+/* Above QDialog (6000) and app header (7000); same layer as Quick Add / Quick Search. */
+$faSelectInput-menu-zIndex: 7002;
 /* Same app $iconSize box as Project Overview last-opened document glyphs. */
 $faSelectInput-optionIcon-avatar-paddingInline: 8px;
 $faSelectInput-optionIcon-boxSize: paletteGlobals.$iconSize;

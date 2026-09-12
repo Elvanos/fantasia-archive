@@ -1,0 +1,38 @@
+.dialogProjectMediaMassEditBlockFields {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: $dialogProjectMedia-massEditBlock-innerGap;
+  min-width: 0;
+
+  &__typeRow {
+    display: grid;
+    gap: $dialogProjectMedia-massEditBlock-innerGap;
+    grid-template-columns: 1fr 1fr;
+    min-width: 0;
+
+    &--stack {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__cellInput {
+    min-width: $dialogProjectMedia-massEditCellInput-minWidth;
+  }
+
+  &__embedBody {
+    width: 100%;
+
+    /* stylelint-disable selector-pseudo-class-no-unknown -- scoped :deep into Quasar QInput */
+    :deep(textarea) {
+      field-sizing: $dialogProjectMedia-massEditEmbedBody-fieldSizing;
+      max-width: 100%;
+      min-height: $dialogProjectMedia-massEditEmbedBody-minHeight;
+      min-width: 100%;
+      overflow-x: hidden;
+      resize: vertical;
+      width: 100%;
+    }
+    /* stylelint-enable selector-pseudo-class-no-unknown */
+  }
+}

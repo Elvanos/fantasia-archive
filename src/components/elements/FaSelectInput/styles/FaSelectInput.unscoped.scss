@@ -38,12 +38,14 @@
  * Selected bars live on ::before only so they do not fight that glow.
  * Label / icon color stay idle on hover (flat + fantasy) — no wash tint on text.
  */
+/* Teleported q-select menu; stack above modal QDialog chrome. */
 body .faSelectInput__menu.q-menu {
   background-color: $faSelectInput-menu-backgroundColor;
   color: $faSelectInput-menu-item-color;
   max-width: $faSelectInput-menu-maxWidth !important;
   min-width: $faSelectInput-menu-minWidth !important;
   width: $faSelectInput-menu-width !important;
+  z-index: $faSelectInput-menu-zIndex !important;
 
   .faSelectInput__optionMatch {
     color: $faSelectInput-optionMatch-color;

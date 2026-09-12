@@ -33,6 +33,7 @@ export default {
     openProjectSettingsDialog: 'プロジェクト設定を開く',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'プロジェクト設定を保存',
+    saveProjectMedia: 'Save Project Media',
     openLicenseDialog: 'オープンライセンス',
     openAppSettingsDialog: 'アプリ設定を開く',
     openAppStylingWindow: 'カスタム アプリ CSS を開く',

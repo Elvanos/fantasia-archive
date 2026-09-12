@@ -46,6 +46,7 @@ export default {
     saveAppSettings: 'Save App Settings',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'Save Project Settings',
+    saveProjectMedia: 'Save Project Media',
     saveAppStyling: 'Save Custom App CSS',
     saveProjectStyling: 'Save Custom Project CSS',
     showProjectDashboard: 'Show Project Dashboard',

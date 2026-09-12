@@ -33,6 +33,7 @@ export default {
     openProjectSettingsDialog: 'परियोजना सेटिंग्स खोलें',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'परियोजना सेटिंग्स सहेजें',
+    saveProjectMedia: 'Save Project Media',
     openLicenseDialog: 'लाइसेंस खोलें',
     openAppSettingsDialog: 'ऐप सेटिंग खोलें',
     openAppStylingWindow: 'कस्टम ऐप खोलें CSS',

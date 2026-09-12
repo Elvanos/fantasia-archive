@@ -1060,6 +1060,15 @@ div + .q-notification__caption {
   max-height: calc(100vh - #{$qPage-maxHeightSubtractWithAppControlBar});
 }
 
+/* Beat Quasar 1px stroke. Menu hairlines keep 0.5px via more specific scoped !important. */
+.q-separator--horizontal {
+  height: $qSeparator-stroke-width !important;
+}
+
+.q-separator--vertical {
+  width: $qSeparator-stroke-width !important;
+}
+
 /* Flush with parent (dialog card / page). Beat Quasar #fff and .q-dark $dark fill. */
 .q-stepper,
 .q-stepper.q-dark {

@@ -9,12 +9,14 @@ import {
   applyFaProjectMediaMassEditTypePatch,
   createFaProjectMediaMassEditRowFromOnlineUrl,
   createFaProjectMediaMassEditRowsFromOnlineUrlsDraft,
+  hasFaProjectMediaOnlineUrlDraftContent,
   isFaProjectMediaExternalType,
   isFaProjectMediaInternalType,
   isFaProjectMediaType,
   readFaSelectInputObjectId,
   resolveFaProjectMediaDisplayNameFromUrl,
   resolveFaProjectMediaMassEditFieldEnablement,
+  resolveFaProjectMediaMassEditPreviewUrl,
   splitFaProjectMediaOnlineUrlDraftLines
 } from '../faProjectMediaMassEditRow'
 
@@ -38,6 +40,7 @@ function sampleRow (
     externalLink: 'https://cdn.example.com/foo/bar.png',
     internalLink: '',
     internalEmbed: null,
+    externalEmbed: '',
     createdAtMs: 0,
     updatedAtMs: 0,
     isNew: true,
@@ -50,6 +53,13 @@ test('Test that splitFaProjectMediaOnlineUrlDraftLines skips blank lines', () =>
     'https://a.test/x',
     'https://b.test/y'
   ])
+})
+
+test('Test that hasFaProjectMediaOnlineUrlDraftContent ignores blank and whitespace lines', () => {
+  expect(hasFaProjectMediaOnlineUrlDraftContent('')).toBe(false)
+  expect(hasFaProjectMediaOnlineUrlDraftContent('  \n\n\t')).toBe(false)
+  expect(hasFaProjectMediaOnlineUrlDraftContent('not-a-url')).toBe(true)
+  expect(hasFaProjectMediaOnlineUrlDraftContent('  \nfoo\n  ')).toBe(true)
 })
 
 test('Test that resolveFaProjectMediaDisplayNameFromUrl uses last path segment without suffix', () => {
@@ -75,6 +85,7 @@ test('Test that createFaProjectMediaMassEditRowFromOnlineUrl builds an external 
   expect(row.internalType).toBe('linked_outside')
   expect(row.externalType).toBe('linked')
   expect(row.externalLink).toBe('https://cdn.example.com/foo/bar.png')
+  expect(row.externalEmbed).toBe('')
   expect(row.internalLink).toBe('')
   expect(row.internalEmbed).toBeNull()
   expect(row.isNew).toBe(true)
@@ -103,6 +114,7 @@ test('Test that appendFaProjectMediaMassEditIntakeRows concatenates rows', () =>
 
 test('Test that resolveFaProjectMediaMassEditFieldEnablement follows type and subtype', () => {
   expect(resolveFaProjectMediaMassEditFieldEnablement(sampleRow())).toEqual({
+    externalEmbed: false,
     externalLink: true,
     externalType: true,
     internalLink: false,
@@ -113,6 +125,7 @@ test('Test that resolveFaProjectMediaMassEditFieldEnablement follows type and su
     internalType: 'embedded',
     externalType: ''
   }))).toEqual({
+    externalEmbed: false,
     externalLink: false,
     externalType: false,
     internalLink: false,
@@ -129,6 +142,41 @@ test('Test that resolveFaProjectMediaMassEditFieldEnablement follows type and su
   expect(resolveFaProjectMediaMassEditFieldEnablement(sampleRow({
     externalType: ''
   })).externalLink).toBe(false)
+  expect(resolveFaProjectMediaMassEditFieldEnablement(sampleRow({
+    externalType: 'embed'
+  }))).toEqual({
+    externalEmbed: true,
+    externalLink: false,
+    externalType: true,
+    internalLink: false,
+    internalType: false
+  })
+})
+
+/**
+ * resolveFaProjectMediaMassEditPreviewUrl
+ * Visible URL follows Type: external link or internal link, trimmed.
+ */
+test('Test that resolveFaProjectMediaMassEditPreviewUrl uses the visible URL field', () => {
+  expect(resolveFaProjectMediaMassEditPreviewUrl(sampleRow())).toBe(
+    'https://cdn.example.com/foo/bar.png'
+  )
+  expect(resolveFaProjectMediaMassEditPreviewUrl(sampleRow({
+    externalLink: '  https://cdn.example.com/foo/bar.png  '
+  }))).toBe('https://cdn.example.com/foo/bar.png')
+  expect(resolveFaProjectMediaMassEditPreviewUrl(sampleRow({
+    type: 'internal',
+    internalLink: '  https://inside.test/a.png  ',
+    externalLink: 'https://cdn.example.com/foo/bar.png'
+  }))).toBe('https://inside.test/a.png')
+  expect(resolveFaProjectMediaMassEditPreviewUrl(sampleRow({
+    type: 'internal',
+    internalLink: '   '
+  }))).toBe('')
+  expect(resolveFaProjectMediaMassEditPreviewUrl(sampleRow({
+    externalType: 'embed',
+    externalEmbed: '<iframe></iframe>'
+  }))).toBe('')
 })
 
 test('Test that media type guards and select object id reader accept known values', () => {
@@ -139,6 +187,7 @@ test('Test that media type guards and select object id reader accept known value
   expect(isFaProjectMediaInternalType('linked')).toBe(false)
   expect(isFaProjectMediaExternalType('')).toBe(true)
   expect(isFaProjectMediaExternalType('linked')).toBe(true)
+  expect(isFaProjectMediaExternalType('embed')).toBe(true)
   expect(isFaProjectMediaExternalType('nope')).toBe(false)
   expect(readFaSelectInputObjectId('internal')).toBe('internal')
   expect(readFaSelectInputObjectId({
@@ -173,4 +222,8 @@ test('Test that mass-edit type patches apply known ids and ignore garbage', () =
     id: ''
   })
   expect(row.externalType).toBe('linked')
+  applyFaProjectMediaMassEditExternalTypePatch(row, 'embed')
+  expect(row.externalType).toBe('embed')
+  expect(row.externalLink).toBe('https://cdn.example.com/foo/bar.png')
+  expect(row.externalEmbed).toBe('')
 })

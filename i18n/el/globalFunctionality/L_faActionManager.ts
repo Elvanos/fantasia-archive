@@ -33,6 +33,7 @@ export default {
     openProjectSettingsDialog: 'Άνοιγμα ρυθμίσεων έργου',
     saveOpenedDocumentDisplayName: 'Save document',
     saveProjectSettings: 'Αποθήκευση ρυθμίσεων έργου',
+    saveProjectMedia: 'Save Project Media',
     openLicenseDialog: 'Ανοιχτή άδεια',
     openAppSettingsDialog: 'Ανοίξτε τις Ρυθμίσεις εφαρμογής',
     openAppStylingWindow: 'Άνοιγμα προσαρμοσμένης εφαρμογής CSS',

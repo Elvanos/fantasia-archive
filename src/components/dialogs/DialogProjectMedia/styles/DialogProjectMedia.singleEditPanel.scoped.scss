@@ -1,0 +1,21 @@
+.dialogProjectMediaSingleEditPanel {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+
+  &__body {
+    align-items: center;
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 0;
+    overflow: auto;
+  }
+
+  &__footer {
+    flex: 0 0 auto;
+  }
+}

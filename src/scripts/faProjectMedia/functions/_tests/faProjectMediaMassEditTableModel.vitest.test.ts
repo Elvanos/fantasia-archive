@@ -2,7 +2,6 @@ import { expect, test } from 'vitest'
 
 import {
   buildFaProjectMediaMassEditSelectOptionLists,
-  buildFaProjectMediaMassEditTableColumns,
   selectFaProjectMediaMassEditOptionById
 } from '../faProjectMediaMassEditTableModel'
 
@@ -14,21 +13,9 @@ test('Test that mass-edit select option lists use i18n keys as names and db ids'
     'linked_outside',
     'linked_in_project'
   ])
-  expect(lists.externalTypeOptions.map((option) => option.id)).toEqual(['linked'])
+  expect(lists.externalTypeOptions.map((option) => option.id)).toEqual(['linked', 'embed'])
+  expect(lists.externalTypeOptions[1]?.icon).toBe('fa-solid fa-file-code')
   expect(lists.typeOptions[0]?.name).toBe('dialogs.projectMedia.massEditTypeInternal')
-})
-
-test('Test that mass-edit table columns cover title type subtypes and links', () => {
-  const columns = buildFaProjectMediaMassEditTableColumns((key) => key)
-  expect(columns.map((column) => column.name)).toEqual([
-    'displayName',
-    'type',
-    'internalType',
-    'externalType',
-    'internalLink',
-    'externalLink'
-  ])
-  expect(columns[0]?.align).toBe('left')
 })
 
 test('Test that mass-edit option lookup matches id or returns null', () => {

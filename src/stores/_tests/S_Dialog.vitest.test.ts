@@ -50,7 +50,7 @@ test('Test that S_DialogComponent has defaults and updates UUID', () => {
   expect(S_DialogComponent.dialogToOpen).toBe('AboutFantasiaArchive')
   expect(S_DialogComponent.dialogUUID).toBe('')
   expect(S_DialogComponent.projectSettingsInitialTab).toBe(null)
-  expect(S_DialogComponent.projectMediaRequestedPanel).toBe('mediaMassEdit')
+  expect(S_DialogComponent.projectMediaRequestedPanel).toBe('mediaList')
   S_DialogComponent.generateDialogUUID()
   expect(S_DialogComponent.dialogUUID).toBe('uuid-1')
 })

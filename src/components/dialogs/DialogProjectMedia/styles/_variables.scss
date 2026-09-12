@@ -16,14 +16,78 @@ $dialogProjectMedia-addDropZone-hintOr-paddingBottom: 20px;
 $dialogProjectMedia-addDropZone-hintOr-paddingTop: 20px;
 $dialogProjectMedia-addOnlineUrlsInput-height: 550px;
 $dialogProjectMedia-addOnlineUrlsInput-maxWidth: 800px;
-$dialogProjectMedia-addOnlineUrlsSubmit-marginTop: 16px;
 $dialogProjectMedia-addOnlineUrlsTitle-paddingBottom: 16px;
+$dialogProjectMedia-body-paddingInline: 48px;
 $dialogProjectMedia-card-maxWidthViewportSubtract: 100px;
-$dialogProjectMedia-card-width: 1400px;
+$dialogProjectMedia-card-width: 1800px;
+$dialogProjectMedia-cardActions-button-minHeight: 36px;
+$dialogProjectMedia-cardActions-button-paddingX: 16px;
+$dialogProjectMedia-cardActions-button-paddingY: 8px;
+$dialogProjectMedia-cardActions-gap: 16px;
+$dialogProjectMedia-singleEditSlide-navButton-glowBloomSize: 10px;
+$dialogProjectMedia-singleEditSlide-navButton-height: 40px;
+$dialogProjectMedia-singleEditSlide-navButton-iconSize: 20px;
+$dialogProjectMedia-singleEditSlide-navButton-paddingY: calc(
+  (#{$dialogProjectMedia-singleEditSlide-navButton-height} - #{$dialogProjectMedia-singleEditSlide-navButton-iconSize}) / 2
+);
+$dialogProjectMedia-massEditBlock-innerGap: 8px;
 $dialogProjectMedia-massEditCellInput-minWidth: 8rem;
-$dialogProjectMedia-massEditSave-marginTop: 16px;
+$dialogProjectMedia-massEditEmbedBody-fieldSizing: content;
+$dialogProjectMedia-massEditEmbedBody-minHeight: 6em;
+$dialogProjectMedia-massEditItemDivider-color: fa-v('primary', $primary);
+$dialogProjectMedia-massEditItemDivider-height: 0.9px;
+$dialogProjectMedia-massEditItemDivider-marginBlock: 16px;
+$dialogProjectMedia-massEditList-paddingBlock: 8px;
+$dialogProjectMedia-massEditThumb-backgroundColor: #62615c;
+$dialogProjectMedia-massEditThumb-borderColor: color-mix(
+  in srgb,
+  fa-v('dialog-rim-cyan', $dialog-rim-cyan) 55%,
+  transparent
+);
+$dialogProjectMedia-massEditThumb-borderRadius: 6px;
+$dialogProjectMedia-massEditThumb-borderWidth: 1px;
+$dialogProjectMedia-listGrid-gap: 16px;
+$dialogProjectMedia-listHeader-minHeight: 40px;
+$dialogProjectMedia-listThumb-height: 150px;
+$dialogProjectMedia-massEditThumb-height: 136px;
+$dialogProjectMedia-massEditThumb-imageObjectFit: cover;
+$dialogProjectMedia-thumbCaption-backgroundColor: color-mix(
+  in srgb,
+  $white 75%,
+  transparent
+);
+$dialogProjectMedia-thumbCaption-fontSize: 11px;
+$dialogProjectMedia-thumbCaption-fontWeight: 400;
+$dialogProjectMedia-thumbCaption-innerWidth: 100%;
+$dialogProjectMedia-thumbCaption-lineHeight: 1.2;
+$dialogProjectMedia-thumbCaption-padding: 4px 8px;
+$dialogProjectMedia-thumbCaption-textColor: #1d2327;
+$dialogProjectMedia-thumbCaption-zIndex: 2;
+$dialogProjectMedia-massEditItemDivider-marginInlineStart: calc(
+  #{$dialogProjectMedia-massEditThumb-height} + #{$dialogProjectMedia-massEditBlock-innerGap}
+);
+$dialogProjectMedia-massEditThumb-previewErrorBorderColor: fa-v('warning', $warning);
+$dialogProjectMedia-massEditThumb-typeIcon-color: fa-v('accent', $accent);
+$dialogProjectMedia-massEditThumb-warningIcon-color: fa-v('warning', $warning);
+$dialogProjectMedia-massEditThumb-warningIconSize: 48px;
 $dialogProjectMedia-searchWrapper-right: 0;
 $dialogProjectMedia-searchWrapper-top: 0;
 $dialogProjectMedia-searchWrapper-width: 250px;
 $dialogProjectMedia-searchWrapper-zIndex: 11;
+$dialogProjectMedia-singleEditForm-paddingInline: 16px;
+$dialogProjectMedia-singleEditForm-width: 100%;
+$dialogProjectMedia-singleEditThumb-audioColorScheme: light;
+$dialogProjectMedia-singleEditThumb-audioHeight: 54px;
+$dialogProjectMedia-singleEditThumb-audioPaddingInline: 20px;
+$dialogProjectMedia-singleEditThumb-embedHeight: initial;
+$dialogProjectMedia-singleEditThumb-embedOverflow: hidden;
+$dialogProjectMedia-singleEditThumb-height: 300px;
+$dialogProjectMedia-singleEditThumb-imageObjectFit: contain;
+$dialogProjectMedia-singleEditThumb-objectPosition: center;
+$dialogProjectMedia-singleEditThumb-width: 100%;
+$dialogProjectMedia-singleEditSlide-backdropColor: rgba($black, 0.5);
+$dialogProjectMedia-singleEditSlide-duration: var(--q-transition-duration, 300ms);
+$dialogProjectMedia-singleEditSlide-maxWidth: 100%;
+$dialogProjectMedia-singleEditSlide-width: 700px;
+$dialogProjectMedia-singleEditSlide-zIndex: 20;
 $dialogProjectMedia-title-paddingInlineEnd: 240px;

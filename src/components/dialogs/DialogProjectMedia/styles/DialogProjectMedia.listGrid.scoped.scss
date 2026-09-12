@@ -1,0 +1,22 @@
+.dialogProjectMediaListGrid {
+  display: grid;
+  flex: 1 1 auto;
+  gap: $dialogProjectMedia-listGrid-gap;
+  grid-template-columns: repeat(auto-fill, $dialogProjectMedia-listThumb-height);
+  justify-content: start;
+  min-height: 0;
+  min-width: 0;
+  padding-block: $dialogProjectMedia-listGrid-gap;
+}
+
+.dialogProjectMediaListGrid__thumb {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: block;
+  height: $dialogProjectMedia-listThumb-height;
+  margin: 0;
+  padding: 0;
+  width: $dialogProjectMedia-listThumb-height;
+}

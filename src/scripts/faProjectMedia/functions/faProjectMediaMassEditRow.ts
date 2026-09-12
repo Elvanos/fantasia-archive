@@ -12,8 +12,10 @@ const internalTypeEmbedded: T_faProjectMediaInternalType = 'embedded'
 const internalTypeLinkedOutside: T_faProjectMediaInternalType = 'linked_outside'
 const internalTypeLinkedInProject: T_faProjectMediaInternalType = 'linked_in_project'
 const externalTypeLinked: T_faProjectMediaExternalType = 'linked'
+const externalTypeEmbed: T_faProjectMediaExternalType = 'embed'
 const emptyDisplayName = ''
 const emptyInternalLink = ''
+const emptyExternalEmbed = ''
 const createdAtMs = 0
 const updatedAtMs = 0
 const isNew = true
@@ -28,6 +30,14 @@ export function splitFaProjectMediaOnlineUrlDraftLines (draft: string): string[]
     }
   }
   return urls
+}
+
+/**
+ * True when the online-URL draft has at least one non-whitespace line.
+ * Does not check URL shape.
+ */
+export function hasFaProjectMediaOnlineUrlDraftContent (draft: string): boolean {
+  return splitFaProjectMediaOnlineUrlDraftLines(draft).length > 0
 }
 
 function pathAfterHost (href: string): string {
@@ -86,6 +96,7 @@ export function createFaProjectMediaMassEditRowFromOnlineUrl (deps: {
   const internalType = internalTypeLinkedOutside
   const externalType = externalTypeLinked
   const externalLink = deps.url
+  const externalEmbed = emptyExternalEmbed
   const internalLink = emptyInternalLink
   const internalEmbed = null
   return {
@@ -95,6 +106,7 @@ export function createFaProjectMediaMassEditRowFromOnlineUrl (deps: {
     internalType,
     externalType,
     externalLink,
+    externalEmbed,
     internalLink,
     internalEmbed,
     createdAtMs,
@@ -125,6 +137,22 @@ export function appendFaProjectMediaMassEditIntakeRows (
   return [...current, ...incoming]
 }
 
+/**
+ * URL shown in the mass-edit preview: External link or Internal link by Type.
+ * Embed rows have no URL field on screen.
+ */
+export function resolveFaProjectMediaMassEditPreviewUrl (
+  row: Pick<I_faProjectMediaMassEditRow, 'externalLink' | 'externalType' | 'internalLink' | 'type'>
+): string {
+  if (row.type === mediaTypeExternal && row.externalType === externalTypeEmbed) {
+    return emptyDisplayName
+  }
+  if (row.type === mediaTypeExternal) {
+    return row.externalLink.trim()
+  }
+  return row.internalLink.trim()
+}
+
 export function resolveFaProjectMediaMassEditFieldEnablement (
   row: Pick<I_faProjectMediaMassEditRow, 'externalType' | 'internalType' | 'type'>
 ): I_faProjectMediaMassEditFieldEnablement {
@@ -137,7 +165,9 @@ export function resolveFaProjectMediaMassEditFieldEnablement (
     row.internalType === internalTypeLinkedInProject
   )
   const externalLink = isExternal && row.externalType === externalTypeLinked
+  const externalEmbed = isExternal && row.externalType === externalTypeEmbed
   return {
+    externalEmbed,
     externalLink,
     externalType,
     internalLink,
@@ -163,7 +193,7 @@ export function isFaProjectMediaInternalType (
 export function isFaProjectMediaExternalType (
   value: string
 ): value is T_faProjectMediaExternalType {
-  return value === '' || value === externalTypeLinked
+  return value === '' || value === externalTypeLinked || value === externalTypeEmbed
 }
 
 export function applyFaProjectMediaMassEditTypePatch (
