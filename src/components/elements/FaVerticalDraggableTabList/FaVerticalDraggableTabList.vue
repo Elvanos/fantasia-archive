@@ -187,7 +187,9 @@ const {
 } = createFaVerticalDraggableTabListPointerHoverWiring({
   dragIdDataAttribute: () => props.dragIdDataAttribute,
   draggingItemId,
-  elementFromPoint: (x, y) => document.elementFromPoint(x, y),
+  elementFromPoint: (x, y) => (
+    typeof document === 'undefined' ? null : document.elementFromPoint(x, y)
+  ),
   getRoot: () => tabListRootRef.value,
   getScroll: () => tabListScrollRef.value,
   readDragItemId: readFaSortableDragItemDataAttribute,

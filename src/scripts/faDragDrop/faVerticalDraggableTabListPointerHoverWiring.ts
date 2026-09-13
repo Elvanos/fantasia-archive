@@ -89,7 +89,8 @@ export function createFaVerticalDraggableTabListPointerHoverWiring (
     lastPointerClientY: 0,
     pointerHoverItemId
   }
-  let pointerHoverResyncTimeoutId: number | null = null
+  let pointerHoverResyncGeneration = 0
+  let pointerHoverResyncTimeoutId: ReturnType<typeof globalThis.setTimeout> | null = null
 
   function onTabListPointerMove (event: PointerEvent): void {
     state.lastPointerClientX = event.clientX
@@ -111,18 +112,26 @@ export function createFaVerticalDraggableTabListPointerHoverWiring (
   }
 
   function cancelPointerHoverResync (): void {
+    pointerHoverResyncGeneration += 1
     if (pointerHoverResyncTimeoutId === null) {
       return
     }
-    window.clearTimeout(pointerHoverResyncTimeoutId)
+    globalThis.clearTimeout(pointerHoverResyncTimeoutId)
     pointerHoverResyncTimeoutId = null
   }
 
   function schedulePointerHoverResyncAfterAnimation (): void {
     cancelPointerHoverResync()
     clearPointerHover(pointerHoverItemId)
-    pointerHoverResyncTimeoutId = window.setTimeout(() => {
+    const scheduledGeneration = pointerHoverResyncGeneration
+    pointerHoverResyncTimeoutId = globalThis.setTimeout(() => {
       pointerHoverResyncTimeoutId = null
+      if (scheduledGeneration !== pointerHoverResyncGeneration) {
+        return
+      }
+      if (globalThis.document === undefined) {
+        return
+      }
       syncPointerHoverFromLastPoint(input, state)
     }, input.sortableAnimationMs)
   }

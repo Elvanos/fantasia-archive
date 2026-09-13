@@ -284,6 +284,40 @@ test('Test that clearPointerHover clears the hover id', () => {
   expect(wiring.pointerHoverItemId.value).toBeNull()
 })
 
+/**
+ * createFaVerticalDraggableTabListPointerHoverWiring
+ * Delayed resync must not call resolve after document is gone (Vitest 5 teardown).
+ */
+test('Test that delayed hover restore no-ops when document is gone', () => {
+  vi.useFakeTimers()
+  const heldDocument = globalThis.document
+  const resolveTabIdUnderPoint = vi.fn(() => 'world-x')
+  const wiring = createFaVerticalDraggableTabListPointerHoverWiring({
+    dragIdDataAttribute: () => 'data-test-world-id',
+    draggingItemId: ref(null),
+    elementFromPoint: () => null,
+    getRoot: () => heldDocument.createElement('div'),
+    getScroll: () => null,
+    readDragItemId: () => null,
+    resolveTabIdUnderPoint,
+    sortableAnimationMs: 150
+  })
+  wiring.schedulePointerHoverResyncAfterAnimation()
+  Object.defineProperty(globalThis, 'document', {
+    configurable: true,
+    value: undefined
+  })
+  try {
+    vi.advanceTimersByTime(150)
+    expect(resolveTabIdUnderPoint).not.toHaveBeenCalled()
+  } finally {
+    Object.defineProperty(globalThis, 'document', {
+      configurable: true,
+      value: heldDocument
+    })
+  }
+})
+
 test('Test that cancelPointerHoverResync is a no-op without a pending timeout', () => {
   const wiring = createFaVerticalDraggableTabListPointerHoverWiring({
     dragIdDataAttribute: () => 'data-test-world-id',
