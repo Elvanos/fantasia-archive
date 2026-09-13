@@ -11,14 +11,18 @@ import type { I_computedRef, I_ref } from 'app/types/I_vueCompositionShims'
 import { bindDialogProjectMediaSingleEditSave } from '../../dialogProjectMediaSingleEditSave'
 import {
   bindDialogProjectMediaSingleEdit,
-  bindFaProjectMediaSingleEditSlideEscape,
   closeFaProjectMediaSingleEditSlide,
   discardFaProjectMediaSingleEditDraft,
   FA_DIALOG_PROJECT_MEDIA_SINGLE_EDIT_SLIDE_MS,
   openFaProjectMediaSingleEditSlide,
-  resolveDialogProjectMediaShowGenericClose,
-  shouldCloseFaProjectMediaSingleEditSlideOnEscape
+  resolveDialogProjectMediaShowGenericClose
 } from '../dialogProjectMediaSingleEdit'
+import {
+  bindFaProjectMediaSingleEditSlideEscape,
+  shouldBlurFaProjectMediaSingleEditSlideFieldOnEscape,
+  shouldCloseFaProjectMediaSingleEditSlideOnEscape,
+  shouldStopFaProjectMediaSingleEditSlideEscapePropagation
+} from '../dialogProjectMediaSingleEditEscape'
 import {
   rebindFaProjectMediaSingleEditDraftFromList,
   wireDialogProjectMediaSingleEditPersistence
@@ -54,6 +58,23 @@ function requireAttachedKeydown (
   return handler
 }
 
+function createSlideKeyEvent (
+  key: string,
+  target: EventTarget | null = null
+): I_dialogProjectMediaSingleEditKeydownEvent & {
+  preventDefault: ReturnType<typeof vi.fn>
+  stopPropagation: ReturnType<typeof vi.fn>
+} {
+  const preventDefault = vi.fn()
+  const stopPropagation = vi.fn()
+  return {
+    key,
+    preventDefault,
+    stopPropagation,
+    target
+  }
+}
+
 const sampleItem: I_faProjectMedia = {
   createdAtMs: 0,
   displayName: 'bar',
@@ -69,27 +90,83 @@ const sampleItem: I_faProjectMedia = {
 }
 
 /**
+ * shouldStopFaProjectMediaSingleEditSlideEscapePropagation
+ * Escape while the slide is open must not reach the sticky QDialog.
+ */
+test('Test that shouldStopFaProjectMediaSingleEditSlideEscapePropagation needs open Escape', () => {
+  expect(shouldStopFaProjectMediaSingleEditSlideEscapePropagation({
+    isSlideOpen: true,
+    key: 'Escape'
+  })).toBe(true)
+  expect(shouldStopFaProjectMediaSingleEditSlideEscapePropagation({
+    isSlideOpen: false,
+    key: 'Escape'
+  })).toBe(false)
+  expect(shouldStopFaProjectMediaSingleEditSlideEscapePropagation({
+    isSlideOpen: true,
+    key: 'Enter'
+  })).toBe(false)
+})
+
+/**
  * shouldCloseFaProjectMediaSingleEditSlideOnEscape
  * Escape closes the slide only while it is open and clean.
  */
 test('Test that shouldCloseFaProjectMediaSingleEditSlideOnEscape needs open clean Escape', () => {
   expect(shouldCloseFaProjectMediaSingleEditSlideOnEscape({
     isDirty: false,
+    isFieldActive: false,
     isSlideOpen: true,
     key: 'Escape'
   })).toBe(true)
   expect(shouldCloseFaProjectMediaSingleEditSlideOnEscape({
     isDirty: true,
+    isFieldActive: false,
     isSlideOpen: true,
     key: 'Escape'
   })).toBe(false)
   expect(shouldCloseFaProjectMediaSingleEditSlideOnEscape({
     isDirty: false,
+    isFieldActive: false,
     isSlideOpen: false,
     key: 'Escape'
   })).toBe(false)
   expect(shouldCloseFaProjectMediaSingleEditSlideOnEscape({
     isDirty: false,
+    isFieldActive: false,
+    isSlideOpen: true,
+    key: 'Enter'
+  })).toBe(false)
+  expect(shouldCloseFaProjectMediaSingleEditSlideOnEscape({
+    isDirty: false,
+    isFieldActive: true,
+    isSlideOpen: true,
+    key: 'Escape'
+  })).toBe(false)
+})
+
+/**
+ * shouldBlurFaProjectMediaSingleEditSlideFieldOnEscape
+ * Escape blurs an active edit field while the slide stays open.
+ */
+test('Test that shouldBlurFaProjectMediaSingleEditSlideFieldOnEscape needs open field Escape', () => {
+  expect(shouldBlurFaProjectMediaSingleEditSlideFieldOnEscape({
+    isFieldActive: true,
+    isSlideOpen: true,
+    key: 'Escape'
+  })).toBe(true)
+  expect(shouldBlurFaProjectMediaSingleEditSlideFieldOnEscape({
+    isFieldActive: false,
+    isSlideOpen: true,
+    key: 'Escape'
+  })).toBe(false)
+  expect(shouldBlurFaProjectMediaSingleEditSlideFieldOnEscape({
+    isFieldActive: true,
+    isSlideOpen: false,
+    key: 'Escape'
+  })).toBe(false)
+  expect(shouldBlurFaProjectMediaSingleEditSlideFieldOnEscape({
+    isFieldActive: true,
     isSlideOpen: true,
     key: 'Enter'
   })).toBe(false)
@@ -182,7 +259,7 @@ test('Test that resolveDialogProjectMediaShowGenericClose hides on occupied foot
 
 /**
  * bindFaProjectMediaSingleEditSlideEscape
- * Open attaches the handler; Escape closes when clean; unmount detaches.
+ * Open attaches the handler; Escape stops the sticky dialog, blurs a field, then closes when clean.
  */
 test('Test that bindFaProjectMediaSingleEditSlideEscape attaches and closes on clean Escape', () => {
   const watchers: Array<{
@@ -193,17 +270,21 @@ test('Test that bindFaProjectMediaSingleEditSlideEscape attaches and closes on c
   const isSlideOpen = createRef(false)
   const isDirty = { value: false }
   const closeSlide = vi.fn()
+  const blurActiveElement = vi.fn()
+  let fieldActive = false
   let attached: ((event: I_dialogProjectMediaSingleEditKeydownEvent) => void) | null = null
   const unmountHooks: Array<() => void> = []
   bindFaProjectMediaSingleEditSlideEscape({
     attachWindowKeydown (handler) {
       attached = handler
     },
+    blurActiveElement,
     closeSlide,
     detachWindowKeydown () {
       attached = null
     },
     isDirty: isDirty as I_computedRef<boolean>,
+    isSlideFieldActive: () => fieldActive,
     isSlideOpen,
     onBeforeUnmount (hook) {
       unmountHooks.push(hook)
@@ -220,28 +301,36 @@ test('Test that bindFaProjectMediaSingleEditSlideEscape attaches and closes on c
   for (const watcher of watchers) {
     watcher.effect()
   }
-  requireAttachedKeydown(attached)({
-    key: 'Enter',
-    preventDefault () {
-      return undefined
-    }
-  })
+  const enterEvent = createSlideKeyEvent('Enter')
+  requireAttachedKeydown(attached)(enterEvent)
   expect(closeSlide).not.toHaveBeenCalled()
+  expect(enterEvent.preventDefault).not.toHaveBeenCalled()
+  expect(enterEvent.stopPropagation).not.toHaveBeenCalled()
   isDirty.value = true
-  requireAttachedKeydown(attached)({
-    key: 'Escape',
-    preventDefault () {
-      return undefined
-    }
-  })
+  const dirtyEvent = createSlideKeyEvent('Escape')
+  requireAttachedKeydown(attached)(dirtyEvent)
+  expect(closeSlide).not.toHaveBeenCalled()
+  expect(dirtyEvent.preventDefault).toHaveBeenCalledOnce()
+  expect(dirtyEvent.stopPropagation).toHaveBeenCalledOnce()
+  fieldActive = true
+  const dirtyFocusedEvent = createSlideKeyEvent('Escape', document.createElement('input'))
+  requireAttachedKeydown(attached)(dirtyFocusedEvent)
+  expect(blurActiveElement).toHaveBeenCalledOnce()
+  expect(dirtyFocusedEvent.preventDefault).toHaveBeenCalledOnce()
+  expect(dirtyFocusedEvent.stopPropagation).toHaveBeenCalledOnce()
   expect(closeSlide).not.toHaveBeenCalled()
   isDirty.value = false
-  const preventDefault = vi.fn()
-  requireAttachedKeydown(attached)({
-    key: 'Escape',
-    preventDefault
-  })
-  expect(preventDefault).toHaveBeenCalledOnce()
+  const focusedEvent = createSlideKeyEvent('Escape', document.createElement('input'))
+  requireAttachedKeydown(attached)(focusedEvent)
+  expect(blurActiveElement).toHaveBeenCalledTimes(2)
+  expect(focusedEvent.preventDefault).toHaveBeenCalledOnce()
+  expect(focusedEvent.stopPropagation).toHaveBeenCalledOnce()
+  expect(closeSlide).not.toHaveBeenCalled()
+  fieldActive = false
+  const closeEvent = createSlideKeyEvent('Escape')
+  requireAttachedKeydown(attached)(closeEvent)
+  expect(closeEvent.preventDefault).toHaveBeenCalledOnce()
+  expect(closeEvent.stopPropagation).toHaveBeenCalledOnce()
   expect(closeSlide).toHaveBeenCalledOnce()
   isSlideOpen.value = false
   for (const watcher of watchers) {
@@ -272,6 +361,8 @@ test('Test that bindDialogProjectMediaSingleEdit opens slide and save reloads li
     applyListLoad,
     attachWindowKeydown: () => undefined,
     bindSingleEditSave: bindDialogProjectMediaSingleEditSave,
+    bindSlideEscape: bindFaProjectMediaSingleEditSlideEscape,
+    blurActiveElement: () => undefined,
     wirePersistence: wireDialogProjectMediaSingleEditPersistence,
     computed: (getter) => {
       return {
@@ -290,6 +381,7 @@ test('Test that bindDialogProjectMediaSingleEdit opens slide and save reloads li
       return draft.displayName !== baseline.displayName
     },
     isMassEditPanel: { value: false } as I_computedRef<boolean>,
+    isSlideFieldActive: () => false,
     listLoadGeneration: { value: 0 },
     listMediaItems,
     loadListMedia: async () => [sampleItem],
@@ -417,6 +509,8 @@ test('Test that bindDialogProjectMediaSingleEdit slide nav and stay save', async
     applyListLoad,
     attachWindowKeydown: () => undefined,
     bindSingleEditSave: bindDialogProjectMediaSingleEditSave,
+    bindSlideEscape: bindFaProjectMediaSingleEditSlideEscape,
+    blurActiveElement: () => undefined,
     wirePersistence: wireDialogProjectMediaSingleEditPersistence,
     computed: (getter) => {
       return {
@@ -435,6 +529,7 @@ test('Test that bindDialogProjectMediaSingleEdit slide nav and stay save', async
       return draft.displayName !== baseline.displayName
     },
     isMassEditPanel: { value: false } as I_computedRef<boolean>,
+    isSlideFieldActive: () => false,
     listLoadGeneration: { value: 0 },
     listMediaItems,
     loadListMedia: async () => listMediaItems.value,

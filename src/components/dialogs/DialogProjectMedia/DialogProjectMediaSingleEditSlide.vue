@@ -98,9 +98,10 @@
 
 <script setup lang="ts">
 import type { I_faProjectMediaMassEditRow } from 'app/types/I_faProjectMediaDomain'
-import { computed, nextTick, onBeforeUnmount, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 import {
+  createDialogProjectMediaSingleEditSlideNavActions,
   FA_DIALOG_PROJECT_MEDIA_SINGLE_EDIT_SLIDE_MS,
   resolveDialogProjectMediaSingleEditNavPanes,
   resolveDialogProjectMediaSingleEditNavTrackClassList,
@@ -209,47 +210,36 @@ function onNavTrackTransitionEnd (event: TransitionEvent): void {
   finishNavAnimation()
 }
 
-function emitNav (direction: 'next' | 'previous'): void {
-  if (direction === 'previous') {
-    emit('previous')
-    return
-  }
-  emit('next')
-}
+const {
+  onNextClick,
+  onPreviousClick,
+  onWindowKeydown
+} = createDialogProjectMediaSingleEditSlideNavActions({
+  beginNavTrackMove,
+  clearNavFinishTimer,
+  emitNext: () => { emit('next') },
+  emitPrevious: () => { emit('previous') },
+  finishNavAnimation,
+  getIsNextLocked: () => isNextNavLocked.value,
+  getIsPreviousLocked: () => isPreviousNavLocked.value,
+  getLiveRow: () => row.value,
+  nextTick,
+  setDirection: (direction) => { navDirection.value = direction },
+  setFinishTimer: (id) => { navFinishTimer = id },
+  setIsNavTrackMoving: (value) => { isNavTrackMoving.value = value },
+  setOutgoingRow: (nextOutgoing) => { outgoingRow.value = nextOutgoing },
+  setTimeoutFn: (cb, ms) => window.setTimeout(cb, ms),
+  slideMs: FA_DIALOG_PROJECT_MEDIA_SINGLE_EDIT_SLIDE_MS
+})
 
-function startNavSlide (direction: 'next' | 'previous'): void {
-  const current = row.value
-  if (current === null) {
-    emitNav(direction)
-    return
-  }
+onMounted(() => {
+  window.addEventListener('keydown', onWindowKeydown)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', onWindowKeydown)
   clearNavFinishTimer()
-  outgoingRow.value = { ...current }
-  navDirection.value = direction
-  isNavTrackMoving.value = false
-  emitNav(direction)
-  navFinishTimer = window.setTimeout(
-    finishNavAnimation,
-    FA_DIALOG_PROJECT_MEDIA_SINGLE_EDIT_SLIDE_MS
-  )
-  void nextTick(beginNavTrackMove)
-}
-
-function onPreviousClick (): void {
-  if (isPreviousNavLocked.value) {
-    return
-  }
-  startNavSlide('previous')
-}
-
-function onNextClick (): void {
-  if (isNextNavLocked.value) {
-    return
-  }
-  startNavSlide('next')
-}
-
-onBeforeUnmount(clearNavFinishTimer)
+})
 </script>
 
 <style lang="scss" scoped src="./styles/DialogProjectMedia.singleEditSlide.scoped.scss"></style>

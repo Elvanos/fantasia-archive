@@ -1,7 +1,6 @@
 import type {
   I_bindDialogProjectMediaSingleEditBound,
-  I_bindDialogProjectMediaSingleEditInput,
-  I_dialogProjectMediaSingleEditKeydownEvent
+  I_bindDialogProjectMediaSingleEditInput
 } from 'app/types/I_bindDialogProjectMediaSingleEdit'
 import type {
   I_faProjectMedia,
@@ -14,17 +13,6 @@ const singleEditPanel: T_faProjectMediaPanel = 'mediaSingleEdit'
 
 /** Vue Transition duration for the list single-edit slide. Matches the CSS token. */
 export const FA_DIALOG_PROJECT_MEDIA_SINGLE_EDIT_SLIDE_MS = 300
-
-/**
- * True when Escape should dismiss the list single-edit slide.
- */
-export function shouldCloseFaProjectMediaSingleEditSlideOnEscape (input: {
-  isDirty: boolean
-  isSlideOpen: boolean
-  key: string
-}): boolean {
-  return input.isSlideOpen && !input.isDirty && input.key === 'Escape'
-}
 
 /**
  * Clone a saved medium into draft plus baseline and open the slide.
@@ -82,42 +70,22 @@ export function resolveDialogProjectMediaShowGenericClose (input: {
   return !input.isSingleEditSlideOpen
 }
 
-/**
- * Attach Escape while the list single-edit slide is open. Detach on close and unmount.
- */
-export function bindFaProjectMediaSingleEditSlideEscape (input: {
-  attachWindowKeydown: (
-    handler: (event: I_dialogProjectMediaSingleEditKeydownEvent) => void
-  ) => void
-  closeSlide: () => void
-  detachWindowKeydown: (
-    handler: (event: I_dialogProjectMediaSingleEditKeydownEvent) => void
-  ) => void
-  isDirty: I_computedRef<boolean>
+function attachSingleEditSlideEscape (
+  input: I_bindDialogProjectMediaSingleEditInput,
+  closeSlide: () => void,
+  isDirty: I_computedRef<boolean>,
   isSlideOpen: I_ref<boolean>
-  onBeforeUnmount: (hook: () => void) => void
-  watch: (source: () => unknown, effect: () => void) => void
-}): void {
-  function onSingleEditSlideKeydown (event: I_dialogProjectMediaSingleEditKeydownEvent): void {
-    if (!shouldCloseFaProjectMediaSingleEditSlideOnEscape({
-      isDirty: input.isDirty.value,
-      isSlideOpen: input.isSlideOpen.value,
-      key: event.key
-    })) {
-      return
-    }
-    event.preventDefault()
-    input.closeSlide()
-  }
-  input.watch(() => input.isSlideOpen.value, () => {
-    if (input.isSlideOpen.value) {
-      input.attachWindowKeydown(onSingleEditSlideKeydown)
-      return
-    }
-    input.detachWindowKeydown(onSingleEditSlideKeydown)
-  })
-  input.onBeforeUnmount(() => {
-    input.detachWindowKeydown(onSingleEditSlideKeydown)
+): void {
+  input.bindSlideEscape({
+    attachWindowKeydown: input.attachWindowKeydown,
+    blurActiveElement: input.blurActiveElement,
+    closeSlide,
+    detachWindowKeydown: input.detachWindowKeydown,
+    isDirty,
+    isSlideFieldActive: input.isSlideFieldActive,
+    isSlideOpen,
+    onBeforeUnmount: input.onBeforeUnmount,
+    watch: input.watch
   })
 }
 
@@ -192,15 +160,12 @@ export function bindDialogProjectMediaSingleEdit (
     singleEditBaseline,
     singleEditDraft
   })
-  bindFaProjectMediaSingleEditSlideEscape({
-    attachWindowKeydown: input.attachWindowKeydown,
-    closeSlide: closeSingleEditSlide,
-    detachWindowKeydown: input.detachWindowKeydown,
-    isDirty: isSingleEditDirty,
-    isSlideOpen: isSingleEditSlideOpen,
-    onBeforeUnmount: input.onBeforeUnmount,
-    watch: input.watch
-  })
+  attachSingleEditSlideEscape(
+    input,
+    closeSingleEditSlide,
+    isSingleEditDirty,
+    isSingleEditSlideOpen
+  )
 
   const saveSingleEditAndCloseDialog = persistence.saveAndCloseDialog
   const saveSingleEditSlide = persistence.saveSlide

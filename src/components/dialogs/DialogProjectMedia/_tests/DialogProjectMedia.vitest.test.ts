@@ -697,6 +697,60 @@ test('Test that DialogProjectMedia list select opens the single-edit slide', asy
 
 /**
  * DialogProjectMedia
+ * Slide Escape blurs a focused field first, then closes when no field is active.
+ */
+test('Test that DialogProjectMedia Escape blurs a focused field before closing the slide', async () => {
+  const listed: I_faProjectMedia = {
+    createdAtMs: 0,
+    displayName: 'saved',
+    externalEmbed: '',
+    externalLink: 'https://cdn.example.com/foo/bar.png',
+    externalType: 'linked',
+    id: 'saved',
+    internalEmbed: null,
+    internalLink: '',
+    internalType: 'linked_outside',
+    type: 'external',
+    updatedAtMs: 0
+  }
+  const w = mount(DialogProjectMedia, {
+    global: projectMediaDialogGlobal,
+    props: { directInput: 'ProjectMedia' }
+  })
+
+  await flushPromises()
+  await w.getComponent(DialogProjectMediaPanelsColumn).vm.$emit('selectListItem', listed)
+  await flushPromises()
+  expect(w.find('[data-test-locator="dialogProjectMedia-singleEditSlide"]').exists()).toBe(true)
+
+  const field = document.createElement('input')
+  document.body.appendChild(field)
+  field.focus()
+  expect(document.activeElement).toBe(field)
+  field.dispatchEvent(new KeyboardEvent('keydown', {
+    bubbles: true,
+    cancelable: true,
+    key: 'Escape'
+  }))
+  await flushPromises()
+  expect(document.activeElement).not.toBe(field)
+  expect(w.find('[data-test-locator="dialogProjectMedia-singleEditSlide"]').exists()).toBe(true)
+
+  document.body.dispatchEvent(new KeyboardEvent('keydown', {
+    bubbles: true,
+    cancelable: true,
+    key: 'Escape'
+  }))
+  await flushPromises()
+  await w.getComponent({ name: 'Transition' }).vm.$emit('after-leave')
+  await flushPromises()
+  expect(w.find('[data-test-locator="dialogProjectMedia-singleEditSlide"]').exists()).toBe(false)
+  field.remove()
+  w.unmount()
+})
+
+/**
+ * DialogProjectMedia
  * Mass-edit footer save buttons persist rows.
  */
 test('Test that DialogProjectMedia mass-edit save buttons persist', async () => {

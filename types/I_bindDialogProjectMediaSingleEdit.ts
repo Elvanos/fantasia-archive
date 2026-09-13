@@ -10,6 +10,25 @@ import type { I_computedRef, I_ref } from 'app/types/I_vueCompositionShims'
 export interface I_dialogProjectMediaSingleEditKeydownEvent {
   key: string
   preventDefault: () => void
+  stopPropagation: () => void
+  target: EventTarget | null
+}
+
+/** Deps for bindFaProjectMediaSingleEditSlideEscape. */
+export interface I_bindFaProjectMediaSingleEditSlideEscapeInput {
+  attachWindowKeydown: (
+    handler: (event: I_dialogProjectMediaSingleEditKeydownEvent) => void
+  ) => void
+  blurActiveElement: () => void
+  closeSlide: () => void
+  detachWindowKeydown: (
+    handler: (event: I_dialogProjectMediaSingleEditKeydownEvent) => void
+  ) => void
+  isDirty: I_computedRef<boolean>
+  isSlideFieldActive: (target: EventTarget | null) => boolean
+  isSlideOpen: I_ref<boolean>
+  onBeforeUnmount: (hook: () => void) => void
+  watch: (source: () => unknown, effect: () => void) => void
 }
 
 /** Deps for bindDialogProjectMediaSingleEdit. */
@@ -63,6 +82,8 @@ export interface I_bindDialogProjectMediaSingleEditInput {
     saveSlide: () => Promise<void>
     saveSlideStay: () => Promise<void>
   }
+  bindSlideEscape: (input: I_bindFaProjectMediaSingleEditSlideEscapeInput) => void
+  blurActiveElement: () => void
   computed: <T>(getter: () => T) => I_computedRef<T>
   detachWindowKeydown: (
     handler: (event: I_dialogProjectMediaSingleEditKeydownEvent) => void
@@ -74,6 +95,7 @@ export interface I_bindDialogProjectMediaSingleEditInput {
     baseline: I_faProjectMediaMassEditRow | null
   ) => boolean
   isMassEditPanel: I_computedRef<boolean>
+  isSlideFieldActive: (target: EventTarget | null) => boolean
   listLoadGeneration: { value: number }
   listMediaItems: I_ref<I_faProjectMedia[]>
   loadListMedia: () => Promise<I_faProjectMedia[]>

@@ -47,7 +47,7 @@ const dialogProjectMediaApi = createDialogProjectMedia({
   applyListLoad: applyDialogProjectMediaListLoad,
   attachWatches: attachDialogProjectMediaWatches,
   attachWindowKeydown: (handler) => {
-    window.addEventListener('keydown', handler)
+    window.addEventListener('keydown', handler, true)
   },
   bindMassEditSave: bindDialogProjectMediaMassEditSave,
   bindSingleEdit: bindDialogProjectMediaSingleEdit,
@@ -59,7 +59,7 @@ const dialogProjectMediaApi = createDialogProjectMedia({
     draft
   }),
   detachWindowKeydown: (handler) => {
-    window.removeEventListener('keydown', handler)
+    window.removeEventListener('keydown', handler, true)
   },
   getRequestedPanel: () => {
     const store = resolveDialogComponentStoreBinding.resolveDialogComponentStore()
@@ -94,6 +94,10 @@ export const resolveDialogComponentStore = dialogProjectMediaApi.resolveDialogCo
 export const useDialogProjectMedia = dialogProjectMediaApi.useDialogProjectMedia
 
 export { FA_DIALOG_PROJECT_MEDIA_SINGLE_EDIT_SLIDE_MS }
+export {
+  applyDialogProjectMediaSingleEditSlideArrowKeydown,
+  createDialogProjectMediaSingleEditSlideNavActions
+} from './functions/dialogProjectMediaSingleEditSlideArrowNav'
 export {
   resolveDialogProjectMediaSingleEditNavPanes,
   resolveDialogProjectMediaSingleEditNavTrackClassList,

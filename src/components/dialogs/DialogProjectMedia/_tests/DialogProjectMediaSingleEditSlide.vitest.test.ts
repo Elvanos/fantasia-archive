@@ -316,3 +316,84 @@ test('Test that DialogProjectMediaSingleEditSlide unlocks nav when the track tra
     vi.useRealTimers()
   }
 })
+
+function dispatchSlideArrowKey (key: string, init: KeyboardEventInit = {}): void {
+  window.dispatchEvent(new KeyboardEvent('keydown', {
+    bubbles: true,
+    key,
+    ...init
+  }))
+}
+
+/**
+ * DialogProjectMediaSingleEditSlide
+ * Unmodified ArrowLeft / ArrowRight match Previous / Next clicks.
+ */
+test('Test that DialogProjectMediaSingleEditSlide arrow keys match Previous and Next', async () => {
+  const w = mount(DialogProjectMediaSingleEditSlide, {
+    global: slideGlobal,
+    props: {
+      nextDisabled: false,
+      previousDisabled: false,
+      row: sampleRow
+    }
+  })
+
+  dispatchSlideArrowKey('ArrowRight')
+  expect(w.emitted('next')).toHaveLength(1)
+  dispatchSlideArrowKey('ArrowRight')
+  expect(w.emitted('next')).toHaveLength(1)
+  await w.get('[data-test-locator="dialogProjectMedia-singleEditSlide-navTrack"]').trigger(
+    'transitionend',
+    { propertyName: 'transform' }
+  )
+  dispatchSlideArrowKey('ArrowLeft')
+  expect(w.emitted('previous')).toHaveLength(1)
+  w.unmount()
+
+  const locked = mount(DialogProjectMediaSingleEditSlide, {
+    global: slideGlobal,
+    props: {
+      nextDisabled: true,
+      previousDisabled: true,
+      row: sampleRow
+    }
+  })
+  dispatchSlideArrowKey('ArrowRight')
+  dispatchSlideArrowKey('ArrowLeft')
+  expect(locked.emitted('next')).toBeUndefined()
+  expect(locked.emitted('previous')).toBeUndefined()
+  locked.unmount()
+
+  const withModifiers = mount(DialogProjectMediaSingleEditSlide, {
+    global: slideGlobal,
+    props: {
+      nextDisabled: false,
+      previousDisabled: false,
+      row: sampleRow
+    }
+  })
+  dispatchSlideArrowKey('ArrowRight', { altKey: true })
+  dispatchSlideArrowKey('ArrowLeft', { shiftKey: true })
+  expect(withModifiers.emitted('next')).toBeUndefined()
+  expect(withModifiers.emitted('previous')).toBeUndefined()
+  withModifiers.unmount()
+
+  const withField = mount(DialogProjectMediaSingleEditSlide, {
+    global: slideGlobal,
+    props: {
+      nextDisabled: false,
+      previousDisabled: false,
+      row: sampleRow
+    }
+  })
+  const input = document.createElement('input')
+  document.body.appendChild(input)
+  input.dispatchEvent(new KeyboardEvent('keydown', {
+    bubbles: true,
+    key: 'ArrowRight'
+  }))
+  expect(withField.emitted('next')).toBeUndefined()
+  input.remove()
+  withField.unmount()
+})

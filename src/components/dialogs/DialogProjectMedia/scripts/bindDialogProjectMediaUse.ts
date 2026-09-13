@@ -1,6 +1,5 @@
 import type {
   I_bindDialogProjectMediaSessionChromeInput,
-  I_collectDialogProjectMediaBoundInput,
   I_createDialogProjectMediaDeps,
   I_dialogProjectMediaBound,
   I_dialogProjectMediaProps
@@ -12,7 +11,13 @@ import type {
   T_faProjectMediaPanel
 } from 'app/types/I_faProjectMediaDomain'
 
+import { collectDialogProjectMediaBound } from './functions/collectDialogProjectMediaBound'
+import { bindFaProjectMediaSingleEditSlideEscape } from './functions/dialogProjectMediaSingleEditEscape'
 import { wireDialogProjectMediaSingleEditPersistence } from './functions/dialogProjectMediaSingleEditNav'
+import {
+  blurDialogProjectMediaActiveElement,
+  isDialogProjectMediaSingleEditSlideNavFieldActive
+} from './functions/dialogProjectMediaSingleEditSlideArrowNav'
 
 const addOnlineUrlsPanel: T_faProjectMediaPanel = 'mediaAddOnlineUrls'
 const massEditPanel: T_faProjectMediaPanel = 'mediaMassEdit'
@@ -43,12 +48,17 @@ export function bindUseDialogProjectMedia (
     applyListLoad: deps.applyListLoad,
     attachWindowKeydown: deps.attachWindowKeydown,
     bindSingleEditSave: deps.bindSingleEditSave,
+    bindSlideEscape: bindFaProjectMediaSingleEditSlideEscape,
+    blurActiveElement: () => {
+      blurDialogProjectMediaActiveElement(document.activeElement)
+    },
     computed: deps.computed,
     detachWindowKeydown: deps.detachWindowKeydown,
     dialogModel,
     isAddOnlineUrlsPanel,
     isDirtyFn: deps.isMassEditRowDirty,
     isMassEditPanel,
+    isSlideFieldActive: isDialogProjectMediaSingleEditSlideNavFieldActive,
     listLoadGeneration,
     listMediaItems,
     loadListMedia: deps.loadListMedia,
@@ -185,73 +195,4 @@ function bindOpenDialog (
     input.dialogModel.value = true
   }
   return openDialog
-}
-
-function collectDialogProjectMediaBound (
-  input: I_collectDialogProjectMediaBoundInput
-): I_dialogProjectMediaBound {
-  const closeSingleEditDialog = input.singleEdit.closeSingleEditDialog
-  const closeSingleEditSlide = input.singleEdit.closeSingleEditSlide
-  const discardSingleEditSlide = input.singleEdit.discardSingleEditSlide
-  const dialogModel = input.dialogModel
-  const dialogTitleI18nKey = input.dialogTitleI18nKey
-  const documentName = input.documentName
-  const isAddOnlineUrlsPanel = input.isAddOnlineUrlsPanel
-  const isMassEditPanel = input.isMassEditPanel
-  const isOnlineUrlsSubmitDisabled = input.isOnlineUrlsSubmitDisabled
-  const isPersistent = input.isPersistent
-  const isSingleEditSaveDisabled = input.singleEdit.isSingleEditSaveDisabled
-  const isSingleEditSlideOpen = input.singleEdit.isSingleEditSlideOpen
-  const isSlideNextDisabled = input.singleEdit.isSlideNextDisabled
-  const isSlidePreviousDisabled = input.singleEdit.isSlidePreviousDisabled
-  const listMediaItems = input.listMediaItems
-  const massEditRows = input.massEditRows
-  const onlineUrlsDraft = input.onlineUrlsDraft
-  const openSingleEditSlide = input.singleEdit.openSingleEditSlide
-  const openSingleEditSlideNext = input.singleEdit.openSingleEditSlideNext
-  const openSingleEditSlidePrevious = input.singleEdit.openSingleEditSlidePrevious
-  const saveAndBackToList = input.saveAndBackToList
-  const saveAndClose = input.saveAndClose
-  const saveSingleEditAndCloseDialog = input.singleEdit.saveSingleEditAndCloseDialog
-  const saveSingleEditSlide = input.singleEdit.saveSingleEditSlide
-  const saveSingleEditSlideStay = input.singleEdit.saveSingleEditSlideStay
-  const searchQuery = input.searchQuery
-  const selectedPanel = input.selectedPanel
-  const showAddOnlineUrlsPanel = input.showAddOnlineUrlsPanel
-  const showGenericClose = input.singleEdit.showGenericClose
-  const singleEditDraft = input.singleEdit.singleEditDraft
-  const submitOnlineUrls = input.submitOnlineUrls
-  return {
-    closeSingleEditDialog,
-    closeSingleEditSlide,
-    discardSingleEditSlide,
-    dialogModel,
-    dialogTitleI18nKey,
-    documentName,
-    isAddOnlineUrlsPanel,
-    isMassEditPanel,
-    isOnlineUrlsSubmitDisabled,
-    isPersistent,
-    isSingleEditSaveDisabled,
-    isSingleEditSlideOpen,
-    isSlideNextDisabled,
-    isSlidePreviousDisabled,
-    listMediaItems,
-    massEditRows,
-    onlineUrlsDraft,
-    openSingleEditSlide,
-    openSingleEditSlideNext,
-    openSingleEditSlidePrevious,
-    saveAndBackToList,
-    saveAndClose,
-    saveSingleEditAndCloseDialog,
-    saveSingleEditSlide,
-    saveSingleEditSlideStay,
-    searchQuery,
-    selectedPanel,
-    showAddOnlineUrlsPanel,
-    showGenericClose,
-    singleEditDraft,
-    submitOnlineUrls
-  }
 }
