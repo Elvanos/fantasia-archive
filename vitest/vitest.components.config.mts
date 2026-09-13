@@ -8,7 +8,7 @@ import { defineConfig } from 'vitest/config'
 import {
   vitestCoverageBaseExclude,
   vitestCoverageSkipFull,
-  vitestCoverageStrictThresholds
+  vitestCoverageStrictThresholdsPerFile
 } from './vitest.coverage.shared'
 import { vitestTerminalReporters } from './vitest.reporters.shared'
 
@@ -94,12 +94,12 @@ export default defineConfig({
       },
       thresholds: {
         perFile: true,
-        'src/components/**/*.ts': { ...vitestCoverageStrictThresholds },
-        'src/components/**/*.vue': { ...vitestCoverageStrictThresholds },
-        'src/layouts/**/*.ts': { ...vitestCoverageStrictThresholds },
-        'src/layouts/**/*.vue': { ...vitestCoverageStrictThresholds },
-        'src/pages/**/*.ts': { ...vitestCoverageStrictThresholds },
-        'src/pages/**/*.vue': { ...vitestCoverageStrictThresholds }
+        'src/components/**/*.ts': { ...vitestCoverageStrictThresholdsPerFile },
+        'src/components/**/*.vue': { ...vitestCoverageStrictThresholdsPerFile },
+        'src/layouts/**/*.ts': { ...vitestCoverageStrictThresholdsPerFile },
+        'src/layouts/**/*.vue': { ...vitestCoverageStrictThresholdsPerFile },
+        'src/pages/**/*.ts': { ...vitestCoverageStrictThresholdsPerFile },
+        'src/pages/**/*.vue': { ...vitestCoverageStrictThresholdsPerFile }
       }
     }
   }

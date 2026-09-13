@@ -31,6 +31,7 @@ export default defineConfig({
   test: {
     name: 'unit-electron',
     environment: 'node',
+    clearMocks: false,
     include: ['src-electron/**/*.vitest.test.ts'],
     reporters: [...vitestTerminalReporters],
     outputFile: 'test-results/vitest-report/test-results-vitest-electron.json',

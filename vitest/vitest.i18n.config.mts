@@ -16,7 +16,8 @@ const repoRoot = path.resolve(__dirname, '..')
 /**
  * Node unit tests for repo-root i18n (vue-i18n message registry, specialCharacterFixer, externalFileLoader).
  * Colocate Vitest specs under i18n/_tests. This project does not use vitest.setup.ts so externalFileLoader stays real during coverage.
- * Enforces 95% v8 on all four metrics for all i18n TypeScript sources outside i18n/_tests (yarn test:coverage:i18n).
+ * Enforces 95% v8 on scoped i18n TypeScript sources outside i18n/_tests (yarn test:coverage:i18n).
+ * Include globs must contain a wildcard: Vitest 5 treats a pattern with no glob as a directory.
  */
 export default defineConfig({
   resolve: {
@@ -34,6 +35,7 @@ export default defineConfig({
   test: {
     name: 'unit-i18n',
     environment: 'node',
+    clearMocks: false,
     include: ['i18n/**/*.vitest.test.ts'],
     reporters: [...vitestTerminalReporters],
     outputFile: 'test-results/vitest-report/test-results-vitest-i18n.json',
@@ -42,25 +44,10 @@ export default defineConfig({
       provider: 'v8',
       skipFull: vitestCoverageSkipFull,
       include: [
-        'i18n/index.ts',
-        'i18n/externalFileLoader.ts',
-        'i18n/specialCharactersFixer.ts',
-        'i18n/en-US/index.ts',
-        'i18n/fr/index.ts',
-        'i18n/de/index.ts',
-        'i18n/ar/index.ts',
-        'i18n/el/index.ts',
-        'i18n/es/index.ts',
-        'i18n/fi/index.ts',
-        'i18n/hi/index.ts',
-        'i18n/it/index.ts',
-        'i18n/ja/index.ts',
-        'i18n/nb/index.ts',
-        'i18n/pt/index.ts',
-        'i18n/ru/index.ts',
-        'i18n/sv/index.ts',
-        'i18n/uk/index.ts',
-        'i18n/zh/index.ts'
+        '**/i18n/index.ts',
+        '**/i18n/externalFileLoader.ts',
+        '**/i18n/specialCharactersFixer.ts',
+        '**/i18n/*/index.ts'
       ],
       exclude: [...vitestCoverageBaseExclude],
       thresholds: { ...vitestCoverageStrictThresholdsPerFile }

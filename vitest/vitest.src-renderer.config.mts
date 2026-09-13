@@ -31,6 +31,7 @@ export default defineConfig({
   test: {
     name: 'unit-src-renderer',
     environment: 'node',
+    clearMocks: false,
     include: [
       'src/scripts/**/*.vitest.test.ts',
       'src/boot/**/*.vitest.test.ts',

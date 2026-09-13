@@ -81,3 +81,6 @@ NUL
 
 .nyc_output
 coverage/
+
+# Vitest 5+ shared artifact root (coverage caches, reports)
+.vitest/

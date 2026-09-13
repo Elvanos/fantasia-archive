@@ -39,6 +39,7 @@ export default defineConfig({
   test: {
     name: 'unit-helpers',
     environment: 'node',
+    clearMocks: false,
     include: ['helpers/**/*.vitest.test.ts'],
     exclude: [
       ...PLAYWRIGHT_HELPERS_COVERAGE_EXCLUDE,
