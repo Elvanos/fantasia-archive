@@ -28,6 +28,8 @@ Canonical summary; numbers + **`include`** enforced in **`vitest/*.config.mts`**
 
 **Workspace layout:** [vitest.config.mts](vitest.config.mts) **`root`** = repository; each project **`extends`** one file under **`vitest/`** — globs e.g. **`src-electron/**`** from repo root.
 
+**Vitest 5:** **`clearMocks`** defaults **true**. **`unit-components`** already **true**; other unit projects set **`clearMocks: false`** so import-time mock call counts survive. Coverage **`include`** path with no glob wildcard = directory, not file — i18n entries use **`**/i18n/...`**. Glob threshold objects must set **`perFile: true`** themselves (no inherit). Ignore **`.vitest/`**.
+
 ## Placement and discovery
 
 - **Connected suites:** Change production module → **search** other **`*.vitest.test.ts`** importing/mocking it or asserting same **`i18n`** keys/domain ids → **`yarn vitest run`** every implicated path — not only suite beside edited file. Pair Playwright per [fantasia-testing](../skills/fantasia-testing/SKILL.md) **Connected tests for any feature change**.
